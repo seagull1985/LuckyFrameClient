@@ -238,25 +238,29 @@ public class TestCaseApi extends TestLinkBaseApi {
 	}
 	
 	/**
-	 * 拷贝测试用例到系统自带用例库中
+	 * 拷贝测试用例到系统自带用例库中   接口自动化用例
 	 * @throws InterruptedException 
 	 */
-	public static void copyCaseToSys(String projectname,String testplan,int projectid,int moduleid,int casetype) throws InterruptedException{		
+	public static void copyCaseToSysForInt(String projectname,String testplan,int projectid) throws InterruptedException{		
 		TestCase[] testcases=getplantestcase(projectname,"888888",testplan);
+		int casecount=1;
 		for(TestCase cases:testcases){
+			System.out.println("准备开始导第"+casecount+"条用例..."+cases.getFullExternalId());
 			TestCase suitecase=api.getTestCaseByExternalId(cases.getFullExternalId(), cases.getVersion());
 			List<Integer> suiteid=new ArrayList<Integer>();
 			suiteid.add(suitecase.getTestSuiteId());
 			TestSuite suite[]=api.getTestSuiteByID(suiteid);
 			
 			String params="";
-			params="name="+cases.getName();
+
+			params="name="+cases.getName().replace("%", "BBFFHH");
 			params+="&projectid="+projectid;
 			params+="&modulename="+suite[0].getName();;
-			params+="&casetype="+casetype;    //0 接口  1 UI
+			params+="&casetype=0";    //0 接口  1 UI
 			
 			String caseid=HttpRequest.sendPost("/projectCase/cpostcase.do", params);
 			System.out.println("已经成功创建用例，ID："+caseid);
+			Thread.sleep(500);
 			int k=1;
 			for(TestCaseStep step:cases.getSteps()){
 				String stepsparams="";
@@ -270,12 +274,18 @@ public class TestCaseApi extends TestLinkBaseApi {
 		        	stepsparams="action="+action+"&";
 		        	scriptstr = scriptstr.substring(0, scriptstr.lastIndexOf("|")+1);
 		        }
+				if(scriptstr.substring(scriptstr.length()-6, scriptstr.length()).indexOf("*wait;")>-1){
+					String action="";
+					action = scriptstr.substring(scriptstr.lastIndexOf("|")+1,scriptstr.lastIndexOf("*wait;")+5);
+		        	stepsparams="action="+action+"&";
+		        	scriptstr = scriptstr.substring(0, scriptstr.lastIndexOf("|")+1);
+		        }
 				resultstr = InterfaceAnalyticTestLinkCase.SubComment(step.getExpectedResults());   //获取预期结果字符串
-				stepsparams+="expectedresult="+resultstr;
+				stepsparams+="expectedresult="+resultstr.replace("%", "BBFFHH");
 				stepsparams+="&caseid="+caseid;
 				stepsparams+="&stepnum="+k;
 				stepsparams+="&projectid="+projectid;
-				stepsparams+="&steptype="+casetype;
+				stepsparams+="&steptype=0";
 				String temp[]=scriptstr.split("\\|",-1);
 				String param="";
 				for(int i=0;i<temp.length;i++){
@@ -290,18 +300,104 @@ public class TestCaseApi extends TestLinkBaseApi {
 						param+=temp[i]+"|";
 					}
 				}
-				stepsparams+="&parameters="+param;   //set方法名称
+				stepsparams+="&parameters="+param.replace("%", "BBFFHH");   //set方法名称
 				String stepid=HttpRequest.sendPost("/projectCasesteps/cpoststep.do", stepsparams);
 				System.out.println("已经成功创建用例步骤，用例ID:"+caseid+"  步骤ID:"+stepid);
 				k++;
+				Thread.sleep(500);
 			}
+			System.out.println("第"+casecount+"条用例生成完成！"+cases.getFullExternalId());
+			casecount++;
 		}
+		System.out.println(testplan+"中的用例已经全部生成完毕！");
+	}
+	
+	/**
+	 * 拷贝测试用例到系统自带用例库中   UI自动化用例
+	 * @throws InterruptedException 
+	 */
+	public static void copyCaseToSysForUI(String projectname,String testplan,int projectid) throws InterruptedException{		
+		TestCase[] testcases=getplantestcase(projectname,"888888",testplan);
+		int casecount=1;
+		for(TestCase cases:testcases){
+			System.out.println("准备开始导第"+casecount+"条用例..."+cases.getFullExternalId());
+			TestCase suitecase=api.getTestCaseByExternalId(cases.getFullExternalId(), cases.getVersion());
+			List<Integer> suiteid=new ArrayList<Integer>();
+			suiteid.add(suitecase.getTestSuiteId());
+			TestSuite suite[]=api.getTestSuiteByID(suiteid);
+			
+			String params="";
+
+			params="name="+cases.getName().replace("%", "BBFFHH");
+			params+="&projectid="+projectid;
+			params+="&modulename="+suite[0].getName();;
+			params+="&casetype=1";    //0 接口  1 UI
+			
+			String caseid=HttpRequest.sendPost("/projectCase/cpostcase.do", params);
+			System.out.println("已经成功创建用例，ID："+caseid);
+			Thread.sleep(500);
+			int k=1;
+			for(TestCaseStep step:cases.getSteps()){
+				String stepsparams="";
+				String resultstr = null;
+				String stepsstr = step.getActions();    //获取actions字符串
+				String scriptstr = InterfaceAnalyticTestLinkCase.SubComment(stepsstr);
+
+				if(scriptstr.substring(scriptstr.length()-6, scriptstr.length()).indexOf("*Wait;")>-1){
+					String action="";
+					action = scriptstr.substring(scriptstr.lastIndexOf("|")+1,scriptstr.lastIndexOf("*Wait;")+5);
+		        	stepsparams="action="+action+"&";
+		        	scriptstr = scriptstr.substring(0, scriptstr.lastIndexOf("|")+1);
+		        }
+				if(scriptstr.substring(scriptstr.length()-6, scriptstr.length()).indexOf("*wait;")>-1){
+					String action="";
+					action = scriptstr.substring(scriptstr.lastIndexOf("|")+1,scriptstr.lastIndexOf("*wait;")+5);
+		        	stepsparams="action="+action+"&";
+		        	scriptstr = scriptstr.substring(0, scriptstr.lastIndexOf("|")+1);
+		        }
+				resultstr = InterfaceAnalyticTestLinkCase.SubComment(step.getExpectedResults());   //获取预期结果字符串
+				stepsparams+="expectedresult="+resultstr.replace("%", "BBFFHH");
+				stepsparams+="&caseid="+caseid;
+				stepsparams+="&stepnum="+k;
+				stepsparams+="&projectid="+projectid;
+				stepsparams+="&steptype=1";
+				String temp[]=scriptstr.split("\\|",-1);
+				for(int i=0;i<temp.length;i++){
+					if(i==0&&temp[i].indexOf("=")>-1&&(temp.length>2||!"".equals(temp[1]))){
+						stepsparams+="&path="+temp[i].replace("=", "DHDHDH");   //set包名					
+					}else if(temp[i].equals("")){
+						continue;
+					}else{
+						String operation = null;
+						String operation_value = null;
+						if(temp[i].indexOf("(")>-1&&temp[i].indexOf(")")>-1){
+							operation = temp[i].substring(0, temp[i].indexOf("("));
+							operation_value = temp[i].substring(temp[i].indexOf("(")+1, temp[i].lastIndexOf(")"));
+						}else{
+							operation = temp[i];
+						}
+						stepsparams+="&operation="+operation.toLowerCase();   //set方法名称
+						if(null!=operation_value){
+							stepsparams+="&parameters="+operation_value.replace("%", "BBFFHH");   //set方法名称
+						}						
+					}
+				}
+				String stepid=HttpRequest.sendPost("/projectCasesteps/cpoststep.do", stepsparams);
+				System.out.println("已经成功创建用例步骤，用例ID:"+caseid+"  步骤ID:"+stepid);
+				k++;
+				Thread.sleep(500);
+			}
+			System.out.println("第"+casecount+"条用例生成完成！"+cases.getFullExternalId());
+			casecount++;
+		}
+		System.out.println(testplan+"中的用例已经全部生成完毕！");
 	}
 	
 	public static void main(String[] args){
 		// TODO Auto-generated method stub
 		try {
-			copyCaseToSys("清算项目","清算接口自动化——各项费用算法",7,0,0);
+			//copyCaseToSysForInt("XXXXXX","XXXXXX",0);
+			copyCaseToSysForUI("XXXXXX","XXXXXX",0);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

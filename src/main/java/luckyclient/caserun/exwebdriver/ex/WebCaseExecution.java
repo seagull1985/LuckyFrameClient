@@ -10,18 +10,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
-import br.eti.kinoshita.testlinkjavaapi.model.TestCaseStep;
-import luckyclient.caserun.exinterface.testlink.TestLinkCaseExecution;
+import luckyclient.caserun.exinterface.TestCaseExecution;
 import luckyclient.caserun.exwebdriver.BaseWebDrive;
 import luckyclient.caserun.exwebdriver.EncapsulateOperation;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.publicclass.DBOperation;
-import luckyclient.testlinkapi.WebDriverAnalyticTestLinkCase;
 
-public class WebCaseExecution extends TestLinkCaseExecution{
+public class WebCaseExecution extends TestCaseExecution{
 	static Map<String, String> variable = new HashMap<String, String>();
 
 	public static void CaseExcution(ProjectCase testcase, List<ProjectCasesteps> steps,String taskid, WebDriver wd,LogOperation caselog)
@@ -201,7 +198,7 @@ public class WebCaseExecution extends TestLinkCaseExecution{
 			//调用接口用例
 			if(operation!=null&&operation_value!=null&&"runcase".equals(operation)){
 				String temp[]=operation_value.split(",",-1);
-				String ex = TestLinkCaseExecution.OneCaseExecuteForWebDriver(temp[0], Integer.valueOf(temp[1]),taskid);
+				String ex = TestCaseExecution.OneCaseExecuteForWebDriver(temp[0],taskid);
 				if(ex.indexOf("CallCase调用出错！")<=-1&&ex.indexOf("解析出错啦！")<=-1&&ex.indexOf("匹配失败")<=-1){
 					return ex;
 				}else{
