@@ -1,7 +1,5 @@
 package luckyclient.caserun.exinterface;
 
-import luckyclient.caserun.exinterface.testlink.TestLinkCaseExecution;
-
 public class ThreadForBatchCase extends Thread{
 	
 	private String projectname;

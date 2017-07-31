@@ -36,7 +36,7 @@ public class WebDriverAnalyticCase {
 		LogOperation caselog = new LogOperation();        //初始化写用例结果以及日志模块 
 		String resultstr = null;
 		try {
-		if(null==step.getPath()||step.getPath().indexOf("=")>-1){
+		if(null!=step.getPath()&&step.getPath().indexOf("=")>-1){
 			String property = step.getPath().substring(0, step.getPath().indexOf("="));
 			String property_value = step.getPath().substring(step.getPath().indexOf("=")+1, step.getPath().length());
 
@@ -45,26 +45,33 @@ public class WebDriverAnalyticCase {
 			luckyclient.publicclass.LogUtil.APP.info("对象属性解析结果：property:"+property.trim()+";  property_value:"+property_value.trim());		
 		}
 		params.put("operation", step.getOperation().toLowerCase());   //set操作方法
-		if(null==step.getParameters()||"".equals(step.getParameters())){
-			params.put("property_value", step.getParameters());   //set属性值
+		if(null!=step.getParameters()&&!"".equals(step.getParameters())){
+			params.put("operation_value", step.getParameters());   //set属性值
 		}
 		luckyclient.publicclass.LogUtil.APP.info("对象操作解析结果：operation:"+step.getOperation().toLowerCase()+";  operation_value:"+step.getParameters());
 		resultstr = step.getExpectedresult();   //获取预期结果字符串
 
 		//set预期结果
-		if("".equals(resultstr)){
+		if(null!=resultstr&&"".equals(resultstr)){
 			params.put("ExpectedResults", "");
-		}else{
+		}else if(null!=resultstr){
 			String ExpectedResults = SubComment(resultstr);
 
 			//处理check字段
 			if(ExpectedResults.indexOf("check(")>-1){
 				params.put("checkproperty", ExpectedResults.substring(ExpectedResults.indexOf("check(")+6, ExpectedResults.indexOf("=")));
-				params.put("checkproperty_value", ExpectedResults.substring(ExpectedResults.indexOf("=")+1, ExpectedResults.indexOf(")")));
+				params.put("checkproperty_value", ExpectedResults.substring(ExpectedResults.indexOf("=")+1, ExpectedResults.lastIndexOf(")")));
 			}			
 			params.put("ExpectedResults", ExpectedResults);
 			luckyclient.publicclass.LogUtil.APP.info("预期结果解析：ExpectedResults:"+ExpectedResults);
 		}
+		
+		//set wait时间
+		if(null!=step.getAction()&&step.getAction().toLowerCase().indexOf("*wait")>-1){                    //添加步骤之间等待时间
+			String action=step.getAction();
+			time=action.substring(0, action.toLowerCase().lastIndexOf("*wait"));
+        }
+		
 		params.put("StepWait", time);
 		luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！");
 		caselog.CaseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepnum()),"");
@@ -145,9 +152,6 @@ public class WebDriverAnalyticCase {
 
     public static void main(String[] args){
 		// TODO Auto-generated method stub
-/*		Thread.sleep(20000);
-		System.out.println(test.stopServer());*/
-
 	}
     
 }

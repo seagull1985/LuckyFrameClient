@@ -1,5 +1,6 @@
 package rmi.serviceImpl;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -120,6 +121,7 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 				sb.append(str).append("\n");
 			}
 			bos.close();
+			System.out.println("服务端读取本地日志成功!");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -129,7 +131,38 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 	}
 	
 	/**
-	 * 获取客户端日志
+	 * 获取客户端截图
+	 * 
+	 * @param request
+	 * @param response
+	 * @param storeName
+	 * @param contentType
+	 * @param realName
+	 * @throws Exception
+	 */
+	public byte[] getlogimg(String imgName) throws RemoteException{
+		String ctxPath = System.getProperty("user.dir")+"\\log\\ScreenShot\\";
+		String downLoadPath = ctxPath+imgName;
+        byte[] b = null;
+        try {
+            File file = new File(downLoadPath);
+            b = new byte[(int) file.length()];
+            BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
+            is.read(b);
+            is.close();
+            System.out.println("服务端获取本地图片："+downLoadPath);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return b;
+	}
+	
+	/**
+	 * 上传JAR包
 	 * 
 	 * @param request
 	 * @param response
@@ -149,7 +182,9 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
             file.createNewFile();
             BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(file));
             os.write(fileContent);
+            os.flush();
             os.close();
+            System.out.println("服务端上传JAR包("+name+")到本地客户端lib目录成功!");
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -163,8 +198,6 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 	}
 	
 	
-	public static void main(String[] args) {
-		String ctxPath=System.getProperty("user.dir");
-		System.out.println(ctxPath);
+	public static void main(String[] args) throws RemoteException {
 	}
 }

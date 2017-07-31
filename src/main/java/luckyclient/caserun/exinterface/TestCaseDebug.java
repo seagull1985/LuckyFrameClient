@@ -37,7 +37,7 @@ public class TestCaseDebug{
 	 * @param 用例版本号
 	 * 用于在testlink上配置好用例参数后，做单条用例调试
 	 */
-	public static void OneCaseDebug(String projectname,String testCaseExternalId,int version){
+	public static void OneCaseDebug(String projectname,String testCaseExternalId){
 		Map<String,String> variable = new HashMap<String,String>();
 		String packagename =null;
 		String functionname = null;
@@ -245,7 +245,7 @@ public class TestCaseDebug{
 		    Integer version = (Integer)entry.getValue();
 		    try{
 		    luckyclient.publicclass.LogUtil.APP.info("开始调用方法，项目名："+projectname+"，用例编号："+testCaseExternalId+"，用例版本："+version); 
-		    OneCaseDebug(projectname,testCaseExternalId,version);
+		    OneCaseDebug(projectname,testCaseExternalId);
 		    }catch(Exception e){
 		    	continue;
 		    }

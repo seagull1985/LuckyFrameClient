@@ -13,5 +13,6 @@ public interface RunService extends Remote {
     public String runcase(RunCaseEntity onecase) throws RemoteException;
     public String runbatchcase(RunBatchCaseEntity batchcase) throws RemoteException;
     public String getlogdetail(String storeName) throws RemoteException;
+    public byte[] getlogimg(String imgName) throws RemoteException;
     public String uploadjar(byte[] fileContent,String name) throws RemoteException;
 }

@@ -63,7 +63,7 @@ public class WebCaseExecution extends TestCaseExecution{
 						String checkproperty_value = params.get("checkproperty_value").toString();
 
 						WebElement we = isElementExist(wd, checkproperty, checkproperty_value);
-						if (we != null) {
+						if (null != we) {
 							luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum()
 									+ "步，在当前页面中找到预期结果中对象。当前步骤执行成功！");
 							caselog.CaseLogDetail(taskid, testcase.getSign(), "在当前页面中找到预期结果中对象。当前步骤执行成功！",
@@ -163,14 +163,8 @@ public class WebCaseExecution extends TestCaseExecution{
 			operation = params.get("operation");
 			operation_value = params.get("operation_value");
 
-			// 用例名称解析出现异常或是单个步骤参数解析异常
-			if (property_value != null && property.indexOf("解析异常") > -1) {
-				luckyclient.publicclass.LogUtil.APP.error("当前步骤解析出现异常或是对象为空！---"+property);
-				return "用例解析出错啦！";
-			}
-
 			// 处理值传递
-			if (property_value != null && property_value.indexOf("@") > -1 && property_value.indexOf("[@") < 0) {
+			if (null != property_value&& property_value.indexOf("@") > -1 && property_value.indexOf("[@") < 0) {
 				property_value = SettingParameter(property_value);
 				// 判断传参是否存在问题
 				if (property_value.indexOf("Set parameter error") > -1) {
@@ -179,7 +173,7 @@ public class WebCaseExecution extends TestCaseExecution{
 					return "处理传参过程出错：" + property_value;
 				}
 			}
-			if (operation_value != null && operation_value.indexOf("@") > -1) {
+			if (null != operation_value&& operation_value.indexOf("@") > -1) {
 				operation_value = SettingParameter(operation_value);
 				if (operation_value.indexOf("Set parameter error") > -1) {
 					return "处理传参过程出错：" + property_value;
@@ -196,7 +190,7 @@ public class WebCaseExecution extends TestCaseExecution{
 
 		try {		
 			//调用接口用例
-			if(operation!=null&&operation_value!=null&&"runcase".equals(operation)){
+			if(null != operation&&null != operation_value&&"runcase".equals(operation)){
 				String temp[]=operation_value.split(",",-1);
 				String ex = TestCaseExecution.OneCaseExecuteForWebDriver(temp[0],taskid);
 				if(ex.indexOf("CallCase调用出错！")<=-1&&ex.indexOf("解析出错啦！")<=-1&&ex.indexOf("匹配失败")<=-1){
@@ -208,10 +202,10 @@ public class WebCaseExecution extends TestCaseExecution{
 			
 			WebElement we = null;
 
-			if (property != null && property_value != null) { // 页面元素层
+			if (null != property && null != property_value) { // 页面元素层
 				we = isElementExist(wd, property, property_value);
 				// 判断此元素是否存在
-				if (we == null) {
+				if (null==we) {
 					luckyclient.publicclass.LogUtil.APP.error("定位对象失败，isElementExist为null!");
 					return "isElementExist定位元素过程失败！";
 				}
@@ -225,7 +219,7 @@ public class WebCaseExecution extends TestCaseExecution{
 				} else {
 					result = EncapsulateOperation.ObjectOperation(wd, we, operation, operation_value, property, property_value);
 				}
-			} else if (property == null && operation != null) { // Driver层操作				
+			} else if (null==property && null != operation) { // Driver层操作				
 				// 处理弹出框事件
 				if (operation.indexOf("alert") > -1){
 					result = EncapsulateOperation.AlertOperation(wd, operation);

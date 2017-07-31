@@ -47,7 +47,7 @@ public class ThreadForTestLinkExecuteCase extends Thread{
 		int k = 0;
 		 //进入循环，解析单个用例所有步骤
 		System.out.println(caseid);
-		caselog.AddCaseDetail(tastid, caseid, testcaseob.getVersion().toString(), testcaseob.getName(), 4);       //插入开始执行的用例
+		caselog.AddCaseDetail(tastid, testcaseob.getFullExternalId(), testcaseob.getVersion().toString(), testcaseob.getName(), 4);       //插入开始执行的用例
 	    for(int i=0;i<testcaseob.getSteps().size();i++){
 	    	Map<String,String> casescript = InterfaceAnalyticTestLinkCase.AnalyticCaseStep(testcaseob, i+1,tastid);    //解析单个步骤中的脚本
 	    	try{
