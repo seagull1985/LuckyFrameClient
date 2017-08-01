@@ -31,7 +31,7 @@ public class ThreadForExecuteCase extends Thread{
 	private List<ProjectCasesteps> steps;
 	
 	public ThreadForExecuteCase(ProjectCase projectcase,List<ProjectCasesteps> steps,String taskid){
-		this.caseid = String.valueOf(projectcase.getId());
+		this.caseid = projectcase.getSign();
 		this.testcaseob = projectcase;
 		this.taskid = taskid;
 		this.steps = steps;
@@ -48,8 +48,8 @@ public class ThreadForExecuteCase extends Thread{
     	String testnote = null;
 		int k = 0;
 		 //进入循环，解析单个用例所有步骤
-		System.out.println(testcaseob.getSign());
-		caselog.AddCaseDetail(taskid, testcaseob.getSign(), "1", testcaseob.getName(), 4);       //插入开始执行的用例
+		System.out.println(caseid);
+		caselog.AddCaseDetail(taskid, caseid, "1", testcaseob.getName(), 4);       //插入开始执行的用例
 	    for(int i=0;i<steps.size();i++){
 	    	Map<String,String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i),taskid);    //解析单个步骤中的脚本
 	    	try{
