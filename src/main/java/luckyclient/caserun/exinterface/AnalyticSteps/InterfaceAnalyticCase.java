@@ -57,8 +57,8 @@ public class InterfaceAnalyticCase{
 			params.put("ExpectedResults", SubComment(resultstr));
 		}
 		//set后续操作
-		if("*wait".equals(action.toLowerCase())){
-			time=action.substring(0, action.indexOf("*wait"));
+		if(null!=action&&action.toLowerCase().indexOf("*wait")>-1){
+			time=action.substring(0, action.toLowerCase().lastIndexOf("*wait"));
 		}
 		params.put("StepWait", time);
 		luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！");
