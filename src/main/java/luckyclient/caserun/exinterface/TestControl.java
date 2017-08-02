@@ -138,7 +138,7 @@ public class TestControl {
 						new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 				
 				int[] tastcount=null;
-				if(task.getTestJob().getProjecttype()==0){
+				if(task.getTestJob().getProjecttype()==1){
 					TestBuildApi.GetBuild(projectname);
 					TestCase[] testCases= TestCaseApi.getplantestcase(projectname, taskid, "");
 					LogOperation.UpdateTastStatus(taskid, testCases.length);

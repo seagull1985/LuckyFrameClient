@@ -88,7 +88,7 @@ public class WebTestControl{
 				}
 				LogOperation caselog = new LogOperation(); // 初始化写用例结果以及日志模块
 				int[] tastcount=null;
-				if(task.getTestJob().getProjecttype()==0){
+				if(task.getTestJob().getProjecttype()==1){
 					TestBuildApi.GetBuild(projectname);
 					TestCase[] testCases = TestCaseApi.getplantestcase(projectname, taskid,"");
 					luckyclient.publicclass.LogUtil.APP.info("当前计划中读取到用例共 " + testCases.length + " 个");

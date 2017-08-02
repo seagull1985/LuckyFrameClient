@@ -22,15 +22,15 @@ public class BatchCaseExecute extends TestControl{
  		String batchcase = args[1];
  		TestTaskexcute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
  		if(task.getTestJob().getExtype()==0){
- 			if(task.getTestJob().getProjecttype()==0){
+ 			if(task.getTestJob().getProjecttype()==1){
  				BatchTestLinkCaseExecution.BatchCaseExecuteForTast(task.getTestJob().getPlanproj(), String.valueOf(task.getId()), batchcase);   //Ω”ø⁄≤‚ ‘
- 			}else if(task.getTestJob().getProjecttype()==1){
+ 			}else if(task.getTestJob().getProjecttype()==0){
  				BatchTestCaseExecution.BatchCaseExecuteForTast(task.getTestJob().getPlanproj(), String.valueOf(task.getId()), batchcase);
  			}
  		}else if(task.getTestJob().getExtype()==1){
- 			if(task.getTestJob().getProjecttype()==0){
+ 			if(task.getTestJob().getProjecttype()==1){
  				WebBatchExecuteTestLink.BatchCaseExecuteForTast(task.getTestJob().getPlanproj(), String.valueOf(task.getId()), batchcase);   //UI≤‚ ‘
- 			}else if(task.getTestJob().getProjecttype()==1){
+ 			}else if(task.getTestJob().getProjecttype()==0){
  				WebBatchExecute.BatchCaseExecuteForTast(task.getTestJob().getPlanproj(), String.valueOf(task.getId()), batchcase);   //UI≤‚ ‘
  			}
  			

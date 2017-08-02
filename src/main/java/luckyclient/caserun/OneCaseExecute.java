@@ -22,16 +22,16 @@ public class OneCaseExecute extends TestControl{
  		int version = Integer.parseInt(args[2]);
  		TestTaskexcute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
  		if(task.getTestJob().getExtype()==0){
- 			if(task.getTestJob().getProjecttype()==0){
+ 			if(task.getTestJob().getProjecttype()==1){
  				TestLinkCaseExecution.OneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId,version,String.valueOf(task.getId()));   //testlinkΩ”ø⁄≤‚ ‘
- 			}else if(task.getTestJob().getProjecttype()==1){
+ 			}else if(task.getTestJob().getProjecttype()==0){
  				TestCaseExecution.OneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId,version,String.valueOf(task.getId()));   //Ω”ø⁄≤‚ ‘
  			}
  			
  		}else if(task.getTestJob().getExtype()==1){
- 			if(task.getTestJob().getProjecttype()==0){
+ 			if(task.getTestJob().getProjecttype()==1){
  				WebOneCaseExecuteTestLink.OneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId,version,String.valueOf(task.getId()));   //UI≤‚ ‘
- 			}else if(task.getTestJob().getProjecttype()==1){
+ 			}else if(task.getTestJob().getProjecttype()==0){
  				WebOneCaseExecute.OneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId,version,String.valueOf(task.getId()));   //UI≤‚ ‘
  			}
  			
