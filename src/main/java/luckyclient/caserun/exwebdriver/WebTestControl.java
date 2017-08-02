@@ -109,7 +109,7 @@ public class WebTestControl{
 						luckyclient.publicclass.LogUtil.APP.info("当前用例：【" + testcase.getFullExternalId() + "】执行完成......进入下一条");
 					}
 					tastcount = LogOperation.UpdateTastdetail(taskid, testCases.length);
-				}else if(task.getTestJob().getProjecttype()==1){
+				}else if(task.getTestJob().getProjecttype()==0){
 					List<ProjectCase> cases=GetServerAPI.getCasesbyplanid(task.getTestJob().getPlanid());
 					luckyclient.publicclass.LogUtil.APP.info("当前计划中读取到用例共 " + cases.size() + " 个");
 					LogOperation.UpdateTastStatus(taskid,cases.size());

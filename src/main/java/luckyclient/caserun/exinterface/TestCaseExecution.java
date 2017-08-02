@@ -100,7 +100,7 @@ public class TestCaseExecution {
 						String key = null;
 						while (keys.hasNext()) {
 							key = (String) keys.next();
-							if (uservariable.equals(key)) {
+							if (uservariable.indexOf(key)>-1) {
 								keyexistidentity = 1;
 								uservariable = key;
 								break;
@@ -111,7 +111,7 @@ public class TestCaseExecution {
 							while (keys.hasNext()) {
 								keyexistidentity = 0;
 								key = (String) keys.next();
-								if (uservariable1.equals(key)) {
+								if (uservariable.indexOf(key)>-1) {
 									keyexistidentity = 1;
 									uservariable1 = key;
 									break;
@@ -123,7 +123,7 @@ public class TestCaseExecution {
 							while (keys.hasNext()) {
 								keyexistidentity = 0;
 								key = (String) keys.next();
-								if (uservariable2.equals(key)) {
+								if (uservariable.indexOf(key)>-1) {
 									keyexistidentity = 1;
 									uservariable2 = key;
 									break;
