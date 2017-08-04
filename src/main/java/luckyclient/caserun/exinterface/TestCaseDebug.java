@@ -73,7 +73,8 @@ public class TestCaseDebug{
 			    			k = 1;
 			    			break;
 			    		}
-			    		if(casescript.get("FunctionParams"+(j+1)).indexOf("@")>-1){                        //如果存在传参，进行处理
+			    		if(casescript.get("FunctionParams"+(j+1)).indexOf("@")>-1
+			    				&&casescript.get("FunctionParams"+(j+1)).indexOf("@@")<0){                        //如果存在传参，进行处理
 			    			int keyexistidentity = 0;
 			    			//取单个参数中引用变量次数
 			    			int sumvariable = DBOperation.sumString(casescript.get("FunctionParams"+(j+1)), "@");     
@@ -159,9 +160,10 @@ public class TestCaseDebug{
 
 			    		}else{
 				    		String ParameterValues1 = casescript.get("FunctionParams"+(j+1));
-					    	if(ParameterValues1.indexOf("&quot;")>-1 || ParameterValues1.indexOf("&#39;")>-1){         //页面转义字符转换
+					    	if(ParameterValues1.indexOf("&quot;")>-1 || ParameterValues1.indexOf("&#39;")>-1 || ParameterValues1.indexOf("@@")>-1){         //页面转义字符转换
 					    		ParameterValues1 = ParameterValues1.replaceAll("&quot;", "\"");
 					    		ParameterValues1 = ParameterValues1.replaceAll("&#39;", "\'");
+					    		ParameterValues1 = ParameterValues1.replaceAll("@@", "@");
 					    	}
 				    		luckyclient.publicclass.LogUtil.APP.info("解析包名："+packagename+" 方法名："+functionname
 				    				+" 第"+(j+1)+"个参数："+ParameterValues1);

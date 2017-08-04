@@ -170,7 +170,8 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 			}
 
 			// 处理值传递
-			if (property_value != null && property_value.indexOf("@") > -1 && property_value.indexOf("[@") < 0) {
+			if (property_value != null && property_value.indexOf("@") > -1 && property_value.indexOf("[@") < 0 
+					&& property_value.indexOf("@@") < 0) {
 				property_value = SettingParameter(property_value);
 				// 判断传参是否存在问题
 				if (property_value.indexOf("Set parameter error") > -1) {
@@ -178,13 +179,25 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 							"error", String.valueOf(stepno),"");
 					return "处理传参过程出错：" + property_value;
 				}
+			}else if(property_value != null && (property_value.indexOf("&quot;")>-1 
+					|| property_value.indexOf("&#39;")>-1 || property_value.indexOf("@@")>-1)){
+				property_value = property_value.replaceAll("&quot;", "\"");
+				property_value = property_value.replaceAll("&#39;", "\'");
+				property_value = property_value.replaceAll("@@", "@");
 			}
-			if (operation_value != null && operation_value.indexOf("@") > -1) {
+			
+			if (operation_value != null && operation_value.indexOf("@") > -1 && operation_value.indexOf("@@") < 0) {
 				operation_value = SettingParameter(operation_value);
 				if (operation_value.indexOf("Set parameter error") > -1) {
 					return "处理传参过程出错：" + property_value;
 				}
+			}else if(operation_value != null && (operation_value.indexOf("&quot;")>-1 
+					|| operation_value.indexOf("&#39;")>-1 || operation_value.indexOf("@@")>-1)){
+				operation_value = operation_value.replaceAll("&quot;", "\"");
+				operation_value = operation_value.replaceAll("&#39;", "\'");
+				operation_value = operation_value.replaceAll("@@", "@");
 			}
+			
 			luckyclient.publicclass.LogUtil.APP.info("二次解析用例过程完成，等待进行对象操作......");
 			caselog.CaseLogDetail(taskid, casenum, "对象操作:"+operation+"; 操作值:"+operation_value,"info", String.valueOf(stepno),"");
 
