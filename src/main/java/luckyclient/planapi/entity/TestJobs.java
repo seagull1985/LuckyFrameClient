@@ -1,6 +1,6 @@
 package luckyclient.planapi.entity;
 
-import java.util.Set;
+import java.sql.Timestamp;
 
 public class TestJobs implements java.io.Serializable {
 
@@ -14,32 +14,37 @@ public class TestJobs implements java.io.Serializable {
 	private String startTime;
 	private String endDate;
 	private String endTime;
-	private String runTime;
+	private Timestamp runTime;
 	private String remark;
 	
 	private String planproj;
 	private String state;
 	private String state_str;
-	private int  threadCount;
-	private int time;
+	private int  threadCount;//线程数
+	private int time;//自定义时间
 	private String timeType;
 	
-	private String isSendMail;
-	private String emailer;
+	private String isSendMail;//是否发送邮件
+	private String emailer;//收件人
 	private String testlinkname;
 	
-	private String isbuilding;
-	private String buildname;
+	private String isbuilding;//是否构建
+	private String buildname;//构建在JENKINS中的名称
 	
-	private String isrestart;
-	private String restartcomm;
-	private int extype;  
-	private Integer browsertype; 
-	private Integer timeout;  
-	private String clientip; 
-	private Integer projecttype; 
-	private Integer projectid;  
-	private Integer planid; 
+	private String isrestart;//是否重
+	private String restartcomm;//构建在JENKINS中的名称
+	private int extype;   //0:接口自动化  1:WebDriver自动化
+	private Integer browsertype;  //0:ie  1:火狐  2:谷歌   3：Edge
+	private Integer timeout;  //任务超时时间 单位：分钟
+	private String clientip; //客户端IP
+	private Integer projecttype;  //项目类型 0testlink 1系统内项目
+	private Integer projectid;  //系统内项目ID
+	private Integer planid;  //系统内项目关联计划ID
+	private String taskType;
+	private String startTimestr;
+	private String endTimestr;
+	private Timestamp createTime;
+	private String noEndDate;
 	
 	public Integer getProjecttype() {
 		return projecttype;
@@ -185,24 +190,8 @@ public class TestJobs implements java.io.Serializable {
 		this.state_str = state_str;
 	}
 
-	private String taskType;
-	private String startTimestr;
-	private String endTimestr;
-	private String createTime;
-	private String noEndDate;
-	
-	public Set<TestTaskexcute> getTast() {
-		return tast;
-	}
-
-	public void setTast(Set<TestTaskexcute> tast) {
-		this.tast = tast;
-	}
-	private Set<TestTaskexcute> tast;
-
 	private boolean showRun = true;
 	
-
 	public TestJobs() {
 	}
 
@@ -215,7 +204,7 @@ public class TestJobs implements java.io.Serializable {
 		this.id = id;
 	}
 
-	//@NotEmpty(message="浠诲姟鍚嶇О涓嶈兘涓虹┖")
+	//@NotEmpty(message="任务名称不能为空")
 	public String getTaskName() {
 		return taskName;
 	}
@@ -224,7 +213,7 @@ public class TestJobs implements java.io.Serializable {
 		this.taskName = taskName;
 	}
 
-	//@NotEmpty(message="寮?濮嬫棩鏈熺殑鏃堕棿鏍煎紡搴斾负锛歽yyy-MM-dd")
+	//@NotEmpty(message="开始日期的时间格式应为：yyyy-MM-dd")
 	//@DateTimeFormat(pattern="yyyy-MM-dd")
 	public String getStartDate() {
 		return startDate;
@@ -234,7 +223,7 @@ public class TestJobs implements java.io.Serializable {
 		this.startDate = startDate;
 	}
 
-	//@NotEmpty(message="寮?濮嬫椂闂寸殑鏃堕棿鏍煎紡搴斾负锛欻H:mm:ss")
+	//@NotEmpty(message="开始时间的时间格式应为：HH:mm:ss")
 	//@DateTimeFormat(pattern="HH:mm:ss")
 	public String getStartTime() {
 		return startTime;
@@ -260,11 +249,11 @@ public class TestJobs implements java.io.Serializable {
 		this.endTime = endTime;
 	}
 
-	public String getRunTime() {
+	public Timestamp getRunTime() {
 		return runTime;
 	}
 
-	public void setRunTime(String runTime) {
+	public void setRunTime(Timestamp runTime) {
 		this.runTime = runTime;
 	}
 
@@ -316,11 +305,11 @@ public class TestJobs implements java.io.Serializable {
 		this.endTimestr = endTimestr;
 	}
 
-	public String getCreateTime() {
+	public Timestamp getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(String createTime) {
+	public void setCreateTime(Timestamp createTime) {
 		this.createTime = createTime;
 	}
 
