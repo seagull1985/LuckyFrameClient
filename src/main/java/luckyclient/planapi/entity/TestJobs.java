@@ -1,7 +1,5 @@
 package luckyclient.planapi.entity;
 
-import java.sql.Timestamp;
-
 public class TestJobs implements java.io.Serializable {
 
 	/**
@@ -14,7 +12,7 @@ public class TestJobs implements java.io.Serializable {
 	private String startTime;
 	private String endDate;
 	private String endTime;
-	private Timestamp runTime;
+	private String runTime;
 	private String remark;
 	
 	private String planproj;
@@ -43,7 +41,7 @@ public class TestJobs implements java.io.Serializable {
 	private String taskType;
 	private String startTimestr;
 	private String endTimestr;
-	private Timestamp createTime;
+	private String createTime;
 	private String noEndDate;
 	
 	public Integer getProjecttype() {
@@ -249,11 +247,11 @@ public class TestJobs implements java.io.Serializable {
 		this.endTime = endTime;
 	}
 
-	public Timestamp getRunTime() {
+	public String getRunTime() {
 		return runTime;
 	}
 
-	public void setRunTime(Timestamp runTime) {
+	public void setRunTime(String runTime) {
 		this.runTime = runTime;
 	}
 
@@ -305,11 +303,11 @@ public class TestJobs implements java.io.Serializable {
 		this.endTimestr = endTimestr;
 	}
 
-	public Timestamp getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Timestamp createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 
