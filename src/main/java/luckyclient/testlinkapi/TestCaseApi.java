@@ -209,9 +209,9 @@ public class TestCaseApi extends TestLinkBaseApi {
 	}
 	
 	/**
-	 * 设置用例指定步骤的预期结果
+	 * 更新testlink中用例指定步骤的预期结果
 	 */
-	public static String setExpectedResults(String TestCaseExternalId, int version, int steps, String expectedResults) {
+	public static String setTestLinkExpectedResults(String TestCaseExternalId, int version, int steps, String expectedResults) {
 		String results = "设置结果失败";
 		try {
 			TestCase tc = api.getTestCaseByExternalId(TestCaseExternalId, version);
@@ -219,6 +219,29 @@ public class TestCaseApi extends TestLinkBaseApi {
 			tc.getSteps().get(steps - 1).setExpectedResults(expectedResults);
 			api.createTestCaseSteps(tc.getId(), TestCaseExternalId, tc.getVersion(), TestCaseStepAction.UPDATE, tc.getSteps());
 			results = "设置结果成功";
+		} catch (TestLinkAPIException te) {
+			te.printStackTrace(System.err);
+			results = te.getMessage().toString();
+			return results;
+		}
+		return results;
+
+	}
+	
+	/**
+	 * 更新系统中用例指定步骤的预期结果
+	 */
+	public static String setExpectedResults(String TestCaseSign, int steps, String expectedResults) {
+		String results = "设置结果失败";
+		String params="";
+		try {
+			expectedResults = expectedResults.replace("%", "BBFFHH");
+			expectedResults = expectedResults.replace("=", "DHDHDH");
+			expectedResults = expectedResults.replace("&", "ANDAND");
+			params="caseno="+TestCaseSign;
+			params+="&stepnum="+steps;
+			params+="&expectedresults="+expectedResults;
+			results=HttpRequest.sendPost("/projectCasesteps/cUpdateStepExpectedResults.do", params);
 		} catch (TestLinkAPIException te) {
 			te.printStackTrace(System.err);
 			results = te.getMessage().toString();
@@ -255,7 +278,7 @@ public class TestCaseApi extends TestLinkBaseApi {
 
 			params="name="+cases.getName().replace("%", "BBFFHH");
 			params+="&projectid="+projectid;
-			params+="&modulename="+suite[0].getName();;
+			params+="&modulename="+suite[0].getName();
 			params+="&casetype=0";    //0 接口  1 UI
 			
 			String caseid=HttpRequest.sendPost("/projectCase/cpostcase.do", params);
