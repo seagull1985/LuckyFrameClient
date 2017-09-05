@@ -173,10 +173,10 @@ public class TestLinkCaseDebug{
 			    	luckyclient.publicclass.LogUtil.APP.info("开始调用方法："+functionname+" .....");
 			    	if(expectedresults.length()>2 && expectedresults.substring(0, 2).indexOf("$=")>-1){                             //把预期结果前两个字符判断是否是要把结果存入变量
 			    		String ExpectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
-			    		String temptestnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues);
+			    		String temptestnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues,0,"");
 			    		variable.put(ExpectedResultVariable, temptestnote);
 			    	}else if(expectedresults.length()>2 && expectedresults.substring(0, 2).indexOf("%=")>-1){                     //把预期结果与测试结果做模糊匹配
-				    	testnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues);
+				    	testnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues,0,"");
 				    	if(testnote.indexOf(expectedresults.substring(2))>-1){
 				    		setresult = 0;
 				    		luckyclient.publicclass.LogUtil.APP.info("用例执行结果是："+testnote+"，与预期结果匹配成功！");
@@ -188,7 +188,7 @@ public class TestLinkCaseDebug{
 				    		break;        //某一步骤失败后，此条用例置为失败退出
 				    	}
 			    	}else{                                                                                                                          //把预期结果与测试结果做精确匹配
-				    	testnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues);
+				    	testnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues,0,"");
 				    	if(expectedresults.equals(testnote)){
 				    		setresult = 0;
 				    		luckyclient.publicclass.LogUtil.APP.info("用例执行结果是："+testnote+"，与预期结果匹配成功！");
