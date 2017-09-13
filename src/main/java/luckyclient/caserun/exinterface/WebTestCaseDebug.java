@@ -5,39 +5,32 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.PropertyConfigurator;
-
-import br.eti.kinoshita.testlinkjavaapi.constants.ExecutionType;
-import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
 import luckyclient.caserun.exinterface.AnalyticSteps.InterfaceAnalyticCase;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.publicclass.DBOperation;
 import luckyclient.publicclass.InvokeMethod;
-import luckyclient.testlinkapi.InterfaceAnalyticTestLinkCase;
-import luckyclient.testlinkapi.TestCaseApi;
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
  * 此测试框架主要采用testlink做分层框架，负责数据驱动以及用例管理部分，有任何疑问欢迎联系作者讨论。
  * QQ:24163551 seagull1985
  * =================================================================
- * @ClassName: TestCaseDebug 
- * @Description: 针对自动化用例在编写过程中，对用例脚本进行调试
+ * @ClassName: WebTestCaseDebug 
+ * @Description: 提供Web端调试接口
  * @author： seagull
- * @date 2014年8月24日 上午9:29:40  
+ * @date 2017年9月2日 上午9:29:40  
  * 
  */
-public class TestCaseDebug{
+public class WebTestCaseDebug{
 
 	/**
-	 * @param 项目名
+	 * @param 执行人
 	 * @param 用例编号
-	 * @param 用例版本号
-	 * 用于在testlink上配置好用例参数后，做单条用例调试
+	 * 用于在WEB页面上调试用例时提供的接口
 	 */
-	public static void OneCaseDebug(String projectname,String testCaseExternalId){
+	public static void OneCaseDebug(String sign,String executor){
 		Map<String,String> variable = new HashMap<String,String>();
 		String packagename =null;
 		String functionname = null;
@@ -46,13 +39,20 @@ public class TestCaseDebug{
 		Object[] getParameterValues = null;
     	String testnote = null;
 		int k = 0;
-		ProjectCase testcaseob = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+		ProjectCase testcaseob = GetServerAPI.cgetCaseBysign(sign);
 		List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcaseob.getId());
 		    //进入循环，解析用例所有步骤
 		    for(int i=0;i<steps.size();i++){		    	
 		    	Map<String,String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i),"888888");    //解析单个步骤中的脚本
-		    	packagename = casescript.get("PackageName").toString();
-		    	functionname = casescript.get("FunctionName").toString();
+		    	try{
+			    	packagename = casescript.get("PackageName").toString();
+			    	functionname = casescript.get("FunctionName").toString();
+		    	}catch(Exception e){
+		    		k=0;
+		    		GetServerAPI.cPostDebugLog(sign, executor, "error", "解析包名或是方法名失败，请检查！");
+		    		e.printStackTrace();
+		    		break;        //某一步骤失败后，此条用例置为失败退出
+		    	}
 		    	//用例名称解析出现异常或是单个步骤参数解析异常
 		    	if(functionname.indexOf("解析异常")>-1||k==1){
 		    		k=0;
@@ -99,7 +99,7 @@ public class TestCaseDebug{
 		    					uservariable = casescript.get("FunctionParams"+(j+1)).substring(casescript.get("FunctionParams"+(j+1)).indexOf("@")+1,
 				    					casescript.get("FunctionParams"+(j+1)).indexOf(uservariable1)-1);
 		    				}else{
-			    				luckyclient.publicclass.LogUtil.APP.error("你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
+		    					GetServerAPI.cPostDebugLog(sign, executor, "warning", "你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
 			    			}
 			    			Iterator keys = variable.keySet().iterator();
 			    			String key = null;
@@ -150,11 +150,11 @@ public class TestCaseDebug{
 						    		ParameterValues = ParameterValues.replaceAll("&quot;", "\"");
 						    		ParameterValues = ParameterValues.replaceAll("&#39;", "\'");
 						    	}
-					    		luckyclient.publicclass.LogUtil.APP.info("解析包名："+packagename+" 方法名："+functionname
+					    		GetServerAPI.cPostDebugLog(sign, executor, "info", "解析包名："+packagename+" 方法名："+functionname
 					    				+" 第"+(j+1)+"个参数："+ParameterValues);
 					    		getParameterValues[j] = ParameterValues;
 			    			}else{
-			    				luckyclient.publicclass.LogUtil.APP.error("没有找到你要的变量哦，再找下吧！第一个变量名称是："+uservariable+"，第"
+			    				GetServerAPI.cPostDebugLog(sign, executor, "warning", "没有找到你要的变量哦，再找下吧！第一个变量名称是："+uservariable+"，第"
 			    						+ "二个变量名称是："+uservariable1+"，第三个变量名称是："+uservariable2);
 			    			}
 
@@ -165,7 +165,7 @@ public class TestCaseDebug{
 					    		ParameterValues1 = ParameterValues1.replaceAll("&#39;", "\'");
 					    		ParameterValues1 = ParameterValues1.replaceAll("@@", "@");
 					    	}
-				    		luckyclient.publicclass.LogUtil.APP.info("解析包名："+packagename+" 方法名："+functionname
+		    				GetServerAPI.cPostDebugLog(sign, executor, "info", "解析包名："+packagename+" 方法名："+functionname
 				    				+" 第"+(j+1)+"个参数："+ParameterValues1);
 				    		getParameterValues[j] = ParameterValues1;
 			    		}
@@ -175,7 +175,7 @@ public class TestCaseDebug{
 		    	}
 		    	//调用动态方法，执行测试用例
 			    try{
-			    	luckyclient.publicclass.LogUtil.APP.info("开始调用方法："+functionname+" .....");
+    				GetServerAPI.cPostDebugLog(sign, executor, "info", "开始调用方法："+functionname+" .....");
 			    	if(expectedresults.length()>2 && expectedresults.substring(0, 2).indexOf("$=")>-1){                             //把预期结果前两个字符判断是否是要把结果存入变量
 			    		String ExpectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
 			    		String temptestnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
@@ -184,11 +184,10 @@ public class TestCaseDebug{
 				    	testnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 				    	if(testnote.indexOf(expectedresults.substring(2))>-1){
 				    		setresult = 0;
-				    		luckyclient.publicclass.LogUtil.APP.info("用例执行结果是："+testnote+"，与预期结果匹配成功！");
+				    		GetServerAPI.cPostDebugLog(sign, executor, "info", "用例执行结果是："+testnote+"，与预期结果匹配成功！");
 				    	}else{
 				    		setresult = 1;
-				    		luckyclient.publicclass.LogUtil.APP.error("用例第"+(i+1)+"步执行结果与预期结果匹配失败！");
-				    		luckyclient.publicclass.LogUtil.APP.error("预期结果："+expectedresults+"      测试结果："+testnote);
+				    		GetServerAPI.cPostDebugLog(sign, executor, "error", "第"+(i+1)+"步执行结果与预期结果匹配失败！"+"预期结果："+expectedresults+"      测试结果："+testnote);
 				    		testnote = "用例第"+(i+1)+"步执行结果与预期结果匹配失败！";
 				    		break;        //某一步骤失败后，此条用例置为失败退出
 				    	}
@@ -196,11 +195,10 @@ public class TestCaseDebug{
 				    	testnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 				    	if(expectedresults.equals(testnote)){
 				    		setresult = 0;
-				    		luckyclient.publicclass.LogUtil.APP.info("用例执行结果是："+testnote+"，与预期结果匹配成功！");
+				    		GetServerAPI.cPostDebugLog(sign, executor, "info", "用例执行结果是："+testnote+"，与预期结果匹配成功！");
 				    	}else{
 				    		setresult = 1;
-				    		luckyclient.publicclass.LogUtil.APP.error("用例第"+(i+1)+"步执行结果与预期结果匹配失败！");
-				    		luckyclient.publicclass.LogUtil.APP.error("预期结果："+expectedresults+"      测试结果："+testnote);
+				    		GetServerAPI.cPostDebugLog(sign, executor, "error", "第"+(i+1)+"步执行结果与预期结果匹配失败！"+"预期结果："+expectedresults+"      测试结果："+testnote);
 				    		testnote = "用例第"+(i+1)+"步执行结果与预期结果匹配失败！";
 				    		break;        //某一步骤失败后，此条用例置为失败退出
 				    	}
@@ -211,8 +209,7 @@ public class TestCaseDebug{
 			    	}
 			    }catch(Exception e){
 			    	setresult = 1;
-			    	luckyclient.publicclass.LogUtil.APP.error("调用方法过程出错，方法名："+functionname+" 请重新检查脚本方法名称以及参数！");
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(),e);
+			    	GetServerAPI.cPostDebugLog(sign, executor, "error", "调用方法过程出错，方法名："+functionname+" 请重新检查脚本方法名称以及参数！");
 					testnote = "CallCase调用出错！";
 					e.printStackTrace();
 	    			break;
@@ -221,40 +218,17 @@ public class TestCaseDebug{
 		    variable.clear();               //清空传参MAP
 		    //如果调用方法过程中未出错，进入设置测试结果流程
 		    if(testnote.indexOf("CallCase调用出错！")<=-1&&testnote.indexOf("解析出错啦！")<=-1){
-		    	luckyclient.publicclass.LogUtil.APP.info("用例 "+testCaseExternalId+"解析成功，并成功调用用例中方法，请继续查看执行结果！");    	
+		    	GetServerAPI.cPostDebugLog(sign, executor, "infoover", "用例 "+sign+"解析成功，并成功调用用例中方法，请继续查看执行结果！");
 		     }else{
-		    	 luckyclient.publicclass.LogUtil.APP.error("用例 "+testCaseExternalId+"解析或是调用步骤中的方法出错！"); 
+		    	 GetServerAPI.cPostDebugLog(sign, executor, "errorover", "用例 "+sign+"解析或是调用步骤中的方法出错！");
 		     }
 		    if(setresult == 0){
-		    	luckyclient.publicclass.LogUtil.APP.info("用例 "+testCaseExternalId+"步骤全部执行成功！"); 
+		    	GetServerAPI.cPostDebugLog(sign, executor, "infoover", "用例 "+sign+"步骤全部执行成功！");
 		    }else{
-		    	luckyclient.publicclass.LogUtil.APP.error("用例 "+testCaseExternalId+"在执行过程中失败，请检查日志！"); 
+		    	GetServerAPI.cPostDebugLog(sign, executor, "errorover", "用例 "+sign+"在执行过程中失败，请检查！");
 		    }
-	}
-	
-	/**
-	 * @param 项目名
-	 * @param 用例编号
-	 * @param 用例版本号
-	 * 用于在testlink上配置好用例参数后，做多条用例串行调试
-	 */
-	public static void MoreCaseDebug(String projectname,Map<String,Integer> addtestcase){
-		System.out.println(addtestcase.size());
-		Iterator it=addtestcase.entrySet().iterator();
-		while(it.hasNext()){
-		    Map.Entry entry=(Map.Entry)it.next();
-		    String testCaseExternalId = (String)entry.getKey();
-		    Integer version = (Integer)entry.getValue();
-		    try{
-		    luckyclient.publicclass.LogUtil.APP.info("开始调用方法，项目名："+projectname+"，用例编号："+testCaseExternalId+"，用例版本："+version); 
-		    OneCaseDebug(projectname,testCaseExternalId);
-		    }catch(Exception e){
-		    	continue;
-		    }
-		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		OneCaseDebug("代收付业务组","ZFDSF-570");
 	}
 }

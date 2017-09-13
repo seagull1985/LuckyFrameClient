@@ -86,6 +86,23 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 		return "启动批量用例模式测试程序正常";
 	}
 	
+	@Override
+	public String webdebugcase(String sign,String executor) throws RemoteException {
+		// TODO Auto-generated method stub
+		System.out.println("Web端调试用例："+sign+" 发起人："+executor);
+		try{
+			Runtime run = Runtime.getRuntime();
+			StringBuffer sb=new StringBuffer();
+			sb.append(sign).append(" ");
+			sb.append(executor).append(" ");
+			run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+"\\"));			
+		} catch (Exception e) {		
+			e.printStackTrace();
+			return "启动Web调试模式测试程序异常！！！";
+		} 
+		return "启动Web调试模式测试程序正常";
+	}
+	
 	/**
 	 * 获取客户端日志
 	 * 

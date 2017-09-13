@@ -109,7 +109,7 @@ public class ThreadForExecuteCase extends Thread{
 			    					casescript.get("FunctionParams"+(j+1)).indexOf(uservariable1)-1);
 	    				}else{
 		    				luckyclient.publicclass.LogUtil.APP.error("你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
-		    				caselog.CaseLogDetail(taskid, caseid, "你好像在一个参数中引用了超过2个以上的变量哦！我处理不过来啦！","error",String.valueOf(i+1),"");
+		    				caselog.CaseLogDetail(taskid, caseid, "你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！","error",String.valueOf(i+1),"");
 		    			}
 		    			Iterator keys = variable.keySet().iterator();
 		    			String key = null;
