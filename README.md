@@ -23,12 +23,16 @@
   </a>
 </p>
 
+# 捐赠 | 感谢
+> [【捐赠支持(微信)】](https://git.oschina.net/uploads/images/2017/0913/175706_f58b543b_1215415.jpeg)  [【捐赠支持(支付宝)】](https://git.oschina.net/uploads/images/2017/0913/175750_e96add72_1215415.jpeg)
+
+> 感谢你们的认可与支持    [【捐赠记录】](https://git.oschina.net/seagull1985/LuckyFrameWeb/wikis/pages?title=捐赠列表&parent=捐赠)
+
+
 # 介绍
 
 LuckyFrame 开源自动化测试平台 - 自动化测试 X 时代来了
-
-> LuckyFrame QQ官方交流群 487954492 [【捐赠支持(微信)】](https://git.oschina.net/uploads/images/2017/0913/175706_f58b543b_1215415.jpeg)  [【捐赠支持(支付宝)】](https://git.oschina.net/uploads/images/2017/0913/175750_e96add72_1215415.jpeg)
-
+> LuckyFrame QQ官方交流群 487954492 
 # 我能做什么？
 
 - **分布式测试**：使用Web-Client的方式，Web端负责基本信息管理展示，Client负责用例执行，任意无限扩展客户端。
@@ -43,7 +47,7 @@ LuckyFrame 开源自动化测试平台 - 自动化测试 X 时代来了
 - **HTTP+Socket接口免编码**：完全封装HTTP以及Socket接口，协议模板+纯关键字驱动，免编码，初级测试人员的福音，与其他类似开源工具相比优势明显
 - **在线调试用例**：直接通过页面的步骤编辑界面调试用例，省心、省力、省脑子，但是不能不要脑子。
 - **Bootstrap 小清新风格界面**：整套Web系统基于Bootstrap风格，以及多种其下的插件，构建清爽界面。
-- **更多...**：还有更多自动化的创意，期待你的体验发现...   <a href="https://git.oschina.net/seagull1985/LuckyFrameWeb/wikis/pages?title=项目介绍&parent=项目信息">更多详细介绍</a>
+- **更多...**：还有更多自动化的创意，期待你的体验发现...       <a href="https://git.oschina.net/seagull1985/LuckyFrameWeb/wikis/pages?title=项目介绍&parent=项目信息">更多详细介绍</a>
 
 # 瞅一眼吧
 
