@@ -43,7 +43,7 @@ LuckyFrame 开源自动化测试平台 - 自动化测试 X 时代来了
 - **HTTP+Socket接口免编码**：完全封装HTTP以及Socket接口，协议模板+纯关键字驱动，免编码，初级测试人员的福音，与其他类似开源工具相比优势明显
 - **在线调试用例**：直接通过页面的步骤编辑界面调试用例，省心、省力、省脑子，但是不能不要脑子。
 - **Bootstrap 小清新风格界面**：整套Web系统基于Bootstrap风格，以及多种其下的插件，构建清爽界面。
-- **更多...**：还有更多自动化的创意，期待你的体验发现...
+- **更多...**：还有更多自动化的创意，期待你的体验发现...   <a href="https://git.oschina.net/seagull1985/LuckyFrameWeb/wikis/pages?title=项目介绍&parent=项目信息">更多详细介绍</a>
 
 # 瞅一眼吧
 
@@ -53,6 +53,9 @@ LuckyFrame 开源自动化测试平台 - 自动化测试 X 时代来了
 ![测试任务调度](https://git.oschina.net/uploads/images/2017/0913/193913_fdccc46f_1215415.png "测试任务调度")
 ![测试任务执行](https://git.oschina.net/uploads/images/2017/0913/193935_3b381747_1215415.png "测试任务执行")
 ![用例日志查询](https://git.oschina.net/uploads/images/2017/0913/194004_6414aa59_1215415.png "用例日志查询")
+
+# 更新日志
+> [【查看版本Releases日志】](https://git.oschina.net/seagull1985/LuckyFrameWeb/wikis/pages?title=更新日志&parent=项目信息)
 
 # 大家安静下，我再说一句
 此项目是LuckyFrame的客户端项目，此外还有一个Web的项目，记得一起下载下来哦。
