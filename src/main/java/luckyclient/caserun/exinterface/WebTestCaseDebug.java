@@ -180,6 +180,7 @@ public class WebTestCaseDebug{
 			    		String ExpectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
 			    		String temptestnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 			    		variable.put(ExpectedResultVariable, temptestnote);
+			    		GetServerAPI.cPostDebugLog(sign, executor, "INFO", "赋值变量【"+expectedresults.substring(2, expectedresults.length())+"】： "+temptestnote);
 			    	}else if(expectedresults.length()>2 && expectedresults.substring(0, 2).indexOf("%=")>-1){                     //把预期结果与测试结果做模糊匹配
 				    	testnote = InvokeMethod.CallCase(packagename,functionname,getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 				    	if(testnote.indexOf(expectedresults.substring(2))>-1){

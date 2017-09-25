@@ -416,6 +416,15 @@ public class TestCaseApi extends TestLinkBaseApi {
 		System.out.println(testplan+"中的用例已经全部生成完毕！");
 	}
 	
+	/**
+	 * 获取指定任务名称以及用例号报错日志中的执行预期结果
+	 * casestatus说明  pass:0    fail:1   lock:2   unexcute:4
+	 */
+	public static String getLogdetail_Expectresult(String taskname,String caseno,int casestatus){
+		int taskid = LogOperation.gettaskexcute_taskid(taskname);
+		return LogOperation.getlogdetail_expectresult(taskid, caseno,casestatus);
+	}
+	
 	public static void main(String[] args){
 		// TODO Auto-generated method stub
 		try {

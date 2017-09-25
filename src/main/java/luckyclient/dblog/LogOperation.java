@@ -439,6 +439,28 @@ public class LogOperation {
 		return Integer.parseInt(sqlresult);
 	}
 	
+	/*	
+	 * 查询任务中用例步骤日志预期结果
+	 * 2017-09-16
+	 */
+	public static String getlogdetail_expectresult(int taskid,String caseno,int casestatus)  {
+		String sqlresult="";
+		try {
+			sqlresult = dbt.executeQuery("select detail from test_logdetail where logid=(select MIN(logid) from test_logdetail "
+					+ "where loggrade='error' and taskid="+taskid+" and caseid=(select id from test_casedetail where taskid="+taskid
+					+ " and caseno='"+caseno+"' and casestatus='"+casestatus+"'))");
+			if(sqlresult.indexOf("预期结果：")<=0||sqlresult.indexOf("%")<=0){
+				return sqlresult;
+			}
+			sqlresult = sqlresult.substring(sqlresult.indexOf("预期结果：")+5,sqlresult.lastIndexOf("测试结果：")-1);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return sqlresult;
+		}
+		return sqlresult;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 	}
