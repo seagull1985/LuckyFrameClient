@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 
 import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
 import luckyclient.caserun.exinterface.TestControl;
@@ -81,10 +82,13 @@ public class WebTestControl{
 			if (buildstatus.indexOf("Status:true") > -1) {
 				WebDriver wd = null;
 				try {
-					wd = WebDriverInitialization.setWebDriverForTask(taskid,drivertype);
-				} catch (IOException e1) {
-					luckyclient.publicclass.LogUtil.APP.error("初始化WebDriver出错！", e1);
+				    wd = WebDriverInitialization.setWebDriverForTask(taskid,drivertype);
+				} catch (WebDriverException e1) {
+					luckyclient.publicclass.LogUtil.APP.error("初始化WebDriver出错 WebDriverException！", e1);
 					e1.printStackTrace();
+				} catch (IOException e2) {
+					luckyclient.publicclass.LogUtil.APP.error("初始化WebDriver出错 IOException！", e2);
+					e2.printStackTrace();
 				}
 				LogOperation caselog = new LogOperation(); // 初始化写用例结果以及日志模块
 				int[] tastcount=null;

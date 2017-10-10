@@ -6,8 +6,8 @@ import luckyclient.dblog.LogOperation;
 
 public class MailSendInitialization {
 	
-	public static void SendMailInitialization(String subject,String content,String tastid){
-		String[] addresses = LogOperation.GetEmailAddress(tastid);
+	public static void SendMailInitialization(String subject,String content,String taskid){
+		String[] addresses = LogOperation.GetEmailAddress(taskid);
 		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
 		if(addresses!=null){
 			 luckyclient.publicclass.LogUtil.APP.info("准备将测试结果发送邮件通知！请稍等。。。。");

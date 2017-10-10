@@ -147,7 +147,7 @@ public class WebCaseExecution extends TestCaseExecution{
 			luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getSign()+"】步骤执行过程中失败或是锁定...请查看具体原因！"+casenote);
 	        caselog.CaseLogDetail(taskid, testcase.getSign(), "用例执行过程中失败或是锁定"+casenote,"error", "ending","");
 		}
-		LogOperation.UpdateTastdetail(taskid, 0);
+		//LogOperation.UpdateTastdetail(taskid, 0);
 	}
 
 	private static String runStep(Map<String, String> params, WebDriver wd,String taskid,String casenum,int stepno,LogOperation caselog) {

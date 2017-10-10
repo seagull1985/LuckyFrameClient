@@ -45,7 +45,7 @@ a {
             <p><b>用例有可能由于脚本原因未成功解析被锁定：</b> 【<font color='#AE57A4'>${taskcount[3]}</font>】</p>
             <p><b>用例由于长时间未收到接口Response未执行完成：</b> 【<font color='#FFAD86'>${taskcount[4]}</font>】</p>
 			<br>
-			<p><b>具体详情请点击：  </b><a href='http://${webip}:${webport}/caseDetail/load.do?tastId=${taskid}' target='任务查询'>查询本次自动化任务执行结果明细</a></p>
+			<p><b>具体详情请点击：  </b><a href='http://${webip}:${webport}/caseDetail/load.do?taskId=${taskid}' target='任务查询'>查询本次自动化任务执行结果明细</a></p>
 			<p><b>查看全部项目请点击：  </b><a href='http://${webip}:${webport}/autoTestChar/chart.do'>查看全部项目执行情况</a></p>
               <p>&nbsp;</p>
               <p> 此为自动化平台LuckyFrame的系统邮件，请勿回复</p>

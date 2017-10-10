@@ -2,19 +2,15 @@ package luckyclient.caserun.exwebdriver;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
-import luckyclient.dblog.LogOperation;
 
 
 public class WebDriverInitialization{
@@ -23,13 +19,14 @@ public class WebDriverInitialization{
 	 * @throws IOException 
 	 */
 	//初始化WebDriver
-	public static WebDriver setWebDriverForTask(String taskid,int drivertype) throws IOException{
+	public static WebDriver setWebDriverForTask(String taskid,int drivertype) throws WebDriverException,IOException{
 		File directory = new File("");// 参数为空
 /*		System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
         DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
         ieCapabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
         WebDriver webDriver = new InternetExplorerDriver(ieCapabilities);*/
 		WebDriver webDriver = null;
+
 		if(drivertype==0){
 			System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
 			DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
@@ -58,7 +55,8 @@ public class WebDriverInitialization{
 		//设置页面加载最大时长30秒
 		webDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 		//设置元素出现最大时长30秒  
-		webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);  
+		webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		
         return webDriver;
 	}
 
