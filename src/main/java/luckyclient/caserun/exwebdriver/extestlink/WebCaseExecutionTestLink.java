@@ -30,7 +30,7 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 		caselog.AddCaseDetail(taskid, testcase.getFullExternalId(), testcase.getVersion().toString(), testcase.getName(), 4);       //插入开始执行的用例
 		
 		for (TestCaseStep step : testcase.getSteps()) {
-			Map<String, String> params = WebDriverAnalyticTestLinkCase.AnalyticCaseStep(testcase, step.getNumber(), taskid);
+			Map<String, String> params = WebDriverAnalyticTestLinkCase.AnalyticCaseStep(testcase, step.getNumber(), taskid,caselog);
 			
 			if(params.get("exception")!=null&&params.get("exception").toString().indexOf("解析异常")>-1){
 				setresult = 2;
@@ -211,7 +211,7 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 			//调用接口用例
 			if(operation!=null&&operation_value!=null&&"runcase".equals(operation)){
 				String temp[]=operation_value.split(",",-1);
-				String ex = TestLinkCaseExecution.OneCaseExecuteForWebDriver(temp[0], Integer.valueOf(temp[1]),taskid);
+				String ex = TestLinkCaseExecution.OneCaseExecuteForWebDriver(temp[0], Integer.valueOf(temp[1]),taskid,caselog);
 				if(ex.indexOf("CallCase调用出错！")<=-1&&ex.indexOf("解析出错啦！")<=-1&&ex.indexOf("匹配失败")<=-1){
 					return ex;
 				}else{
@@ -296,6 +296,7 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 			return "你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！【Set parameter error】";
 		}
 
+		@SuppressWarnings("rawtypes")
 		Iterator keys = variable.keySet().iterator();
 		String key = null;
 		while (keys.hasNext()) {

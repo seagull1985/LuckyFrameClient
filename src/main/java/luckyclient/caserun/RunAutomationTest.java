@@ -4,7 +4,6 @@ import org.apache.log4j.PropertyConfigurator;
 
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.WebTestControl;
-import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.TestTaskexcute;
 

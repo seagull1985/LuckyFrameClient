@@ -43,7 +43,7 @@ public class WebTestCaseDebug{
 		List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcaseob.getId());
 		    //进入循环，解析用例所有步骤
 		    for(int i=0;i<steps.size();i++){		    	
-		    	Map<String,String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i),"888888");    //解析单个步骤中的脚本
+		    	Map<String,String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i),"888888",null);    //解析单个步骤中的脚本
 		    	try{
 			    	packagename = casescript.get("PackageName").toString();
 			    	functionname = casescript.get("FunctionName").toString();
@@ -101,7 +101,8 @@ public class WebTestCaseDebug{
 		    				}else{
 		    					GetServerAPI.cPostDebugLog(sign, executor, "WARNING", "你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
 			    			}
-			    			Iterator keys = variable.keySet().iterator();
+			    			@SuppressWarnings("rawtypes")
+							Iterator keys = variable.keySet().iterator();
 			    			String key = null;
 			    			while(keys.hasNext()){
 			    				key = (String)keys.next();

@@ -3,8 +3,6 @@ package luckyclient.publicclass;
 import java.io.File;
 import java.util.Enumeration;
 
-import org.apache.log4j.PropertyConfigurator;
-
 public class JarClassFind {
 
 	private static void FindClassInLocalSystem(String path,String classname) {

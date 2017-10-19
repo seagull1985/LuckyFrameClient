@@ -51,7 +51,7 @@ public class ThreadForExecuteCase extends Thread{
 		System.out.println(caseid);
 		caselog.AddCaseDetail(taskid, caseid, "1", testcaseob.getName(), 4);       //插入开始执行的用例
 	    for(int i=0;i<steps.size();i++){
-	    	Map<String,String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i),taskid);    //解析单个步骤中的脚本
+	    	Map<String,String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i),taskid,caselog);    //解析单个步骤中的脚本
 	    	try{
 		    	packagename = casescript.get("PackageName").toString();
 		    	functionname = casescript.get("FunctionName").toString();
@@ -111,7 +111,8 @@ public class ThreadForExecuteCase extends Thread{
 		    				luckyclient.publicclass.LogUtil.APP.error("你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
 		    				caselog.CaseLogDetail(taskid, caseid, "你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！","error",String.valueOf(i+1),"");
 		    			}
-		    			Iterator keys = variable.keySet().iterator();
+		    			@SuppressWarnings("rawtypes")
+						Iterator keys = variable.keySet().iterator();
 		    			String key = null;
 		    			while(keys.hasNext()){
 		    				key = (String)keys.next();

@@ -3,8 +3,6 @@ package luckyclient.dblog;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.log4j.PropertyConfigurator;
-
 import luckyclient.publicclass.DBOperation;
 
 /**

@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 
-import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.WebDriverInitialization;
 import luckyclient.dblog.DbLink;
@@ -15,7 +14,6 @@ import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.testlinkapi.TestBuildApi;
-import luckyclient.testlinkapi.TestCaseApi;
 
 public class WebBatchExecute{
 	
@@ -38,7 +36,7 @@ public class WebBatchExecute{
 			String temp[]=casemore.split("\\#",-1);
 			for(int i=0;i<temp.length;i++){
   			   String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
-			   int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()-1));
+			   //int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()-1));
 			   ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 			   List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcase.getId());
 			   caselog.DeleteCaseDetail(testCaseExternalId, taskid);   //É¾³ý¾ÉµÄÓÃÀý
@@ -55,7 +53,7 @@ public class WebBatchExecute{
 			String temp[]=batchcase.split("\\#",-1);
 			for(int i=0;i<temp.length;i++){
 				String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
-				int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()));
+				//int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()));
 				ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 				List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcase.getId());
 				try {

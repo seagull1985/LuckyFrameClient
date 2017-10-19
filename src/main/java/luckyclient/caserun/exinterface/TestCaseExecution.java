@@ -41,7 +41,7 @@ public class TestCaseExecution {
 		List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
 		// 进入循环，解析用例所有步骤
 		for (int i = 0; i < steps.size(); i++) {
-			Map<String, String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i), taskid); // 解析单个步骤中的脚本
+			Map<String, String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i), taskid,caselog); // 解析单个步骤中的脚本
 			packagename = casescript.get("PackageName").toString();
 			functionname = casescript.get("FunctionName").toString();
 			// 用例名称解析出现异常或是单个步骤参数解析异常
@@ -97,6 +97,7 @@ public class TestCaseExecution {
 							caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "你好像在一个参数中引用了超过2个以上的变量哦！我处理不过来啦！",
 									"error", String.valueOf(i + 1));
 						}
+						@SuppressWarnings("rawtypes")
 						Iterator keys = variable.keySet().iterator();
 						String key = null;
 						while (keys.hasNext()) {
@@ -277,8 +278,7 @@ public class TestCaseExecution {
 	 * @param 用例版本号
 	 *            用于在UI的测试过程中，需要调用接口的测试用例
 	 */
-	@SuppressWarnings("static-access")
-	protected static String OneCaseExecuteForWebDriver(String testCaseExternalId, String taskid) {
+	protected static String OneCaseExecuteForWebDriver(String testCaseExternalId, String taskid,LogOperation caselog) {
 		Map<String, String> variable = new HashMap<String, String>();
 		String packagename = null;
 		String functionname = null;
@@ -291,7 +291,7 @@ public class TestCaseExecution {
 		List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
 		// 进入循环，解析用例所有步骤
 		for (int i = 0; i < steps.size(); i++) {
-			Map<String, String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i), taskid);
+			Map<String, String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i), taskid,caselog);
 			packagename = casescript.get("PackageName").toString();
 			functionname = casescript.get("FunctionName").toString();
 			// 用例名称解析出现异常或是单个步骤参数解析异常
@@ -345,6 +345,7 @@ public class TestCaseExecution {
 						} else {
 							luckyclient.publicclass.LogUtil.APP.error("你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
 						}
+						@SuppressWarnings("rawtypes")
 						Iterator keys = variable.keySet().iterator();
 						String key = null;
 						while (keys.hasNext()) {

@@ -2,7 +2,6 @@ package luckyclient.mail;
 
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -38,6 +37,7 @@ public class FreemarkerEmailTemplate{
 	 * ƒ£∞Â“˝«Ê≈‰÷√
 	 */
 	public String getText(String templateId, Map<Object, Object> parameters) {
+		@SuppressWarnings("deprecation")
 		Configuration configuration = new Configuration();
 		configuration.setTemplateLoader(new ClassTemplateLoader(FreemarkerEmailTemplate.class, TEMPLATE_PATH));
 		//configuration.setEncoding(Locale.getDefault(), "UTF-8");

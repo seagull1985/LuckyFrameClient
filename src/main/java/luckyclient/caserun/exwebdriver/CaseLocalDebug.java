@@ -1,21 +1,17 @@
 package luckyclient.caserun.exwebdriver;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
 
-import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
 import luckyclient.caserun.exwebdriver.ex.WebCaseExecution;
-import luckyclient.caserun.exwebdriver.extestlink.WebCaseExecutionTestLink;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.testlinkapi.TestCaseApi;
 
 public class CaseLocalDebug{
 
@@ -45,9 +41,11 @@ public class CaseLocalDebug{
 	 */
 	public static void MoreCaseDebug(WebDriver wd,String projectname,Map<String,Integer> addtestcase){
 		System.out.println(addtestcase.size());
+		@SuppressWarnings("rawtypes")
 		Iterator it=addtestcase.entrySet().iterator();
 		while(it.hasNext()){
-		    Map.Entry entry=(Map.Entry)it.next();
+		    @SuppressWarnings("rawtypes")
+			Map.Entry entry=(Map.Entry)it.next();
 		    String testCaseExternalId = (String)entry.getKey();
 		    Integer version = (Integer)entry.getValue();
 		    try{
@@ -61,13 +59,6 @@ public class CaseLocalDebug{
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub	
-		WebDriver wd = null;
-		try {
-			wd = WebDriverInitialization.setWebDriverForLocal();
-		} catch (IOException e1) {
-			luckyclient.publicclass.LogUtil.APP.error("³õÊ¼»¯WebDriver³ö´í£¡", e1);
-			e1.printStackTrace();
-		}
 		
 
 	}

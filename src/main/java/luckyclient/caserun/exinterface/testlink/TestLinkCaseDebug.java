@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.PropertyConfigurator;
-
 import br.eti.kinoshita.testlinkjavaapi.constants.ExecutionType;
 import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
 import luckyclient.publicclass.DBOperation;
@@ -45,7 +43,7 @@ public class TestLinkCaseDebug{
 		if(testcaseob.getExecutionType()==ExecutionType.AUTOMATED){
 		    //进入循环，解析用例所有步骤
 		    for(int i=0;i<testcaseob.getSteps().size();i++){		    	
-		    	Map<String,String> casescript = InterfaceAnalyticTestLinkCase.AnalyticCaseStep(testcaseob, i+1,"888888");    //解析单个步骤中的脚本
+		    	Map<String,String> casescript = InterfaceAnalyticTestLinkCase.AnalyticCaseStep(testcaseob, i+1,"888888",null);    //解析单个步骤中的脚本
 		    	packagename = casescript.get("PackageName").toString();
 		    	functionname = casescript.get("FunctionName").toString();
 		    	//用例名称解析出现异常或是单个步骤参数解析异常
@@ -96,7 +94,8 @@ public class TestLinkCaseDebug{
 		    				}else{
 			    				luckyclient.publicclass.LogUtil.APP.error("你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
 			    			}
-			    			Iterator keys = variable.keySet().iterator();
+			    			@SuppressWarnings("rawtypes")
+							Iterator keys = variable.keySet().iterator();
 			    			String key = null;
 			    			while(keys.hasNext()){
 			    				key = (String)keys.next();
@@ -238,9 +237,11 @@ public class TestLinkCaseDebug{
 	 */
 	public static void MoreCaseDebug(String projectname,Map<String,Integer> addtestcase){
 		System.out.println(addtestcase.size());
+		@SuppressWarnings("rawtypes")
 		Iterator it=addtestcase.entrySet().iterator();
 		while(it.hasNext()){
-		    Map.Entry entry=(Map.Entry)it.next();
+		    @SuppressWarnings("rawtypes")
+			Map.Entry entry=(Map.Entry)it.next();
 		    String testCaseExternalId = (String)entry.getKey();
 		    Integer version = (Integer)entry.getValue();
 		    try{

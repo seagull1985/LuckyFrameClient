@@ -44,7 +44,7 @@ public class ApiTestCaseDebug{
 		List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcaseob.getId());
 		    //进入循环，解析用例所有步骤
 		    for(int i=0;i<steps.size();i++){		    	
-		    	Map<String,String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i),"888888");    //解析单个步骤中的脚本
+		    	Map<String,String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i),"888888",null);    //解析单个步骤中的脚本
 		    	packagename = casescript.get("PackageName").toString();
 		    	functionname = casescript.get("FunctionName").toString();
 		    	//用例名称解析出现异常或是单个步骤参数解析异常
@@ -95,7 +95,8 @@ public class ApiTestCaseDebug{
 		    				}else{
 			    				luckyclient.publicclass.LogUtil.APP.error("你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
 			    			}
-			    			Iterator keys = variable.keySet().iterator();
+			    			@SuppressWarnings("rawtypes")
+							Iterator keys = variable.keySet().iterator();
 			    			String key = null;
 			    			while(keys.hasNext()){
 			    				key = (String)keys.next();
@@ -234,9 +235,11 @@ public class ApiTestCaseDebug{
 	 */
 	public static void MoreCaseDebug(String projectname,Map<String,Integer> addtestcase){
 		System.out.println(addtestcase.size());
+		@SuppressWarnings("rawtypes")
 		Iterator it=addtestcase.entrySet().iterator();
 		while(it.hasNext()){
-		    Map.Entry entry=(Map.Entry)it.next();
+		    @SuppressWarnings("rawtypes")
+			Map.Entry entry=(Map.Entry)it.next();
 		    String testCaseExternalId = (String)entry.getKey();
 		    Integer version = (Integer)entry.getValue();
 		    try{

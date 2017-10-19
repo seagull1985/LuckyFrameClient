@@ -1,13 +1,10 @@
 package luckyclient.caserun.exinterface.AnalyticSteps;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
-import br.eti.kinoshita.testlinkjavaapi.model.TestCaseStep;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
@@ -30,10 +27,10 @@ public class InterfaceAnalyticCase{
 	 * @param args
 	 */
 	@SuppressWarnings("finally")
-	public static Map<String,String> AnalyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid){
+	public static Map<String,String> AnalyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid,LogOperation caselog){
 		String time = "0";
 		Map<String,String> params = new HashMap<String,String>();
-		LogOperation caselog = new LogOperation();        //初始化写用例结果以及日志模块 
+
 		try {
 	    String packagenage = step.getPath();
 	    String functionname = step.getOperation();
@@ -62,10 +59,14 @@ public class InterfaceAnalyticCase{
 		}
 		params.put("StepWait", time);
 		luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！");
-		caselog.CaseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepnum()),"");
+		if(null!=caselog){
+			caselog.CaseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepnum()),"");
+		}
 		}catch(Exception e) {
 			luckyclient.publicclass.LogUtil.ERROR.error("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本出错！");
+			if(null!=caselog){
 			caselog.CaseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepnum()),"");
+			}
 			luckyclient.publicclass.LogUtil.ERROR.error(e,e);
 			params.put("FunctionName","用例编号："+projectcase.getSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
      }finally{

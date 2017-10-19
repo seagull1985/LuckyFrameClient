@@ -23,13 +23,11 @@ import luckyclient.testlinkapi.InterfaceAnalyticTestLinkCase;
  * 
  */
 public class ThreadForTestLinkExecuteCase extends Thread{
-	private String projectname;
 	private String caseid;
 	private TestCase testcaseob;
 	private String tastid;
 	
 	public ThreadForTestLinkExecuteCase(String projectname,String caseid,TestCase testcaseob,String tastid){
-		this.projectname = projectname;
 		this.caseid = caseid;
 		this.testcaseob = testcaseob;
 		this.tastid = tastid;
@@ -49,7 +47,7 @@ public class ThreadForTestLinkExecuteCase extends Thread{
 		System.out.println(caseid);
 		caselog.AddCaseDetail(tastid, testcaseob.getFullExternalId(), testcaseob.getVersion().toString(), testcaseob.getName(), 4);       //插入开始执行的用例
 	    for(int i=0;i<testcaseob.getSteps().size();i++){
-	    	Map<String,String> casescript = InterfaceAnalyticTestLinkCase.AnalyticCaseStep(testcaseob, i+1,tastid);    //解析单个步骤中的脚本
+	    	Map<String,String> casescript = InterfaceAnalyticTestLinkCase.AnalyticCaseStep(testcaseob, i+1,tastid,caselog);    //解析单个步骤中的脚本
 	    	try{
 		    	packagename = casescript.get("PackageName").toString();
 		    	functionname = casescript.get("FunctionName").toString();
@@ -109,7 +107,8 @@ public class ThreadForTestLinkExecuteCase extends Thread{
 		    				luckyclient.publicclass.LogUtil.APP.error("你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
 		    				caselog.CaseLogDetail(tastid, caseid, "你好像在一个参数中引用了超过2个以上的变量哦！我处理不过来啦！","error",String.valueOf(i+1),"");
 		    			}
-		    			Iterator keys = variable.keySet().iterator();
+		    			@SuppressWarnings("rawtypes")
+						Iterator keys = variable.keySet().iterator();
 		    			String key = null;
 		    			while(keys.hasNext()){
 		    				key = (String)keys.next();

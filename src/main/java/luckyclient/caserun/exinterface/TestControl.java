@@ -6,11 +6,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
-import luckyclient.caserun.exinterface.testlink.BatchTestLinkCaseExecution;
-import luckyclient.caserun.exinterface.testlink.TestLinkCaseExecution;
 import luckyclient.caserun.exinterface.testlink.ThreadForTestLinkExecuteCase;
-import luckyclient.caserun.exwebdriver.extestlink.WebBatchExecuteTestLink;
-import luckyclient.caserun.exwebdriver.extestlink.WebOneCaseExecuteTestLink;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
 import luckyclient.jenkinsapi.BuildingInitialization;

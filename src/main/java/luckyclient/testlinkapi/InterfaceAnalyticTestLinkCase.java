@@ -28,10 +28,10 @@ public class InterfaceAnalyticTestLinkCase{
 	 * @param args
 	 */
 	@SuppressWarnings("finally")
-	public static Map<String,String> AnalyticCaseStep(TestCase testcase,Integer ordersteps,String tastid){
+	public static Map<String,String> AnalyticCaseStep(TestCase testcase,Integer ordersteps,String tastid,LogOperation caselog){
 		String time = "0";
 		Map<String,String> params = new HashMap<String,String>();
-		LogOperation caselog = new LogOperation();        //初始化写用例结果以及日志模块 
+
 		String resultstr = null;
 		try {	
 		List<TestCaseStep> testcasesteps = (List<TestCaseStep>) testcase.getSteps();
@@ -64,10 +64,14 @@ public class InterfaceAnalyticTestLinkCase{
 		}
 		params.put("StepWait", time);
 		luckyclient.publicclass.LogUtil.APP.info("用例编号："+testcase.getFullExternalId()+" 步骤编号："+ordersteps+" 解析自动化用例步骤脚本完成！");
-		caselog.CaseLogDetail(tastid, testcase.getFullExternalId(),"步骤编号："+ordersteps+" 解析自动化用例步骤脚本完成！","info",String.valueOf(ordersteps),"");
+		if(null!=caselog){
+		  caselog.CaseLogDetail(tastid, testcase.getFullExternalId(),"步骤编号："+ordersteps+" 解析自动化用例步骤脚本完成！","info",String.valueOf(ordersteps),"");
+		}
 		}catch(Exception e) {
 			luckyclient.publicclass.LogUtil.ERROR.error("用例编号："+testcase.getFullExternalId()+" 步骤编号："+ordersteps+" 解析自动化用例步骤脚本出错！");
-			caselog.CaseLogDetail(tastid, testcase.getFullExternalId(),"步骤编号："+ordersteps+" 解析自动化用例步骤脚本出错！","error",String.valueOf(ordersteps),"");
+			if(null!=caselog){
+			  caselog.CaseLogDetail(tastid, testcase.getFullExternalId(),"步骤编号："+ordersteps+" 解析自动化用例步骤脚本出错！","error",String.valueOf(ordersteps),"");
+			}
 			luckyclient.publicclass.LogUtil.ERROR.error(e,e);
 			params.put("FunctionName","用例编号："+testcase.getFullExternalId()+"|解析异常,用例步骤为空或是用例脚本错误！");
      }finally{

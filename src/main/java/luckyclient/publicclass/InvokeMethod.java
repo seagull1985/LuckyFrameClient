@@ -34,6 +34,7 @@ public class InvokeMethod {
 		try {
 			if (steptype == 0) {
 				Object server = Class.forName(packagename).newInstance(); // 调用非静态方法用到
+				@SuppressWarnings("rawtypes")
 				Class[] getParameterTypes = null;
 				if (getParameterValues != null) {
 					int paramscount = getParameterValues.length;
@@ -70,6 +71,7 @@ public class InvokeMethod {
 						.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
 				JSONObject jsonptpObject = JSONObject.fromObject(httpptp.toString());
 				JSONArray jsonarr = JSONArray.fromObject(jsonptpObject.getString("params"));
+				@SuppressWarnings("unchecked")
 				List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(),
 						new JsonConfig());
                 //处理更换参数
@@ -134,6 +136,7 @@ public class InvokeMethod {
 						.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
 				JSONObject jsonptpObject = JSONObject.fromObject(httpptp.toString());
 				JSONArray jsonarr = JSONArray.fromObject(jsonptpObject.getString("params"));
+				@SuppressWarnings("unchecked")
 				List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(),
 						new JsonConfig());
                 //处理更换参数
@@ -175,7 +178,7 @@ public class InvokeMethod {
 		return result;
 	}
 
-	public static Method getMethod(Method[] methods, String methodName, Class[] parameterTypes) {
+	public static Method getMethod(Method[] methods, String methodName, @SuppressWarnings("rawtypes") Class[] parameterTypes) {
 		for (int i = 0; i < methods.length; i++) {
 			if (!methods[i].getName().equals(methodName))
 				continue;
@@ -185,7 +188,7 @@ public class InvokeMethod {
 		return null;
 	}
 
-	public static boolean compareParameterTypes(Class[] parameterTypes, Class[] orgParameterTypes) {
+	public static boolean compareParameterTypes(@SuppressWarnings("rawtypes") Class[] parameterTypes, @SuppressWarnings("rawtypes") Class[] orgParameterTypes) {
 		// parameterTypes 里面，int->Integer
 		// orgParameterTypes是原始参数类型
 		if (parameterTypes == null && orgParameterTypes == null)
@@ -209,6 +212,11 @@ public class InvokeMethod {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		String action = "sina#34#5";
+		String key = action.substring(0, action.indexOf("#"));
+		String value = action.substring(action.indexOf("#") + 1);
+		System.out.println(key);
+		System.out.println(value);
 	}
 
 }
