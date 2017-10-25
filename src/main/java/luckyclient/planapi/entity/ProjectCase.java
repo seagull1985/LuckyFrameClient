@@ -10,7 +10,7 @@ public class ProjectCase implements java.io.Serializable{
     private String name;
 	private int projectid;
 	private int moduleid;
-	private Integer[] moduleidarr;
+	private String[] moduleidarr;
 	private String modulename;
 	private String projectname;
     private String remark;
@@ -33,10 +33,10 @@ public class ProjectCase implements java.io.Serializable{
 	public void setModuleid(int moduleid) {
 		this.moduleid = moduleid;
 	}
-	public Integer[] getModuleidarr() {
+	public String[] getModuleidarr() {
 		return moduleidarr;
 	}
-	public void setModuleidarr(Integer[] moduleidarr) {
+	public void setModuleidarr(String[] moduleidarr) {
 		this.moduleidarr = moduleidarr;
 	}
 	public int getChecktype() {

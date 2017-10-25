@@ -35,7 +35,7 @@ public class BatchTestCaseExecution {
 			}			
 		}else{                                           //批量执行用例
 			String temp[]=batchcase.split("\\#",-1);
-			for(int i=0;i<temp.length;i++){
+			for(int i=0;i<temp.length-1;i++){
 				String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
 				int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()));
 				TestControl.Debugcount++;   //多线程计数++，用于检测线程是否全部执行完
