@@ -214,6 +214,9 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
          return "上传"+name+"至客户端成功！";
 	}
 	
+	public String getClientStatus() throws RemoteException{
+		return "success";
+	}
 	
 	public static void main(String[] args) throws RemoteException {
 	}
