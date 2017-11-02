@@ -16,10 +16,13 @@
     <img alt="maven" src="https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg">
   </a>
   <a href="#">
-    <img alt="code style" src="https://img.shields.io/badge/%20LICENSE-GPL--2.0-green.svg">
+   <img alt="code style" src="https://img.shields.io/badge/%20LICENSE-GPL--2.0-blue.svg">
+  </a>
+  <a href="#">
+   <img alt="code style" src="https://img.shields.io/badge/BUILD-PASSING-green.svg">
   </a>
   <a href="http://git.oschina.net/seagull1985/LuckyFrameWeb/releases">
-    <img src="https://img.shields.io/badge/luckyframe-V2.1-blue.svg" >
+   <img src="https://img.shields.io/badge/LuckyFrame-V2.3-green.svg" >
   </a>
 </p>
 
@@ -32,7 +35,8 @@
 # 介绍
 
 LuckyFrame 开源自动化测试平台 - 自动化测试 X 时代来了
-> LuckyFrame QQ官方交流群 487954492 
+> LuckyFrame QQ官方交流群 487954492
+<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=32919cc1ee8595efa4c561920f3fdb606606ca8fdb6ff6b2430c5d97587551de"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="LuckyFrame自动化测试" title="LuckyFrame自动化测试"></a> 
 # 我能做什么？
 
 - **分布式测试**：使用Web-Client的方式，Web端负责基本信息管理展示，Client负责用例执行，任意无限扩展客户端。
@@ -62,7 +66,7 @@ LuckyFrame 开源自动化测试平台 - 自动化测试 X 时代来了
 > [【查看版本Releases日志】](https://git.oschina.net/seagull1985/LuckyFrameWeb/wikis/pages?title=更新日志&parent=项目信息)
 
 # 大家安静下，我再说一句
-此项目是LuckyFrame的客户端项目，此外还有一个Web的项目，记得一起下载下来哦。
+此项目是LuckyFrame的Web端项目，此外还有一个LuckyFrame的项目做为客户端，如果您只需要先看看界面，那么单独下载这个项目就够了，如果您需要搭建整套环境，那还要把LuckyFrmae项目下载下来。
 
 # 期待您更多的意见
 
