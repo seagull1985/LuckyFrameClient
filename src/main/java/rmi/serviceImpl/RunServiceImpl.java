@@ -34,12 +34,21 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 	}
 
 	@Override
-	public String runtask(RunTaskEntity task) throws RemoteException {
+	public String runtask(RunTaskEntity task,String loadpath) throws RemoteException {
 		// TODO Auto-generated method stub
 		System.out.println("启动任务模式测试程序...测试项目："+task.getProjectname()+"  任务ID："+task.getTaskid());
 		try{
+			File file =new File(System.getProperty("user.dir")+loadpath); 	   
+			if  (!file .isDirectory())      
+			{       
+				System.out.println("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
+			}
 			Runtime run = Runtime.getRuntime();
-			run.exec("cmd.exe /k start " + "task.cmd" +" "+ task.getTaskid(), null,new File(System.getProperty("user.dir")+"\\"));
+			StringBuffer sb=new StringBuffer();
+			sb.append(task.getTaskid()).append(" ");
+			sb.append(loadpath);
+			run.exec("cmd.exe /k start " + "task.cmd" +" "+ sb.toString(), null,new File(System.getProperty("user.dir")+"\\"));
 			
 		} catch (Exception e) {		
 			e.printStackTrace();
@@ -49,16 +58,23 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 	}
 	
 	@Override
-	public String runcase(RunCaseEntity onecase) throws RemoteException {
+	public String runcase(RunCaseEntity onecase,String loadpath) throws RemoteException {
 		// TODO Auto-generated method stub
 		System.out.println("启动单用例模式测试程序...测试项目："+onecase.getProjectname()+"  任务ID："+onecase.getTaskid());
 		System.out.println("测试用例编号："+onecase.getTestCaseExternalId()+"  用例版本："+onecase.getVersion());
 		try{
+			File file =new File(System.getProperty("user.dir")+loadpath); 	   
+			if  (!file .isDirectory())      
+			{   
+				System.out.println("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
+			}
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sb=new StringBuffer();
 			sb.append(onecase.getTaskid()).append(" ");
 			sb.append(onecase.getTestCaseExternalId()).append(" ");
-			sb.append(onecase.getVersion());
+			sb.append(onecase.getVersion()).append(" ");
+			sb.append(loadpath);
 			run.exec("cmd.exe /k start " + "task_onecase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+"\\"));			
 		} catch (Exception e) {		
 			e.printStackTrace();
@@ -68,15 +84,22 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 	}
 	
 	@Override
-	public String runbatchcase(RunBatchCaseEntity batchcase) throws RemoteException {
+	public String runbatchcase(RunBatchCaseEntity batchcase,String loadpath) throws RemoteException {
 		// TODO Auto-generated method stub
 		System.out.println("启动批量用例模式测试程序...测试项目："+batchcase.getProjectname()+"  任务ID："+batchcase.getTaskid());
 		System.out.println("批量测试用例："+batchcase.getBatchcase());
 		try{
+			File file =new File(System.getProperty("user.dir")+loadpath); 	   
+			if  (!file .isDirectory())      
+			{    
+				System.out.println("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
+			}
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sb=new StringBuffer();
 			sb.append(batchcase.getTaskid()).append(" ");
-			sb.append(batchcase.getBatchcase());
+			sb.append(batchcase.getBatchcase()).append(" ");
+			sb.append(loadpath);
 			System.out.println(sb.toString());
 			run.exec("cmd.exe /k start " + "task_batch.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+"\\"));		
 		} catch (Exception e) {		
@@ -87,14 +110,21 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 	}
 	
 	@Override
-	public String webdebugcase(String sign,String executor) throws RemoteException {
+	public String webdebugcase(String sign,String executor,String loadpath) throws RemoteException {
 		// TODO Auto-generated method stub
 		System.out.println("Web端调试用例："+sign+" 发起人："+executor);
 		try{
+			File file =new File(System.getProperty("user.dir")+loadpath); 	   
+			if  (!file .isDirectory())      
+			{    
+				System.out.println("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
+			}
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sb=new StringBuffer();
 			sb.append(sign).append(" ");
 			sb.append(executor).append(" ");
+			sb.append(loadpath);
 			run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+"\\"));			
 		} catch (Exception e) {		
 			e.printStackTrace();
@@ -188,11 +218,16 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 	 * @param realName
 	 * @throws Exception
 	 */
-	public String uploadjar(byte[] fileContent,String name) throws RemoteException{
-		String path = System.getProperty("user.dir")+"\\lib\\";
-		String pathName = path + name;
+	public String uploadjar(byte[] fileContent,String name,String loadpath) throws RemoteException{
+		String path = System.getProperty("user.dir")+loadpath;
+		if  (!new File(path) .isDirectory())      
+		{    
+			System.out.println("客户端测试驱动桩路径不存在，请检查【"+path+"】");
+			return "客户端测试驱动桩路径不存在，请检查【"+path+"】";
+		}
+		String pathName = path +"\\"+ name;
 		File file = new File(pathName);
-        try {
+        try { 
             if (file.exists()){
             	file.deleteOnExit();
             }
