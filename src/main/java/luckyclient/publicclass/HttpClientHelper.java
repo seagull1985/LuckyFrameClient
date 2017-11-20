@@ -13,19 +13,26 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+
+import luckyclient.planapi.entity.ProjectProtocolTemplate;
+import luckyclient.planapi.entity.ProjectTemplateParams;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 /**
  * @Description:发送http请求帮助类
@@ -34,6 +41,7 @@ public class HttpClientHelper {
 	/**
 	 * @Description:使用HttpURLConnection发送post请求
 	 */
+	static String author = "Basic " + Base64.encode(("admin" + ":" + "123456").getBytes());
 	public static String sendHttpURLPost(String urlParam, Map<String, Object> params, String charset, int timeout) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
@@ -57,7 +65,86 @@ public class HttpClientHelper {
 			con.setDoOutput(true);
 			con.setDoInput(true);
 			con.setUseCaches(false);
-			con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("Authorization", author);
+			con.setConnectTimeout(timeout*1000);
+			if (sbParams != null && sbParams.length() > 0) {
+				osw = new OutputStreamWriter(con.getOutputStream(), charset);
+				osw.write(sbParams.substring(0, sbParams.length() - 1));
+				osw.flush();
+			}
+			// 读取返回内容
+			resultBuffer = new StringBuffer();
+			int contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
+			if (contentLength > 0) {
+				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
+				String temp;
+				while ((temp = br.readLine()) != null) {
+					resultBuffer.append(temp);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (osw != null) {
+				try {
+					osw.close();
+				} catch (IOException e) {
+					osw = null;
+					throw new RuntimeException(e);
+				} finally {
+					if (con != null) {
+						con.disconnect();
+						con = null;
+					}
+				}
+			}
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					br = null;
+					throw new RuntimeException(e);
+				} finally {
+					if (con != null) {
+						con.disconnect();
+						con = null;
+					}
+				}
+			}
+		}
+
+		return resultBuffer.toString();
+	}
+	
+	/**
+	 * @Description:使用HttpURLConnection发送delete请求
+	 */
+	public static String sendHttpURLDel(String urlParam, Map<String, Object> params, String charset, int timeout) {
+		StringBuffer resultBuffer = null;
+		// 构建请求参数
+		StringBuffer sbParams = new StringBuffer();
+		if (params != null && params.size() > 0) {
+			for (Entry<String, Object> e : params.entrySet()) {
+				sbParams.append(e.getKey());
+				sbParams.append("=");
+				sbParams.append(e.getValue());
+				sbParams.append("&");
+			}
+		}
+		HttpURLConnection con = null;
+		OutputStreamWriter osw = null;
+		BufferedReader br = null;
+		// 发送请求
+		try {
+			URL url = new URL(urlParam);
+			con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("DELETE");
+			con.setDoOutput(true);
+			con.setDoInput(true);
+			con.setUseCaches(false);
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("Authorization", author);
 			con.setConnectTimeout(timeout*1000);
 			if (sbParams != null && sbParams.length() > 0) {
 				osw = new OutputStreamWriter(con.getOutputStream(), charset);
@@ -133,8 +220,8 @@ public class HttpClientHelper {
 			// 设置通用的请求属性
 			con.setRequestProperty("accept", "*/*");
 			con.setRequestProperty("connection", "Keep-Alive");
-			con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			con.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("Authorization", author);
 			con.setConnectTimeout(timeout*1000);
 			// 发送POST请求必须设置如下两行
 			con.setDoOutput(true);
@@ -205,7 +292,8 @@ public class HttpClientHelper {
 				url = new URL(urlParam);
 			}
 			con = (HttpURLConnection) url.openConnection();
-			con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("Authorization", author);
 			con.setConnectTimeout(timeout*1000);
 			con.connect();
 			InputStream is = con.getInputStream();
@@ -272,8 +360,11 @@ public class HttpClientHelper {
 			} else {
 				url = new URL(urlParam);
 			}
+			//String author = "Basic " + Base64.encode(("admin" + ":" + "123456").getBytes());
 			con = (HttpURLConnection) url.openConnection();
-			con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("Authorization", author);
 			con.setConnectTimeout(timeout*1000);
 			con.connect();
 			resultBuffer = new StringBuffer();
@@ -329,8 +420,8 @@ public class HttpClientHelper {
 			// 设置请求属性
 			con.setRequestProperty("accept", "*/*");
 			con.setRequestProperty("connection", "Keep-Alive");
-			con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			con.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("Authorization", author);
 			con.setConnectTimeout(timeout*1000);
 			// 建立连接
 			con.connect();
@@ -360,27 +451,26 @@ public class HttpClientHelper {
 	 */
 	public static String httpClientPost(String urlParam, Map<String, Object> params, String charset) {
 		StringBuffer resultBuffer = null;
-		@SuppressWarnings({ "deprecation", "resource" })
-		HttpClient client = new DefaultHttpClient();
+		//HttpClient client = new HttpClient();
+		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpPost httpPost = new HttpPost(urlParam);
+	    httpPost.setHeader("Authorization", author); 
+	    httpPost.setHeader("Content-Type", "application/json");
+
 		// 构建请求参数
-		List<NameValuePair> list = new ArrayList<NameValuePair>();
-		Iterator<Entry<String, Object>> iterator = params.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Entry<String, Object> elem = iterator.next();
-			list.add(new BasicNameValuePair(elem.getKey(), String.valueOf(elem.getValue())));
-		}
 		BufferedReader br = null;
 		try {
-			if (list.size() > 0) {
-				UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list, charset);
-				httpPost.setEntity(entity);
+		if(params.size()>0){
+				JSONObject jsonObject = JSONObject.fromObject(params); 
+				System.out.println(jsonObject.toString());
+				 StringEntity entity = new StringEntity(jsonObject.toString(),charset);
+				  httpPost.setEntity(entity);
 			}
-			HttpResponse response = client.execute(httpPost);
+       
+		 CloseableHttpResponse response = httpclient.execute(httpPost);
+
 			// 读取服务器响应数据
 			resultBuffer = new StringBuffer();
-
-			//br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
 			while ((temp = br.readLine()) != null) {
@@ -397,8 +487,7 @@ public class HttpClientHelper {
 					throw new RuntimeException(e);
 				}
 			}
-		}
-		
+		}		
 		return resultBuffer.toString();
 	}
 
@@ -407,8 +496,9 @@ public class HttpClientHelper {
 	 */
 	public static String httpClientGet(String urlParam, Map<String, Object> params, String charset) {
 		StringBuffer resultBuffer = null;
-		@SuppressWarnings({ "deprecation", "resource" })
-		HttpClient client = new DefaultHttpClient();
+		//@SuppressWarnings({ "deprecation", "resource" })
+		//HttpClient client = new HttpClient();
+		CloseableHttpClient httpclient = HttpClients.createDefault();
 		BufferedReader br = null;
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
@@ -428,10 +518,12 @@ public class HttpClientHelper {
 			urlParam = urlParam + "?" + sbParams.substring(0, sbParams.length() - 1);
 		}
 		HttpGet httpGet = new HttpGet(urlParam);
+		httpGet.setHeader("Authorization", author); 
+		httpGet.setHeader("Content-Type", "application/json");
 		try {
-			HttpResponse response = client.execute(httpGet);
+			 HttpResponse response = httpclient.execute(httpGet);
 			// 读取服务器响应数据
-			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(),charset));
+			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
 			resultBuffer = new StringBuffer();
 			while ((temp = br.readLine()) != null) {
@@ -674,6 +766,6 @@ public class HttpClientHelper {
 	}
     
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub	
 	}
 }

@@ -71,6 +71,14 @@ public class InvokeMethod {
 						.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
 				JSONObject jsonptpObject = JSONObject.fromObject(httpptp.toString());
 				JSONArray jsonarr = JSONArray.fromObject(jsonptpObject.getString("params"));
+				for(int i=0;i<jsonarr.size();i++){
+					JSONObject tempobj=(JSONObject) jsonarr.get(i);
+					String str=tempobj.get("param").toString();
+					if("[".equals(str.substring(0, 1))&&"]".equals(str.substring(str.length()-1))){
+					   tempobj.element("param", "***"+str);
+					   jsonarr.set(i, tempobj);
+					}
+				}
 				@SuppressWarnings("unchecked")
 				List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(),
 						new JsonConfig());
@@ -91,6 +99,9 @@ public class InvokeMethod {
 				}
 				Map<String, Object> params = new HashMap<String, Object>();
 				for (ProjectTemplateParams ptp : paramslist) {
+					if(ptp.getParam().indexOf("***[")>-1&&"***[".equals(ptp.getParam().substring(0, 4))){
+						ptp.setParam(ptp.getParam().substring(3));
+					}
 					params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
 				}
 				
@@ -136,6 +147,14 @@ public class InvokeMethod {
 						.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
 				JSONObject jsonptpObject = JSONObject.fromObject(httpptp.toString());
 				JSONArray jsonarr = JSONArray.fromObject(jsonptpObject.getString("params"));
+				for(int i=0;i<jsonarr.size();i++){
+					JSONObject tempobj=(JSONObject) jsonarr.get(i);
+					String str=tempobj.get("param").toString();
+					if("[".equals(str.substring(0, 1))&&"]".equals(str.substring(str.length()-1))){
+					   tempobj.element("param", "***"+str);
+					   jsonarr.set(i, tempobj);
+					}
+				}
 				@SuppressWarnings("unchecked")
 				List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(),
 						new JsonConfig());
@@ -156,7 +175,10 @@ public class InvokeMethod {
 				}
 				Map<String, Object> params = new HashMap<String, Object>();
 				for (ProjectTemplateParams ptp : paramslist) {
-					params.put(ptp.getParamname(), ptp.getParam());
+					if(ptp.getParam().indexOf("***[")>-1&&"***[".equals(ptp.getParam().substring(0, 4))){
+						ptp.setParam(ptp.getParam().substring(3));	
+					}
+					params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
 				}
 				
 				if (functionname.toLowerCase().equals("socketpost")) {
@@ -218,5 +240,4 @@ public class InvokeMethod {
 		System.out.println(key);
 		System.out.println(value);
 	}
-
 }
