@@ -1,4 +1,4 @@
-package luckyclient.publicclass;
+package luckyclient.publicclass.remoterInterface;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,6 +8,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
+
+import luckyclient.publicclass.LogUtil;
+import luckyclient.publicclass.SysConfig;
 
 public class HttpRequest {
 	final static Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();

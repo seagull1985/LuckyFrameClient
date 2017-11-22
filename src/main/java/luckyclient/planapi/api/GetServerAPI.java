@@ -6,7 +6,7 @@ import java.util.List;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.TestTaskexcute;
-import luckyclient.publicclass.HttpRequest;
+import luckyclient.publicclass.remoterInterface.HttpRequest;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -73,7 +73,7 @@ public class GetServerAPI {
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		getCasesbyplanid(1);
+
 	}
 
 }

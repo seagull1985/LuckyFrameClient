@@ -17,7 +17,7 @@ import br.eti.kinoshita.testlinkjavaapi.model.TestSuite;
 import br.eti.kinoshita.testlinkjavaapi.util.TestLinkAPIException;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.dblog.LogOperation;
-import luckyclient.publicclass.HttpRequest;
+import luckyclient.publicclass.remoterInterface.HttpRequest;
 
 /**
  * =================================================================
@@ -427,9 +427,6 @@ public class TestCaseApi extends TestLinkBaseApi {
 	}
 	
 	public static void main(String[] args){
-		System.out.println(setExpectedResults("QS-213", 1, "320170217006195856_0001%20170214%aotu01%mengp%null%null%22%null%20170214121653%90300011%F%null%152617%20170217%F%null%null%null%null%320%CB170217000182250001%null%null%null%320170217006195856%0000000000000000%11%1.01%0%04%null%0000100000%301170217006195738_0001%null%3%null%3071000%null%null%aotu01%null%null%null%null%null%20170214%系统自动处理退款%P3201702170172520265%null%null%null%null%12%6222980061566733%90300011%20170217012721045656%null%0000400008480374%0000400008480374%01%01%1%0%1.01%1.01%0%0.22%null%null%null%01%01%0000400008480374%0000400008480374%00%null%null%2016070705257886%2016070705257886%0000000000000000%01%0%01%01%0000000000000000%01%"));
-		//copyCaseToSysForInt("支付平台","漏导用例",6);
-		//copyCaseToSysForUI("联机POS","POSP门户UI自动化-代理商旧门户",2);
 
 	}
 }

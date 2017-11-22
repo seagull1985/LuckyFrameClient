@@ -1,4 +1,4 @@
-package luckyclient.publicclass;
+package luckyclient.publicclass.remoterInterface;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -14,25 +14,31 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
-import luckyclient.planapi.entity.ProjectProtocolTemplate;
-import luckyclient.planapi.entity.ProjectTemplateParams;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 /**
  * @Description:发送http请求帮助类
@@ -41,8 +47,7 @@ public class HttpClientHelper {
 	/**
 	 * @Description:使用HttpURLConnection发送post请求
 	 */
-	static String author = "Basic " + Base64.encode(("admin" + ":" + "123456").getBytes());
-	public static String sendHttpURLPost(String urlParam, Map<String, Object> params, String charset, int timeout) {
+	public static String sendHttpURLPost(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
@@ -65,87 +70,20 @@ public class HttpClientHelper {
 			con.setDoOutput(true);
 			con.setDoInput(true);
 			con.setUseCaches(false);
-			con.setRequestProperty("Content-Type", "application/json");
-			con.setRequestProperty("Authorization", author);
+			con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			con.setConnectTimeout(timeout*1000);
-			if (sbParams != null && sbParams.length() > 0) {
-				osw = new OutputStreamWriter(con.getOutputStream(), charset);
-				osw.write(sbParams.substring(0, sbParams.length() - 1));
-				osw.flush();
-			}
-			// 读取返回内容
-			resultBuffer = new StringBuffer();
-			int contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
-			if (contentLength > 0) {
-				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
-				String temp;
-				while ((temp = br.readLine()) != null) {
-					resultBuffer.append(temp);
-				}
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (osw != null) {
-				try {
-					osw.close();
-				} catch (IOException e) {
-					osw = null;
-					throw new RuntimeException(e);
-				} finally {
-					if (con != null) {
-						con.disconnect();
-						con = null;
-					}
-				}
-			}
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					br = null;
-					throw new RuntimeException(e);
-				} finally {
-					if (con != null) {
-						con.disconnect();
-						con = null;
-					}
-				}
-			}
-		}
-
-		return resultBuffer.toString();
-	}
-	
-	/**
-	 * @Description:使用HttpURLConnection发送delete请求
-	 */
-	public static String sendHttpURLDel(String urlParam, Map<String, Object> params, String charset, int timeout) {
-		StringBuffer resultBuffer = null;
-		// 构建请求参数
-		StringBuffer sbParams = new StringBuffer();
-		if (params != null && params.size() > 0) {
-			for (Entry<String, Object> e : params.entrySet()) {
-				sbParams.append(e.getKey());
-				sbParams.append("=");
-				sbParams.append(e.getValue());
-				sbParams.append("&");
-			}
-		}
-		HttpURLConnection con = null;
-		OutputStreamWriter osw = null;
-		BufferedReader br = null;
-		// 发送请求
-		try {
-			URL url = new URL(urlParam);
-			con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("DELETE");
-			con.setDoOutput(true);
-			con.setDoInput(true);
-			con.setUseCaches(false);
-			con.setRequestProperty("Content-Type", "application/json");
-			con.setRequestProperty("Authorization", author);
-			con.setConnectTimeout(timeout*1000);
+			//替换头域信息
+		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+		    	String key=m.getKey();
+		    	String value=m.getValue();
+		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		con.setRequestProperty(key, value);
+		    	}else{
+		    		con.setRequestProperty(key, value);
+		    	}
+	        }
 			if (sbParams != null && sbParams.length() > 0) {
 				osw = new OutputStreamWriter(con.getOutputStream(), charset);
 				osw.write(sbParams.substring(0, sbParams.length() - 1));
@@ -198,7 +136,7 @@ public class HttpClientHelper {
 	/**
 	 * @Description:使用URLConnection发送post
 	 */
-	public static String sendURLPost(String urlParam, Map<String, Object> params, String charset, int timeout) {
+	public static String sendURLPost(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
@@ -220,8 +158,21 @@ public class HttpClientHelper {
 			// 设置通用的请求属性
 			con.setRequestProperty("accept", "*/*");
 			con.setRequestProperty("connection", "Keep-Alive");
-			con.setRequestProperty("Content-Type", "application/json");
-			con.setRequestProperty("Authorization", author);
+			con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			con.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+			//替换头域信息
+		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+		    	String key=m.getKey();
+		    	String value=m.getValue();
+		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		con.setRequestProperty(key, value);
+		    	}else{
+		    		con.setRequestProperty(key, value);
+		    	}
+	        }
+		    
 			con.setConnectTimeout(timeout*1000);
 			// 发送POST请求必须设置如下两行
 			con.setDoOutput(true);
@@ -270,7 +221,7 @@ public class HttpClientHelper {
 	/**
 	 * @Description:发送get请求保存下载文件
 	 */
-	public static void sendGetAndSaveFile(String urlParam, Map<String, Object> params, String fileSavePath, int timeout) {
+	public static void sendGetAndSaveFile(String urlParam, Map<String, Object> params, String fileSavePath, int timeout,Map<String, String> headmsg) {
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
@@ -292,8 +243,19 @@ public class HttpClientHelper {
 				url = new URL(urlParam);
 			}
 			con = (HttpURLConnection) url.openConnection();
-			con.setRequestProperty("Content-Type", "application/json");
-			con.setRequestProperty("Authorization", author);
+			con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			//替换头域信息
+		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+		    	String key=m.getKey();
+		    	String value=m.getValue();
+		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		con.setRequestProperty(key, value);
+		    	}else{
+		    		con.setRequestProperty(key, value);
+		    	}
+	        }
 			con.setConnectTimeout(timeout*1000);
 			con.connect();
 			InputStream is = con.getInputStream();
@@ -339,7 +301,7 @@ public class HttpClientHelper {
 	/**
 	 * @Description:使用HttpURLConnection发送get请求
 	 */
-	public static String sendHttpURLGet(String urlParam, Map<String, Object> params, String charset, int timeout) {
+	public static String sendHttpURLGet(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
@@ -360,11 +322,20 @@ public class HttpClientHelper {
 			} else {
 				url = new URL(urlParam);
 			}
-			//String author = "Basic " + Base64.encode(("admin" + ":" + "123456").getBytes());
 			con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("GET");
-			con.setRequestProperty("Content-Type", "application/json");
-			con.setRequestProperty("Authorization", author);
+			con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			//替换头域信息
+		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+		    	String key=m.getKey();
+		    	String value=m.getValue();
+		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		con.setRequestProperty(key, value);
+		    	}else{
+		    		con.setRequestProperty(key, value);
+		    	}
+	        }
 			con.setConnectTimeout(timeout*1000);
 			con.connect();
 			resultBuffer = new StringBuffer();
@@ -396,7 +367,7 @@ public class HttpClientHelper {
 	/**
 	 * @Description:使用URLConnection发送get请求
 	 */
-	public static String sendURLGet(String urlParam, Map<String, Object> params, String charset, int timeout) {
+	public static String sendURLGet(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
@@ -420,8 +391,20 @@ public class HttpClientHelper {
 			// 设置请求属性
 			con.setRequestProperty("accept", "*/*");
 			con.setRequestProperty("connection", "Keep-Alive");
-			con.setRequestProperty("Content-Type", "application/json");
-			con.setRequestProperty("Authorization", author);
+			con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			con.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+			//替换头域信息
+		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+		    	String key=m.getKey();
+		    	String value=m.getValue();
+		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		con.setRequestProperty(key, value);
+		    	}else{
+		    		con.setRequestProperty(key, value);
+		    	}
+	        }
 			con.setConnectTimeout(timeout*1000);
 			// 建立连接
 			con.connect();
@@ -447,24 +430,33 @@ public class HttpClientHelper {
 	}
 
 	/**
-	 * @Description:使用HttpClient发送post请求
+	 * @Description:使用HttpClient以JSON格式发送post请求
 	 */
-	public static String httpClientPost(String urlParam, Map<String, Object> params, String charset) {
+	public static String httpClientPostJson(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
 		//HttpClient client = new HttpClient();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		HttpPost httpPost = new HttpPost(urlParam);
-	    httpPost.setHeader("Authorization", author); 
 	    httpPost.setHeader("Content-Type", "application/json");
-
+		//替换头域信息
+	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+	    	String key=m.getKey();
+	    	String value=m.getValue();
+	    	if(null!=value&&value.indexOf("Base64(")>0){
+	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+	    		value="Basic " + Base64.encode((valuesub).getBytes());
+	    		httpPost.setHeader(key, value);
+	    	}else{
+	    		httpPost.setHeader(key, value);
+	    	}
+        }
 		// 构建请求参数
 		BufferedReader br = null;
 		try {
 		if(params.size()>0){
 				JSONObject jsonObject = JSONObject.fromObject(params); 
-				System.out.println(jsonObject.toString());
-				 StringEntity entity = new StringEntity(jsonObject.toString(),charset);
-				  httpPost.setEntity(entity);
+				StringEntity entity = new StringEntity(jsonObject.toString(),charset);
+				httpPost.setEntity(entity);
 			}
        
 		 CloseableHttpResponse response = httpclient.execute(httpPost);
@@ -490,11 +482,75 @@ public class HttpClientHelper {
 		}		
 		return resultBuffer.toString();
 	}
+	
+	/**
+	 * @Description:使用HttpClient发送post请求
+	 */
+	public static String httpClientPost(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+		StringBuffer resultBuffer = null;
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpPost httpPost = new HttpPost(urlParam);
+		//替换头域信息
+	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+	    	String key=m.getKey();
+	    	String value=m.getValue();
+	    	if(null!=value&&value.indexOf("Base64(")>0){
+	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+	    		value="Basic " + Base64.encode((valuesub).getBytes());
+	    		httpPost.setHeader(key, value);
+	    	}else{
+	    		httpPost.setHeader(key, value);
+	    	}
+        }
+		// 构建请求参数
+		List<NameValuePair> list = new ArrayList<NameValuePair>();
+		Iterator<Entry<String, Object>> iterator = params.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, Object> elem = iterator.next();
+			list.add(new BasicNameValuePair(elem.getKey(), String.valueOf(elem.getValue())));
+		}
+		BufferedReader br = null;
+		try {
+			if(params.size()>0){
+				//拼接参数
+			    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
+			    for (Map.Entry<String, Object> m :params.entrySet())  { 
+		            nvps.add(new BasicNameValuePair(m.getKey(), m.getValue().toString()));
+		        }
+			    httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+			}
+
+			//HttpResponse response = client.execute(httpPost);
+			 CloseableHttpResponse response = httpclient.execute(httpPost);
+			// 读取服务器响应数据
+			resultBuffer = new StringBuffer();
+
+			//br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
+			String temp;
+			while ((temp = br.readLine()) != null) {
+				resultBuffer.append(temp);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					br = null;
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		
+		return resultBuffer.toString();
+	}
 
 	/**
 	 * @Description:使用HttpClient发送get请求
 	 */
-	public static String httpClientGet(String urlParam, Map<String, Object> params, String charset) {
+	public static String httpClientGet(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
 		//@SuppressWarnings({ "deprecation", "resource" })
 		//HttpClient client = new HttpClient();
@@ -518,8 +574,18 @@ public class HttpClientHelper {
 			urlParam = urlParam + "?" + sbParams.substring(0, sbParams.length() - 1);
 		}
 		HttpGet httpGet = new HttpGet(urlParam);
-		httpGet.setHeader("Authorization", author); 
-		httpGet.setHeader("Content-Type", "application/json");
+		//替换头域信息
+	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+	    	String key=m.getKey();
+	    	String value=m.getValue();
+	    	if(null!=value&&value.indexOf("Base64(")>0){
+	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+	    		value="Basic " + Base64.encode((valuesub).getBytes());
+	    		httpGet.setHeader(key, value);
+	    	}else{
+	    		httpGet.setHeader(key, value);
+	    	}
+        }
 		try {
 			 HttpResponse response = httpclient.execute(httpGet);
 			// 读取服务器响应数据
@@ -547,7 +613,7 @@ public class HttpClientHelper {
 	/**
 	 * @Description:使用socket发送post请求
 	 */
-	public static String sendSocketPost(String urlParam, Map<String, Object> params, String charset) {
+	public static String sendSocketPost(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
 		String result = "";
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
@@ -574,6 +640,18 @@ public class HttpClientHelper {
 			StringBuffer sb = new StringBuffer();
 			sb.append("POST " + path + " HTTP/1.1\r\n");
 			sb.append("Host: " + host + "\r\n");
+			//替换头域信息
+		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+		    	String key=m.getKey();
+		    	String value=m.getValue();
+		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		sb.append(key+": "+value+" \r\n");
+		    	}else{
+		    		sb.append(key+": "+value+" \r\n");
+		    	}
+	        }
 			sb.append("Connection: Keep-Alive\r\n");
 			sb.append("Content-Type: application/x-www-form-urlencoded; charset=utf-8 \r\n");
 			sb.append("Content-Length: ").append(sb.toString().getBytes().length).append("\r\n");
@@ -644,7 +722,7 @@ public class HttpClientHelper {
 	/**
 	 * @Description:使用socket发送get请求
 	 */
-	public static String sendSocketGet(String urlParam, Map<String, Object> params, String charset) {
+	public static String sendSocketGet(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
 		String result = "";
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
@@ -671,6 +749,18 @@ public class HttpClientHelper {
 			StringBuffer sb = new StringBuffer();
 			sb.append("GET " + path + " HTTP/1.1\r\n");
 			sb.append("Host: " + host + "\r\n");
+			//替换头域信息
+		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+		    	String key=m.getKey();
+		    	String value=m.getValue();
+		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		sb.append(key+": "+value+" \r\n");
+		    	}else{
+		    		sb.append(key+": "+value+" \r\n");
+		    	}
+	        }
 			sb.append("Connection: Keep-Alive\r\n");
 			sb.append("Content-Type: application/x-www-form-urlencoded; charset=utf-8 \r\n");
 			sb.append("Content-Length: ").append(sb.toString().getBytes().length).append("\r\n");
@@ -764,8 +854,157 @@ public class HttpClientHelper {
 		}
 		return new String(resutlBytes, charset);
 	}
-    
+
+/**
+	 * @Description:使用HttpURLConnection发送delete请求
+	 */
+	public static String sendHttpURLDel(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
+		StringBuffer resultBuffer = null;
+		String responsecode = null;
+		// 构建请求参数
+		StringBuffer sbParams = new StringBuffer();
+		if (params != null && params.size() > 0) {
+			for (Entry<String, Object> e : params.entrySet()) {
+				sbParams.append(e.getKey());
+				sbParams.append("=");
+				sbParams.append(e.getValue());
+				sbParams.append("&");
+			}
+		}
+		HttpURLConnection con = null;
+		OutputStreamWriter osw = null;
+		BufferedReader br = null;
+		// 发送请求
+		try {
+			URL url = new URL(urlParam);
+			con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("DELETE");
+			con.setDoOutput(true);
+			con.setDoInput(true);
+			con.setUseCaches(false);
+			con.setRequestProperty("Content-Type", "application/json");
+			//替换头域信息
+		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+		    	String key=m.getKey();
+		    	String value=m.getValue();
+		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		con.setRequestProperty(key,value);
+		    	}else{
+		    		con.setRequestProperty(key,value);
+		    	}
+	        }
+			con.setConnectTimeout(timeout*1000);
+			if (sbParams != null && sbParams.length() > 0) {
+				osw = new OutputStreamWriter(con.getOutputStream(), charset);
+				osw.write(sbParams.substring(0, sbParams.length() - 1));
+				osw.flush();
+			}
+			// 读取返回内容
+			resultBuffer = new StringBuffer();
+		   responsecode = String.valueOf(con.getResponseCode());
+			int contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
+			if (contentLength > 0) {
+				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
+				String temp;
+				while ((temp = br.readLine()) != null) {
+					resultBuffer.append(temp);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (osw != null) {
+				try {
+					osw.close();
+				} catch (IOException e) {
+					osw = null;
+					throw new RuntimeException(e);
+				} finally {
+					if (con != null) {
+						con.disconnect();
+						con = null;
+					}
+				}
+			}
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					br = null;
+					throw new RuntimeException(e);
+				} finally {
+					if (con != null) {
+						con.disconnect();
+						con = null;
+					}
+				}
+			}
+		}
+
+		return responsecode + resultBuffer.toString();
+	}
+
+
+/**
+	 * @Description:使用HttpClient发送put请求
+	 */
+	public static String httpClientPut(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+		StringBuffer resultBuffer = null;
+		String responsecode = null;
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpPut httpput = new HttpPut(urlParam);
+	    httpput.setHeader("Content-Type", "application/json");
+		//替换头域信息
+	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+	    	String key=m.getKey();
+	    	String value=m.getValue();
+	    	if(null!=value&&value.indexOf("Base64(")>0){
+	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+	    		value="Basic " + Base64.encode((valuesub).getBytes());
+	    		httpput.setHeader(key,value);
+	    	}else{
+	    		httpput.setHeader(key,value);
+	    	}
+        }
+		// 构建请求参数
+		BufferedReader br = null;
+		try {
+		if(params.size()>0){
+				JSONObject jsonObject = JSONObject.fromObject(params); 
+				System.out.println(jsonObject.toString());
+				 StringEntity entity = new StringEntity(jsonObject.toString(),charset);
+				  httpput.setEntity(entity);
+			}
+       
+		 CloseableHttpResponse response = httpclient.execute(httpput);
+
+			// 读取服务器响应数据
+			resultBuffer = new StringBuffer();
+			org.apache.http.StatusLine statusLine = response.getStatusLine();//获取请求对象中的响应行对象  
+	        responsecode = String.valueOf(statusLine.getStatusCode());//从状态行中获取状态码  
+			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
+			String temp;
+			while ((temp = br.readLine()) != null) {
+				resultBuffer.append(temp);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					br = null;
+					throw new RuntimeException(e);
+				}
+			}
+		}		
+		return responsecode + resultBuffer.toString();
+	}
+
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub	
+		// TODO Auto-generated method stub
 	}
 }
