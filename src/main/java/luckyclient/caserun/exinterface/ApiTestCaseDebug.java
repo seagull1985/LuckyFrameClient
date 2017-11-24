@@ -111,7 +111,7 @@ public class ApiTestCaseDebug{
 				    			while(keys.hasNext()){
 				    				keyexistidentity = 0;
 				    				key = (String)keys.next();
-				    				if(uservariable.indexOf(key)>-1){
+				    				if(uservariable1.indexOf(key)>-1){
 				    					keyexistidentity = 1;
 				    					uservariable1 = key;
 							    		break;
@@ -123,7 +123,7 @@ public class ApiTestCaseDebug{
 				    			while(keys.hasNext()){
 				    				keyexistidentity = 0;
 				    				key = (String)keys.next();
-				    				if(uservariable.indexOf(key)>-1){
+				    				if(uservariable2.indexOf(key)>-1){
 				    					keyexistidentity = 1;
 				    					uservariable2 = key;
 							    		break;
