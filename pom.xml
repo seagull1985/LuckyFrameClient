@@ -267,7 +267,7 @@
 		<dependency>
 			<groupId>com.caucho</groupId>
 			<artifactId>hessian</artifactId>
-			<version>3.2.1</version>
+			<version>3.1.5</version>
 		</dependency>
 		<!--由于Oracle JDBC驱动包是需要Oracle官方授权才能被下载，如果原maven私库中无此包，请手动添加至私库再在maven中操作update 
 			project -->

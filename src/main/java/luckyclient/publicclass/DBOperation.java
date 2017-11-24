@@ -80,11 +80,11 @@ public class DBOperation {
 					}
 					sb.append(rs.getObject(metaData.getColumnName(i)).toString()).append("%");
 				}
-				if(DBOperation.sumString(sb.toString(), "%")>500){
+/*				if(DBOperation.sumString(sb.toString(), "%")>500){
 					sb.delete(0,sb.length());
 					sb.append("查询出来的数据太多啦(超过100项)！我显示不过来哦。。。。");
 					break;
-				}
+				}*/
 			}
 			return sb.toString();
 		}catch(Exception e){
