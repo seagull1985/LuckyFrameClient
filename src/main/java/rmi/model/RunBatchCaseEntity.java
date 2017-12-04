@@ -8,12 +8,12 @@ import java.io.Serializable;
  * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
  * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
- * 
+ * 注意对象必须继承Serializable
  * @author： seagull
  * @date 2017年12月1日 上午9:29:40
  * 
  */
-//注意对象必须继承Serializable
+
 public class RunBatchCaseEntity implements Serializable {
     /**
 	 * 

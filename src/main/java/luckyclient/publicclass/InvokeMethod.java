@@ -37,7 +37,8 @@ public class InvokeMethod {
 		String result = "调用异常，请查看错误日志！";
 		try {
 			if (steptype == 0) {
-				Object server = Class.forName(packagename).newInstance(); // 调用非静态方法用到
+				// 调用非静态方法用到
+				Object server = Class.forName(packagename).newInstance(); 
 				@SuppressWarnings("rawtypes")
 				Class[] getParameterTypes = null;
 				if (getParameterValues != null) {
@@ -104,7 +105,7 @@ public class InvokeMethod {
 					}
 				}
 				//处理参数
-				Map<String, Object> params = new HashMap<String, Object>();
+				Map<String, Object> params = new HashMap<String, Object>(0);
 				for (ProjectTemplateParams ptp : paramslist) {
 					if(ptp.getParam().indexOf("***[")>-1&&"***[".equals(ptp.getParam().substring(0, 4))){
 						ptp.setParam(ptp.getParam().substring(3));
@@ -123,7 +124,7 @@ public class InvokeMethod {
 					}					
 				}
 				//处理头域
-				Map<String, String> headmsg = new HashMap<String, String>();
+				Map<String, String> headmsg = new HashMap<String, String>(0);
 				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
 					String[] temp=ppt.getHeadmsg().split(";",-1);
 					for(int i=0;i<temp.length;i++){
@@ -221,7 +222,7 @@ public class InvokeMethod {
 						}
 					}
 				}
-				Map<String, Object> params = new HashMap<String, Object>();
+				Map<String, Object> params = new HashMap<String, Object>(0);
 				for (ProjectTemplateParams ptp : paramslist) {
 					if(ptp.getParam().indexOf("***[")>-1&&"***[".equals(ptp.getParam().substring(0, 4))){
 						ptp.setParam(ptp.getParam().substring(3));
@@ -240,7 +241,7 @@ public class InvokeMethod {
 					}
 				}
 				//处理头域
-				Map<String, String> headmsg = new HashMap<String, String>();
+				Map<String, String> headmsg = new HashMap<String, String>(0);
 				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
 					String[] temp=ppt.getHeadmsg().split(";",-1);
 					for(int i=0;i<temp.length;i++){

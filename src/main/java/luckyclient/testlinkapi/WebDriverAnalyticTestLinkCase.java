@@ -30,26 +30,30 @@ public class WebDriverAnalyticTestLinkCase {
 	@SuppressWarnings("finally")
 	public static Map<String,String> analyticCaseStep(TestCase testcase,Integer ordersteps,String tastid,LogOperation caselog){
 		String time = "0";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,String> params = new HashMap<String,String>(0);
 
 		String resultstr = null;
 		try {	
 		List<TestCaseStep> testcasesteps = (List<TestCaseStep>) testcase.getSteps();
-		String stepsstr = testcasesteps.get(ordersteps-1).getActions();    //获取actions字符串
+		//获取actions字符串
+		String stepsstr = testcasesteps.get(ordersteps-1).getActions();    
 		String scriptstr = subComment(stepsstr);
-		if(scriptstr.substring(scriptstr.length()-6, scriptstr.length()).toLowerCase().indexOf("*wait;")>-1){                    //添加步骤之间等待时间
+		 //添加步骤之间等待时间
+		if(scriptstr.substring(scriptstr.length()-6, scriptstr.length()).toLowerCase().indexOf("*wait;")>-1){                   
         	time = scriptstr.substring(scriptstr.lastIndexOf("|")+1,scriptstr.toLowerCase().lastIndexOf("*wait;"));
         	scriptstr = scriptstr.substring(0, scriptstr.lastIndexOf("|")+1);
         }
-		resultstr = testcasesteps.get(ordersteps-1).getExpectedResults();   //获取预期结果字符串
+		//获取预期结果字符串
+		resultstr = testcasesteps.get(ordersteps-1).getExpectedResults();   
 		String[] temp=scriptstr.split(splitFlag,-1);
 		for(int i=0;i<temp.length;i++){
 			if(i==0&&temp[i].indexOf("=")>-1&&(temp.length>2||!"".equals(temp[1]))){
 				String property = temp[i].substring(0, temp[i].indexOf("="));
 				String propertyValue = temp[i].substring(temp[i].indexOf("=")+1, temp[i].length());
-
-				params.put("property", property.trim().toLowerCase());   //set属性
-				params.put("property_value", propertyValue.trim());   //set属性值
+				//set属性
+				params.put("property", property.trim().toLowerCase());
+				  //set属性值
+				params.put("property_value", propertyValue.trim()); 
 				luckyclient.publicclass.LogUtil.APP.info("对象属性解析结果：property:"+property.trim()+";  property_value:"+propertyValue.trim());
 			}else if("".equals(temp[i])){
 				continue;
@@ -62,8 +66,10 @@ public class WebDriverAnalyticTestLinkCase {
 				}else{
 					operation = temp[i];
 				}
-				params.put("operation", operation.toLowerCase());   //set操作方法
-				params.put("operation_value", operationValue);   //set操作值
+				//set操作方法
+				params.put("operation", operation.toLowerCase());   
+				//set操作值
+				params.put("operation_value", operationValue);   
 				luckyclient.publicclass.LogUtil.APP.info("对象操作解析结果：operation:"+operation+";  operation_value:"+operationValue);
 			}
 		}
@@ -99,42 +105,55 @@ public class WebDriverAnalyticTestLinkCase {
 	}
 	
 	private static String subComment(String htmlStr) throws InterruptedException{
-    	String regExScript = "<script[^>]*?>[\\s\\S]*?<\\/script>"; // 定义script的正则表达式
-        String regExStyle = "<style[^>]*?>[\\s\\S]*?<\\/style>"; // 定义style的正则表达式
-        String regExHtml = "<[^>]+>"; // 定义HTML标签的正则表达式
-        String regExSpace = "\t|\r|\n";//定义空格回车换行符
+		// 定义script的正则表达式
+    	String regExScript = "<script[^>]*?>[\\s\\S]*?<\\/script>"; 
+    	 // 定义style的正则表达式
+        String regExStyle = "<style[^>]*?>[\\s\\S]*?<\\/style>";
+     // 定义HTML标签的正则表达式
+        String regExHtml = "<[^>]+>"; 
+      //定义空格回车换行符
+        String regExSpace = "\t|\r|\n";
         
         String scriptstr = null;
         if (htmlStr!=null) {
             Pattern pScript = Pattern.compile(regExScript, Pattern.CASE_INSENSITIVE);
             Matcher mScript = pScript.matcher(htmlStr);
-            htmlStr = mScript.replaceAll(""); // 过滤script标签
+         // 过滤script标签
+            htmlStr = mScript.replaceAll(""); 
        
             Pattern pStyle = Pattern.compile(regExStyle, Pattern.CASE_INSENSITIVE);
             Matcher mStyle = pStyle.matcher(htmlStr);
-            htmlStr = mStyle.replaceAll(""); // 过滤style标签
+         // 过滤style标签
+            htmlStr = mStyle.replaceAll(""); 
        
             Pattern pHtml = Pattern.compile(regExHtml, Pattern.CASE_INSENSITIVE);
             Matcher mHtml = pHtml.matcher(htmlStr);
-            htmlStr = mHtml.replaceAll(""); // 过滤html标签
+         // 过滤html标签
+            htmlStr = mHtml.replaceAll(""); 
        
             Pattern pSpace = Pattern.compile(regExSpace, Pattern.CASE_INSENSITIVE);
             Matcher mSpace = pSpace.matcher(htmlStr);
-            htmlStr = mSpace.replaceAll(""); // 过滤空格回车标签
+         // 过滤空格回车标签
+            htmlStr = mSpace.replaceAll(""); 
             
         }
         if(htmlStr.indexOf("/*")>-1&&htmlStr.indexOf("*/")>-1){
     		String commentstr = htmlStr.substring(htmlStr.trim().indexOf("/*"),htmlStr.indexOf("*/")+2);
-    		scriptstr = htmlStr.replace(commentstr, "");     //去注释
+    		//去注释
+    		scriptstr = htmlStr.replace(commentstr, "");     
         }else{
         	scriptstr = htmlStr;
         }
-        
-        scriptstr = trimInnerSpaceStr(scriptstr);          //去掉字符串前后的空格
-        scriptstr = scriptstr.replaceAll("&nbsp;", " ");  //替换空格转义
-        scriptstr = scriptstr.replaceAll("&quot;", "\""); //转义双引号
-        scriptstr = scriptstr.replaceAll("&#39;", "\'");  //转义单引号
-        scriptstr = scriptstr.replaceAll("&amp;", "&");  //转义链接符
+        //去掉字符串前后的空格
+        scriptstr = trimInnerSpaceStr(scriptstr); 
+      //替换空格转义
+        scriptstr = scriptstr.replaceAll("&nbsp;", " ");  
+      //转义双引号
+        scriptstr = scriptstr.replaceAll("&quot;", "\""); 
+      //转义单引号
+        scriptstr = scriptstr.replaceAll("&#39;", "\'");  
+      //转义链接符
+        scriptstr = scriptstr.replaceAll("&amp;", "&");  
         scriptstr = scriptstr.replaceAll("&lt;", "<");  
         scriptstr = scriptstr.replaceAll("&gt;", ">");  
         

@@ -79,7 +79,8 @@ public class EncapsulateOperation {
 		Actions action = new Actions(wd);
 		// action处理
 		switch (operation) {
-		case "mouselkclick":  //鼠标左键点击
+		//鼠标左键点击
+		case "mouselkclick":
 			action.click(we).perform();
 			result = "mouselkclick鼠标左键点击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】";
 			luckyclient.publicclass.LogUtil.APP.info("mouselkclick鼠标左键点击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】");
@@ -131,7 +132,8 @@ public class EncapsulateOperation {
 		Actions action = new Actions(wd);
 		// action处理
 		switch (operation) {
-		case "mouselkclick":  //鼠标左键点击
+		//鼠标左键点击
+		case "mouselkclick": 
 			action.click().perform();
 			result = "mouselkclick鼠标左键点击当前位置...";
 			luckyclient.publicclass.LogUtil.APP.info("mouselkclick鼠标左键点击当前位置...");

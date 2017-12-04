@@ -843,12 +843,14 @@ public class HttpClientHelper {
 				tempByte = (byte) is.read();
 				lineByte.add(Byte.valueOf(tempByte));
 				cumsum++;
-			} while (cumsum < contentLength);// cumsum等于contentLength表示已读完
+				// cumsum等于contentLength表示已读完
+			} while (cumsum < contentLength);
 		} else {
 			do {
 				tempByte = (byte) is.read();
 				lineByte.add(Byte.valueOf(tempByte));
-			} while (tempByte != 10);// 换行符的ascii码值为10
+				// 换行符的ascii码值为10
+			} while (tempByte != 10);
 		}
 
 		byte[] resutlBytes = new byte[lineByte.size()];
@@ -985,8 +987,10 @@ public class HttpClientHelper {
 
 			// 读取服务器响应数据
 			resultBuffer = new StringBuffer();
-			org.apache.http.StatusLine statusLine = response.getStatusLine();//获取请求对象中的响应行对象  
-	        responsecode = String.valueOf(statusLine.getStatusCode());//从状态行中获取状态码  
+			//获取请求对象中的响应行对象  
+			org.apache.http.StatusLine statusLine = response.getStatusLine();
+			//从状态行中获取状态码  
+	        responsecode = String.valueOf(statusLine.getStatusCode());
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
 			while ((temp = br.readLine()) != null) {

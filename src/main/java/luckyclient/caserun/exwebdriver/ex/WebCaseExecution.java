@@ -34,15 +34,16 @@ public class WebCaseExecution extends TestCaseExecution{
 
 	public static void caseExcution(ProjectCase testcase, List<ProjectCasesteps> steps,String taskid, WebDriver wd,LogOperation caselog,List<PublicCaseParams> pcplist)
 			throws InterruptedException {
-		int setresult = 0; // 0:成功 1:失败 2:锁定 其他：锁定
+		// 0:成功 1:失败 2:锁定 其他：锁定
+		int setresult = 0; 
 		String casenote = "备注初始化";
 		String imagname = "";
 		// 把公共参数加入到MAP中
 		for (PublicCaseParams pcp : pcplist) {
 			variable.put(pcp.getParamsname(), pcp.getParamsvalue());
 		}
-		
-		caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 4);       //插入开始执行的用例
+		//插入开始执行的用例
+		caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 4);       
 		
 		for (ProjectCasesteps step : steps) {
 			Map<String, String> params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog);
@@ -56,15 +57,16 @@ public class WebCaseExecution extends TestCaseExecution{
 
 			String expectedResults = params.get("ExpectedResults").toString();
 			expectedResults=ChangString.changparams(expectedResults, variable,"预期结果");
-
-			if (result.indexOf("出错") < 0 && result.indexOf("失败") < 0) { // 运行结果正常
-				int waitsec = Integer.parseInt(params.get("StepWait").toString()); // 获取步骤间等待时间
+			// 运行结果正常
+			if (result.indexOf("出错") < 0 && result.indexOf("失败") < 0) { 
+				// 获取步骤间等待时间
+				int waitsec = Integer.parseInt(params.get("StepWait").toString()); 
 				if (waitsec != 0) {
 					luckyclient.publicclass.LogUtil.APP.info("操作休眠【"+waitsec+"】秒");
 					Thread.sleep(waitsec * 1000);
 				}
-				
-				if (!"".equals(expectedResults)) { // 有预期结果
+				// 有预期结果
+				if (!"".equals(expectedResults)) { 
 					// 判断传参
 					luckyclient.publicclass.LogUtil.APP.info("expectedResults=【"+expectedResults+"】");
 					if (expectedResults.length() > 2 && expectedResults.substring(0, 2).indexOf("$=") > -1) {
@@ -119,7 +121,8 @@ public class WebCaseExecution extends TestCaseExecution{
 								"error", String.valueOf(step.getStepnum()),imagname);
 								break;
 							}
-						}else if(expectedResults.equals(result)) {    // 直接匹配预期结果模式
+							// 直接匹配预期结果模式
+						}else if(expectedResults.equals(result)) {    
 							luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum()
 							+ "步，直接匹配预期结果成功！执行结果："+result);
 					        caselog.caseLogDetail(taskid, testcase.getSign(), "步骤直接匹配预期结果成功！",
@@ -207,8 +210,8 @@ public class WebCaseExecution extends TestCaseExecution{
 			}
 			
 			WebElement we = null;
-
-			if (null != property && null != propertyValue) { // 页面元素层
+			// 页面元素层
+			if (null != property && null != propertyValue) { 
 				we = isElementExist(wd, property, propertyValue);
 				// 判断此元素是否存在
 				if (null==we) {
@@ -225,7 +228,8 @@ public class WebCaseExecution extends TestCaseExecution{
 				} else {
 					result = EncapsulateOperation.objectOperation(wd, we, operation, operationValue, property, propertyValue);
 				}
-			} else if (null==property && null != operation) { // Driver层操作				
+				// Driver层操作
+			} else if (null==property && null != operation) { 				
 				// 处理弹出框事件
 				if (operation.indexOf("alert") > -1){
 					result = EncapsulateOperation.alertOperation(wd, operation);

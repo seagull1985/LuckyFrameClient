@@ -53,7 +53,8 @@ public class BuildingInitialization {
 			for(int i=0;i<buildname.length;i++){
 				JenkinsBuilding.sendBuilding(buildname[i], 0);
 			}
-			Thread.sleep(10000);  //等待构建检查
+			//等待构建检查
+			Thread.sleep(10000);  
 			result = booleanBuildingOver(buildname);
 		}else{
 			luckyclient.publicclass.LogUtil.APP.info("当前任务没有找到需要构建的项目！");

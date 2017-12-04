@@ -35,7 +35,7 @@ public class TestCaseExecution {
 	@SuppressWarnings("static-access")
 	public static void oneCaseExecuteForTast(String projectname, String testCaseExternalId, int version,
 			String taskid) {
-		Map<String, String> variable = new HashMap<String, String>();
+		Map<String, String> variable = new HashMap<String, String>(0);
 		TestControl.TASKID = taskid;
 		DbLink.exetype = 0;
 		// 初始化写用例结果以及日志模块
@@ -142,8 +142,10 @@ public class TestCaseExecution {
 								"用例第" + (i + 1) + "步执行结果与预期结果匹配失败！预期结果：" + expectedresults + "      测试结果：" + testnote,
 								"error", String.valueOf(i + 1));
 						luckyclient.publicclass.LogUtil.APP.error("预期结果：" + expectedresults + "      测试结果：" + testnote);
-						testnote = "用例第" + (i + 1) + "步执行结果与预期结果匹配失败！预期结果：" + expectedresults + "      测试结果："
-								+ testnote;
+						StringBuilder stringBuilder = new StringBuilder();
+						stringBuilder.append("用例第" + (i + 1) + "步执行结果与预期结果匹配失败！预期结果：" + expectedresults + "      测试结果：");
+						stringBuilder.append(testnote);
+						testnote = stringBuilder.toString();
 						break; // 某一步骤失败后，此条用例置为失败退出
 					}
 				}
@@ -199,7 +201,7 @@ public class TestCaseExecution {
 	 *            用于在UI的测试过程中，需要调用接口的测试用例
 	 */
 	protected static String oneCaseExecuteForWebDriver(String testCaseExternalId, String taskid,LogOperation caselog) {
-		Map<String, String> variable = new HashMap<String, String>();
+		Map<String, String> variable = new HashMap<String, String>(0);
 		String packagename = null;
 		String functionname = null;
 		String expectedresults = null;
@@ -289,8 +291,10 @@ public class TestCaseExecution {
 						setresult = 1;
 						luckyclient.publicclass.LogUtil.APP.error("用例第" + (i + 1) + "步执行结果与预期结果匹配失败！");
 						luckyclient.publicclass.LogUtil.APP.error("预期结果：" + expectedresults + "      测试结果：" + testnote);
-						testnote = "用例第" + (i + 1) + "步执行结果与预期结果匹配失败！预期结果：" + expectedresults + "      测试结果："
-								+ testnote;
+						StringBuilder stringBuilder = new StringBuilder();
+						stringBuilder.append("用例第" + (i + 1) + "步执行结果与预期结果匹配失败！预期结果：" + expectedresults + "      测试结果：");
+						stringBuilder.append(testnote);
+						testnote = stringBuilder.toString();
 						break; // 某一步骤失败后，此条用例置为失败退出
 					}
 				}

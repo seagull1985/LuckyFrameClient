@@ -32,7 +32,8 @@ public class WebBatchExecute{
 	
 	@SuppressWarnings("static-access")
 	public static void batchCaseExecuteForTast(String projectname,String taskid,String batchcase) throws IOException{
-		DbLink.exetype = 0;   //记录日志到数据库
+		//记录日志到数据库
+		DbLink.exetype = 0;   
 		TestControl.TASKID = taskid;
 		int drivertype = LogOperation.querydrivertype(taskid);
 		WebDriver wd = null;
@@ -42,11 +43,12 @@ public class WebBatchExecute{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		LogOperation caselog = new LogOperation(); // 初始化写用例结果以及日志模块
+		LogOperation caselog = new LogOperation();
 		TestBuildApi.getBuild(projectname);
 		TestTaskexcute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
 		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(task.getTestJob().getProjectid().toString());
-		if(batchcase.indexOf("ALLFAIL")>-1){    //执行全部非成功状态用例
+		 //执行全部非成功状态用例
+		if(batchcase.indexOf("ALLFAIL")>-1){   
 			String casemore = caselog.unSucCaseUpdate(taskid);
 			String[] temp=casemore.split("\\#",-1);
 			for(int i=0;i<temp.length;i++){
@@ -54,8 +56,10 @@ public class WebBatchExecute{
 			   //int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()-1));
 			   ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 			   List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcase.getId());
-			   LogOperation.deleteCaseDetail(testCaseExternalId, taskid);   //删除旧的用例
-			   LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    //删除旧的日志
+			   //删除旧的用例
+			   LogOperation.deleteCaseDetail(testCaseExternalId, taskid); 
+			   //删除旧的日志
+			   LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    
 			   try {
 				WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
 			} catch (InterruptedException e) {

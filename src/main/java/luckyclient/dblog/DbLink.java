@@ -37,8 +37,10 @@ public class DbLink {
 		String passwordBase = properties.getProperty("mysql.db.userpwd");
 		return new DBOperation(urlBase, userNameBase, passwordBase);
 	}
-
-	public static int exetype;      //任务执行类型： 0   任务调度模式    1   控制台模式
+	/**
+	 * 任务执行类型： 0   任务调度模式    1   控制台模式
+	 */
+	public static int exetype;      
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

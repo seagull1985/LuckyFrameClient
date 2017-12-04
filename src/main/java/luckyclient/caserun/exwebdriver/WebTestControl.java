@@ -46,7 +46,8 @@ public class WebTestControl{
 	 */
 	
 	public  static void manualExecutionPlan(String planname){
-		DbLink.exetype = 1;   //不记日志到数据库
+		//不记日志到数据库
+		DbLink.exetype = 1;   
 		String taskid = "888888";
 		WebDriver wd = null;
 		try {
@@ -55,7 +56,7 @@ public class WebTestControl{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		LogOperation caselog = new LogOperation(); // 初始化写用例结果以及日志模块
+		LogOperation caselog = new LogOperation();
 		List<ProjectCase> testCases=GetServerAPI.getCasesbyplanname(planname);
 		List<PublicCaseParams> pcplist = new ArrayList<PublicCaseParams>();
 		if(testCases.size()!=0){
@@ -85,7 +86,8 @@ public class WebTestControl{
 	}
 	
 	public static void taskExecutionPlan(String taskid,TestTaskexcute task) throws InterruptedException {
-		DbLink.exetype = 0; // 记录日志到数据库
+		// 记录日志到数据库
+		DbLink.exetype = 0; 
 		TestControl.TASKID = taskid;
 		String restartstatus = RestartServerInitialization.restartServerRun(taskid);
 		String buildstatus = BuildingInitialization.buildingRun(taskid);
@@ -108,7 +110,7 @@ public class WebTestControl{
 					luckyclient.publicclass.LogUtil.APP.error("初始化WebDriver出错 IOException！", e2);
 					e2.printStackTrace();
 				}
-				LogOperation caselog = new LogOperation(); // 初始化写用例结果以及日志模块
+				LogOperation caselog = new LogOperation(); 
 				int[] tastcount=null;
 				if(task.getTestJob().getProjecttype()==1){
 					TestBuildApi.getBuild(projectname);

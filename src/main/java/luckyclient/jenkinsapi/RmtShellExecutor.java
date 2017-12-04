@@ -62,7 +62,7 @@ public class RmtShellExecutor {
 	        throw new Exception("session is null");
 	    }     
 	    //设置登陆主机的密码
-	    session.setPassword(psw);//设置密码   
+	    session.setPassword(psw);
 	    //设置第一次登陆的时候提示，可选值：(ask | yes | no)
 	    session.setConfig("StrictHostKeyChecking", "no");
 	    //设置登陆超时时间   

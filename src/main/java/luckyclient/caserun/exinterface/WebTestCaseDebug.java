@@ -31,7 +31,7 @@ public class WebTestCaseDebug{
 	 * 用于在WEB页面上调试用例时提供的接口
 	 */
 	public static void oneCaseDebug(String sign,String executor){
-		Map<String,String> variable = new HashMap<String,String>();
+		Map<String,String> variable = new HashMap<String,String>(0);
 		String packagename =null;
 		String functionname = null;
 		String expectedresults = null;

@@ -24,7 +24,8 @@ public class ChangString {
 			str = str.replaceAll("&#39;", "\'");
 			//@@用来注释@的引用作用
 			int varcount=counter(str,"@")-counter(str,"@@")*2;
-			if(varcount>0){//如果存在传参，进行处理
+			//如果存在传参，进行处理
+			if(varcount>0){
 				luckyclient.publicclass.LogUtil.APP.info("在"+changname+"【"+str+"】中找到"+varcount+"个可替换参数");
 				int changcount=0;
 				//从参数列表中查找匹配变量

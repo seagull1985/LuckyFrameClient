@@ -43,7 +43,7 @@ public class ThreadForExecuteCase extends Thread {
 	
 	@Override
 	public void run() {
-		Map<String, String> variable = new HashMap<String, String>();
+		Map<String, String> variable = new HashMap<String, String>(0);
 		// 把公共参数加入到MAP中
 		for (PublicCaseParams pcp : pcplist) {
 			variable.put(pcp.getParamsname(), pcp.getParamsvalue());
@@ -157,8 +157,11 @@ public class ThreadForExecuteCase extends Thread {
 								"用例：" + testcaseob.getSign() + "预期结果：" + expectedresults + "      测试结果：" + testnote);
 						caselog.caseLogDetail(taskid, caseid, "第" + (i + 1) + "步执行结果与预期结果匹配失败！" + "预期结果："
 								+ expectedresults + "      测试结果：" + testnote, "error", String.valueOf(i + 1), "");
-						testnote = "用例第" + (i + 1) + "步执行结果与预期结果匹配失败！预期结果：" + expectedresults + "      测试结果："
-								+ testnote;
+						StringBuilder stringBuilder = new StringBuilder();
+						stringBuilder.append("用例第" + (i + 1) + "步执行结果与预期结果匹配失败！预期结果：" + expectedresults + "      测试结果：");
+						stringBuilder.append(testnote);
+						testnote = stringBuilder.toString();
+
 						break; // 某一步骤失败后，此条用例置为失败退出
 					}
 				}

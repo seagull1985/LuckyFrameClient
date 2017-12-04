@@ -68,12 +68,14 @@ public class DBOperation {
 			ResultSetMetaData metaData = rs.getMetaData();
 			int colum = metaData.getColumnCount(); 
 			int count=0;
-			while(rs.next()){    //行数
+			//行数
+			while(rs.next()){    
 				count++;
 				if (count > 1){
 				    sb.append("#");
 					}
-				for (int i = 1; i <= colum; i++){    //列数
+				//列数
+				for (int i = 1; i <= colum; i++){    
 					if(rs.getObject(metaData.getColumnName(i))== null){
 						sb.append("null").append("%");
 						continue;

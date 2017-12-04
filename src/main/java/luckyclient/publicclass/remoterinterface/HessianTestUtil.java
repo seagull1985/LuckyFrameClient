@@ -68,7 +68,7 @@ public class HessianTestUtil {
 		Object interfaceObject = null;
 		Class<?>[] allRequstParasClass = new Class[interfaceParamArray.length];
 		Object[] allRequstParas = new Object[interfaceParamArray.length];
-		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Map<String, Object> resultMap = new HashMap<String, Object>(0);
 		try {
 			interfaceObject = factory.create(Class.forName(className),remoteUrl);
 		} catch (Exception ex) {
@@ -143,7 +143,7 @@ public class HessianTestUtil {
 			}
 
 			public static Map<String, Object> objectToMap(Object obj) throws Exception {
-				Map<String, Object> map = new HashMap<String, Object>();
+				Map<String, Object> map = new HashMap<String, Object>(0);
 				String objClass = obj.getClass().getName();
 				if (isBaseTypeForArray(objClass)) {
 					map.put(objClass, obj.toString());

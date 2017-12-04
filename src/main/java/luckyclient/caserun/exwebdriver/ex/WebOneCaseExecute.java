@@ -29,7 +29,8 @@ public class WebOneCaseExecute{
 	
 	@SuppressWarnings("static-access")
 	public static void oneCaseExecuteForTast(String projectname,String testCaseExternalId,int version,String taskid){
-		DbLink.exetype = 0;   //记录日志到数据库
+		//记录日志到数据库
+		DbLink.exetype = 0;   
 		TestControl.TASKID = taskid;
 		int drivertype = LogOperation.querydrivertype(taskid);
 		WebDriver wd = null;
@@ -39,9 +40,11 @@ public class WebOneCaseExecute{
 			luckyclient.publicclass.LogUtil.APP.error("初始化WebDriver出错！", e1);
 			e1.printStackTrace();
 		}
-		LogOperation caselog = new LogOperation(); // 初始化写用例结果以及日志模块
-		LogOperation.deleteCaseDetail(testCaseExternalId, taskid);   //删除旧的用例
-		LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    //删除旧的日志
+		LogOperation caselog = new LogOperation();
+		 //删除旧的用例
+		LogOperation.deleteCaseDetail(testCaseExternalId, taskid);  
+		//删除旧的日志
+		LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    
 		ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectid()));
 		luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【"+testCaseExternalId+"】......");

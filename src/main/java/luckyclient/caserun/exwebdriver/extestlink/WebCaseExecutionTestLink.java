@@ -34,11 +34,12 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 
 	public static void caseExcution(String projectname, TestCase testcase, String taskid, WebDriver wd,LogOperation caselog)
 			throws InterruptedException {
-		int setresult = 0; // 0:成功 1:失败 2:锁定 其他：锁定
+		// 0:成功 1:失败 2:锁定 其他：锁定
+		int setresult = 0; 
 		String casenote = "备注初始化";
 		String imagname = "";
-		
-		caselog.addCaseDetail(taskid, testcase.getFullExternalId(), testcase.getVersion().toString(), testcase.getName(), 4);       //插入开始执行的用例
+		//插入开始执行的用例
+		caselog.addCaseDetail(taskid, testcase.getFullExternalId(), testcase.getVersion().toString(), testcase.getName(), 4);       
 		
 		for (TestCaseStep step : testcase.getSteps()) {
 			Map<String, String> params = WebDriverAnalyticTestLinkCase.analyticCaseStep(testcase, step.getNumber(), taskid,caselog);
@@ -51,15 +52,16 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 			String result = WebCaseExecutionTestLink.runStep(params, wd, taskid, testcase.getFullExternalId(), step.getNumber(), caselog);
 
 			String expectedResults = params.get("ExpectedResults").toString();
-
-			if (result.indexOf("出错") < 0 && result.indexOf("失败") < 0) { // 运行结果正常
-				int waitsec = Integer.parseInt(params.get("StepWait").toString()); // 获取步骤间等待时间
+			// 运行结果正常
+			if (result.indexOf("出错") < 0 && result.indexOf("失败") < 0) { 
+				// 获取步骤间等待时间
+				int waitsec = Integer.parseInt(params.get("StepWait").toString()); 
 				if (waitsec != 0) {
 					luckyclient.publicclass.LogUtil.APP.info("操作休眠【"+waitsec+"】秒");
 					Thread.sleep(waitsec * 1000);
 				}
-				
-				if (!"".equals(expectedResults)) { // 有预期结果
+				// 有预期结果
+				if (!"".equals(expectedResults)) { 
 					// 判断传参
 					luckyclient.publicclass.LogUtil.APP.info("expectedResults=【"+expectedResults+"】");
 					if (expectedResults.length() > 2 && expectedResults.substring(0, 2).indexOf("$=") > -1) {
@@ -114,7 +116,8 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 								"error", String.valueOf(step.getNumber()),imagname);
 								break;
 							}
-						}else if(expectedResults.equals(result)) {    // 直接匹配预期结果模式
+							// 直接匹配预期结果模式
+						}else if(expectedResults.equals(result)) {    
 							luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getFullExternalId() + " 第" + step.getNumber()
 							+ "步，直接匹配预期结果成功！执行结果："+result);
 					        caselog.caseLogDetail(taskid, testcase.getFullExternalId(), "步骤直接匹配预期结果成功！",
@@ -231,8 +234,8 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 			}
 			
 			WebElement we = null;
-
-			if (property != null && propertyValue != null) { // 页面元素层
+			// 页面元素层
+			if (property != null && propertyValue != null) { 
 				we = isElementExist(wd, property, propertyValue);
 				// 判断此元素是否存在
 				if (we == null) {
@@ -249,7 +252,8 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 				} else {
 					result = EncapsulateOperation.objectOperation(wd, we, operation, operationValue, property, propertyValue);
 				}
-			} else if (property == null && operation != null) { // Driver层操作				
+				// Driver层操作		
+			} else if (property == null && operation != null) { 		
 				// 处理弹出框事件
 				if (operation.indexOf("alert") > -1){
 					result = EncapsulateOperation.alertOperation(wd, operation);
@@ -277,7 +281,7 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 
 	private static String settingParameter(String parameter) {
 		int keyexistidentity = 0;
-		if (parameter.indexOf("&quot;") > -1 || parameter.indexOf("&#39;") > -1) { // 页面转义字符转换
+		if (parameter.indexOf("&quot;") > -1 || parameter.indexOf("&#39;") > -1) { 
 			parameter = parameter.replaceAll("&quot;", "\"");
 			parameter = parameter.replaceAll("&#39;", "\'");
 		}
@@ -294,7 +298,7 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 
 		if (sumvariable == 1) {
 			uservariable = parameter.substring(parameter.indexOf("@") + 1);
-		} else if (sumvariable == 2) { // 单个参数中引用第二个变量
+		} else if (sumvariable == 2) { 
 			uservariable = parameter.substring(parameter.indexOf("@") + 1, parameter.lastIndexOf("@"));
 			uservariable1 = parameter.substring(parameter.lastIndexOf("@") + 1);
 		} else if (sumvariable == 3) {
@@ -318,7 +322,7 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 				break;
 			}
 		}
-		if (sumvariable == 2 || sumvariable == 3) { // 处理第二个传参
+		if (sumvariable == 2 || sumvariable == 3) { 
 			keys = variable.keySet().iterator();
 			while (keys.hasNext()) {
 				keyexistidentity = 0;
@@ -330,7 +334,7 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 				}
 			}
 		}
-		if (sumvariable == 3) { // 处理第三个传参
+		if (sumvariable == 3) { 
 			keys = variable.keySet().iterator();
 			while (keys.hasNext()) {
 				keyexistidentity = 0;

@@ -26,11 +26,12 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 public class WebDriverInitialization{
 	/**
 	 * @param args
+	 * 初始化WebDriver
 	 * @throws IOException 
 	 */
-	//初始化WebDriver
 	public static WebDriver setWebDriverForTask(String taskid,int drivertype) throws WebDriverException,IOException{
-		File directory = new File("");// 参数为空
+		// 参数为空
+		File directory = new File("");
 /*		System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
         DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
         ieCapabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
@@ -70,7 +71,11 @@ public class WebDriverInitialization{
         return webDriver;
 	}
 
-	//初始化WebDriver
+	/**
+	 * 初始化WebDriver
+	 * @return
+	 * @throws IOException
+	 */
 	public static WebDriver setWebDriverForLocal() throws IOException{
 		File directory = new File("");
 		System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");

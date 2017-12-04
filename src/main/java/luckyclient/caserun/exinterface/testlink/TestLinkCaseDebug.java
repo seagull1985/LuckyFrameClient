@@ -31,7 +31,7 @@ public class TestLinkCaseDebug{
 	 * 用于在testlink上配置好用例参数后，做单条用例调试
 	 */
 	public static void oneCaseDebug(String projectname,String testCaseExternalId,int version){
-		Map<String,String> variable = new HashMap<String,String>();
+		Map<String,String> variable = new HashMap<String,String>(0);
 		String packagename =null;
 		String functionname = null;
 		String expectedresults = null;

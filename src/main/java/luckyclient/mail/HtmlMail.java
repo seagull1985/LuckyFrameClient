@@ -18,7 +18,7 @@ public class HtmlMail {
 	static FreemarkerEmailTemplate  fet=new FreemarkerEmailTemplate();
 	
 	public static String htmlContentFormat(int[] taskcount,String taskid,String buildstatus,String restartstatus,String time,String jobname){		
-		Map<Object, Object> parameters = new HashMap<Object, Object>();
+		Map<Object, Object> parameters = new HashMap<Object, Object>(0);
 		parameters.put("buildstatus", buildstatus);
 		parameters.put("restartstatus", restartstatus);
 		parameters.put("taskcount", taskcount);
@@ -29,7 +29,7 @@ public class HtmlMail {
 	}
 	
 	public static String htmlSubjectFormat(String jobname){
-		Map<Object, Object> parameters = new HashMap<Object, Object>();
+		Map<Object, Object> parameters = new HashMap<Object, Object>(0);
 		parameters.put("jobname", jobname);
 		return fet.getText("task-title", parameters);
 	}

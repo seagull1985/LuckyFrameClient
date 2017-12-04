@@ -30,10 +30,22 @@ import org.openqa.selenium.remote.Augmenter;
  * 
  */
 public class Ocr {
-	private static String readtextpath = System.getProperty("user.dir")+"\\CAPTCHA.txt";   //默认读取工程根目录下的文件
-	private static String screenshotpath = System.getProperty("user.dir")+"\\CAPTCHA.png";  //默认把截图放在工程根目录
-	private static String cmdpath = System.getProperty("user.dir");  //批处理文件路径
-	private static String cmdname = "handlingCAPTCHA.bat";  //默认把截图放在C盘根目录
+	/**
+	 * 默认读取工程根目录下的文件
+	 */
+	private static String readtextpath = System.getProperty("user.dir")+"\\CAPTCHA.txt";   
+	/**
+	 * 默认把截图放在工程根目录
+	 */
+	private static String screenshotpath = System.getProperty("user.dir")+"\\CAPTCHA.png"; 
+	/**
+	 * 批处理文件路径
+	 */
+	private static String cmdpath = System.getProperty("user.dir");  
+	/**
+	 * 默认把截图放在C盘根目录
+	 */
+	private static String cmdname = "handlingCAPTCHA.bat";  
 
 	/**
 	 * 读取生成的TXT文件中的验证码
@@ -43,9 +55,11 @@ public class Ocr {
 		String lineTxt = "";
 		try {
 			String encoding = "GBK";
-			File file = new File(readtextpath);  
-			if (file.isFile() && file.exists()) { // 判断文件是否存在
-				InputStreamReader read = new InputStreamReader(new FileInputStream(file), encoding);// 考虑到编码格式
+			File file = new File(readtextpath); 
+			 // 判断文件是否存在
+			if (file.isFile() && file.exists()) {
+				// 考虑到编码格式
+				InputStreamReader read = new InputStreamReader(new FileInputStream(file), encoding);
 				BufferedReader bufferedReader = new BufferedReader(read);
 				while ((lineTxt = bufferedReader.readLine()) != null) {
 					  return lineTxt;

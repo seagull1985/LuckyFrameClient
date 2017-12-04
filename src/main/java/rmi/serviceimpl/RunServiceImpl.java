@@ -25,12 +25,11 @@ import rmi.service.RunService;
  * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
  * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
- * 
+ * 此为远程对象的实现类，须继承UnicastRemoteObject
  * @author： seagull
  * @date 2017年12月1日 上午9:29:40
  * 
  */
-//此为远程对象的实现类，须继承UnicastRemoteObject
 public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 
 	/**

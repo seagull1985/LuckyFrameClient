@@ -64,7 +64,7 @@ public class InterfaceTestUtil {
 	}
 
 	public static Map<String, Object> objectToMap(Object obj) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<String, Object>(0);
 		String objClass = obj.getClass().getName();
 		if (isBaseTypeForArray(objClass)) {
 			map.put(objClass, obj.toString());
@@ -174,7 +174,8 @@ public class InterfaceTestUtil {
 		int totalRequestParam = allRequstParas.length;
 
 		Class<?>[] allRequstParasClass = null;
-		if (allRequstParas != null) {// ´æÔÚ
+		// ´æÔÚ
+		if (allRequstParas != null) {
 			int len = allRequstParas.length;
 			allRequstParasClass = new Class[len];
 			for (int i = 0; i < len; ++i) {

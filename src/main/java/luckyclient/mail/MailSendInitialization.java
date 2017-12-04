@@ -29,17 +29,22 @@ public class MailSendInitialization {
 		      mailInfo.setMailServerHost(properties.getProperty("mail.smtp.ip"));    
 		      mailInfo.setMailServerPort(properties.getProperty("mail.smtp.port"));    
 		      mailInfo.setValidate(true);    
-		      mailInfo.setUserName(properties.getProperty("mail.smtp.username"));    
-		      mailInfo.setPassword(properties.getProperty("mail.smtp.password"));//您的邮箱密码    
-		      mailInfo.setFromAddress(properties.getProperty("mail.smtp.username"));    
-		      mailInfo.setSubject(subject);    //标题
-		      mailInfo.setContent(content);     //内容
+		      mailInfo.setUserName(properties.getProperty("mail.smtp.username"));   
+		      //您的邮箱密码    
+		      mailInfo.setPassword(properties.getProperty("mail.smtp.password"));
+		      mailInfo.setFromAddress(properties.getProperty("mail.smtp.username")); 
+		      //标题
+		      mailInfo.setSubject(subject);  
+		      //内容
+		      mailInfo.setContent(content);    
 		      mailInfo.setToAddresses(addresses);
 			  sms.sendHtmlMail(mailInfo);
-			  String addressesmail = "";
+
+			  StringBuilder stringBuilder = new StringBuilder();
 			  for(int i=0;i<addresses.length;i++){
-				  addressesmail =  addressesmail+addresses[i]+";";
+				  stringBuilder.append(addresses[i]+";");
 			  }
+			  String addressesmail = stringBuilder.toString();
 			  luckyclient.publicclass.LogUtil.APP.info("给"+addressesmail+"的测试结果通知邮件发送完成！");
 		}else{
 			luckyclient.publicclass.LogUtil.APP.info("当前任务不需要发送邮件通知！");

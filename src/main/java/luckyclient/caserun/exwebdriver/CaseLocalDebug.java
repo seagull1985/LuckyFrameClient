@@ -29,8 +29,9 @@ public class CaseLocalDebug{
 
 	
 	public static void oneCasedebug(WebDriver wd,String testCaseExternalId){
-		DbLink.exetype = 1;   //不记录日志到数据库
-		LogOperation caselog = new LogOperation(); // 初始化写用例结果以及日志模块
+		 //不记录日志到数据库
+		DbLink.exetype = 1;  
+		LogOperation caselog = new LogOperation();
 		try {
 			ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 			List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectid()));

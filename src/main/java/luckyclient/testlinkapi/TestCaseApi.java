@@ -114,7 +114,7 @@ public class TestCaseApi extends TestLinkBaseApi {
 		    testplanob = api.getTestPlanByName(LogOperation.getTestPlanName(TestControl.TASKID), projectname);
 		    Integer planid = testplanob.getId();
 		    
-		    Map<String, Object> params = new HashMap<String, Object>();			
+		    Map<String, Object> params = new HashMap<String, Object>(0);			
 		    params.put("devKey", TESTLINK_DEVKEY);
 		    params.put("testprojectid", projectID(projectname));
 		    params.put("testplanid", planid);
@@ -280,7 +280,8 @@ public class TestCaseApi extends TestLinkBaseApi {
 			params="name="+cases.getName().replace("%", "BBFFHH");
 			params+="&projectid="+projectid;
 			params+="&modulename="+suite[0].getName();
-			params+="&casetype=0";    //0 接口  1 UI
+			//0 接口  1 UI
+			params+="&casetype=0";    
 			
 			String caseid=HttpRequest.sendPost("/projectCase/cpostcase.do", params);
 			System.out.println("已经成功创建用例，ID："+caseid);
@@ -289,7 +290,8 @@ public class TestCaseApi extends TestLinkBaseApi {
 			for(TestCaseStep step:cases.getSteps()){
 				String stepsparams="";
 				String resultstr = null;
-				String stepsstr = step.getActions();    //获取actions字符串
+				 //获取actions字符串
+				String stepsstr = step.getActions();   
 				String scriptstr = InterfaceAnalyticTestLinkCase.subComment(stepsstr);
 
 				if(scriptstr.substring(scriptstr.length()-6, scriptstr.length()).indexOf("*Wait;")>-1){
@@ -304,7 +306,7 @@ public class TestCaseApi extends TestLinkBaseApi {
 		        	stepsparams="action="+action+"&";
 		        	scriptstr = scriptstr.substring(0, scriptstr.lastIndexOf("|")+1);
 		        }
-				resultstr = InterfaceAnalyticTestLinkCase.subComment(step.getExpectedResults());   //获取预期结果字符串
+				resultstr = InterfaceAnalyticTestLinkCase.subComment(step.getExpectedResults()); 
 				stepsparams+="expectedresult="+resultstr.replace("%", "BBFFHH");
 				stepsparams+="&caseid="+caseid;
 				stepsparams+="&stepnum="+k;
@@ -316,15 +318,18 @@ public class TestCaseApi extends TestLinkBaseApi {
 					if(i==0){
 						String packagenage = temp[i].substring(0, temp[i].indexOf("#"));
 						String functionname = temp[i].substring(temp[i].indexOf("#")+1, temp[i].indexOf(";"));
-						stepsparams+="&path="+packagenage.trim();   //set包名
-						stepsparams+="&operation="+functionname.trim();   //set方法名称
+						//set包名
+						stepsparams+="&path="+packagenage.trim();   
+						//set方法名称
+						stepsparams+="&operation="+functionname.trim();   
 					}else if("".equals(temp[i])){
 						continue;
 					}else{
 						param+=temp[i]+"|";
 					}
 				}
-				stepsparams+="&parameters="+param.replace("%", "BBFFHH");   //set方法名称
+				//set方法名称
+				stepsparams+="&parameters="+param.replace("%", "BBFFHH");   
 				String stepid=HttpRequest.sendPost("/projectCasesteps/cpoststep.do", stepsparams);
 				System.out.println("已经成功创建用例步骤，用例ID:"+caseid+"  步骤ID:"+stepid);
 				k++;
@@ -354,8 +359,9 @@ public class TestCaseApi extends TestLinkBaseApi {
 
 			params="name="+cases.getName().replace("%", "BBFFHH");
 			params+="&projectid="+projectid;
-			params+="&modulename="+suite[0].getName();;
-			params+="&casetype=1";    //0 接口  1 UI
+			params+="&modulename="+suite[0].getName();
+			 //0 接口  1 UI
+			params+="&casetype=1";   
 			
 			String caseid=HttpRequest.sendPost("/projectCase/cpostcase.do", params);
 			System.out.println("已经成功创建用例，ID："+caseid);
@@ -364,7 +370,8 @@ public class TestCaseApi extends TestLinkBaseApi {
 			for(TestCaseStep step:cases.getSteps()){
 				String stepsparams="";
 				String resultstr = null;
-				String stepsstr = step.getActions();    //获取actions字符串
+				//获取actions字符串
+				String stepsstr = step.getActions();    
 				String scriptstr = InterfaceAnalyticTestLinkCase.subComment(stepsstr);
 
 				if(scriptstr.substring(scriptstr.length()-6, scriptstr.length()).indexOf("*Wait;")>-1){
@@ -379,7 +386,8 @@ public class TestCaseApi extends TestLinkBaseApi {
 		        	stepsparams="action="+action+"&";
 		        	scriptstr = scriptstr.substring(0, scriptstr.lastIndexOf("|")+1);
 		        }
-				resultstr = InterfaceAnalyticTestLinkCase.subComment(step.getExpectedResults());   //获取预期结果字符串
+				//获取预期结果字符串
+				resultstr = InterfaceAnalyticTestLinkCase.subComment(step.getExpectedResults());   
 				stepsparams+="expectedresult="+resultstr.replace("%", "BBFFHH");
 				stepsparams+="&caseid="+caseid;
 				stepsparams+="&stepnum="+k;
@@ -388,7 +396,8 @@ public class TestCaseApi extends TestLinkBaseApi {
 				String[] temp=scriptstr.split("\\|",-1);
 				for(int i=0;i<temp.length;i++){
 					if(i==0&&temp[i].indexOf("=")>-1&&(temp.length>2||!"".equals(temp[1]))){
-						stepsparams+="&path="+temp[i].replace("=", "DHDHDH");   //set包名					
+						//set包名		
+						stepsparams+="&path="+temp[i].replace("=", "DHDHDH");   			
 					}else if(temp[i].equals("")){
 						continue;
 					}else{
@@ -400,9 +409,11 @@ public class TestCaseApi extends TestLinkBaseApi {
 						}else{
 							operation = temp[i];
 						}
-						stepsparams+="&operation="+operation.toLowerCase();   //set方法名称
+						//set方法名称
+						stepsparams+="&operation="+operation.toLowerCase();   
 						if(null!=operationValue){
-							stepsparams+="&parameters="+operationValue.replace("%", "BBFFHH");   //set方法名称
+							//set方法名称
+							stepsparams+="&parameters="+operationValue.replace("%", "BBFFHH");   
 						}						
 					}
 				}
