@@ -102,11 +102,12 @@ public class RmtShellExecutor {
 	    } catch (Exception e) {
 	    	result = "重启TOMCAT过程中，出现异常！";
 	        e.printStackTrace();
+		    return result;
 	    } finally {
 	        session.disconnect();
 	        channel.disconnect();
-	        return result;
 	    }
+	    return result;
 	}
 
     public static void main(String args[]) throws Exception {

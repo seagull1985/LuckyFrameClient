@@ -7,8 +7,8 @@ import java.util.Map;
 
 import luckyclient.planapi.entity.ProjectProtocolTemplate;
 import luckyclient.planapi.entity.ProjectTemplateParams;
-import luckyclient.publicclass.remoterInterface.HttpClientHelper;
-import luckyclient.publicclass.remoterInterface.HttpRequest;
+import luckyclient.publicclass.remoterinterface.HttpClientHelper;
+import luckyclient.publicclass.remoterinterface.HttpRequest;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -16,12 +16,14 @@ import net.sf.json.JsonConfig;
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
- * 此测试框架主要采用testlink做分层框架，负责数据驱动以及用例管理部分，有任何疑问欢迎联系作者讨论。 QQ:24163551 seagull1985
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
  * 
  * @ClassName: InvokeMethod
- * @Description: 动态调用方法 @author： seagull
- * @date 2014年6月24日 上午9:29:40
+ * @Description: 动态调用方法 
+ * @author： seagull
+ * @date 2017年9月24日 上午9:29:40
  * 
  */
 public class InvokeMethod {
@@ -30,7 +32,7 @@ public class InvokeMethod {
 	 * @param args
 	 * @throws Throwable
 	 */
-	public static String CallCase(String packagename, String functionname, Object[] getParameterValues, int steptype,
+	public static String callCase(String packagename, String functionname, Object[] getParameterValues, int steptype,
 			String action) {
 		String result = "调用异常，请查看错误日志！";
 		try {
@@ -49,7 +51,7 @@ public class InvokeMethod {
 				Method method = getMethod(server.getClass().getMethods(), functionname, getParameterTypes);
 				if (method == null) {
 					throw new Exception(
-							"客户端本地lib目录下没有在包名为【" + packagename + "】中找到被调用的方法【" + functionname + "】,请检查方法名称以及参数个数是否一致！");
+							"客户端本地驱动目录下没有在包名为【" + packagename + "】中找到被调用的方法【" + functionname + "】,请检查方法名称以及参数个数是否一致！");
 				}
 				Object str = method.invoke(server, getParameterValues);
 				if (str == null) {
@@ -107,12 +109,23 @@ public class InvokeMethod {
 					if(ptp.getParam().indexOf("***[")>-1&&"***[".equals(ptp.getParam().substring(0, 4))){
 						ptp.setParam(ptp.getParam().substring(3));
 					}
-					params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
+					//处理参数对象
+					if(ptp.getParamtype()==1){
+						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
+						JSONObject json= JSONObject.fromObject(tempparam);
+						params.put(ptp.getParamname().replaceAll("&quot;", "\""), json);
+					}else if(ptp.getParamtype()==2){
+						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
+						JSONArray jarr=JSONArray.fromObject(tempparam);
+						params.put(ptp.getParamname().replaceAll("&quot;", "\""), jarr);
+					}else{
+						params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
+					}					
 				}
 				//处理头域
 				Map<String, String> headmsg = new HashMap<String, String>();
 				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
-					String temp[]=ppt.getHeadmsg().split(";",-1);
+					String[] temp=ppt.getHeadmsg().split(";",-1);
 					for(int i=0;i<temp.length;i++){
 						if(null!=temp[i]&&!temp[i].equals("")&&temp[i].indexOf("=")>0){
 							String key=temp[i].substring(0, temp[i].indexOf("="));
@@ -213,12 +226,23 @@ public class InvokeMethod {
 					if(ptp.getParam().indexOf("***[")>-1&&"***[".equals(ptp.getParam().substring(0, 4))){
 						ptp.setParam(ptp.getParam().substring(3));
 					}
-					params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
+					//处理参数对象
+					if(ptp.getParamtype()==1){
+						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
+						JSONObject json= JSONObject.fromObject(tempparam);
+						params.put(ptp.getParamname().replaceAll("&quot;", "\""), json);
+					}else if(ptp.getParamtype()==2){
+						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
+						JSONArray jarr=JSONArray.fromObject(tempparam);
+						params.put(ptp.getParamname().replaceAll("&quot;", "\""), jarr);
+					}else{
+						params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
+					}
 				}
 				//处理头域
 				Map<String, String> headmsg = new HashMap<String, String>();
 				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
-					String temp[]=ppt.getHeadmsg().split(";",-1);
+					String[] temp=ppt.getHeadmsg().split(";",-1);
 					for(int i=0;i<temp.length;i++){
 						if(null!=temp[i]&&!temp[i].equals("")&&temp[i].indexOf("=")>0){
 							String key=temp[i].substring(0, temp[i].indexOf("="));
@@ -249,10 +273,13 @@ public class InvokeMethod {
 
 	public static Method getMethod(Method[] methods, String methodName, @SuppressWarnings("rawtypes") Class[] parameterTypes) {
 		for (int i = 0; i < methods.length; i++) {
-			if (!methods[i].getName().equals(methodName))
+			if (!methods[i].getName().equals(methodName)){
 				continue;
-			if (compareParameterTypes(parameterTypes, methods[i].getParameterTypes()))
+			}			
+			if (compareParameterTypes(parameterTypes, methods[i].getParameterTypes())){
 				return methods[i];
+			}
+				
 		}
 		return null;
 	}
@@ -260,22 +287,28 @@ public class InvokeMethod {
 	public static boolean compareParameterTypes(@SuppressWarnings("rawtypes") Class[] parameterTypes, @SuppressWarnings("rawtypes") Class[] orgParameterTypes) {
 		// parameterTypes 里面，int->Integer
 		// orgParameterTypes是原始参数类型
-		if (parameterTypes == null && orgParameterTypes == null)
+		if (parameterTypes == null && orgParameterTypes == null){
 			return true;
+		}			
 		if (parameterTypes == null && orgParameterTypes != null) {
-			if (orgParameterTypes.length == 0)
+			if (orgParameterTypes.length == 0){
 				return true;
-			else
+			}else{
 				return false;
+			}			
 		}
 		if (parameterTypes != null && orgParameterTypes == null) {
-			if (parameterTypes.length == 0)
+			if (parameterTypes.length == 0){
 				return true;
-			else
+			}else{
 				return false;
+			}
+				
 		}
-		if (parameterTypes.length != orgParameterTypes.length)
+		if (parameterTypes.length != orgParameterTypes.length){
 			return false;
+		}
+			
 		return true;
 	}
 

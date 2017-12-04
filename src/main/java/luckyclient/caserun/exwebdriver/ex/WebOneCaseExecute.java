@@ -12,14 +12,26 @@ import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
+import luckyclient.planapi.entity.PublicCaseParams;
 
+/**
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
+ */
 public class WebOneCaseExecute{
 	
 	@SuppressWarnings("static-access")
-	public static void OneCaseExecuteForTast(String projectname,String testCaseExternalId,int version,String taskid){
+	public static void oneCaseExecuteForTast(String projectname,String testCaseExternalId,int version,String taskid){
 		DbLink.exetype = 0;   //记录日志到数据库
 		TestControl.TASKID = taskid;
-		int drivertype = LogOperation.Querydrivertype(taskid);
+		int drivertype = LogOperation.querydrivertype(taskid);
 		WebDriver wd = null;
 		try {
 			wd = WebDriverInitialization.setWebDriverForTask(taskid,drivertype);
@@ -28,13 +40,14 @@ public class WebOneCaseExecute{
 			e1.printStackTrace();
 		}
 		LogOperation caselog = new LogOperation(); // 初始化写用例结果以及日志模块
-		caselog.DeleteCaseDetail(testCaseExternalId, taskid);   //删除旧的用例
-		caselog.DeleteCaseLogDetail(testCaseExternalId, taskid);    //删除旧的日志
+		LogOperation.deleteCaseDetail(testCaseExternalId, taskid);   //删除旧的用例
+		LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    //删除旧的日志
 		ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectid()));
 		luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【"+testCaseExternalId+"】......");
 		try {
 			List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcase.getId());
-			WebCaseExecution.CaseExcution(testcase, steps, taskid,wd,caselog);
+			WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
 			luckyclient.publicclass.LogUtil.APP.info("当前用例：【"+testcase.getSign()+"】执行完成......进入下一条");
 		} catch (InterruptedException e) {
 			luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);

@@ -3,9 +3,20 @@ package luckyclient.publicclass;
 import java.io.File;
 import java.util.Enumeration;
 
+/**
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
+ */
 public class JarClassFind {
 
-	private static void FindClassInLocalSystem(String path,String classname) {
+	private static void findClassInLocalSystem(String path,String classname) {
 		int count = 0;
 		//String path = "D:\\web_task\\TestFrame\\lib\\";   //指定查找路径
 		classname = classname.replace('.', '/') + ".class";
@@ -58,7 +69,7 @@ public class JarClassFind {
 	static public void main(String[] args) {
 		String path = args[0];
 		String classname = args[1];
-		FindClassInLocalSystem(path,classname);
+		findClassInLocalSystem(path,classname);
 	}
 	
 }

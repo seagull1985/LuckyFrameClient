@@ -1,20 +1,30 @@
 package luckyclient.caserun.exinterface;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import luckyclient.caserun.exinterface.TestControl;
-import luckyclient.caserun.exinterface.AnalyticSteps.InterfaceAnalyticCase;
+import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.publicclass.DBOperation;
+import luckyclient.planapi.entity.PublicCaseParams;
+import luckyclient.publicclass.ChangString;
 import luckyclient.publicclass.InvokeMethod;
 
+/**
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
+ */
 public class TestCaseExecution {
 	/**
 	 * @param 项目名
@@ -23,12 +33,13 @@ public class TestCaseExecution {
 	 * 用于单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
 	 */
 	@SuppressWarnings("static-access")
-	public static void OneCaseExecuteForTast(String projectname, String testCaseExternalId, int version,
+	public static void oneCaseExecuteForTast(String projectname, String testCaseExternalId, int version,
 			String taskid) {
 		Map<String, String> variable = new HashMap<String, String>();
 		TestControl.TASKID = taskid;
 		DbLink.exetype = 0;
-		LogOperation caselog = new LogOperation(); // 初始化写用例结果以及日志模块
+		// 初始化写用例结果以及日志模块
+		LogOperation caselog = new LogOperation(); 
 		String packagename = null;
 		String functionname = null;
 		String expectedresults = null;
@@ -36,149 +47,56 @@ public class TestCaseExecution {
 		Object[] getParameterValues = null;
 		String testnote = null;
 		int k = 0;
-		caselog.DeleteCaseLogDetail(testCaseExternalId, taskid); // 删除旧的日志
+		// 删除旧的日志
+		LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid); 
 		ProjectCase testcaseob = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcaseob.getProjectid()));
+		// 把公共参数加入到MAP中
+		for (PublicCaseParams pcp : pcplist) {
+			variable.put(pcp.getParamsname(), pcp.getParamsvalue());
+		}
 		List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
 		// 进入循环，解析用例所有步骤
 		for (int i = 0; i < steps.size(); i++) {
-			Map<String, String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i), taskid,caselog); // 解析单个步骤中的脚本
-			packagename = casescript.get("PackageName").toString();
-			functionname = casescript.get("FunctionName").toString();
+			Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcaseob, steps.get(i), taskid,caselog);
+			try {
+				packagename = casescript.get("PackageName").toString();
+				packagename = ChangString.changparams(packagename, variable,"包路径");
+				functionname = casescript.get("FunctionName").toString();
+				functionname = ChangString.changparams(functionname, variable,"方法名");
+			} catch (Exception e) {
+				k = 0;
+				luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + "解析包名或是方法名失败，请检查！");
+				caselog.caseLogDetail(taskid, testcaseob.getSign(), "解析包名或是方法名失败，请检查！", "error", String.valueOf(i + 1), "");
+				e.printStackTrace();
+				break; // 某一步骤失败后，此条用例置为失败退出
+			}
 			// 用例名称解析出现异常或是单个步骤参数解析异常
 			if (functionname.indexOf("解析异常") > -1 || k == 1) {
 				k = 0;
 				testnote = "用例第" + (i + 1) + "步解析出错啦！";
 				break;
 			}
-			expectedresults = casescript.get("ExpectedResults").toString(); // 预期结果
-			if (expectedresults.indexOf("&quot;") > -1 || expectedresults.indexOf("&#39;") > -1) { // 页面转义字符转换
-				expectedresults = expectedresults.replaceAll("&quot;", "\"");
-				expectedresults = expectedresults.replaceAll("&#39;", "\'");
-			}
+			expectedresults = casescript.get("ExpectedResults").toString(); 
+			expectedresults = ChangString.changparams(expectedresults, variable,"预期结果");
 			// 判断方法是否带参数
 			if (casescript.size() > 4) {
-				// 获取传入参数，放入对象中
-				getParameterValues = new Object[casescript.size() - 4]; // 初始化参数对象个数
+				// 获取传入参数，放入对象中，初始化参数对象个数
+				getParameterValues = new Object[casescript.size() - 4]; 
 				for (int j = 0; j < casescript.size() - 4; j++) {
 					if (casescript.get("FunctionParams" + (j + 1)) == null) {
 						k = 1;
 						break;
 					}
-					if (casescript.get("FunctionParams" + (j + 1)).indexOf("@") > -1
-							&&casescript.get("FunctionParams"+(j+1)).indexOf("@@")<0) { // 如果存在传参，进行处理
-						int keyexistidentity = 0;
-						// 取单个参数中引用变量次数
-						int sumvariable = DBOperation.sumString(casescript.get("FunctionParams" + (j + 1)), "@");
-						String uservariable = null;
-						String uservariable1 = null;
-						String uservariable2 = null;
-
-						if (sumvariable == 1) {
-							uservariable = casescript.get("FunctionParams" + (j + 1))
-									.substring(casescript.get("FunctionParams" + (j + 1)).indexOf("@") + 1);
-						} else if (sumvariable == 2) { // 单个参数中引用第二个变量
-							uservariable = casescript.get("FunctionParams" + (j + 1)).substring(
-									casescript.get("FunctionParams" + (j + 1)).indexOf("@") + 1,
-									casescript.get("FunctionParams" + (j + 1)).lastIndexOf("@"));
-							uservariable1 = casescript.get("FunctionParams" + (j + 1))
-									.substring(casescript.get("FunctionParams" + (j + 1)).lastIndexOf("@") + 1);
-						} else if (sumvariable == 3) {
-							String temp = casescript.get("FunctionParams" + (j + 1)).substring(
-									casescript.get("FunctionParams" + (j + 1)).indexOf("@") + 1,
-									casescript.get("FunctionParams" + (j + 1)).lastIndexOf("@"));
-							uservariable1 = temp.substring(temp.indexOf("@") + 1);
-							uservariable2 = casescript.get("FunctionParams" + (j + 1))
-									.substring(casescript.get("FunctionParams" + (j + 1)).lastIndexOf("@") + 1);
-							uservariable = casescript.get("FunctionParams" + (j + 1)).substring(
-									casescript.get("FunctionParams" + (j + 1)).indexOf("@") + 1,
-									casescript.get("FunctionParams" + (j + 1)).indexOf(uservariable1) - 1);
-						} else {
-							luckyclient.publicclass.LogUtil.APP.error("你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
-							caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "你好像在一个参数中引用了超过2个以上的变量哦！我处理不过来啦！",
-									"error", String.valueOf(i + 1));
-						}
-						@SuppressWarnings("rawtypes")
-						Iterator keys = variable.keySet().iterator();
-						String key = null;
-						while (keys.hasNext()) {
-							key = (String) keys.next();
-							if (uservariable.indexOf(key)>-1) {
-								keyexistidentity = 1;
-								uservariable = key;
-								break;
-							}
-						}
-						if (sumvariable == 2 || sumvariable == 3) { // 处理第二个传参
-							keys = variable.keySet().iterator();
-							while (keys.hasNext()) {
-								keyexistidentity = 0;
-								key = (String) keys.next();
-								if (uservariable.indexOf(key)>-1) {
-									keyexistidentity = 1;
-									uservariable1 = key;
-									break;
-								}
-							}
-						}
-						if (sumvariable == 3) { // 处理第三个传参
-							keys = variable.keySet().iterator();
-							while (keys.hasNext()) {
-								keyexistidentity = 0;
-								key = (String) keys.next();
-								if (uservariable.indexOf(key)>-1) {
-									keyexistidentity = 1;
-									uservariable2 = key;
-									break;
-								}
-							}
-						}
-						if (keyexistidentity == 1) {
-							// 拼装参数（传参+原有字符串）
-							String ParameterValues = casescript.get("FunctionParams" + (j + 1))
-									.replaceAll("@" + uservariable, variable.get(uservariable).toString());
-							// 处理第二个传参
-							if (sumvariable == 2 || sumvariable == 3) {
-								ParameterValues = ParameterValues.replaceAll("@" + uservariable1,
-										variable.get(uservariable1).toString());
-							}
-							// 处理第三个传参
-							if (sumvariable == 3) {
-								ParameterValues = ParameterValues.replaceAll("@" + uservariable2,
-										variable.get(uservariable2).toString());
-							}
-							if (ParameterValues.indexOf("&quot;") > -1 || ParameterValues.indexOf("&#39;") > -1) { // 页面转义字符转换
-								ParameterValues = ParameterValues.replaceAll("&quot;", "\"");
-								ParameterValues = ParameterValues.replaceAll("&#39;", "\'");
-							}
-							luckyclient.publicclass.LogUtil.APP.info("解析包名：" + packagename + " 方法名：" + functionname
-									+ " 第" + (j + 1) + "个参数：" + ParameterValues);
-							caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "解析包名：" + packagename + " 方法名："
-									+ functionname + " 第" + (j + 1) + "个参数：" + ParameterValues, "info",
-									String.valueOf(i + 1));
-							getParameterValues[j] = ParameterValues;
-						} else {
-							luckyclient.publicclass.LogUtil.APP.error("没有找到你要的变量哦，再找下吧！第一个变量名称是：" + uservariable + "，第"
-									+ "二个变量名称是：" + uservariable1 + "，第三个变量名称是：" + uservariable2);
-							caselog.UpdateCaseLogDetail(testCaseExternalId,
-									taskid, "没有找到你要的变量哦，再找下吧！第二变量名称是：" + uservariable + "，第" + "二个变量名称是："
-											+ uservariable1 + "，第三个变量名称是：" + uservariable2,
-									"error", String.valueOf(i + 1));
-						}
-
-					} else {
-						String ParameterValues1 = casescript.get("FunctionParams" + (j + 1));
-						if (ParameterValues1.indexOf("&quot;") > -1 || ParameterValues1.indexOf("&#39;") > -1 || ParameterValues1.indexOf("@@")>-1) { // 页面转义字符转换
-							ParameterValues1 = ParameterValues1.replaceAll("&quot;", "\"");
-							ParameterValues1 = ParameterValues1.replaceAll("&#39;", "\'");
-							ParameterValues1 = ParameterValues1.replaceAll("@@", "@");
-						}
-						luckyclient.publicclass.LogUtil.APP.info("解析包名：" + packagename + " 方法名：" + functionname + " 第"
-								+ (j + 1) + "个参数：" + ParameterValues1);
-						caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "解析包名：" + packagename + " 方法名："
-								+ functionname + " 第" + (j + 1) + "个参数：" + ParameterValues1, "info",
-								String.valueOf(i + 1));
-						getParameterValues[j] = ParameterValues1;
-					}
+					
+					String parameterValues = casescript.get("FunctionParams" + (j + 1));
+					parameterValues = ChangString.changparams(parameterValues, variable,"用例参数");
+					luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "解析包名：" + packagename
+							+ " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues);
+					caselog.caseLogDetail(taskid, testcaseob.getSign(),
+							"解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues,
+							"info", String.valueOf(i + 1), "");
+					getParameterValues[j] = parameterValues;
 				}
 			} else {
 				getParameterValues = null;
@@ -186,23 +104,24 @@ public class TestCaseExecution {
 			// 调用动态方法，执行测试用例
 			try {
 				luckyclient.publicclass.LogUtil.APP.info("开始调用方法：" + functionname + " .....");
-				caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "开始调用方法：" + functionname + " .....", "info",
+				LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "开始调用方法：" + functionname + " .....", "info",
 						String.valueOf(i + 1));
-				if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("$=") > -1) { // 把预期结果前两个字符判断是否是要把结果存入变量
-					String ExpectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
-					String temptestnote = InvokeMethod.CallCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
-					variable.put(ExpectedResultVariable, temptestnote);
-				} else if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("%=") > -1) { // 把预期结果与测试结果做模糊匹配
-					testnote = InvokeMethod.CallCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
+				// 把预期结果前两个字符判断是否是要把结果存入变量
+				if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("$=") > -1) { 
+					String expectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
+					String temptestnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
+					variable.put(expectedResultVariable, temptestnote);
+				} else if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("%=") > -1) { 
+					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 					if (testnote.indexOf(expectedresults.substring(2)) > -1) {
 						setresult = 0;
 						luckyclient.publicclass.LogUtil.APP.info("用例执行结果是：" + testnote + "，与预期结果匹配成功！");
-						caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "用例执行结果是：" + testnote + "，与预期结果匹配成功！",
+						LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "用例执行结果是：" + testnote + "，与预期结果匹配成功！",
 								"info", String.valueOf(i + 1));
 					} else {
 						setresult = 1;
 						luckyclient.publicclass.LogUtil.APP.error("用例第" + (i + 1) + "步执行结果与预期结果匹配失败！");
-						caselog.UpdateCaseLogDetail(testCaseExternalId, taskid,
+						LogOperation.updateCaseLogDetail(testCaseExternalId, taskid,
 								"用例第" + (i + 1) + "步执行结果与预期结果匹配失败！预期结果：" + expectedresults + "      测试结果：" + testnote,
 								"error", String.valueOf(i + 1));
 						luckyclient.publicclass.LogUtil.APP.error("预期结果：" + expectedresults + "      测试结果：" + testnote);
@@ -210,16 +129,16 @@ public class TestCaseExecution {
 						break; // 某一步骤失败后，此条用例置为失败退出
 					}
 				} else { // 把预期结果与测试结果做精确匹配
-					testnote = InvokeMethod.CallCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
+					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 					if (expectedresults.equals(testnote)) {
 						setresult = 0;
 						luckyclient.publicclass.LogUtil.APP.info("用例执行结果是：" + testnote + "，与预期结果匹配成功！");
-						caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "用例执行结果是：" + testnote + "，与预期结果匹配成功！",
+						LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "用例执行结果是：" + testnote + "，与预期结果匹配成功！",
 								"info", String.valueOf(i + 1));
 					} else {
 						setresult = 1;
 						luckyclient.publicclass.LogUtil.APP.error("用例第" + (i + 1) + "步执行结果与预期结果匹配失败！");
-						caselog.UpdateCaseLogDetail(testCaseExternalId, taskid,
+						LogOperation.updateCaseLogDetail(testCaseExternalId, taskid,
 								"用例第" + (i + 1) + "步执行结果与预期结果匹配失败！预期结果：" + expectedresults + "      测试结果：" + testnote,
 								"error", String.valueOf(i + 1));
 						luckyclient.publicclass.LogUtil.APP.error("预期结果：" + expectedresults + "      测试结果：" + testnote);
@@ -228,13 +147,14 @@ public class TestCaseExecution {
 						break; // 某一步骤失败后，此条用例置为失败退出
 					}
 				}
-				int waitsec = Integer.parseInt(casescript.get("StepWait").toString()); // 获取步骤间等待时间
+				// 获取步骤间等待时间
+				int waitsec = Integer.parseInt(casescript.get("StepWait").toString()); 
 				if (waitsec != 0) {
 					Thread.sleep(waitsec * 1000);
 				}
 			} catch (Exception e) {
 				luckyclient.publicclass.LogUtil.APP.error("调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！");
-				caselog.UpdateCaseLogDetail(testCaseExternalId, taskid,
+				LogOperation.updateCaseLogDetail(testCaseExternalId, taskid,
 						"调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！", "error", String.valueOf(i + 1));
 				luckyclient.publicclass.LogUtil.APP.error(e, e);
 				testnote = "CallCase调用出错！";
@@ -247,29 +167,29 @@ public class TestCaseExecution {
 		// 如果调用方法过程中未出错，进入设置测试结果流程
 		if (testnote.indexOf("CallCase调用出错！") <= -1 && testnote.indexOf("解析出错啦！") <= -1) {
 			luckyclient.publicclass.LogUtil.APP.info("用例 " + testCaseExternalId + "解析成功，并成功调用用例中方法，请继续查看执行结果！");
-			caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "解析成功，并成功调用用例中方法，请继续查看执行结果！", "info",
+			LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "解析成功，并成功调用用例中方法，请继续查看执行结果！", "info",
 					"SETCASERESULT...");
 			// TCResult =
 			// TestCaseApi.setTCResult(projectname,testCaseExternalId, testnote,
 			// version,setresult);
-			caselog.UpdateCaseDetail(taskid, testCaseExternalId, setresult);
+			caselog.updateCaseDetail(taskid, testCaseExternalId, setresult);
 		} else {
 			setresult = 1;
 			luckyclient.publicclass.LogUtil.APP.error("用例 " + testCaseExternalId + "解析或是调用步骤中的方法出错！");
-			caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "解析或是调用步骤中的方法出错！", "error", "SETCASERESULT...");
+			LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "解析或是调用步骤中的方法出错！", "error", "SETCASERESULT...");
 			// TCResult =
 			// TestCaseApi.setTCResult(projectname,testCaseExternalId, testnote,
 			// version,2);
-			caselog.UpdateCaseDetail(taskid, testCaseExternalId, 2);
+			caselog.updateCaseDetail(taskid, testCaseExternalId, 2);
 		}
 		if (0 == setresult) {
 			luckyclient.publicclass.LogUtil.APP.info("用例 " + testCaseExternalId + "步骤全部执行成功！");
-			caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "步骤全部执行成功！", "info", "EXECUTECASESUC...");
+			LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "步骤全部执行成功！", "info", "EXECUTECASESUC...");
 		} else {
 			luckyclient.publicclass.LogUtil.APP.error("用例 " + testCaseExternalId + "在执行过程中失败，请检查日志！");
-			caselog.UpdateCaseLogDetail(testCaseExternalId, taskid, "在执行过程中失败，请检查日志！", "error", "EXECUTECASESUC...");
+			LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "在执行过程中失败，请检查日志！", "error", "EXECUTECASESUC...");
 		}
-		LogOperation.UpdateTastdetail(taskid, 0);
+		LogOperation.updateTastdetail(taskid, 0);
 	}
 
 	/**
@@ -278,7 +198,7 @@ public class TestCaseExecution {
 	 * @param 用例版本号
 	 *            用于在UI的测试过程中，需要调用接口的测试用例
 	 */
-	protected static String OneCaseExecuteForWebDriver(String testCaseExternalId, String taskid,LogOperation caselog) {
+	protected static String oneCaseExecuteForWebDriver(String testCaseExternalId, String taskid,LogOperation caselog) {
 		Map<String, String> variable = new HashMap<String, String>();
 		String packagename = null;
 		String functionname = null;
@@ -288,135 +208,54 @@ public class TestCaseExecution {
 		String testnote = null;
 		int k = 0;
 		ProjectCase testcaseob = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcaseob.getProjectid()));
+		// 把公共参数加入到MAP中
+		for (PublicCaseParams pcp : pcplist) {
+			variable.put(pcp.getParamsname(), pcp.getParamsvalue());
+		}
 		List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
 		// 进入循环，解析用例所有步骤
 		for (int i = 0; i < steps.size(); i++) {
-			Map<String, String> casescript = InterfaceAnalyticCase.AnalyticCaseStep(testcaseob, steps.get(i), taskid,caselog);
-			packagename = casescript.get("PackageName").toString();
-			functionname = casescript.get("FunctionName").toString();
+			Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcaseob, steps.get(i), taskid,caselog);
+			try {
+				packagename = casescript.get("PackageName").toString();
+				packagename = ChangString.changparams(packagename, variable,"包路径");
+				functionname = casescript.get("FunctionName").toString();
+				functionname = ChangString.changparams(functionname, variable,"方法名");
+			} catch (Exception e) {
+				k = 0;
+				luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + "解析包名或是方法名失败，请检查！");
+				caselog.caseLogDetail(taskid, testcaseob.getSign(), "解析包名或是方法名失败，请检查！", "error", String.valueOf(i + 1), "");
+				e.printStackTrace();
+				break; // 某一步骤失败后，此条用例置为失败退出
+			}
 			// 用例名称解析出现异常或是单个步骤参数解析异常
 			if (functionname.indexOf("解析异常") > -1 || k == 1) {
 				k = 0;
 				testnote = "用例第" + (i + 1) + "步解析出错啦！";
 				break;
 			}
-			expectedresults = casescript.get("ExpectedResults").toString(); // 预期结果
-			if (expectedresults.indexOf("&quot;") > -1 || expectedresults.indexOf("&#39;") > -1) { // 页面转义字符转换
-				expectedresults = expectedresults.replaceAll("&quot;", "\"");
-				expectedresults = expectedresults.replaceAll("&#39;", "\'");
-			}
+			expectedresults = casescript.get("ExpectedResults").toString(); 
+			expectedresults = ChangString.changparams(expectedresults, variable,"预期结果");
 			// 判断方法是否带参数
 			if (casescript.size() > 4) {
 				// 获取传入参数，放入对象中
-				getParameterValues = new Object[casescript.size() - 4]; // 初始化参数对象个数
+				getParameterValues = new Object[casescript.size() - 4]; 
 				for (int j = 0; j < casescript.size() - 4; j++) {
 					if (casescript.get("FunctionParams" + (j + 1)) == null) {
 						k = 1;
 						break;
 					}
-					if (casescript.get("FunctionParams" + (j + 1)).indexOf("@") > -1
-							&&casescript.get("FunctionParams"+(j+1)).indexOf("@@")<0) { // 如果存在传参，进行处理
-						int keyexistidentity = 0;
-						// 取单个参数中引用变量次数
-						int sumvariable = DBOperation.sumString(casescript.get("FunctionParams" + (j + 1)), "@");
-						String uservariable = null;
-						String uservariable1 = null;
-						String uservariable2 = null;
+					
+					String parameterValues = casescript.get("FunctionParams" + (j + 1));
+					parameterValues = ChangString.changparams(parameterValues, variable,"用例参数");
+					luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "解析包名：" + packagename
+							+ " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues);
+					caselog.caseLogDetail(taskid, testcaseob.getSign(),
+							"解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues,
+							"info", String.valueOf(i + 1), "");
+					getParameterValues[j] = parameterValues;
 
-						if (sumvariable == 1) {
-							uservariable = casescript.get("FunctionParams" + (j + 1))
-									.substring(casescript.get("FunctionParams" + (j + 1)).indexOf("@") + 1);
-						} else if (sumvariable == 2) { // 单个参数中引用第二个变量
-							uservariable = casescript.get("FunctionParams" + (j + 1)).substring(
-									casescript.get("FunctionParams" + (j + 1)).indexOf("@") + 1,
-									casescript.get("FunctionParams" + (j + 1)).lastIndexOf("@"));
-							uservariable1 = casescript.get("FunctionParams" + (j + 1))
-									.substring(casescript.get("FunctionParams" + (j + 1)).lastIndexOf("@") + 1);
-						} else if (sumvariable == 3) {
-							String temp = casescript.get("FunctionParams" + (j + 1)).substring(
-									casescript.get("FunctionParams" + (j + 1)).indexOf("@") + 1,
-									casescript.get("FunctionParams" + (j + 1)).lastIndexOf("@"));
-							uservariable1 = temp.substring(temp.indexOf("@") + 1);
-							uservariable2 = casescript.get("FunctionParams" + (j + 1))
-									.substring(casescript.get("FunctionParams" + (j + 1)).lastIndexOf("@") + 1);
-							uservariable = casescript.get("FunctionParams" + (j + 1)).substring(
-									casescript.get("FunctionParams" + (j + 1)).indexOf("@") + 1,
-									casescript.get("FunctionParams" + (j + 1)).indexOf(uservariable1) - 1);
-						} else {
-							luckyclient.publicclass.LogUtil.APP.error("你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
-						}
-						@SuppressWarnings("rawtypes")
-						Iterator keys = variable.keySet().iterator();
-						String key = null;
-						while (keys.hasNext()) {
-							key = (String) keys.next();
-							if (uservariable.indexOf(key) > -1) {
-								keyexistidentity = 1;
-								uservariable = key;
-								break;
-							}
-						}
-						if (sumvariable == 2 || sumvariable == 3) { // 处理第二个传参
-							keys = variable.keySet().iterator();
-							while (keys.hasNext()) {
-								keyexistidentity = 0;
-								key = (String) keys.next();
-								if (uservariable1.indexOf(key) > -1) {
-									keyexistidentity = 1;
-									uservariable1 = key;
-									break;
-								}
-							}
-						}
-						if (sumvariable == 3) { // 处理第三个传参
-							keys = variable.keySet().iterator();
-							while (keys.hasNext()) {
-								keyexistidentity = 0;
-								key = (String) keys.next();
-								if (uservariable2.indexOf(key) > -1) {
-									keyexistidentity = 1;
-									uservariable2 = key;
-									break;
-								}
-							}
-						}
-						if (keyexistidentity == 1) {
-							// 拼装参数（传参+原有字符串）
-							String ParameterValues = casescript.get("FunctionParams" + (j + 1))
-									.replaceAll("@" + uservariable, variable.get(uservariable).toString());
-							// 处理第二个传参
-							if (sumvariable == 2 || sumvariable == 3) {
-								ParameterValues = ParameterValues.replaceAll("@" + uservariable1,
-										variable.get(uservariable1).toString());
-							}
-							// 处理第三个传参
-							if (sumvariable == 3) {
-								ParameterValues = ParameterValues.replaceAll("@" + uservariable2,
-										variable.get(uservariable2).toString());
-							}
-							if (ParameterValues.indexOf("&quot;") > -1 || ParameterValues.indexOf("&#39;") > -1) { // 页面转义字符转换
-								ParameterValues = ParameterValues.replaceAll("&quot;", "\"");
-								ParameterValues = ParameterValues.replaceAll("&#39;", "\'");
-							}
-							luckyclient.publicclass.LogUtil.APP.info("解析包名：" + packagename + " 方法名：" + functionname
-									+ " 第" + (j + 1) + "个参数：" + ParameterValues);
-							getParameterValues[j] = ParameterValues;
-						} else {
-							luckyclient.publicclass.LogUtil.APP.error("没有找到你要的变量哦，再找下吧！第一个变量名称是：" + uservariable + "，第"
-									+ "二个变量名称是：" + uservariable1 + "，第三个变量名称是：" + uservariable2);
-						}
-
-					} else {
-						String ParameterValues1 = casescript.get("FunctionParams" + (j + 1));
-						if (ParameterValues1.indexOf("&quot;") > -1 || ParameterValues1.indexOf("&#39;") > -1 || ParameterValues1.indexOf("@@")>-1) { // 页面转义字符转换
-							ParameterValues1 = ParameterValues1.replaceAll("&quot;", "\"");
-							ParameterValues1 = ParameterValues1.replaceAll("&#39;", "\'");
-							ParameterValues1 = ParameterValues1.replaceAll("@@", "@");
-						}
-						luckyclient.publicclass.LogUtil.APP.info("解析包名：" + packagename + " 方法名：" + functionname + " 第"
-								+ (j + 1) + "个参数：" + ParameterValues1);
-						getParameterValues[j] = ParameterValues1;
-					}
 				}
 			} else {
 				getParameterValues = null;
@@ -424,12 +263,13 @@ public class TestCaseExecution {
 			// 调用动态方法，执行测试用例
 			try {
 				luckyclient.publicclass.LogUtil.APP.info("开始调用方法：" + functionname + " .....");
-				if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("$=") > -1) { // 把预期结果前两个字符判断是否是要把结果存入变量
-					String ExpectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
-					String temptestnote = InvokeMethod.CallCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
-					variable.put(ExpectedResultVariable, temptestnote);
-				} else if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("%=") > -1) { // 把预期结果与测试结果做模糊匹配
-					testnote = InvokeMethod.CallCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
+				// 把预期结果前两个字符判断是否是要把结果存入变量
+				if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("$=") > -1) { 
+					String expectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
+					String temptestnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
+					variable.put(expectedResultVariable, temptestnote);
+				} else if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("%=") > -1) { 
+					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 					if (testnote.indexOf(expectedresults.substring(2)) > -1) {
 						setresult = 0;
 						luckyclient.publicclass.LogUtil.APP.info("用例执行结果是：" + testnote + "，与预期结果匹配成功！");
@@ -441,7 +281,7 @@ public class TestCaseExecution {
 						break; // 某一步骤失败后，此条用例置为失败退出
 					}
 				} else { // 把预期结果与测试结果做精确匹配
-					testnote = InvokeMethod.CallCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
+					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 					if ("".equals(expectedresults) || testnote.equals(expectedresults)) {
 						setresult = 0;
 						luckyclient.publicclass.LogUtil.APP.info("用例执行结果是：" + testnote + "，与预期结果匹配成功！");
@@ -454,7 +294,7 @@ public class TestCaseExecution {
 						break; // 某一步骤失败后，此条用例置为失败退出
 					}
 				}
-				int waitsec = Integer.parseInt(casescript.get("StepWait").toString()); // 获取步骤间等待时间
+				int waitsec = Integer.parseInt(casescript.get("StepWait").toString()); 
 				if (waitsec != 0) {
 					Thread.sleep(waitsec * 1000);
 				}

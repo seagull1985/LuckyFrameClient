@@ -1,4 +1,4 @@
-package luckyclient.publicclass.remoterInterface;
+package luckyclient.publicclass.remoterinterface;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,10 +12,21 @@ import java.util.Properties;
 import luckyclient.publicclass.LogUtil;
 import luckyclient.publicclass.SysConfig;
 
+/**
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
+ */
 public class HttpRequest {
-	final static Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
-	private final static String Web_URL = "http://" + properties.getProperty("server.web.ip") + ":"
-			+ properties.getProperty("server.web.port");
+	final static Properties PROPERTIES = luckyclient.publicclass.SysConfig.getConfiguration();
+	private final static String WEB_URL = "http://" + PROPERTIES.getProperty("server.web.ip") + ":"
+			+ PROPERTIES.getProperty("server.web.port");
 
 	/**
 	 * 字符串参数
@@ -27,7 +38,7 @@ public class HttpRequest {
 		StringBuilder json = new StringBuilder();
 		URL url=null;
 		try {
-			url = new URL(Web_URL+repath);
+			url = new URL(WEB_URL+repath);
 			URLConnection yc = url.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
 			String inputLine = null;
@@ -58,7 +69,7 @@ public class HttpRequest {
         BufferedReader in = null;
         String result = "";
         try {
-            URL realUrl = new URL(Web_URL+repath);
+            URL realUrl = new URL(WEB_URL+repath);
             // 打开和URL之间的连接
             URLConnection conn = realUrl.openConnection();
             // 设置通用的请求属性

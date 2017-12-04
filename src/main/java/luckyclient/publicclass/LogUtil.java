@@ -43,13 +43,15 @@ public class LogUtil {
 	    		for(Field field:fieldArray){
 	    			field.setAccessible(true);
 	    			obj = field.get(bean);
-	    			if(!(obj instanceof List) && !field.getName().equals("serialVersionUID")){
-	    			   if(indexId>0)
+	    			if(!(obj instanceof List) && !"serialVersionUID".equals(field.getName())){
+	    			   if(indexId>0){
 	    				   sb.append(",");
-	    			   if(obj != null)
-	    			       sb.append(field.getName()).append("=").append( obj.toString());
-	    			   else
+	    			   }    				   
+	    			   if(obj != null){
+	    				   sb.append(field.getName()).append("=").append( obj.toString());
+	    			   }else{
 	    				   sb.append(field.getName()).append("=");   
+	    			   }	    				   
 	       			   indexId += 1;    			   
 	    			}
 	    		}

@@ -17,13 +17,13 @@ import br.eti.kinoshita.testlinkjavaapi.model.TestSuite;
 import br.eti.kinoshita.testlinkjavaapi.util.TestLinkAPIException;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.dblog.LogOperation;
-import luckyclient.publicclass.remoterInterface.HttpRequest;
+import luckyclient.publicclass.remoterinterface.HttpRequest;
 
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
- * 此测试框架主要采用testlink做分层框架，负责数据驱动以及用例管理部分，有任何疑问欢迎联系作者讨论。
- * QQ:24163551 seagull1985
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
  * @ClassName: TestCaseApi 
  * @Description: 二次封装关于测试用例部分的API 
@@ -111,12 +111,12 @@ public class TestCaseApi extends TestLinkBaseApi {
 		    //能过项目名称以及计划名称获取计划ID
 		    TestPlan testplanob = new TestPlan();
 		    //testplanob = api.getTestPlanByName(TestPlanName(projectname), projectname);
-		    testplanob = api.getTestPlanByName(LogOperation.GetTestPlanName(TestControl.TASKID), projectname);
+		    testplanob = api.getTestPlanByName(LogOperation.getTestPlanName(TestControl.TASKID), projectname);
 		    Integer planid = testplanob.getId();
 		    
 		    Map<String, Object> params = new HashMap<String, Object>();			
 		    params.put("devKey", TESTLINK_DEVKEY);
-		    params.put("testprojectid", ProjectID(projectname));
+		    params.put("testprojectid", projectID(projectname));
 		    params.put("testplanid", planid);
 		    params.put("testcaseexternalid", testCaseExternalID);
 		    params.put("version", version);
@@ -161,10 +161,10 @@ public class TestCaseApi extends TestLinkBaseApi {
 
 			if ("888888".equals(taskid)) {
 				tp = api.getTestPlanByName(testplan, projectname);
-			} else if (taskid.indexOf("NULL") > -1 || LogOperation.GetTestPlanName(taskid).indexOf("NULL") > -1) {
-				tp = api.getTestPlanByName(TestPlanName(projectname), projectname);
+			} else if (taskid.indexOf("NULL") > -1 || LogOperation.getTestPlanName(taskid).indexOf("NULL") > -1) {
+				tp = api.getTestPlanByName(testPlanName(projectname), projectname);
 			} else {
-				tp = api.getTestPlanByName(LogOperation.GetTestPlanName(taskid), projectname);				
+				tp = api.getTestPlanByName(LogOperation.getTestPlanName(taskid), projectname);				
 			}
 			planid = tp.getId();
 	    //用例明细全部信息
@@ -198,27 +198,27 @@ public class TestCaseApi extends TestLinkBaseApi {
 		
 		}catch( TestLinkAPIException te) {
             te.printStackTrace( System.err );
-            luckyclient.publicclass.LogUtil.ERROR.error("项目："+projectname+" 测试计划："+TestPlanName(projectname)+" 读取自动化用例对象异常！");
+            luckyclient.publicclass.LogUtil.ERROR.error("项目："+projectname+" 测试计划："+testPlanName(projectname)+" 读取自动化用例对象异常！");
             System.exit(-1);
     }
 		 return testCases;
 
 	}
 	
-	public static TestCase getTestCaseByExternalId(String TestCaseExternalId,int version){
-		return api.getTestCaseByExternalId(TestCaseExternalId, version);
+	public static TestCase getTestCaseByExternalId(String testCaseExternalId,int version){
+		return api.getTestCaseByExternalId(testCaseExternalId, version);
 	}
 	
 	/**
 	 * 更新testlink中用例指定步骤的预期结果
 	 */
-	public static String setTestLinkExpectedResults(String TestCaseExternalId, int version, int steps, String expectedResults) {
+	public static String setTestLinkExpectedResults(String testCaseExternalId, int version, int steps, String expectedResults) {
 		String results = "设置结果失败";
 		try {
-			TestCase tc = api.getTestCaseByExternalId(TestCaseExternalId, version);
+			TestCase tc = api.getTestCaseByExternalId(testCaseExternalId, version);
 			
 			tc.getSteps().get(steps - 1).setExpectedResults(expectedResults);
-			api.createTestCaseSteps(tc.getId(), TestCaseExternalId, tc.getVersion(), TestCaseStepAction.UPDATE, tc.getSteps());
+			api.createTestCaseSteps(tc.getId(), testCaseExternalId, tc.getVersion(), TestCaseStepAction.UPDATE, tc.getSteps());
 			results = "设置结果成功";
 		} catch (TestLinkAPIException te) {
 			te.printStackTrace(System.err);
@@ -232,14 +232,14 @@ public class TestCaseApi extends TestLinkBaseApi {
 	/**
 	 * 更新系统中用例指定步骤的预期结果
 	 */
-	public static String setExpectedResults(String TestCaseSign, int steps, String expectedResults) {
+	public static String setExpectedResults(String testCaseSign, int steps, String expectedResults) {
 		String results = "设置结果失败";
 		String params="";
 		try {
 			expectedResults = expectedResults.replace("%", "BBFFHH");
 			expectedResults = expectedResults.replace("=", "DHDHDH");
 			expectedResults = expectedResults.replace("&", "ANDAND");
-			params="caseno="+TestCaseSign;
+			params="caseno="+testCaseSign;
 			params+="&stepnum="+steps;
 			params+="&expectedresults="+expectedResults;
 			results=HttpRequest.sendPost("/projectCasesteps/cUpdateStepExpectedResults.do", params);
@@ -256,9 +256,9 @@ public class TestCaseApi extends TestLinkBaseApi {
 	 * 获取指定任务名称以及用例号报错日志中的执行测试结果
 	 * casestatus说明  pass:0    fail:1   lock:2   unexcute:4
 	 */
-	public static String getLogdetail_Runresult(String taskname,String caseno,int casestatus){
-		int taskid = LogOperation.gettaskexcute_taskid(taskname);
-		return LogOperation.getlogdetail_testresult(taskid, caseno,casestatus);
+	public static String getLogDetailRunresult(String taskname,String caseno,int casestatus){
+		int taskid = LogOperation.getTaskExcuteTaskid(taskname);
+		return LogOperation.getLogDetailTestResult(taskid, caseno,casestatus);
 	}
 	
 	/**
@@ -273,7 +273,7 @@ public class TestCaseApi extends TestLinkBaseApi {
 			TestCase suitecase=api.getTestCaseByExternalId(cases.getFullExternalId(), cases.getVersion());
 			List<Integer> suiteid=new ArrayList<Integer>();
 			suiteid.add(suitecase.getTestSuiteId());
-			TestSuite suite[]=api.getTestSuiteByID(suiteid);
+			TestSuite[] suite=api.getTestSuiteByID(suiteid);
 			
 			String params="";
 
@@ -290,7 +290,7 @@ public class TestCaseApi extends TestLinkBaseApi {
 				String stepsparams="";
 				String resultstr = null;
 				String stepsstr = step.getActions();    //获取actions字符串
-				String scriptstr = InterfaceAnalyticTestLinkCase.SubComment(stepsstr);
+				String scriptstr = InterfaceAnalyticTestLinkCase.subComment(stepsstr);
 
 				if(scriptstr.substring(scriptstr.length()-6, scriptstr.length()).indexOf("*Wait;")>-1){
 					String action="";
@@ -304,13 +304,13 @@ public class TestCaseApi extends TestLinkBaseApi {
 		        	stepsparams="action="+action+"&";
 		        	scriptstr = scriptstr.substring(0, scriptstr.lastIndexOf("|")+1);
 		        }
-				resultstr = InterfaceAnalyticTestLinkCase.SubComment(step.getExpectedResults());   //获取预期结果字符串
+				resultstr = InterfaceAnalyticTestLinkCase.subComment(step.getExpectedResults());   //获取预期结果字符串
 				stepsparams+="expectedresult="+resultstr.replace("%", "BBFFHH");
 				stepsparams+="&caseid="+caseid;
 				stepsparams+="&stepnum="+k;
 				stepsparams+="&projectid="+projectid;
 				stepsparams+="&steptype=0";
-				String temp[]=scriptstr.split("\\|",-1);
+				String[] temp=scriptstr.split("\\|",-1);
 				String param="";
 				for(int i=0;i<temp.length;i++){
 					if(i==0){
@@ -318,7 +318,7 @@ public class TestCaseApi extends TestLinkBaseApi {
 						String functionname = temp[i].substring(temp[i].indexOf("#")+1, temp[i].indexOf(";"));
 						stepsparams+="&path="+packagenage.trim();   //set包名
 						stepsparams+="&operation="+functionname.trim();   //set方法名称
-					}else if(temp[i].equals("")){
+					}else if("".equals(temp[i])){
 						continue;
 					}else{
 						param+=temp[i]+"|";
@@ -348,7 +348,7 @@ public class TestCaseApi extends TestLinkBaseApi {
 			TestCase suitecase=api.getTestCaseByExternalId(cases.getFullExternalId(), cases.getVersion());
 			List<Integer> suiteid=new ArrayList<Integer>();
 			suiteid.add(suitecase.getTestSuiteId());
-			TestSuite suite[]=api.getTestSuiteByID(suiteid);
+			TestSuite[] suite=api.getTestSuiteByID(suiteid);
 			
 			String params="";
 
@@ -365,7 +365,7 @@ public class TestCaseApi extends TestLinkBaseApi {
 				String stepsparams="";
 				String resultstr = null;
 				String stepsstr = step.getActions();    //获取actions字符串
-				String scriptstr = InterfaceAnalyticTestLinkCase.SubComment(stepsstr);
+				String scriptstr = InterfaceAnalyticTestLinkCase.subComment(stepsstr);
 
 				if(scriptstr.substring(scriptstr.length()-6, scriptstr.length()).indexOf("*Wait;")>-1){
 					String action="";
@@ -379,13 +379,13 @@ public class TestCaseApi extends TestLinkBaseApi {
 		        	stepsparams="action="+action+"&";
 		        	scriptstr = scriptstr.substring(0, scriptstr.lastIndexOf("|")+1);
 		        }
-				resultstr = InterfaceAnalyticTestLinkCase.SubComment(step.getExpectedResults());   //获取预期结果字符串
+				resultstr = InterfaceAnalyticTestLinkCase.subComment(step.getExpectedResults());   //获取预期结果字符串
 				stepsparams+="expectedresult="+resultstr.replace("%", "BBFFHH");
 				stepsparams+="&caseid="+caseid;
 				stepsparams+="&stepnum="+k;
 				stepsparams+="&projectid="+projectid;
 				stepsparams+="&steptype=1";
-				String temp[]=scriptstr.split("\\|",-1);
+				String[] temp=scriptstr.split("\\|",-1);
 				for(int i=0;i<temp.length;i++){
 					if(i==0&&temp[i].indexOf("=")>-1&&(temp.length>2||!"".equals(temp[1]))){
 						stepsparams+="&path="+temp[i].replace("=", "DHDHDH");   //set包名					
@@ -393,16 +393,16 @@ public class TestCaseApi extends TestLinkBaseApi {
 						continue;
 					}else{
 						String operation = null;
-						String operation_value = null;
+						String operationValue = null;
 						if(temp[i].indexOf("(")>-1&&temp[i].indexOf(")")>-1){
 							operation = temp[i].substring(0, temp[i].indexOf("("));
-							operation_value = temp[i].substring(temp[i].indexOf("(")+1, temp[i].lastIndexOf(")"));
+							operationValue = temp[i].substring(temp[i].indexOf("(")+1, temp[i].lastIndexOf(")"));
 						}else{
 							operation = temp[i];
 						}
 						stepsparams+="&operation="+operation.toLowerCase();   //set方法名称
-						if(null!=operation_value){
-							stepsparams+="&parameters="+operation_value.replace("%", "BBFFHH");   //set方法名称
+						if(null!=operationValue){
+							stepsparams+="&parameters="+operationValue.replace("%", "BBFFHH");   //set方法名称
 						}						
 					}
 				}
@@ -421,9 +421,9 @@ public class TestCaseApi extends TestLinkBaseApi {
 	 * 获取指定任务名称以及用例号报错日志中的执行预期结果
 	 * casestatus说明  pass:0    fail:1   lock:2   unexcute:4
 	 */
-	public static String getLogdetail_Expectresult(String taskname,String caseno,int casestatus){
-		int taskid = LogOperation.gettaskexcute_taskid(taskname);
-		return LogOperation.getlogdetail_expectresult(taskid, caseno,casestatus);
+	public static String getLogDetailExpectresult(String taskname,String caseno,int casestatus){
+		int taskid = LogOperation.getTaskExcuteTaskid(taskname);
+		return LogOperation.getLogDetailExpectResult(taskid, caseno,casestatus);
 	}
 	
 	public static void main(String[] args){

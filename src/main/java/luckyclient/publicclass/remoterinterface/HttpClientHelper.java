@@ -1,4 +1,4 @@
-package luckyclient.publicclass.remoterInterface;
+package luckyclient.publicclass.remoterinterface;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -13,18 +13,15 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -32,16 +29,21 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import net.sf.json.JSONObject;
 
 /**
- * @Description:发送http请求帮助类
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
  */
 public class HttpClientHelper {
 	/**
@@ -76,9 +78,10 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		//value="Basic  " + Base64.encode((valuesub).getBytes());
+		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -164,9 +167,9 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -248,9 +251,9 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -328,9 +331,9 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -397,9 +400,9 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -442,9 +445,9 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	if(null!=value&&value.indexOf("Base64(")>0){
+	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-	    		value="Basic " + Base64.encode((valuesub).getBytes());
+	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 	    		httpPost.setHeader(key, value);
 	    	}else{
 	    		httpPost.setHeader(key, value);
@@ -494,9 +497,9 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	if(null!=value&&value.indexOf("Base64(")>0){
+	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-	    		value="Basic " + Base64.encode((valuesub).getBytes());
+	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 	    		httpPost.setHeader(key, value);
 	    	}else{
 	    		httpPost.setHeader(key, value);
@@ -578,9 +581,9 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	if(null!=value&&value.indexOf("Base64(")>0){
+	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-	    		value="Basic " + Base64.encode((valuesub).getBytes());
+	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 	    		httpGet.setHeader(key, value);
 	    	}else{
 	    		httpGet.setHeader(key, value);
@@ -644,9 +647,9 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 		    		sb.append(key+": "+value+" \r\n");
 		    	}else{
 		    		sb.append(key+": "+value+" \r\n");
@@ -675,7 +678,7 @@ public class HttpClientHelper {
 					contentLength = Integer.parseInt(line.split(":")[1].trim());
 				}
 				// 如果遇到了一个单独的回车换行，则表示请求头结束
-			} while (!line.equals("\r\n"));
+			} while (!"\r\n".equals(line));
 			// 读取出响应体数据（就是你要的数据）
 			result = readLine(is, contentLength, charset);
 		} catch (Exception e) {
@@ -753,9 +756,9 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 		    		sb.append(key+": "+value+" \r\n");
 		    	}else{
 		    		sb.append(key+": "+value+" \r\n");
@@ -784,7 +787,7 @@ public class HttpClientHelper {
 					contentLength = Integer.parseInt(line.split(":")[1].trim());
 				}
 				// 如果遇到了一个单独的回车换行，则表示请求头结束
-			} while (!line.equals("\r\n"));
+			} while (!"\r\n".equals(line));
 			// 读取出响应体数据（就是你要的数据）
 			result = readLine(is, contentLength, charset);
 		} catch (Exception e) {
@@ -887,9 +890,9 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	if(null!=value&&value.indexOf("Base64(")>0){
+		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-		    		value="Basic " + Base64.encode((valuesub).getBytes());
+		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 		    		con.setRequestProperty(key,value);
 		    	}else{
 		    		con.setRequestProperty(key,value);
@@ -960,9 +963,9 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	if(null!=value&&value.indexOf("Base64(")>0){
+	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-	    		value="Basic " + Base64.encode((valuesub).getBytes());
+	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
 	    		httpput.setHeader(key,value);
 	    	}else{
 	    		httpput.setHeader(key,value);

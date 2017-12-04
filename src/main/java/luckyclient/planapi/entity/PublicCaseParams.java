@@ -11,20 +11,18 @@ package luckyclient.planapi.entity;
  * @date 2017年12月1日 上午9:29:40
  * 
  */
-public class ProjectPlan implements java.io.Serializable{
+public class PublicCaseParams implements java.io.Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private int id;
+	private String paramsname;
+	private String paramsvalue;
+	private String remark;
 	private int projectid;
-    private String name;
-    private int casecount;
-    private String remark;
-    private String time;
-    private String operationer;
-    private String projectname;
-    
+	private String projectname;
+	
 	public String getProjectname() {
 		return projectname;
 	}
@@ -37,23 +35,17 @@ public class ProjectPlan implements java.io.Serializable{
 	public void setId(int id) {
 		this.id = id;
 	}
-	public int getProjectid() {
-		return projectid;
+	public String getParamsname() {
+		return paramsname;
 	}
-	public void setProjectid(int projectid) {
-		this.projectid = projectid;
+	public void setParamsname(String paramsname) {
+		this.paramsname = paramsname;
 	}
-	public String getName() {
-		return name;
+	public String getParamsvalue() {
+		return paramsvalue;
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public int getCasecount() {
-		return casecount;
-	}
-	public void setCasecount(int casecount) {
-		this.casecount = casecount;
+	public void setParamsvalue(String paramsvalue) {
+		this.paramsvalue = paramsvalue;
 	}
 	public String getRemark() {
 		return remark;
@@ -61,17 +53,11 @@ public class ProjectPlan implements java.io.Serializable{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	public String getTime() {
-		return time;
+	public int getProjectid() {
+		return projectid;
 	}
-	public void setTime(String time) {
-		this.time = time;
+	public void setProjectid(int projectid) {
+		this.projectid = projectid;
 	}
-	public String getOperationer() {
-		return operationer;
-	}
-	public void setOperationer(String operationer) {
-		this.operationer = operationer;
-	}
-    
+
 }

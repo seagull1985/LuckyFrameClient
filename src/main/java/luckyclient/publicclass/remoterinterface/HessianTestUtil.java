@@ -1,4 +1,4 @@
-package luckyclient.publicclass.remoterInterface;
+package luckyclient.publicclass.remoterinterface;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -12,33 +12,44 @@ import java.util.Map;
 import com.caucho.hessian.client.HessianProxyFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
+ */
 public class HessianTestUtil {
-	private static final ObjectMapper mapper = new ObjectMapper();
-	private static final int connect_time_out = 30 * 1000;
-	private static final Map<String, Class<?>> base_type = new HashMap<String, Class<?>>();
+	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static final int CONNECT_TIME_OUT = 30 * 1000;
+	private static final Map<String, Class<?>> BASE_TYPE = new HashMap<String, Class<?>>();
 	static {
-		base_type.put("long.class", long.class);
-		base_type.put("long.class", long.class);
-		base_type.put("float.class", float.class);
-		base_type.put("boolean.class", boolean.class);
-		base_type.put("char.class", char.class);
-		base_type.put("byte.class", byte.class);
-		// base_type.put("void.class", void.class);
-		base_type.put("short.class", short.class);
-		base_type.put("long", long.class);
-		base_type.put("float", float.class);
-		base_type.put("boolean", boolean.class);
-		base_type.put("char", char.class);
-		base_type.put("byte", byte.class);
-		// base_type.put("void", void.class);
-		base_type.put("short", short.class);
+		BASE_TYPE.put("long.class", long.class);
+		BASE_TYPE.put("long.class", long.class);
+		BASE_TYPE.put("float.class", float.class);
+		BASE_TYPE.put("boolean.class", boolean.class);
+		BASE_TYPE.put("char.class", char.class);
+		BASE_TYPE.put("byte.class", byte.class);
+		// BASE_TYPE.put("void.class", void.class);
+		BASE_TYPE.put("short.class", short.class);
+		BASE_TYPE.put("long", long.class);
+		BASE_TYPE.put("float", float.class);
+		BASE_TYPE.put("boolean", boolean.class);
+		BASE_TYPE.put("char", char.class);
+		BASE_TYPE.put("byte", byte.class);
+		// BASE_TYPE.put("void", void.class);
+		BASE_TYPE.put("short", short.class);
 
 	}
 	
 	public static Map<String, Object> startInvoke(InterfaceObject object)
 			throws Exception {
 		// 获取带请求参数列表将（参数类型，参数值）数组转成InterfaceParamObject数组
-		InterfaceParamObject[] paramContent = mapper
+		InterfaceParamObject[] paramContent = MAPPER
 				.readValue(object.getParams(), InterfaceParamObject[].class);
 		Map<String, Object> resultMap = hessianInvoke(object.getRemoteUrl(),
 				object.getInterfaceClass(), object.getInterfaceMethod(),
@@ -51,15 +62,15 @@ public class HessianTestUtil {
 			String className, String methodName,
 			InterfaceParamObject[] interfaceParamArray) throws Exception {
 		HessianProxyFactory factory = new HessianProxyFactory();
-		factory.setReadTimeout(connect_time_out);
+		factory.setReadTimeout(CONNECT_TIME_OUT);
 		// factory.setConnectTimeout(connect_time_out);
 		// factory.setReadTimeout(read_time_out);
-		Object InterfaceObject = null;
-		Class<?> allRequstParasClass[] = new Class[interfaceParamArray.length];
+		Object interfaceObject = null;
+		Class<?>[] allRequstParasClass = new Class[interfaceParamArray.length];
 		Object[] allRequstParas = new Object[interfaceParamArray.length];
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			InterfaceObject = factory.create(Class.forName(className),remoteUrl);
+			interfaceObject = factory.create(Class.forName(className),remoteUrl);
 		} catch (Exception ex) {
 			throw ex;
 		}
@@ -71,15 +82,15 @@ public class HessianTestUtil {
 								.getClassname();
 						if (isBaseTypeForArray(tempParaClassName)) {
 							// 如果是基础数据类型，那么mapper转换再获取类类型就会有问题，所以值和类分开
-							allRequstParasClass[index] = base_type
+							allRequstParasClass[index] = BASE_TYPE
 									.get(tempParaClassName);
-							allRequstParas[index] = mapper.readValue(
+							allRequstParas[index] = MAPPER.readValue(
 									interfaceParamArray[index].getValue(),
-									base_type.get(tempParaClassName));
+									BASE_TYPE.get(tempParaClassName));
 						} else {
 							allRequstParasClass[index] = Class
 									.forName(tempParaClassName);
-							allRequstParas[index] = mapper.readValue(
+							allRequstParas[index] = MAPPER.readValue(
 									interfaceParamArray[index].getValue(),
 									allRequstParasClass[index]);
 						}
@@ -90,10 +101,10 @@ public class HessianTestUtil {
 				}
 				
 				try {
-					Method method = InterfaceObject.getClass().getMethod(methodName,
+					Method method = interfaceObject.getClass().getMethod(methodName,
 							allRequstParasClass);
 					Class<?> returnClass = method.getReturnType();
-					Object result = method.invoke(InterfaceObject, allRequstParas);
+					Object result = method.invoke(interfaceObject, allRequstParas);
 
 					if (returnClass == void.class) {
 						resultMap.put("参数返回类型为void", "执行结束，没有返回值");
@@ -133,9 +144,9 @@ public class HessianTestUtil {
 
 			public static Map<String, Object> objectToMap(Object obj) throws Exception {
 				Map<String, Object> map = new HashMap<String, Object>();
-				String ObjClass = obj.getClass().getName();
-				if (isBaseTypeForArray(ObjClass)) {
-					map.put(ObjClass, obj.toString());
+				String objClass = obj.getClass().getName();
+				if (isBaseTypeForArray(objClass)) {
+					map.put(objClass, obj.toString());
 				} else {
 					// Field[] allField = obj.getClass().getDeclaredFields();
 					Field[] allField = getAllFields(obj);
@@ -161,11 +172,11 @@ public class HessianTestUtil {
 				return fields;
 			}
 
-			private static boolean isBaseTypeForArray(String ObjClassName) {
+			private static boolean isBaseTypeForArray(String objClassName) {
 
 				boolean isBase = false;
-				if (ObjClassName != null) {
-					isBase = base_type.get(ObjClassName) != null ? true : false;
+				if (objClassName != null) {
+					isBase = BASE_TYPE.get(objClassName) != null ? true : false;
 				}
 				return isBase;
 			}

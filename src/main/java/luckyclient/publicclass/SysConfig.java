@@ -5,7 +5,7 @@ import java.util.Properties;
 
 /**
  * 系统配置参数
- * @author Administrator
+ * @author seagull
  *
  */
 public class SysConfig {

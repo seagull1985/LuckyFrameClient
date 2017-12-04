@@ -1,4 +1,4 @@
-package rmi.serviceImpl;
+package rmi.serviceimpl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -19,7 +19,17 @@ import rmi.model.RunTaskEntity;
 import rmi.service.RunService;
 
 
-
+/**
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
+ */
 //此为远程对象的实现类，须继承UnicastRemoteObject
 public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 
@@ -143,6 +153,7 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 	 * @param realName
 	 * @throws Exception
 	 */
+	@Override
 	public String getlogdetail(String storeName) throws RemoteException{
 		BufferedReader bos = null;
 		String ctxPath = System.getProperty("user.dir")+"\\log\\";
@@ -187,6 +198,7 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 	 * @param realName
 	 * @throws Exception
 	 */
+	@Override
 	public byte[] getlogimg(String imgName) throws RemoteException{
 		String ctxPath = System.getProperty("user.dir")+"\\log\\ScreenShot\\";
 		String downLoadPath = ctxPath+imgName;
@@ -218,6 +230,7 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
 	 * @param realName
 	 * @throws Exception
 	 */
+	@Override
 	public String uploadjar(byte[] fileContent,String name,String loadpath) throws RemoteException{
 		String path = System.getProperty("user.dir")+loadpath;
 		if  (!new File(path) .isDirectory())      
@@ -249,6 +262,7 @@ public class RunServiceImpl extends UnicastRemoteObject implements RunService{
          return "上传"+name+"至客户端成功！";
 	}
 	
+	@Override
 	public String getClientStatus() throws RemoteException{
 		return "success";
 	}

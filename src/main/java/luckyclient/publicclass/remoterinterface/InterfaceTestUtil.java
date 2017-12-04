@@ -1,4 +1,4 @@
-package luckyclient.publicclass.remoterInterface;
+package luckyclient.publicclass.remoterinterface;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -16,27 +16,38 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
+ */
 public class InterfaceTestUtil {
 	private static Logger log = LoggerFactory
 			.getLogger(InterfaceTestUtil.class);
-	private static final ObjectMapper map = new ObjectMapper();
-	private static final int read_time_out = 30 * 1000;
-	private static final Map<String, Class<?>> base_type = new HashMap<String, Class<?>>();
+	private static final ObjectMapper MAP = new ObjectMapper();
+	private static final int READ_TIME_OUT = 30 * 1000;
+	private static final Map<String, Class<?>> BASE_TYPE = new HashMap<String, Class<?>>();
 	static {
-		base_type.put("long", long.class);
-		base_type.put("double", double.class);
-		base_type.put("float", float.class);
-		base_type.put("bool", boolean.class);
-		base_type.put("char", char.class);
-		base_type.put("byte", byte.class);
-		base_type.put("void", void.class);
-		base_type.put("short", short.class);
+		BASE_TYPE.put("long", long.class);
+		BASE_TYPE.put("double", double.class);
+		BASE_TYPE.put("float", float.class);
+		BASE_TYPE.put("bool", boolean.class);
+		BASE_TYPE.put("char", char.class);
+		BASE_TYPE.put("byte", byte.class);
+		BASE_TYPE.put("void", void.class);
+		BASE_TYPE.put("short", short.class);
 	}
 
 	public static Map<String, Object> doTest(InterfaceObject object)
 			throws Exception {
 		// 获取带请求参数列表将（参数类型，参数值）数组转成InterfaceParamObject数组
-		InterfaceParamObject[] paramContent = map.readValue(object.getParams(),
+		InterfaceParamObject[] paramContent = MAP.readValue(object.getParams(),
 				InterfaceParamObject[].class);
 		Object result = hessian(object.getRemoteUrl(),
 				object.getInterfaceClass(), object.getInterfaceMethod(),
@@ -54,9 +65,9 @@ public class InterfaceTestUtil {
 
 	public static Map<String, Object> objectToMap(Object obj) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String ObjClass = obj.getClass().getName();
-		if (isBaseTypeForArray(ObjClass)) {
-			map.put(ObjClass, obj.toString());
+		String objClass = obj.getClass().getName();
+		if (isBaseTypeForArray(objClass)) {
+			map.put(objClass, obj.toString());
 		} else {
 			// Field[] allField = obj.getClass().getDeclaredFields();
 			Field[] allField = getAllFields(obj);
@@ -85,25 +96,25 @@ public class InterfaceTestUtil {
 		return fields;
 	}
 
-	private static boolean isBaseTypeForArray(String ObjClassName) {
+	private static boolean isBaseTypeForArray(String objClassName) {
 
 		boolean isBase = false;
-		if (ObjClassName != null) {
-			isBase = base_type.get(ObjClassName) != null ? true : false;
+		if (objClassName != null) {
+			isBase = BASE_TYPE.get(objClassName) != null ? true : false;
 		}
 		return isBase;
 	}
 
 	public static String genJsonStr(Object object)
 			throws JsonProcessingException {
-		return map.writeValueAsString(object);
+		return MAP.writeValueAsString(object);
 	}
 
 	private static Object hessian(String remoteUrl, String className,
 			String methodName, InterfaceParamObject[] paramContent)
 			throws Exception {
 		HessianProxyFactory factory = new HessianProxyFactory();
-		factory.setReadTimeout(read_time_out);
+		factory.setReadTimeout(READ_TIME_OUT);
 		Object interfaceObj = null;
 		Class<?> interfaceClassName = null;
 
@@ -162,7 +173,7 @@ public class InterfaceTestUtil {
 			Object[] allRequstParas) {
 		int totalRequestParam = allRequstParas.length;
 
-		Class<?> allRequstParasClass[] = null;
+		Class<?>[] allRequstParasClass = null;
 		if (allRequstParas != null) {// 存在
 			int len = allRequstParas.length;
 			allRequstParasClass = new Class[len];
@@ -201,12 +212,12 @@ public class InterfaceTestUtil {
 	 * @see
 	 */
 	private static Class<?> getBaseTypeClassByName(String className) {
-		return base_type.get(className);
+		return BASE_TYPE.get(className);
 	}
 
 	private static Boolean isBaseType(String className) {
 		Boolean istrue = false;
-		for (String key : base_type.keySet()) {
+		for (String key : BASE_TYPE.keySet()) {
 			istrue = className.equals(key) ? true : false;
 		}
 		return istrue;

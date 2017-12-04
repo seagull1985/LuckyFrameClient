@@ -12,18 +12,31 @@ import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
+import luckyclient.planapi.entity.PublicCaseParams;
 
+/**
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
+ */
 public class CaseLocalDebug{
 
 	
-	public static void OneCasedebug(WebDriver wd,String testCaseExternalId){
+	public static void oneCasedebug(WebDriver wd,String testCaseExternalId){
 		DbLink.exetype = 1;   //不记录日志到数据库
 		LogOperation caselog = new LogOperation(); // 初始化写用例结果以及日志模块
 		try {
 			ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+			List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectid()));
 			luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【"+testCaseExternalId+"】......");
 			List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcase.getId());
-			WebCaseExecution.CaseExcution(testcase,steps, "888888",wd,caselog);
+			WebCaseExecution.caseExcution(testcase,steps, "888888",wd,caselog,pcplist);
 			luckyclient.publicclass.LogUtil.APP.info("当前用例：【"+testcase.getSign()+"】执行完成......进入下一条");
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
@@ -39,7 +52,7 @@ public class CaseLocalDebug{
 	 * @param 用例版本号
 	 * 用于在testlink上配置好用例参数后，做多条用例串行调试
 	 */
-	public static void MoreCaseDebug(WebDriver wd,String projectname,Map<String,Integer> addtestcase){
+	public static void moreCaseDebug(WebDriver wd,String projectname,Map<String,Integer> addtestcase){
 		System.out.println(addtestcase.size());
 		@SuppressWarnings("rawtypes")
 		Iterator it=addtestcase.entrySet().iterator();
@@ -50,7 +63,7 @@ public class CaseLocalDebug{
 		    Integer version = (Integer)entry.getValue();
 		    try{
 		    luckyclient.publicclass.LogUtil.APP.info("开始调用方法，项目名："+projectname+"，用例编号："+testCaseExternalId+"，用例版本："+version); 
-		    OneCasedebug(wd,testCaseExternalId);
+		    oneCasedebug(wd,testCaseExternalId);
 		    }catch(Exception e){
 		    	continue;
 		    }

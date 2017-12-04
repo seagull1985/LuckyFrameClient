@@ -10,10 +10,20 @@ import org.openqa.selenium.support.ui.Select;
 
 import luckyclient.caserun.exwebdriver.ocr.Ocr;
 
-
+/**
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
+ */
 public class EncapsulateOperation {
 
-	public static String SelectOperation(WebElement we,String operation,String operation_value) throws Exception{
+	public static String selectOperation(WebElement we,String operation,String operationValue) throws Exception{
 		String result = "";
 		// 下拉框对象处理
 		Select select = new Select(we);
@@ -21,16 +31,16 @@ public class EncapsulateOperation {
 		// 处理下拉框事件
 		switch (operation) {
 		case "selectbyvisibletext":
-			select.selectByVisibleText(operation_value);
-			luckyclient.publicclass.LogUtil.APP.info("下拉框对象通过VisibleText属性选择...【VisibleText属性值:" + operation_value + "】");
+			select.selectByVisibleText(operationValue);
+			luckyclient.publicclass.LogUtil.APP.info("下拉框对象通过VisibleText属性选择...【VisibleText属性值:" + operationValue + "】");
 			break;
 		case "selectbyvalue":
-			select.selectByValue(operation_value);
-			luckyclient.publicclass.LogUtil.APP.info("下拉框对象通过Value属性选择...【Value属性值:" + operation_value + "】");
+			select.selectByValue(operationValue);
+			luckyclient.publicclass.LogUtil.APP.info("下拉框对象通过Value属性选择...【Value属性值:" + operationValue + "】");
 			break;
 		case "selectbyindex":
-			select.selectByIndex(Integer.valueOf(operation_value));
-			luckyclient.publicclass.LogUtil.APP.info("下拉框对象通过Index属性选择...【Index属性值:" + operation_value + "】");
+			select.selectByIndex(Integer.valueOf(operationValue));
+			luckyclient.publicclass.LogUtil.APP.info("下拉框对象通过Index属性选择...【Index属性值:" + operationValue + "】");
 			break;
 		case "isselect":
 			result = "获取到的值是【"+we.isSelected()+"】";
@@ -42,7 +52,7 @@ public class EncapsulateOperation {
 		return result;
 	}
 	
-	public static String GetOperation(WebDriver wd,WebElement we,String operation) throws Exception{
+	public static String getOperation(WebDriver wd,WebElement we,String operation) throws Exception{
 		String result = "";
 		// 获取对象处理
 		switch (operation) {
@@ -64,45 +74,45 @@ public class EncapsulateOperation {
 		return result;
 	}
 	
-	public static String ActionWeOperation(WebDriver wd,WebElement we,String operation,String operation_value,String property,String property_value) throws Exception{
+	public static String actionWeOperation(WebDriver wd,WebElement we,String operation,String operationValue,String property,String propertyValue) throws Exception{
 		String result = "";
 		Actions action = new Actions(wd);
 		// action处理
 		switch (operation) {
 		case "mouselkclick":  //鼠标左键点击
 			action.click(we).perform();
-			result = "mouselkclick鼠标左键点击对象...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】";
-			luckyclient.publicclass.LogUtil.APP.info("mouselkclick鼠标左键点击对象...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】");
+			result = "mouselkclick鼠标左键点击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】";
+			luckyclient.publicclass.LogUtil.APP.info("mouselkclick鼠标左键点击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】");
 			break;
 		case "mouserkclick":
 			action.contextClick(we).perform();
-			result = "mouserkclick鼠标右键点击对象...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】";
-			luckyclient.publicclass.LogUtil.APP.info("mouserkclick鼠标右键点击对象...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】");
+			result = "mouserkclick鼠标右键点击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】";
+			luckyclient.publicclass.LogUtil.APP.info("mouserkclick鼠标右键点击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】");
 			break;
 		case "mousedclick":
 			action.doubleClick(we).perform();
-			result = "mousedclick鼠标双击对象...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】";
-			luckyclient.publicclass.LogUtil.APP.info("mousedclick鼠标双击对象...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】");
+			result = "mousedclick鼠标双击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】";
+			luckyclient.publicclass.LogUtil.APP.info("mousedclick鼠标双击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】");
 			break;
 		case "mouseclickhold":
 			action.clickAndHold(we).perform();
-			result = "mouseclickhold鼠标点击对象后不释放...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】";
-			luckyclient.publicclass.LogUtil.APP.info("mouseclickhold鼠标点击对象后不释放...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】");
+			result = "mouseclickhold鼠标点击对象后不释放...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】";
+			luckyclient.publicclass.LogUtil.APP.info("mouseclickhold鼠标点击对象后不释放...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】");
 			break;
 		case "mousedrag":
-			String temp[]=operation_value.split(",",-1);
+			String[] temp=operationValue.split(",",-1);
 			action.dragAndDropBy(we, Integer.valueOf(temp[0]), Integer.valueOf(temp[1])).perform();
-			result = "mousedrag鼠标移动至对象相对坐标...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】  坐标x："+Integer.valueOf(temp[0])
+			result = "mousedrag鼠标移动至对象相对坐标...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】  坐标x："+Integer.valueOf(temp[0])
 			+" 坐标y："+Integer.valueOf(temp[1]);
-			luckyclient.publicclass.LogUtil.APP.info("mousedrag鼠标移动至对象相对坐标...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】  坐标x："+Integer.valueOf(temp[0])
+			luckyclient.publicclass.LogUtil.APP.info("mousedrag鼠标移动至对象相对坐标...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】  坐标x："+Integer.valueOf(temp[0])
 			+" 坐标y："+Integer.valueOf(temp[1]));
 			break;
 		case "mouseto":
-			String temp1[]=operation_value.split(",",-1);
+			String[] temp1=operationValue.split(",",-1);
 			action.moveToElement(we, Integer.valueOf(temp1[0]), Integer.valueOf(temp1[1])).perform();
-			result = "mouseto鼠标移动至对象相对坐标...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】  坐标x："+Integer.valueOf(temp1[0])
+			result = "mouseto鼠标移动至对象相对坐标...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】  坐标x："+Integer.valueOf(temp1[0])
 			+" 坐标y："+Integer.valueOf(temp1[1]);
-			luckyclient.publicclass.LogUtil.APP.info("mouseto鼠标移动至对象相对坐标...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】  坐标x："+Integer.valueOf(temp1[0])
+			luckyclient.publicclass.LogUtil.APP.info("mouseto鼠标移动至对象相对坐标...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】  坐标x："+Integer.valueOf(temp1[0])
 			+" 坐标y："+Integer.valueOf(temp1[1]));
 			break;
 		case "mouserelease":
@@ -116,7 +126,7 @@ public class EncapsulateOperation {
 		return result;
 	}
 	
-	public static String ActionOperation(WebDriver wd,String operation,String operation_value) throws Exception{
+	public static String actionOperation(WebDriver wd,String operation,String operationValue) throws Exception{
 		String result = "";
 		Actions action = new Actions(wd);
 		// action处理
@@ -142,7 +152,7 @@ public class EncapsulateOperation {
 			luckyclient.publicclass.LogUtil.APP.info("mouseclickhold鼠标点击当前位置后不释放...");
 			break;
 		case "mouseto":
-			String temp1[]=operation_value.split(",",-1);
+			String[] temp1=operationValue.split(",",-1);
 			action.moveByOffset(Integer.valueOf(temp1[0]), Integer.valueOf(temp1[1])).perform();
 			result = "mouseto鼠标移动至对象相对坐标...坐标x："+Integer.valueOf(temp1[0])
 			+" 坐标y："+Integer.valueOf(temp1[1]);
@@ -155,7 +165,7 @@ public class EncapsulateOperation {
 			luckyclient.publicclass.LogUtil.APP.info("mouserelease鼠标释放...");
 			break;
 		case "mousekey":
-			switch (operation_value) {
+			switch (operationValue) {
 			case "tab":
 				action.sendKeys(Keys.TAB).perform();
 				result = "键盘操作TAB键...";
@@ -191,28 +201,28 @@ public class EncapsulateOperation {
 		return result;
 	}
 	
-	public static String ObjectOperation(WebDriver wd,WebElement we,String operation,String operation_value,String property,String property_value) throws Exception{
+	public static String objectOperation(WebDriver wd,WebElement we,String operation,String operationValue,String property,String propertyValue) throws Exception{
 		String result = "";
 		// 处理WebElement对象操作
 		switch (operation) {
 		case "click":
 			we.click();
-			result = "click点击对象...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】";
-			luckyclient.publicclass.LogUtil.APP.info("click点击对象...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】");
+			result = "click点击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】";
+			luckyclient.publicclass.LogUtil.APP.info("click点击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】");
 			break;
 		case "sendkeys":
-			we.sendKeys(operation_value);
-			result = "sendKeys对象输入...【对象定位属性:"+property+"; 定位属性值:"+property_value+"; 操作值:"+operation_value+"】";
-			luckyclient.publicclass.LogUtil.APP.info("sendkeys对象输入...【对象定位属性:"+property+"; 定位属性值:"+property_value+"; 操作值:"+operation_value+"】");
+			we.sendKeys(operationValue);
+			result = "sendKeys对象输入...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"; 操作值:"+operationValue+"】";
+			luckyclient.publicclass.LogUtil.APP.info("sendkeys对象输入...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"; 操作值:"+operationValue+"】");
 			break;
 		case "clear":
 			we.clear();
-			result = "clear清空输入框...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】";
-			luckyclient.publicclass.LogUtil.APP.info("clear清空输入框...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】");
+			result = "clear清空输入框...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】";
+			luckyclient.publicclass.LogUtil.APP.info("clear清空输入框...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】");
 			break; // 清空输入框
 		case "gotoframe":
 			wd.switchTo().frame(we);
-			luckyclient.publicclass.LogUtil.APP.info("gotoframe切换Frame...【对象定位属性:"+property+"; 定位属性值:"+property_value+"】");
+			luckyclient.publicclass.LogUtil.APP.info("gotoframe切换Frame...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】");
 			break;
 		case "isenabled":
 			result = "获取到的值是【"+we.isEnabled()+"】";
@@ -224,9 +234,9 @@ public class EncapsulateOperation {
 			break;
 		case "exjsob":
 			JavascriptExecutor jse = (JavascriptExecutor)wd;
-			jse.executeScript(operation_value,we);
-			result = "执行JS...【"+operation_value+"】";
-			luckyclient.publicclass.LogUtil.APP.info("执行JS...【"+operation_value+"】");
+			jse.executeScript(operationValue,we);
+			result = "执行JS...【"+operationValue+"】";
+			luckyclient.publicclass.LogUtil.APP.info("执行JS...【"+operationValue+"】");
 			break;
 		default:
 			break;
@@ -234,7 +244,7 @@ public class EncapsulateOperation {
 		return result;
 	}
 	
-	public static String AlertOperation(WebDriver wd,String operation) throws Exception{
+	public static String alertOperation(WebDriver wd,String operation) throws Exception{
 		String result = "";
 		Alert alert = wd.switchTo().alert();
 		switch (operation) {
@@ -256,21 +266,21 @@ public class EncapsulateOperation {
 		return result;
 	}
 	
-	public static String DriverOperation(WebDriver wd,String operation,String operation_value) throws Exception{
+	public static String driverOperation(WebDriver wd,String operation,String operationValue) throws Exception{
 		String result = "";
 		// 处理页面对象操作
 		switch (operation) {
 		case "open":
-			operation_value = "http://"+operation_value;
-			wd.get(operation_value);
-			result = "Open页面...【"+operation_value+"】";
-			luckyclient.publicclass.LogUtil.APP.info("Open页面...【"+operation_value+"】");
+			operationValue = "http://"+operationValue;
+			wd.get(operationValue);
+			result = "Open页面...【"+operationValue+"】";
+			luckyclient.publicclass.LogUtil.APP.info("Open页面...【"+operationValue+"】");
 			break;
 		case "exjs":
 			JavascriptExecutor jse = (JavascriptExecutor)wd;
-			jse.executeScript(operation_value);
-			result = "执行JS...【"+operation_value+"】";
-			luckyclient.publicclass.LogUtil.APP.info("执行JS...【"+operation_value+"】");
+			jse.executeScript(operationValue);
+			result = "执行JS...【"+operationValue+"】";
+			luckyclient.publicclass.LogUtil.APP.info("执行JS...【"+operationValue+"】");
 			break;
 		case "gotodefaultcontent":
 			wd.switchTo().defaultContent();
@@ -285,14 +295,14 @@ public class EncapsulateOperation {
 			luckyclient.publicclass.LogUtil.APP.info("getWindowHandle获取窗口句柄...【句柄值:" + result + "】");
 			break;
 		case "gotowindow":
-			wd.switchTo().window(operation_value);
+			wd.switchTo().window(operationValue);
 			luckyclient.publicclass.LogUtil.APP.info("gotowindow切换句柄指定窗口...");
 			break;
 		case "wait":
 			try {
-				wd.wait(Integer.valueOf(operation_value) * 1000);
-				result = "当前任务操作等待【"+operation_value+"】秒...";
-				luckyclient.publicclass.LogUtil.APP.info("当前任务操作等待【"+operation_value+"】秒...");
+				wd.wait(Integer.valueOf(operationValue) * 1000);
+				result = "当前任务操作等待【"+operationValue+"】秒...";
+				luckyclient.publicclass.LogUtil.APP.info("当前任务操作等待【"+operationValue+"】秒...");
 				break;
 			} catch (NumberFormatException | InterruptedException e) {
 				luckyclient.publicclass.LogUtil.APP.error("等待时间转换出错 ！");

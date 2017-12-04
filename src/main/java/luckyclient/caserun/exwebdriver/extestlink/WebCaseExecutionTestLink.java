@@ -18,19 +18,30 @@ import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.DBOperation;
 import luckyclient.testlinkapi.WebDriverAnalyticTestLinkCase;
 
+/**
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
+ * =================================================================
+ * 
+ * @author： seagull
+ * @date 2017年12月1日 上午9:29:40
+ * 
+ */
 public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 	static Map<String, String> variable = new HashMap<String, String>();
 
-	public static void CaseExcution(String projectname, TestCase testcase, String taskid, WebDriver wd,LogOperation caselog)
+	public static void caseExcution(String projectname, TestCase testcase, String taskid, WebDriver wd,LogOperation caselog)
 			throws InterruptedException {
 		int setresult = 0; // 0:成功 1:失败 2:锁定 其他：锁定
 		String casenote = "备注初始化";
 		String imagname = "";
 		
-		caselog.AddCaseDetail(taskid, testcase.getFullExternalId(), testcase.getVersion().toString(), testcase.getName(), 4);       //插入开始执行的用例
+		caselog.addCaseDetail(taskid, testcase.getFullExternalId(), testcase.getVersion().toString(), testcase.getName(), 4);       //插入开始执行的用例
 		
 		for (TestCaseStep step : testcase.getSteps()) {
-			Map<String, String> params = WebDriverAnalyticTestLinkCase.AnalyticCaseStep(testcase, step.getNumber(), taskid,caselog);
+			Map<String, String> params = WebDriverAnalyticTestLinkCase.analyticCaseStep(testcase, step.getNumber(), taskid,caselog);
 			
 			if(params.get("exception")!=null&&params.get("exception").toString().indexOf("解析异常")>-1){
 				setresult = 2;
@@ -48,25 +59,25 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 					Thread.sleep(waitsec * 1000);
 				}
 				
-				if (!expectedResults.equals("")) { // 有预期结果
+				if (!"".equals(expectedResults)) { // 有预期结果
 					// 判断传参
 					luckyclient.publicclass.LogUtil.APP.info("expectedResults=【"+expectedResults+"】");
 					if (expectedResults.length() > 2 && expectedResults.substring(0, 2).indexOf("$=") > -1) {
-						String ExpectedResultVariable = expectedResults.substring(2);
-						variable.put(ExpectedResultVariable, result);
+						String expectedResultVariable = expectedResults.substring(2);
+						variable.put(expectedResultVariable, result);
 						continue;
 					}
 
 					// 判断预期结果-检查模式
 					if (params.get("checkproperty") != null && params.get("checkproperty_value") != null) {
 						String checkproperty = params.get("checkproperty").toString();
-						String checkproperty_value = params.get("checkproperty_value").toString();
+						String checkPropertyValue = params.get("checkproperty_value").toString();
 
-						WebElement we = isElementExist(wd, checkproperty, checkproperty_value);
+						WebElement we = isElementExist(wd, checkproperty, checkPropertyValue);
 						if (we != null) {
 							luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getFullExternalId() + " 第" + step.getNumber()
 									+ "步，在当前页面中找到预期结果中对象。当前步骤执行成功！");
-							caselog.CaseLogDetail(taskid, testcase.getFullExternalId(), "在当前页面中找到预期结果中对象。当前步骤执行成功！",
+							caselog.caseLogDetail(taskid, testcase.getFullExternalId(), "在当前页面中找到预期结果中对象。当前步骤执行成功！",
 									"info", String.valueOf(step.getNumber()),"");
 							continue;
 						} else {
@@ -74,11 +85,11 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 							setresult = 1;
 							java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 							imagname = timeformat.format(new Date());
-							BaseWebDrive.WebScreenShot(wd,imagname);
+							BaseWebDrive.webScreenShot(wd,imagname);
 							luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getFullExternalId() + " 第" + step.getNumber()
 									+ "步，没有在当前页面中找到预期结果中对象。当前步骤执行失败！");
-							caselog.CaseLogDetail(taskid, testcase.getFullExternalId(), "在当前页面中没有找到预期结果中对象。当前步骤执行失败！"
-									+ "checkproperty【"+checkproperty+"】  checkproperty_value【"+checkproperty_value+"】","error", String.valueOf(step.getNumber()),imagname);
+							caselog.caseLogDetail(taskid, testcase.getFullExternalId(), "在当前页面中没有找到预期结果中对象。当前步骤执行失败！"
+									+ "checkproperty【"+checkproperty+"】  checkproperty_value【"+checkPropertyValue+"】","error", String.valueOf(step.getNumber()),imagname);
 							break;
 						}
 
@@ -88,7 +99,7 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 							if(result.indexOf(expectedResults.substring(2))>-1){
 								luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getFullExternalId() + " 第" + step.getNumber()
 								+ "步，模糊匹配预期结果成功！执行结果："+result);
-						        caselog.CaseLogDetail(taskid, testcase.getFullExternalId(), "步骤模糊匹配预期结果成功！",
+						        caselog.caseLogDetail(taskid, testcase.getFullExternalId(), "步骤模糊匹配预期结果成功！",
 								"info", String.valueOf(step.getNumber()),"");
 						        continue;
 							}else{
@@ -96,17 +107,17 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 								setresult = 1;
 								java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 								imagname = timeformat.format(new Date());
-								BaseWebDrive.WebScreenShot(wd,imagname);
+								BaseWebDrive.webScreenShot(wd,imagname);
 								luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getFullExternalId() + " 第" + step.getNumber()
 								+ "步，模糊匹配预期结果失败！执行结果："+result);
-						        caselog.CaseLogDetail(taskid, testcase.getFullExternalId(), "步骤模糊匹配预期结果失败！执行结果："+result,
+						        caselog.caseLogDetail(taskid, testcase.getFullExternalId(), "步骤模糊匹配预期结果失败！执行结果："+result,
 								"error", String.valueOf(step.getNumber()),imagname);
 								break;
 							}
 						}else if(expectedResults.equals(result)) {    // 直接匹配预期结果模式
 							luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getFullExternalId() + " 第" + step.getNumber()
 							+ "步，直接匹配预期结果成功！执行结果："+result);
-					        caselog.CaseLogDetail(taskid, testcase.getFullExternalId(), "步骤直接匹配预期结果成功！",
+					        caselog.caseLogDetail(taskid, testcase.getFullExternalId(), "步骤直接匹配预期结果成功！",
 							"info", String.valueOf(step.getNumber()),"");
 					        continue;
 						} else {
@@ -114,10 +125,10 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 							setresult = 1;
 							java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 							imagname = timeformat.format(new Date());
-							BaseWebDrive.WebScreenShot(wd,imagname);
+							BaseWebDrive.webScreenShot(wd,imagname);
 							luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getFullExternalId() + " 第" + step.getNumber()
 							+ "步，直接匹配预期结果失败！执行结果："+result);
-					        caselog.CaseLogDetail(taskid, testcase.getFullExternalId(), "步骤直接匹配预期结果失败！执行结果："+result,
+					        caselog.caseLogDetail(taskid, testcase.getFullExternalId(), "步骤直接匹配预期结果失败！执行结果："+result,
 							"error", String.valueOf(step.getNumber()),imagname);
 							break;
 						}
@@ -129,9 +140,9 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 				setresult = 2;
 				java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 				imagname = timeformat.format(new Date());
-				BaseWebDrive.WebScreenShot(wd,imagname);
+				BaseWebDrive.webScreenShot(wd,imagname);
 				luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getFullExternalId() + " 第" + step.getNumber()	+ "步，"+result);
-		        caselog.CaseLogDetail(taskid, testcase.getFullExternalId(), "当前步骤在执行过程中解析|定位元素|操作对象失败！"+result,
+		        caselog.caseLogDetail(taskid, testcase.getFullExternalId(), "当前步骤在执行过程中解析|定位元素|操作对象失败！"+result,
 				"error", String.valueOf(step.getNumber()),imagname);
 				break;
 			}
@@ -139,13 +150,13 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 		}
 
 		variable.clear();
-		caselog.UpdateCaseDetail(taskid, testcase.getFullExternalId(), setresult);
+		caselog.updateCaseDetail(taskid, testcase.getFullExternalId(), setresult);
 		if(setresult==0){
 			luckyclient.publicclass.LogUtil.APP.info("用例【"+testcase.getFullExternalId()+"】全部步骤执行结果成功...");
-	        caselog.CaseLogDetail(taskid, testcase.getFullExternalId(), "用例全部步骤执行结果成功","info", "ending","");
+	        caselog.caseLogDetail(taskid, testcase.getFullExternalId(), "用例全部步骤执行结果成功","info", "ending","");
 		}else{
 			luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getFullExternalId()+"】步骤执行过程中失败或是锁定...请查看具体原因！"+casenote);
-	        caselog.CaseLogDetail(taskid, testcase.getFullExternalId(), "用例执行过程中失败或是锁定"+casenote,"error", "ending","");
+	        caselog.caseLogDetail(taskid, testcase.getFullExternalId(), "用例执行过程中失败或是锁定"+casenote,"error", "ending","");
 		}
 		//LogOperation.UpdateTastdetail(taskid, 0);
 	}
@@ -153,53 +164,53 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 	private static String runStep(Map<String, String> params, WebDriver wd,String taskid,String casenum,int stepno,LogOperation caselog) {
 		String result = "";
 		String property;
-		String property_value;
+		String propertyValue;
 		String operation;
-		String operation_value;
+		String operationValue;
 
 		try {
 			property = params.get("property");
-			property_value = params.get("property_value");
+			propertyValue = params.get("property_value");
 			operation = params.get("operation");
-			operation_value = params.get("operation_value");
+			operationValue = params.get("operation_value");
 
 			// 用例名称解析出现异常或是单个步骤参数解析异常
-			if (property_value != null && property.indexOf("解析异常") > -1) {
+			if (propertyValue != null && property.indexOf("解析异常") > -1) {
 				luckyclient.publicclass.LogUtil.APP.error("当前步骤解析出现异常或是对象为空！---"+property);
 				return "用例解析出错啦！";
 			}
 
 			// 处理值传递
-			if (property_value != null && property_value.indexOf("@") > -1 && property_value.indexOf("[@") < 0 
-					&& property_value.indexOf("@@") < 0) {
-				property_value = SettingParameter(property_value);
+			if (propertyValue != null && propertyValue.indexOf("@") > -1 && propertyValue.indexOf("[@") < 0 
+					&& propertyValue.indexOf("@@") < 0) {
+				propertyValue = settingParameter(propertyValue);
 				// 判断传参是否存在问题
-				if (property_value.indexOf("Set parameter error") > -1) {
-					caselog.CaseLogDetail(taskid, casenum, "当前步骤解析出现异常或是对象为空！---"+property,
+				if (propertyValue.indexOf("Set parameter error") > -1) {
+					caselog.caseLogDetail(taskid, casenum, "当前步骤解析出现异常或是对象为空！---"+property,
 							"error", String.valueOf(stepno),"");
-					return "处理传参过程出错：" + property_value;
+					return "处理传参过程出错：" + propertyValue;
 				}
-			}else if(property_value != null && (property_value.indexOf("&quot;")>-1 
-					|| property_value.indexOf("&#39;")>-1 || property_value.indexOf("@@")>-1)){
-				property_value = property_value.replaceAll("&quot;", "\"");
-				property_value = property_value.replaceAll("&#39;", "\'");
-				property_value = property_value.replaceAll("@@", "@");
+			}else if(propertyValue != null && (propertyValue.indexOf("&quot;")>-1 
+					|| propertyValue.indexOf("&#39;")>-1 || propertyValue.indexOf("@@")>-1)){
+				propertyValue = propertyValue.replaceAll("&quot;", "\"");
+				propertyValue = propertyValue.replaceAll("&#39;", "\'");
+				propertyValue = propertyValue.replaceAll("@@", "@");
 			}
 			
-			if (operation_value != null && operation_value.indexOf("@") > -1 && operation_value.indexOf("@@") < 0) {
-				operation_value = SettingParameter(operation_value);
-				if (operation_value.indexOf("Set parameter error") > -1) {
-					return "处理传参过程出错：" + property_value;
+			if (operationValue != null && operationValue.indexOf("@") > -1 && operationValue.indexOf("@@") < 0) {
+				operationValue = settingParameter(operationValue);
+				if (operationValue.indexOf("Set parameter error") > -1) {
+					return "处理传参过程出错：" + propertyValue;
 				}
-			}else if(operation_value != null && (operation_value.indexOf("&quot;")>-1 
-					|| operation_value.indexOf("&#39;")>-1 || operation_value.indexOf("@@")>-1)){
-				operation_value = operation_value.replaceAll("&quot;", "\"");
-				operation_value = operation_value.replaceAll("&#39;", "\'");
-				operation_value = operation_value.replaceAll("@@", "@");
+			}else if(operationValue != null && (operationValue.indexOf("&quot;")>-1 
+					|| operationValue.indexOf("&#39;")>-1 || operationValue.indexOf("@@")>-1)){
+				operationValue = operationValue.replaceAll("&quot;", "\"");
+				operationValue = operationValue.replaceAll("&#39;", "\'");
+				operationValue = operationValue.replaceAll("@@", "@");
 			}
 			
 			luckyclient.publicclass.LogUtil.APP.info("二次解析用例过程完成，等待进行对象操作......");
-			caselog.CaseLogDetail(taskid, casenum, "对象操作:"+operation+"; 操作值:"+operation_value,"info", String.valueOf(stepno),"");
+			caselog.caseLogDetail(taskid, casenum, "对象操作:"+operation+"; 操作值:"+operationValue,"info", String.valueOf(stepno),"");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -209,9 +220,9 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 
 		try {		
 			//调用接口用例
-			if(operation!=null&&operation_value!=null&&"runcase".equals(operation)){
-				String temp[]=operation_value.split(",",-1);
-				String ex = TestLinkCaseExecution.OneCaseExecuteForWebDriver(temp[0], Integer.valueOf(temp[1]),taskid,caselog);
+			if(operation!=null&&operationValue!=null&&"runcase".equals(operation)){
+				String[] temp=operationValue.split(",",-1);
+				String ex = TestLinkCaseExecution.oneCaseExecuteForWebDriver(temp[0], Integer.valueOf(temp[1]),taskid,caselog);
 				if(ex.indexOf("CallCase调用出错！")<=-1&&ex.indexOf("解析出错啦！")<=-1&&ex.indexOf("匹配失败")<=-1){
 					return ex;
 				}else{
@@ -221,8 +232,8 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 			
 			WebElement we = null;
 
-			if (property != null && property_value != null) { // 页面元素层
-				we = isElementExist(wd, property, property_value);
+			if (property != null && propertyValue != null) { // 页面元素层
+				we = isElementExist(wd, property, propertyValue);
 				// 判断此元素是否存在
 				if (we == null) {
 					luckyclient.publicclass.LogUtil.APP.error("定位对象失败，isElementExist为null!");
@@ -230,22 +241,22 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 				}
 
 				if (operation.indexOf("select") > -1) {
-					result = EncapsulateOperation.SelectOperation(we, operation, operation_value);
+					result = EncapsulateOperation.selectOperation(we, operation, operationValue);
 				} else if (operation.indexOf("get") > -1){
-					result = EncapsulateOperation.GetOperation(wd, we, operation);
+					result = EncapsulateOperation.getOperation(wd, we, operation);
 				} else if (operation.indexOf("mouse") > -1){
-					result = EncapsulateOperation.ActionWeOperation(wd, we, operation, operation_value, property, property_value);
+					result = EncapsulateOperation.actionWeOperation(wd, we, operation, operationValue, property, propertyValue);
 				} else {
-					result = EncapsulateOperation.ObjectOperation(wd, we, operation, operation_value, property, property_value);
+					result = EncapsulateOperation.objectOperation(wd, we, operation, operationValue, property, propertyValue);
 				}
 			} else if (property == null && operation != null) { // Driver层操作				
 				// 处理弹出框事件
 				if (operation.indexOf("alert") > -1){
-					result = EncapsulateOperation.AlertOperation(wd, operation);
+					result = EncapsulateOperation.alertOperation(wd, operation);
 				}else if(operation.indexOf("mouse") > -1){
-					result = EncapsulateOperation.ActionOperation(wd, operation, operation_value);
+					result = EncapsulateOperation.actionOperation(wd, operation, operationValue);
 				}else{
-					result = EncapsulateOperation.DriverOperation(wd, operation, operation_value);
+					result = EncapsulateOperation.driverOperation(wd, operation, operationValue);
 				} 				
 			}else{
 				luckyclient.publicclass.LogUtil.APP.error("元素操作过程失败！");
@@ -255,7 +266,7 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 			luckyclient.publicclass.LogUtil.APP.error("元素定位过程或是操作过程失败或异常！"+e.getMessage());
 			return "元素定位过程或是操作过程失败或异常！" + e.getMessage();
 		}
-		caselog.CaseLogDetail(taskid, casenum, result,"info", String.valueOf(stepno),"");
+		caselog.caseLogDetail(taskid, casenum, result,"info", String.valueOf(stepno),"");
 		
 		if(result.indexOf("获取到的值是【")>-1&&result.indexOf("】")>-1){
 			result = result.substring(7, result.length()-1);
@@ -264,7 +275,7 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 
 	}
 
-	private static String SettingParameter(String parameter) {
+	private static String settingParameter(String parameter) {
 		int keyexistidentity = 0;
 		if (parameter.indexOf("&quot;") > -1 || parameter.indexOf("&#39;") > -1) { // 页面转义字符转换
 			parameter = parameter.replaceAll("&quot;", "\"");
@@ -333,19 +344,19 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 		}
 		if (keyexistidentity == 1) {
 			// 拼装参数（传参+原有字符串）
-			String ParameterValues = parameter.replaceAll("@" + uservariable, variable.get(uservariable).toString());
+			String parameterValues = parameter.replaceAll("@" + uservariable, variable.get(uservariable).toString());
 			// 处理第二个传参
 			if (sumvariable == 2 || sumvariable == 3) {
-				ParameterValues = ParameterValues.replaceAll("@" + uservariable1,
+				parameterValues = parameterValues.replaceAll("@" + uservariable1,
 						variable.get(uservariable1).toString());
 			}
 			// 处理第三个传参
 			if (sumvariable == 3) {
-				ParameterValues = ParameterValues.replaceAll("@" + uservariable2,
+				parameterValues = parameterValues.replaceAll("@" + uservariable2,
 						variable.get(uservariable2).toString());
 			}
 
-			return ParameterValues;
+			return parameterValues;
 		} else {
 			luckyclient.publicclass.LogUtil.APP.error("没有找到你要的变量哦，再找下吧！第一个变量名称是：" + uservariable + "，第" + "二个变量名称是：" + uservariable1
 					+ "，第三个变量名称是：" + uservariable2);
@@ -354,29 +365,29 @@ public class WebCaseExecutionTestLink extends TestLinkCaseExecution{
 		}
 	}
 
-	public static WebElement isElementExist(WebDriver wd, String property, String property_value) {
+	public static WebElement isElementExist(WebDriver wd, String property, String propertyValue) {
 		try {
 			WebElement we = null;
 
 			// 处理WebElement对象定位
 			switch (property) {
 			case "id":
-				we = wd.findElement(By.id(property_value));
+				we = wd.findElement(By.id(propertyValue));
 				break;
 			case "name":
-				we = wd.findElement(By.name(property_value));
+				we = wd.findElement(By.name(propertyValue));
 				break;
 			case "xpath":
-				we = wd.findElement(By.xpath(property_value));
+				we = wd.findElement(By.xpath(propertyValue));
 				break;
 			case "linktext":
-				we = wd.findElement(By.linkText(property_value));
+				we = wd.findElement(By.linkText(propertyValue));
 				break;
 			case "tagname":
-				we = wd.findElement(By.tagName(property_value));
+				we = wd.findElement(By.tagName(propertyValue));
 				break;
 			case "cssselector":
-				we = wd.findElement(By.cssSelector(property_value));
+				we = wd.findElement(By.cssSelector(propertyValue));
 				break;
 			default:
 				break;

@@ -11,8 +11,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
- * 此测试框架主要采用testlink做分层框架，负责数据驱动以及用例管理部分，有任何疑问欢迎联系作者讨论。
- * QQ:24163551 seagull1985
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
  * @ClassName: DBToolkit 
  * @Description: 创建与关闭数据库链接
@@ -26,11 +26,11 @@ public class DBToolkit {
      */ 
 	public ComboPooledDataSource cpds=null;
 	
-	public DBToolkit(String url_base,String username_base,String password_base){
+	public DBToolkit(String urlBase,String usernameBase,String passwordBase){
 		cpds=new ComboPooledDataSource();  
-        cpds.setUser(username_base);  
-        cpds.setPassword(password_base);  
-        cpds.setJdbcUrl(url_base);  
+        cpds.setUser(usernameBase);  
+        cpds.setPassword(passwordBase);  
+        cpds.setJdbcUrl(urlBase);  
         try {  
             cpds.setDriverClass("com.mysql.cj.jdbc.Driver");  
         } catch (PropertyVetoException e) {  
@@ -113,7 +113,9 @@ public class DBToolkit {
     } 
 
     public static void closeConnection(Connection conn) { 
-            if (conn == null) return; 
+            if (conn == null){
+            	return;
+            } 
             try { 
                 if (!conn.isClosed()) { 
                 	  //关闭数据库连接 

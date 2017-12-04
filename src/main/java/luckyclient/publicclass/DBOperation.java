@@ -7,8 +7,8 @@ import java.sql.SQLException;
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
- * 此测试框架主要采用testlink做分层框架，负责数据驱动以及用例管理部分，有任何疑问欢迎联系作者讨论。
- * QQ:24163551 seagull1985
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
+ * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
  * @ClassName: DBOperation 
  * @Description: 封装自动化过程中，对数据库的部分操作
@@ -22,8 +22,8 @@ public class DBOperation {
 	/**
 	 * 创建链接池，注意此方法不能new多次，会导致多次创建链接池，最好放在任务启动方法中
 	 */
-	public DBOperation(String url_base,String username_base,String password_base) {
-	 dbt = new DBToolkit(url_base,username_base,password_base);
+	public DBOperation(String urlBase,String usernameBase,String passwordBase) {
+	 dbt = new DBToolkit(urlBase,usernameBase,passwordBase);
 	}
 	
 	
@@ -90,8 +90,9 @@ public class DBOperation {
 		}catch(Exception e){
 			throw e;
 		}finally{
-			if(rs!=null)
-			rs.close();
+			if(rs!=null){
+				rs.close();
+			}
 			DBToolkit.closeConnection(conn);
 		}		
 	}
@@ -142,7 +143,7 @@ public class DBOperation {
      * @return int
      * @throws
      */
-	public static void Wait(String s) throws InterruptedException{
+	public static void stepWait(String s) throws InterruptedException{
 		int second = Integer.parseInt(s);
 		Thread.sleep(second*1000);
 	}
