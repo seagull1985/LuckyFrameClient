@@ -13,7 +13,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -506,12 +505,6 @@ public class HttpClientHelper {
 	    	}
         }
 		// 构建请求参数
-		List<NameValuePair> list = new ArrayList<NameValuePair>();
-		Iterator<Entry<String, Object>> iterator = params.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Entry<String, Object> elem = iterator.next();
-			list.add(new BasicNameValuePair(elem.getKey(), String.valueOf(elem.getValue())));
-		}
 		BufferedReader br = null;
 		try {
 			if(params.size()>0){
@@ -520,15 +513,13 @@ public class HttpClientHelper {
 			    for (Map.Entry<String, Object> m :params.entrySet())  { 
 		            nvps.add(new BasicNameValuePair(m.getKey(), m.getValue().toString()));
 		        }
-			    httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+			    httpPost.setEntity(new UrlEncodedFormEntity(nvps,charset));
 			}
 
-			//HttpResponse response = client.execute(httpPost);
 			 CloseableHttpResponse response = httpclient.execute(httpPost);
 			// 读取服务器响应数据
 			resultBuffer = new StringBuffer();
 
-			//br = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
 			while ((temp = br.readLine()) != null) {
@@ -643,6 +634,8 @@ public class HttpClientHelper {
 			StringBuffer sb = new StringBuffer();
 			sb.append("POST " + path + " HTTP/1.1\r\n");
 			sb.append("Host: " + host + "\r\n");
+			sb.append("Connection: Keep-Alive\r\n");
+			sb.append("Content-Type: application/x-www-form-urlencoded; charset=utf-8 \r\n");
 			//替换头域信息
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
@@ -655,8 +648,6 @@ public class HttpClientHelper {
 		    		sb.append(key+": "+value+" \r\n");
 		    	}
 	        }
-			sb.append("Connection: Keep-Alive\r\n");
-			sb.append("Content-Type: application/x-www-form-urlencoded; charset=utf-8 \r\n");
 			sb.append("Content-Length: ").append(sb.toString().getBytes().length).append("\r\n");
 			// 这里一个回车换行，表示消息头写完，不然服务器会继续等待
 			sb.append("\r\n");
@@ -752,6 +743,8 @@ public class HttpClientHelper {
 			StringBuffer sb = new StringBuffer();
 			sb.append("GET " + path + " HTTP/1.1\r\n");
 			sb.append("Host: " + host + "\r\n");
+			sb.append("Connection: Keep-Alive\r\n");
+			sb.append("Content-Type: application/x-www-form-urlencoded; charset=utf-8 \r\n");
 			//替换头域信息
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
@@ -764,8 +757,6 @@ public class HttpClientHelper {
 		    		sb.append(key+": "+value+" \r\n");
 		    	}
 	        }
-			sb.append("Connection: Keep-Alive\r\n");
-			sb.append("Content-Type: application/x-www-form-urlencoded; charset=utf-8 \r\n");
 			sb.append("Content-Length: ").append(sb.toString().getBytes().length).append("\r\n");
 			// 这里一个回车换行，表示消息头写完，不然服务器会继续等待
 			sb.append("\r\n");
