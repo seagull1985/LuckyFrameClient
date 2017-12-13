@@ -56,6 +56,12 @@ public class TestCaseExecution {
 			variable.put(pcp.getParamsname(), pcp.getParamsvalue());
 		}
 		List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
+		if(steps.size()==0){
+			setresult=2;
+			luckyclient.publicclass.LogUtil.APP.error("用例中未找到步骤，请检查！");
+			LogOperation.updateCaseLogDetail(testCaseExternalId, taskid,"用例中未找到步骤，请检查！", "error", "1");
+			testnote="用例中未找到步骤，请检查！";
+		}
 		// 进入循环，解析用例所有步骤
 		for (int i = 0; i < steps.size(); i++) {
 			Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcaseob, steps.get(i), taskid,caselog);
@@ -167,21 +173,15 @@ public class TestCaseExecution {
 		}
 		variable.clear(); // 清空传参MAP
 		// 如果调用方法过程中未出错，进入设置测试结果流程
-		if (testnote.indexOf("CallCase调用出错！") <= -1 && testnote.indexOf("解析出错啦！") <= -1) {
+		if (testnote.indexOf("CallCase调用出错！") <0 && testnote.indexOf("解析出错啦！") <0) {
 			luckyclient.publicclass.LogUtil.APP.info("用例 " + testCaseExternalId + "解析成功，并成功调用用例中方法，请继续查看执行结果！");
 			LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "解析成功，并成功调用用例中方法，请继续查看执行结果！", "info",
 					"SETCASERESULT...");
-			// TCResult =
-			// TestCaseApi.setTCResult(projectname,testCaseExternalId, testnote,
-			// version,setresult);
 			caselog.updateCaseDetail(taskid, testCaseExternalId, setresult);
 		} else {
 			setresult = 1;
 			luckyclient.publicclass.LogUtil.APP.error("用例 " + testCaseExternalId + "解析或是调用步骤中的方法出错！");
 			LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "解析或是调用步骤中的方法出错！", "error", "SETCASERESULT...");
-			// TCResult =
-			// TestCaseApi.setTCResult(projectname,testCaseExternalId, testnote,
-			// version,2);
 			caselog.updateCaseDetail(taskid, testCaseExternalId, 2);
 		}
 		if (0 == setresult) {
@@ -216,6 +216,12 @@ public class TestCaseExecution {
 			variable.put(pcp.getParamsname(), pcp.getParamsvalue());
 		}
 		List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
+		if(steps.size()==0){
+			setresult=2;
+			luckyclient.publicclass.LogUtil.APP.error("用例中未找到步骤，请检查！");
+			caselog.caseLogDetail(taskid, testcaseob.getSign(), "用例中未找到步骤，请检查！", "error", "1", "");
+			testnote="用例中未找到步骤，请检查！";
+		}
 		// 进入循环，解析用例所有步骤
 		for (int i = 0; i < steps.size(); i++) {
 			Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcaseob, steps.get(i), taskid,caselog);

@@ -9,9 +9,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 
-import luckyclient.publicclass.LogUtil;
-import luckyclient.publicclass.SysConfig;
-
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。

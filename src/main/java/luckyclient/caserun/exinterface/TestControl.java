@@ -55,6 +55,7 @@ public class TestControl {
 		TestBuildApi.getBuild(projectname);
 		TestCase[] testCases = TestCaseApi.getplantestcase(projectname, "NULL", testplan);
 		String taskid = "888888";
+
 		for (TestCase testcase : testCases) {
 			if (testcase.getSteps().size() == 0) {
 				continue;
@@ -97,14 +98,19 @@ public class TestControl {
 		}
 		
 		String taskid = "888888";
+		// 初始化写用例结果以及日志模块
+		LogOperation caselog = new LogOperation(); 
 		for (ProjectCase testcase : testCases) {
 			List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcase.getId());
 			if (steps.size() == 0) {
+				caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 2);
+				luckyclient.publicclass.LogUtil.APP.error("用例【" + testcase.getSign() + "】没有找到步骤，直接跳过，请检查！");
+				caselog.caseLogDetail(taskid, testcase.getSign(),"在用例中没有找到步骤，请检查","error", "1", "");
 				continue;
 			}
 			Debugcount++; // 多线程计数++，用于检测线程是否全部执行完
 			threadExecute
-					.execute(new ThreadForExecuteCase(testcase, steps,taskid,pcplist));
+					.execute(new ThreadForExecuteCase(testcase, steps,taskid,pcplist,caselog));
 		}
 		// 多线程计数，用于检测线程是否全部执行完
 		int i = 0;
@@ -134,6 +140,8 @@ public class TestControl {
 		String projectname=task.getTestJob().getPlanproj();
 		int timeout = task.getTestJob().getTimeout();
 		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(task.getTestJob().getProjectid().toString());
+		// 初始化写用例结果以及日志模块
+		LogOperation caselog = new LogOperation(); 
 		// 判断是否要自动重启TOMCAT
 		if (restartstatus.indexOf("Status:true") > -1) {
 			// 判断是否构建是否成功
@@ -174,11 +182,14 @@ public class TestControl {
 							ProjectCase projectcase =cases.get(j);
 							List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(projectcase.getId());
 							if (steps.size()== 0) {
+								caselog.addCaseDetail(taskid, projectcase.getSign(), "1", projectcase.getName(), 2);
+								luckyclient.publicclass.LogUtil.APP.error("用例【" + projectcase.getSign() + "】没有找到步骤，直接跳过，请检查！");
+								caselog.caseLogDetail(taskid, projectcase.getSign(),"在用例中没有找到步骤，请检查","error", "1", "");
 								continue;
 							}
 							Debugcount++; // 多线程计数++，用于检测线程是否全部执行完
 							threadExecute.execute(
-									new ThreadForExecuteCase(projectcase, steps,taskid,pcplist));
+									new ThreadForExecuteCase(projectcase, steps,taskid,pcplist,caselog));
 						}
 						// 多线程计数，用于检测线程是否全部执行完
 						int i = 0;

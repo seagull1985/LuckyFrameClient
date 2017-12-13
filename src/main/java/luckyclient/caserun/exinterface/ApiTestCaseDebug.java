@@ -11,7 +11,6 @@ import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.PublicCaseParams;
 import luckyclient.publicclass.ChangString;
-import luckyclient.publicclass.DBOperation;
 import luckyclient.publicclass.InvokeMethod;
 /**
  * =================================================================
@@ -31,7 +30,7 @@ public class ApiTestCaseDebug{
 	 * @param 项目名
 	 * @param 用例编号
 	 * @param 用例版本号
-	 * 用于在testlink上配置好用例参数后，做单条用例调试
+	 * 用于在本地做单条用例调试
 	 */
 	public static void oneCaseDebug(String projectname,String testCaseExternalId){
 		Map<String,String> variable = new HashMap<String,String>(0);
@@ -49,6 +48,11 @@ public class ApiTestCaseDebug{
 			variable.put(pcp.getParamsname(), pcp.getParamsvalue());
 		}
 		List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcaseob.getId());
+		if(steps.size()==0){
+			setresult=2;
+			luckyclient.publicclass.LogUtil.APP.error("用例中未找到步骤，请检查！");
+			testnote="用例中未找到步骤，请检查！";
+		}
 		    //进入循环，解析用例所有步骤
 		    for(int i=0;i<steps.size();i++){		    	
 		    	Map<String,String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcaseob, steps.get(i),"888888",null); 
@@ -155,7 +159,7 @@ public class ApiTestCaseDebug{
 	 * @param 项目名
 	 * @param 用例编号
 	 * @param 用例版本号
-	 * 用于在testlink上配置好用例参数后，做多条用例串行调试
+	 * 用于在本地做多条用例串行调试
 	 */
 	public static void moreCaseDebug(String projectname,Map<String,Integer> addtestcase){
 		System.out.println(addtestcase.size());

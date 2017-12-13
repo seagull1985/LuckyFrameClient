@@ -86,15 +86,36 @@ public class InvokeMethod {
 					   jsonarr.set(i, tempobj);
 					}
 				}
+				
+				//处理头域
+				Map<String, String> headmsg = new HashMap<String, String>(0);
+				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
+					String[] temp=ppt.getHeadmsg().split(";",-1);
+					for(int i=0;i<temp.length;i++){
+						if(null!=temp[i]&&!temp[i].equals("")&&temp[i].indexOf("=")>0){
+							String key=temp[i].substring(0, temp[i].indexOf("="));
+							String value=temp[i].substring(temp[i].indexOf("=")+1);
+							headmsg.put(key, value);
+						}						
+					}
+				}
+				
 				@SuppressWarnings("unchecked")
 				List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(),
 						new JsonConfig());
                 //处理更换参数
 				if(null!=getParameterValues){
+					String booleanheadmsg="headmsg(";
+					String msgend=")";
 					for (Object obp : getParameterValues) {
 						String paramob = obp.toString();
 						String key = paramob.substring(0, paramob.indexOf("#"));
 						String value = paramob.substring(paramob.indexOf("#") + 1);
+						if(key.indexOf(booleanheadmsg)>-1&&key.indexOf(msgend)>-1){
+							String head=key.substring(key.indexOf(booleanheadmsg)+8, key.lastIndexOf(msgend));
+							headmsg.put(head, value);
+							continue;
+						}
 						for (int i=0;i<paramslist.size();i++) {
 							ProjectTemplateParams ptp = paramslist.get(i);
 							if(ptp.getParamname().equals(key)){
@@ -122,18 +143,6 @@ public class InvokeMethod {
 					}else{
 						params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
 					}					
-				}
-				//处理头域
-				Map<String, String> headmsg = new HashMap<String, String>(0);
-				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
-					String[] temp=ppt.getHeadmsg().split(";",-1);
-					for(int i=0;i<temp.length;i++){
-						if(null!=temp[i]&&!temp[i].equals("")&&temp[i].indexOf("=")>0){
-							String key=temp[i].substring(0, temp[i].indexOf("="));
-							String value=temp[i].substring(temp[i].indexOf("=")+1);
-							headmsg.put(key, value);
-						}						
-					}
 				}
 				
 				for (ProjectTemplateParams ptp : paramslist) {
@@ -168,7 +177,10 @@ public class InvokeMethod {
 				} else if (functionname.toLowerCase().equals("httpurldelete")) {
 					result = HttpClientHelper.sendHttpURLDel(packagename, params, 
 							ppt.getContentencoding().toLowerCase(),ppt.getConnecttimeout(),headmsg);
-				} else if (functionname.toLowerCase().equals("httpclientput")) {
+				} else if (functionname.toLowerCase().equals("httpclientputjson")) {
+					result = HttpClientHelper.httpClientPutJson(packagename, params,
+							ppt.getContentencoding().toLowerCase(),headmsg);
+				}  else if (functionname.toLowerCase().equals("httpclientput")) {
 					result = HttpClientHelper.httpClientPut(packagename, params,
 							ppt.getContentencoding().toLowerCase(),headmsg);
 				} else if (functionname.toLowerCase().equals("httpclientget")) {
@@ -204,15 +216,36 @@ public class InvokeMethod {
 					   jsonarr.set(i, tempobj);
 					}
 				}
+				
+				//处理头域
+				Map<String, String> headmsg = new HashMap<String, String>(0);
+				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
+					String[] temp=ppt.getHeadmsg().split(";",-1);
+					for(int i=0;i<temp.length;i++){
+						if(null!=temp[i]&&!temp[i].equals("")&&temp[i].indexOf("=")>0){
+							String key=temp[i].substring(0, temp[i].indexOf("="));
+							String value=temp[i].substring(temp[i].indexOf("=")+1);
+							headmsg.put(key, value);
+						}						
+					}
+				}
+				
 				@SuppressWarnings("unchecked")
 				List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(),
 						new JsonConfig());
                 //处理更换参数
 				if(null!=getParameterValues){
+					String booleanheadmsg="headmsg(";
+					String msgend=")";
 					for (Object obp : getParameterValues) {
 						String paramob = obp.toString();
-						String key = paramob.substring(0, action.indexOf("#"));
-						String value = paramob.substring(action.indexOf("#") + 1);
+						String key = paramob.substring(0, paramob.indexOf("#"));
+						String value = paramob.substring(paramob.indexOf("#") + 1);
+						if(key.indexOf(booleanheadmsg)>-1&&key.indexOf(msgend)>-1){
+							String head=key.substring(key.indexOf(booleanheadmsg)+8, key.lastIndexOf(msgend));
+							headmsg.put(head, value);
+							continue;
+						}
 						for (int i=0;i<paramslist.size();i++) {
 							ProjectTemplateParams ptp = paramslist.get(i);
 							if(ptp.getParamname().equals(key)){
@@ -240,18 +273,7 @@ public class InvokeMethod {
 						params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
 					}
 				}
-				//处理头域
-				Map<String, String> headmsg = new HashMap<String, String>(0);
-				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
-					String[] temp=ppt.getHeadmsg().split(";",-1);
-					for(int i=0;i<temp.length;i++){
-						if(null!=temp[i]&&!temp[i].equals("")&&temp[i].indexOf("=")>0){
-							String key=temp[i].substring(0, temp[i].indexOf("="));
-							String value=temp[i].substring(temp[i].indexOf("=")+1);
-							headmsg.put(key, value);
-						}						
-					}
-				}
+
 				
 				if (functionname.toLowerCase().equals("socketpost")) {
 					result = HttpClientHelper.sendSocketPost(packagename, params,
@@ -315,6 +337,7 @@ public class InvokeMethod {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+
 	}
 
 }

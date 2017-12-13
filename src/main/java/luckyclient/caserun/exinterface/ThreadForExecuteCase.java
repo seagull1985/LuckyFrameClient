@@ -31,14 +31,16 @@ public class ThreadForExecuteCase extends Thread {
 	private String taskid;
 	private List<ProjectCasesteps> steps;
 	private List<PublicCaseParams> pcplist;
+	private LogOperation caselog;
 
 	public ThreadForExecuteCase(ProjectCase projectcase, List<ProjectCasesteps> steps, String taskid,
-			List<PublicCaseParams> pcplist) {
+			List<PublicCaseParams> pcplist,LogOperation caselog) {
 		this.caseid = projectcase.getSign();
 		this.testcaseob = projectcase;
 		this.taskid = taskid;
 		this.steps = steps;
 		this.pcplist = pcplist;
+		this.caselog = caselog;
 	}
 	
 	@Override
@@ -48,8 +50,6 @@ public class ThreadForExecuteCase extends Thread {
 		for (PublicCaseParams pcp : pcplist) {
 			variable.put(pcp.getParamsname(), pcp.getParamsvalue());
 		}
-		// 初始化写用例结果以及日志模块
-		LogOperation caselog = new LogOperation(); 
 		String functionname = null;
 		String packagename = null;
 		String expectedresults = null;
@@ -185,7 +185,7 @@ public class ThreadForExecuteCase extends Thread {
 		// 如果调用方法过程中未出错，进入设置测试结果流程
 		try {
 			// 成功跟失败的用例走此流程
-			if (testnote.indexOf("CallCase调用出错！") <= -1 && testnote.indexOf("解析出错啦！") <= -1) { 
+			if (testnote.indexOf("CallCase调用出错！") <0 && testnote.indexOf("解析出错啦！") <0) { 
 				caselog.updateCaseDetail(taskid, caseid, setresult);
 			} else {
 				// 解析用例或是调用方法出错，全部把用例置为锁定

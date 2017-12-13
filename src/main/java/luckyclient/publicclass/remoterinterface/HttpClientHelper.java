@@ -102,12 +102,14 @@ public class HttpClientHelper {
 				}
 			}
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -121,6 +123,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -198,12 +201,14 @@ public class HttpClientHelper {
 				}
 			}
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					osw = null;
 					throw new RuntimeException(e);
 				}
@@ -212,6 +217,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -269,12 +275,14 @@ public class HttpClientHelper {
 			}
 			os.flush();
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (os != null) {
 				try {
 					os.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					os = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -288,6 +296,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -347,12 +356,14 @@ public class HttpClientHelper {
 				resultBuffer.append(temp);
 			}
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -417,12 +428,14 @@ public class HttpClientHelper {
 				resultBuffer.append(temp);
 			}
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -471,12 +484,14 @@ public class HttpClientHelper {
 				resultBuffer.append(temp);
 			}
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -526,12 +541,14 @@ public class HttpClientHelper {
 				resultBuffer.append(temp);
 			}
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -559,6 +576,7 @@ public class HttpClientHelper {
 				try {
 					sbParams.append(URLEncoder.encode(String.valueOf(entry.getValue()), charset));
 				} catch (UnsupportedEncodingException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					throw new RuntimeException(e);
 				}
 				sbParams.append("&");
@@ -590,12 +608,14 @@ public class HttpClientHelper {
 				resultBuffer.append(temp);
 			}
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -673,12 +693,14 @@ public class HttpClientHelper {
 			// 读取出响应体数据（就是你要的数据）
 			result = readLine(is, contentLength, charset);
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -686,6 +708,7 @@ public class HttpClientHelper {
 						try {
 							socket.close();
 						} catch (IOException e) {
+							luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 							socket = null;
 							throw new RuntimeException(e);
 						}
@@ -696,6 +719,7 @@ public class HttpClientHelper {
 				try {
 					is.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					is = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -704,6 +728,7 @@ public class HttpClientHelper {
 							socket.close();
 						} catch (IOException e) {
 							socket = null;
+							luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 							throw new RuntimeException(e);
 						}
 					}
@@ -782,12 +807,14 @@ public class HttpClientHelper {
 			// 读取出响应体数据（就是你要的数据）
 			result = readLine(is, contentLength, charset);
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -795,6 +822,7 @@ public class HttpClientHelper {
 						try {
 							socket.close();
 						} catch (IOException e) {
+							luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 							socket = null;
 							throw new RuntimeException(e);
 						}
@@ -805,6 +833,7 @@ public class HttpClientHelper {
 				try {
 					is.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					is = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -812,6 +841,7 @@ public class HttpClientHelper {
 						try {
 							socket.close();
 						} catch (IOException e) {
+							luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 							socket = null;
 							throw new RuntimeException(e);
 						}
@@ -899,22 +929,26 @@ public class HttpClientHelper {
 			}
 			// 读取返回内容
 			resultBuffer = new StringBuffer();
-		   responsecode = String.valueOf(con.getResponseCode());
-			int contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
-			if (contentLength > 0) {
-				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
-				String temp;
-				while ((temp = br.readLine()) != null) {
-					resultBuffer.append(temp);
+		    responsecode = String.valueOf(con.getResponseCode());
+		    if(null!=con.getHeaderField("Content-Length")){
+				int contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
+				if (contentLength > 0) {
+					br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
+					String temp;
+					while ((temp = br.readLine()) != null) {
+						resultBuffer.append(temp);
+					}
 				}
-			}
+		    }
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -928,6 +962,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -944,9 +979,9 @@ public class HttpClientHelper {
 
 
 /**
-	 * @Description:使用HttpClient发送put请求
+	 * @Description:使用HttpClient发送put请求  参数JSON格式
 	 */
-	public static String httpClientPut(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+	public static String httpClientPutJson(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
 		String responsecode = null;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -968,10 +1003,9 @@ public class HttpClientHelper {
 		BufferedReader br = null;
 		try {
 		if(params.size()>0){
-				JSONObject jsonObject = JSONObject.fromObject(params); 
-				System.out.println(jsonObject.toString());
-				 StringEntity entity = new StringEntity(jsonObject.toString(),charset);
-				  httpput.setEntity(entity);
+				JSONObject jsonObject = JSONObject.fromObject(params);
+				StringEntity entity = new StringEntity(jsonObject.toString(),charset);
+				httpput.setEntity(entity);
 			}
        
 		 CloseableHttpResponse response = httpclient.execute(httpput);
@@ -988,12 +1022,14 @@ public class HttpClientHelper {
 				resultBuffer.append(temp);
 			}
 		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -1002,6 +1038,68 @@ public class HttpClientHelper {
 		return responsecode + resultBuffer.toString();
 	}
 
+	/**
+	 * @Description:使用HttpClient发送put请求
+	 */
+	public static String httpClientPut(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+		StringBuffer resultBuffer = null;
+		String responsecode = null;
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpPut httpput = new HttpPut(urlParam);
+		//替换头域信息
+	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+	    	String key=m.getKey();
+	    	String value=m.getValue();
+	    	if(null!=value&&value.indexOf("Base64(")==0){
+	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+	    		httpput.setHeader(key,value);
+	    	}else{
+	    		httpput.setHeader(key,value);
+	    	}
+        }
+		// 构建请求参数
+		BufferedReader br = null;
+		try {
+			if(params.size()>0){
+				//拼接参数
+			    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
+			    for (Map.Entry<String, Object> m :params.entrySet())  { 
+		            nvps.add(new BasicNameValuePair(m.getKey(), m.getValue().toString()));
+		        }
+			    httpput.setEntity(new UrlEncodedFormEntity(nvps,charset));
+			}
+       
+		 CloseableHttpResponse response = httpclient.execute(httpput);
+
+			// 读取服务器响应数据
+			resultBuffer = new StringBuffer();
+			//获取请求对象中的响应行对象  
+			org.apache.http.StatusLine statusLine = response.getStatusLine();
+			//从状态行中获取状态码  
+	        responsecode = String.valueOf(statusLine.getStatusCode());
+			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
+			String temp;
+			while ((temp = br.readLine()) != null) {
+				resultBuffer.append(temp);
+			}
+		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			throw new RuntimeException(e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					br = null;
+					throw new RuntimeException(e);
+				}
+			}
+		}		
+		return responsecode + resultBuffer.toString();
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 	}
