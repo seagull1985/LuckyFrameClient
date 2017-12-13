@@ -24,6 +24,7 @@ public class ChangString {
 			str = str.replaceAll("&#39;", "\'");
 			//@@用来注释@的引用作用
 			int varcount=counter(str,"@")-counter(str,"@@")*2;
+
 			//如果存在传参，进行处理
 			if(varcount>0){
 				luckyclient.publicclass.LogUtil.APP.info("在"+changname+"【"+str+"】中找到"+varcount+"个可替换参数");
@@ -34,6 +35,9 @@ public class ChangString {
 						if(str.indexOf("@@"+entry.getKey())>-1){
 							str=str.replaceAll("@@"+entry.getKey(), "////CHANG////");
 						}
+						//用来替换字符串中带了\"或是\'会导致\消失的问题
+						entry.setValue(entry.getValue().replaceAll("\\\\\"", "\\&quot;"));
+						entry.setValue(entry.getValue().replaceAll("\\\\\'", "\\\\&#39;"));
 						int viewcount=counter(str,"@"+entry.getKey());
 						str=str.replaceAll("@"+entry.getKey(), entry.getValue());
 						luckyclient.publicclass.LogUtil.APP.info("将"+changname+"引用变量【@"+entry.getKey()+"】替换成值【"+entry.getValue()+"】");
@@ -47,6 +51,9 @@ public class ChangString {
 				}
 			}
 			str=str.replaceAll("@@","@");
+			//用来恢复字符串中带了\"或是\'会导致\消失的问题
+			str = str.replaceAll("\\&quot;", "\\\\\"");
+			str = str.replaceAll("\\&#39;", "\\\\\'");
 		    return str;
 		}catch(Exception e){
 			e.printStackTrace();
