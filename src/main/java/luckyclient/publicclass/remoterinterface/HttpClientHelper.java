@@ -58,6 +58,7 @@ public class HttpClientHelper {
 				sbParams.append("=");
 				sbParams.append(e.getValue());
 				sbParams.append("&");
+				luckyclient.publicclass.LogUtil.APP.info("设置HTTPURLPost参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
 			}
 		}
 		HttpURLConnection con = null;
@@ -77,10 +78,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
+		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPURLPost头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
-		    		//value="Basic  " + Base64.encode((valuesub).getBytes());
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -151,6 +153,7 @@ public class HttpClientHelper {
 				sbParams.append("=");
 				sbParams.append(e.getValue());
 				sbParams.append("&");
+				luckyclient.publicclass.LogUtil.APP.info("设置URLPost参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
 			}
 		}
 		URLConnection con = null;
@@ -169,9 +172,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
+		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换URLPost头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -238,6 +243,7 @@ public class HttpClientHelper {
 				sbParams.append("=");
 				sbParams.append(entry.getValue());
 				sbParams.append("&");
+				luckyclient.publicclass.LogUtil.APP.info("设置HTTPSaveFile参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 			}
 		}
 		HttpURLConnection con = null;
@@ -256,9 +262,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
+		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPSaveFile头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -322,6 +330,7 @@ public class HttpClientHelper {
 				sbParams.append("=");
 				sbParams.append(entry.getValue());
 				sbParams.append("&");
+				luckyclient.publicclass.LogUtil.APP.info("设置HTTPURLGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 			}
 		}
 		HttpURLConnection con = null;
@@ -339,9 +348,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
+		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPURLGet头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -390,6 +401,7 @@ public class HttpClientHelper {
 				sbParams.append("=");
 				sbParams.append(entry.getValue());
 				sbParams.append("&");
+				luckyclient.publicclass.LogUtil.APP.info("设置URLGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 			}
 		}
 		BufferedReader br = null;
@@ -410,9 +422,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
+		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换URLGet头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -457,9 +471,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
+	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPPostJson头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpPost.setHeader(key, value);
 	    	}else{
 	    		httpPost.setHeader(key, value);
@@ -470,6 +486,7 @@ public class HttpClientHelper {
 		try {
 		if(params.size()>0){
 				JSONObject jsonObject = JSONObject.fromObject(params); 
+				luckyclient.publicclass.LogUtil.APP.info("设置HTTPPostJson参数信息...【"+jsonObject.toString()+"】");
 				StringEntity entity = new StringEntity(jsonObject.toString(),charset);
 				httpPost.setEntity(entity);
 			}
@@ -511,9 +528,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
+	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPClientPost头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpPost.setHeader(key, value);
 	    	}else{
 	    		httpPost.setHeader(key, value);
@@ -527,6 +546,7 @@ public class HttpClientHelper {
 			    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
 			    for (Map.Entry<String, Object> m :params.entrySet())  { 
 		            nvps.add(new BasicNameValuePair(m.getKey(), m.getValue().toString()));
+		            luckyclient.publicclass.LogUtil.APP.info("设置HTTPClientPost参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
 		        }
 			    httpPost.setEntity(new UrlEncodedFormEntity(nvps,charset));
 			}
@@ -580,6 +600,7 @@ public class HttpClientHelper {
 					throw new RuntimeException(e);
 				}
 				sbParams.append("&");
+				luckyclient.publicclass.LogUtil.APP.info("设置HTTPClientGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 			}
 		}
 		if (sbParams != null && sbParams.length() > 0) {
@@ -590,9 +611,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
+	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPClientGet头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpGet.setHeader(key, value);
 	    	}else{
 	    		httpGet.setHeader(key, value);
@@ -637,6 +660,7 @@ public class HttpClientHelper {
 				sbParams.append("=");
 				sbParams.append(entry.getValue());
 				sbParams.append("&");
+				luckyclient.publicclass.LogUtil.APP.info("设置SocketPost参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 			}
 		}
 		Socket socket = null;
@@ -660,9 +684,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
+		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换Socket头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		sb.append(key+": "+value+" \r\n");
 		    	}else{
 		    		sb.append(key+": "+value+" \r\n");
@@ -751,6 +777,7 @@ public class HttpClientHelper {
 				sbParams.append("=");
 				sbParams.append(entry.getValue());
 				sbParams.append("&");
+				luckyclient.publicclass.LogUtil.APP.info("设置SocketPost参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 			}
 		}
 		Socket socket = null;
@@ -774,9 +801,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
+		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换Socket头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		sb.append(key+": "+value+" \r\n");
 		    	}else{
 		    		sb.append(key+": "+value+" \r\n");
@@ -895,6 +924,7 @@ public class HttpClientHelper {
 				sbParams.append("=");
 				sbParams.append(e.getValue());
 				sbParams.append("&");
+				luckyclient.publicclass.LogUtil.APP.info("设置HttpURLDel参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
 			}
 		}
 		HttpURLConnection con = null;
@@ -913,9 +943,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
+		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key,value);
 		    	}else{
 		    		con.setRequestProperty(key,value);
@@ -991,9 +1023,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
+	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpput.setHeader(key,value);
 	    	}else{
 	    		httpput.setHeader(key,value);
@@ -1004,6 +1038,7 @@ public class HttpClientHelper {
 		try {
 		if(params.size()>0){
 				JSONObject jsonObject = JSONObject.fromObject(params);
+				luckyclient.publicclass.LogUtil.APP.info("设置HTTPClientPutJson参数信息...【"+jsonObject.toString()+"】");
 				StringEntity entity = new StringEntity(jsonObject.toString(),charset);
 				httpput.setEntity(entity);
 			}
@@ -1050,9 +1085,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
+	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpput.setHeader(key,value);
 	    	}else{
 	    		httpput.setHeader(key,value);
@@ -1066,6 +1103,7 @@ public class HttpClientHelper {
 			    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
 			    for (Map.Entry<String, Object> m :params.entrySet())  { 
 		            nvps.add(new BasicNameValuePair(m.getKey(), m.getValue().toString()));
+		            luckyclient.publicclass.LogUtil.APP.info("开始设置HTTPClientPut参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
 		        }
 			    httpput.setEntity(new UrlEncodedFormEntity(nvps,charset));
 			}
