@@ -118,7 +118,8 @@ public class ThreadForExecuteCase extends Thread {
 					String temptestnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,
 							steps.get(i).getSteptype(), steps.get(i).getAction());
 					// 用例参数与公共参数冲突，优先用例参数，自动替换
-					variable.put(expectedResultVariable, temptestnote);					
+					variable.put(expectedResultVariable, temptestnote);
+					luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "第" + (i + 1) + "步将测试结果【"+temptestnote+"】赋值给变量【"+expectedResultVariable+"】");
 				} else if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("%=") > -1) {
 					// 把预期结果与测试结果做模糊匹配
 					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,
