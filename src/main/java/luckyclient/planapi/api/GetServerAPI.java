@@ -25,6 +25,11 @@ import net.sf.json.JsonConfig;
  */
 public class GetServerAPI {
 
+	/**
+	 * 通过计划ID获取测试用例对象集
+	 * @param planid
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<ProjectCase> getCasesbyplanid(int planid) {
 		String result = HttpRequest.loadJSON("/projectPlanCase/cgetcasebyplanid.do?planid=" + planid);
@@ -34,6 +39,11 @@ public class GetServerAPI {
 		return list;
 	}
 
+	/**
+	 * 通过计划名称获取测试用例对象集
+	 * @param name
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<ProjectCase> getCasesbyplanname(String name) {
 		String result = HttpRequest.loadJSON("/projectPlanCase/cgetcasebyplanname.do?name=" + name);
@@ -43,6 +53,11 @@ public class GetServerAPI {
 		return list;
 	}
 
+	/**
+	 * 通过用例ID获取下面的步骤对象
+	 * @param caseid
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<ProjectCasesteps> getStepsbycaseid(int caseid) {
 		String result = HttpRequest.loadJSON("/projectCasesteps/cgetStepsByCase.do?caseid=" + caseid);
@@ -52,6 +67,11 @@ public class GetServerAPI {
 		return list;
 	}
 
+	/**
+	 * 通过taskid获取对象
+	 * @param taskid
+	 * @return
+	 */
 	public static TestTaskexcute cgetTaskbyid(int taskid) {
 		String result = HttpRequest.loadJSON("/tastExecute/cgettaskbyid.do?taskid=" + taskid);
 		JSONObject jsonObject = JSONObject.fromObject(result.toString());
@@ -59,6 +79,11 @@ public class GetServerAPI {
 		return task;
 	}
 
+	/**
+	 * 通过用例编号获取对象
+	 * @param sign
+	 * @return
+	 */
 	public static ProjectCase cgetCaseBysign(String sign) {
 		String result = HttpRequest.loadJSON("/projectCase/cgetcasebysign.do?sign=" + sign);
 		JSONObject jsonObject = JSONObject.fromObject(result.toString());
@@ -66,6 +91,11 @@ public class GetServerAPI {
 		return pc;
 	}
 
+	/**
+	 * 获取项目下的所有公共参数
+	 * @param projectid
+	 * @return
+	 */
 	public static List<PublicCaseParams> cgetParamsByProjectid(String projectid) {
 		String result = HttpRequest.loadJSON("/publicCaseParams/cgetParamsByProjectid.do?projectid="+projectid);
 		JSONObject jsonObject = JSONObject.fromObject(result.toString());
@@ -75,6 +105,13 @@ public class GetServerAPI {
 		return list;
 	}
 	
+	/**
+	 * put web界面的数据到服务端
+	 * @param sign
+	 * @param executor
+	 * @param loglevel
+	 * @param detail
+	 */
 	public static void cPostDebugLog(String sign, String executor, String loglevel, String detail){
 		sign = sign.replace("%","BBFFHH");
 		sign = sign.replace("=","DHDHDH");
@@ -93,8 +130,19 @@ public class GetServerAPI {
 		System.out.println("已经成功写入临时日志库，ID：" + logid);
 	}
 
+	/**
+	 * 供其他系统远程调用调度任务，启动执行
+	 * @param jobid
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	public static String cRunJobForId(String jobid) throws UnsupportedEncodingException {
+		String result = HttpRequest.loadJSON("/testJobs/runJobForInterface.do?jobid=" + jobid);
+		return new String(result.getBytes("GBK"), "UTF-8");
+	}
+	
 	public static void main(String[] args) throws UnsupportedEncodingException {
-
+		getCasesbyplanid(79);
 	}
 
 }

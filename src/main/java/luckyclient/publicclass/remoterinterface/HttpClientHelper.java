@@ -13,6 +13,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -1051,11 +1052,13 @@ public class HttpClientHelper {
 			org.apache.http.StatusLine statusLine = response.getStatusLine();
 			//从状态行中获取状态码  
 	        responsecode = String.valueOf(statusLine.getStatusCode());
-			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
-			String temp;
-			while ((temp = br.readLine()) != null) {
-				resultBuffer.append(temp);
-			}
+	        if(null!=response.getEntity()){
+	        	br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
+				String temp;
+				while ((temp = br.readLine()) != null) {
+					resultBuffer.append(temp);
+				}
+	        }
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
@@ -1116,11 +1119,13 @@ public class HttpClientHelper {
 			org.apache.http.StatusLine statusLine = response.getStatusLine();
 			//从状态行中获取状态码  
 	        responsecode = String.valueOf(statusLine.getStatusCode());
-			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
-			String temp;
-			while ((temp = br.readLine()) != null) {
-				resultBuffer.append(temp);
-			}
+	        if(null!=response.getEntity()){
+	        	br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
+				String temp;
+				while ((temp = br.readLine()) != null) {
+					resultBuffer.append(temp);
+				}
+	        }		
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
@@ -1140,5 +1145,9 @@ public class HttpClientHelper {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		Map<String, Object> params = new HashMap<String, Object>(0);
+		Map<String, String> headmsg = new HashMap<String, String>(0);
+		String a=httpClientPut("http://tmsclub.gugud.com/aggregation/courses/48/start", params, "UTF-8",headmsg);
+		System.out.println(a);
 	}
 }

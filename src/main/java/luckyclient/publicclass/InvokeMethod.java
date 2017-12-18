@@ -64,7 +64,7 @@ public class InvokeMethod {
 				String templateidstr = action.substring(1, action.indexOf("】"));
 				String templatenamestr = action.substring(action.indexOf("】") + 1);
 				luckyclient.publicclass.LogUtil.APP
-						.info("即将使用模板" + templatenamestr + " ID:" + templateidstr + " 发送HTTP请求！");
+						.info("即将使用模板【" + templatenamestr + "】  ID:【" + templateidstr + "】 发送HTTP请求！");
 
 				String httpppt = HttpRequest
 						.loadJSON("/projectprotocolTemplate/cgetPTemplateById.do?templateid=" + templateidstr);
@@ -194,7 +194,7 @@ public class InvokeMethod {
 				String templateidstr = action.substring(1, action.indexOf("】"));
 				String templatenamestr = action.substring(action.indexOf("】") + 1);
 				luckyclient.publicclass.LogUtil.APP
-						.info("即将使用模板" + templatenamestr + " ID:" + templateidstr + " 发送SOCKET请求！");
+						.info("即将使用模板【" + templatenamestr + "】  ID:【" + templateidstr + "】 发送SOCKET请求！");
 
 				String httpppt = HttpRequest
 						.loadJSON("/projectprotocolTemplate/cgetPTemplateById.do?templateid=" + templateidstr);
