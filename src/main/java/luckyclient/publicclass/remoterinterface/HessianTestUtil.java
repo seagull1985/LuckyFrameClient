@@ -1,15 +1,7 @@
 package luckyclient.publicclass.remoterinterface;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import com.caucho.hessian.client.HessianProxyFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -46,7 +38,7 @@ public class HessianTestUtil {
 
 	}
 	
-	public static Map<String, Object> startInvoke(InterfaceObject object)
+/*	public static Map<String, Object> startInvoke(InterfaceObject object)
 			throws Exception {
 		// 获取带请求参数列表将（参数类型，参数值）数组转成InterfaceParamObject数组
 		InterfaceParamObject[] paramContent = MAPPER
@@ -179,7 +171,7 @@ public class HessianTestUtil {
 					isBase = BASE_TYPE.get(objClassName) != null ? true : false;
 				}
 				return isBase;
-			}
+			}*/
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

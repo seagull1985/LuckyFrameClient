@@ -1,17 +1,11 @@
 package luckyclient.publicclass.remoterinterface;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.caucho.hessian.client.HessianProxyFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +38,7 @@ public class InterfaceTestUtil {
 		BASE_TYPE.put("short", short.class);
 	}
 
-	public static Map<String, Object> doTest(InterfaceObject object)
+/*	public static Map<String, Object> doTest(InterfaceObject object)
 			throws Exception {
 		// 获取带请求参数列表将（参数类型，参数值）数组转成InterfaceParamObject数组
 		InterfaceParamObject[] paramContent = MAP.readValue(object.getParams(),
@@ -204,14 +198,14 @@ public class InterfaceTestUtil {
 		return result;
 	}
 
-	/**
+	*//**
 	 * 1、转换基本数据类型为包装类型<br>
 	 * 2、…<br>
 	 * 
 	 * @param className
 	 * @return
 	 * @see
-	 */
+	 *//*
 	private static Class<?> getBaseTypeClassByName(String className) {
 		return BASE_TYPE.get(className);
 	}
@@ -222,5 +216,5 @@ public class InterfaceTestUtil {
 			istrue = className.equals(key) ? true : false;
 		}
 		return istrue;
-	}
+	}*/
 }
