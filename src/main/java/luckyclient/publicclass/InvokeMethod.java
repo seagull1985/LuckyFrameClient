@@ -1,5 +1,6 @@
 package luckyclient.publicclass;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -136,20 +137,25 @@ public class InvokeMethod {
 						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
 						JSONObject json= JSONObject.fromObject(tempparam);
 						params.put(ptp.getParamname().replaceAll("&quot;", "\""), json);
+						luckyclient.publicclass.LogUtil.APP
+						.info("模板参数【" + ptp.getParamname() + "】  JSONObject类型参数值:【" + json.toString() + "】");
 					}else if(ptp.getParamtype()==2){
 						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
 						JSONArray jarr=JSONArray.fromObject(tempparam);
 						params.put(ptp.getParamname().replaceAll("&quot;", "\""), jarr);
+						luckyclient.publicclass.LogUtil.APP
+						.info("模板参数【" + ptp.getParamname() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
+					}else if(ptp.getParamtype()==3){
+						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
+						File file=new File(tempparam);
+						params.put(ptp.getParamname().replaceAll("&quot;", "\""), file);
+						luckyclient.publicclass.LogUtil.APP
+						.info("模板参数【" + ptp.getParamname() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
 					}else{
 						params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
+						luckyclient.publicclass.LogUtil.APP
+						.info("模板参数【" + ptp.getParamname() + "】  String类型参数值:【" + ptp.getParam().replaceAll("&quot;", "\"") + "】");
 					}					
-				}
-				
-				for (ProjectTemplateParams ptp : paramslist) {
-					if(ptp.getParam().indexOf("***[")>-1&&"***[".equals(ptp.getParam().substring(0, 4))){
-						ptp.setParam(ptp.getParam().substring(3));
-					}
-					params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
 				}
 				
 				if (functionname.toLowerCase().equals("httpurlpost")) {
@@ -170,6 +176,9 @@ public class InvokeMethod {
 							ppt.getContentencoding().toLowerCase(),ppt.getConnecttimeout(),headmsg);
 				} else if (functionname.toLowerCase().equals("httpclientpost")) {
 					result = HttpClientHelper.httpClientPost(packagename, params,
+							ppt.getContentencoding().toLowerCase(),headmsg);
+				} else if (functionname.toLowerCase().equals("httpclientuploadfile")) {
+					result = HttpClientHelper.httpClientUploadFile(packagename, params,
 							ppt.getContentencoding().toLowerCase(),headmsg);
 				} else if (functionname.toLowerCase().equals("httpclientpostjson")) {
 					result = HttpClientHelper.httpClientPostJson(packagename, params,
@@ -269,6 +278,10 @@ public class InvokeMethod {
 						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
 						JSONArray jarr=JSONArray.fromObject(tempparam);
 						params.put(ptp.getParamname().replaceAll("&quot;", "\""), jarr);
+					}else if(ptp.getParamtype()==3){
+						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
+						File file=new File(tempparam);
+						params.put(ptp.getParamname().replaceAll("&quot;", "\""), file);
 					}else{
 						params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
 					}
@@ -337,7 +350,6 @@ public class InvokeMethod {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
 	}
 
 }

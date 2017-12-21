@@ -1,6 +1,7 @@
 package luckyclient.publicclass.remoterinterface;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,14 +13,15 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -28,6 +30,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -103,6 +106,8 @@ public class HttpClientHelper {
 				while ((temp = br.readLine()) != null) {
 					resultBuffer.append(temp);
 				}
+			}else{
+				resultBuffer.append("Content-Length=0 响应码："+con.getResponseCode());
 			}
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
@@ -205,6 +210,8 @@ public class HttpClientHelper {
 				while ((temp = br.readLine()) != null) {
 					resultBuffer.append(temp);
 				}
+			}else{
+					resultBuffer.append("Content-Length=0");
 			}
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
@@ -367,6 +374,9 @@ public class HttpClientHelper {
 			while ((temp = br.readLine()) != null) {
 				resultBuffer.append(temp);
 			}
+			if(resultBuffer.length()==0){
+				resultBuffer.append("读取服务器响应数据异常!响应码："+con.getResponseCode());
+			}
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
@@ -442,6 +452,9 @@ public class HttpClientHelper {
 			while ((temp = br.readLine()) != null) {
 				resultBuffer.append(temp);
 			}
+			if(resultBuffer.length()==0){
+				resultBuffer.append("读取服务器响应数据异常!");
+			}
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
@@ -493,14 +506,21 @@ public class HttpClientHelper {
 			}
        
 		 CloseableHttpResponse response = httpclient.execute(httpPost);
+		 //获取请求对象中的响应行对象  
+		 org.apache.http.StatusLine statusLine = response.getStatusLine();
+		 //从状态行中获取状态码  
+	     String responsecode = String.valueOf(statusLine.getStatusCode());
+		// 读取服务器响应数据
+		resultBuffer = new StringBuffer();
 
-			// 读取服务器响应数据
-			resultBuffer = new StringBuffer();
-			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
-			String temp;
-			while ((temp = br.readLine()) != null) {
-				resultBuffer.append(temp);
-			}
+		br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
+		String temp;
+		while ((temp = br.readLine()) != null) {
+			resultBuffer.append(temp);
+		}
+		if(resultBuffer.length()==0){
+			resultBuffer.append("读取服务器响应数据异常，响应码："+responsecode);
+		}
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
@@ -553,6 +573,10 @@ public class HttpClientHelper {
 			}
 
 			 CloseableHttpResponse response = httpclient.execute(httpPost);
+			 //获取请求对象中的响应行对象  
+			 org.apache.http.StatusLine statusLine = response.getStatusLine();
+			 //从状态行中获取状态码  
+		     String responsecode = String.valueOf(statusLine.getStatusCode());
 			// 读取服务器响应数据
 			resultBuffer = new StringBuffer();
 
@@ -560,6 +584,9 @@ public class HttpClientHelper {
 			String temp;
 			while ((temp = br.readLine()) != null) {
 				resultBuffer.append(temp);
+			}
+			if(resultBuffer.length()==0){
+				resultBuffer.append("读取服务器响应数据异常，响应码："+responsecode);
 			}
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
@@ -580,12 +607,86 @@ public class HttpClientHelper {
 	}
 
 	/**
+	 * @Description:使用HttpClient上传文件
+	 */
+	public static String httpClientUploadFile(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+		StringBuffer resultBuffer = null;
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpPost httpPost = new HttpPost(urlParam);
+		//替换头域信息
+	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+	    	String key=m.getKey();
+	    	String value=m.getValue();
+	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换httpClientUploadFile头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	if(null!=value&&value.indexOf("Base64(")==0){
+	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		httpPost.setHeader(key, value);
+	    	}else{
+	    		httpPost.setHeader(key, value);
+	    	}
+        }
+		// 构建请求参数
+		BufferedReader br = null;
+		try {
+			if(params.size()>0){
+				//拼接参数
+				MultipartEntityBuilder entityBuilder = MultipartEntityBuilder.create();
+				//设置请求的编码格式  
+				entityBuilder.setCharset(Charset.forName(charset));
+				
+			    for (Map.Entry<String, Object> m :params.entrySet())  {
+			    	if (m.getValue() instanceof File) {
+			    		entityBuilder.addBinaryBody(m.getKey(), (File)m.getValue());
+			    		luckyclient.publicclass.LogUtil.APP.info("设置httpClientUploadFile 上传文件参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
+			    	}else{
+			    		entityBuilder.addTextBody(m.getKey(), m.getValue().toString());
+			    		luckyclient.publicclass.LogUtil.APP.info("设置httpClientUploadFile参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
+			    	}
+		        }
+			    HttpEntity reqEntity =entityBuilder.build();
+			    httpPost.setEntity(reqEntity);
+			}
+
+			 CloseableHttpResponse response = httpclient.execute(httpPost);
+			 //获取请求对象中的响应行对象  
+			 org.apache.http.StatusLine statusLine = response.getStatusLine();
+			 //从状态行中获取状态码  
+		     String responsecode = String.valueOf(statusLine.getStatusCode());
+			// 读取服务器响应数据
+			resultBuffer = new StringBuffer();
+
+			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
+			String temp;
+			while ((temp = br.readLine()) != null) {
+				resultBuffer.append(temp);
+			}
+			if(resultBuffer.length()==0){
+				resultBuffer.append("读取服务器响应数据异常，响应码："+responsecode);
+			}
+		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			throw new RuntimeException(e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					br = null;
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return resultBuffer.toString();
+	}
+	
+	/**
 	 * @Description:使用HttpClient发送get请求
 	 */
 	public static String httpClientGet(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
-		//@SuppressWarnings({ "deprecation", "resource" })
-		//HttpClient client = new HttpClient();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		BufferedReader br = null;
 		// 构建请求参数
@@ -1142,12 +1243,9 @@ public class HttpClientHelper {
 		}		
 		return responsecode + resultBuffer.toString();
 	}
+
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Map<String, Object> params = new HashMap<String, Object>(0);
-		Map<String, String> headmsg = new HashMap<String, String>(0);
-		String a=httpClientPut("http://tmsclub.gugud.com/aggregation/courses/48/start", params, "UTF-8",headmsg);
-		System.out.println(a);
 	}
 }
