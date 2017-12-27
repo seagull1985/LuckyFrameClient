@@ -4,10 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 /**
  * =================================================================
@@ -32,24 +36,35 @@ public class HttpRequest {
 	 * @return
 	 */
 	public static String loadJSON(String repath) {
-		StringBuilder json = new StringBuilder();
-		URL url=null;
+		StringBuffer resultBuffer = null;
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		BufferedReader br = null;
+		// 构建请求参数
+		HttpGet httpGet = new HttpGet(WEB_URL+repath);
 		try {
-			url = new URL(WEB_URL+repath);
-			URLConnection yc = url.openConnection();
-			BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-			String inputLine = null;
-			while ((inputLine = in.readLine()) != null) {
-				json.append(inputLine);
+			 HttpResponse response = httpclient.execute(httpGet);
+			// 读取服务器响应数据
+			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "GBK"));
+			String temp;
+			resultBuffer = new StringBuffer();
+			while ((temp = br.readLine()) != null) {
+				resultBuffer.append(temp);
 			}
-			in.close();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			luckyclient.publicclass.LogUtil.APP.error("链接服务器失败！URL:"+url);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			throw new RuntimeException(e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					br = null;
+					throw new RuntimeException(e);
+				}
+			}
 		}
-		return json.toString();
+		return resultBuffer.toString();
 	}
 
 	 /**

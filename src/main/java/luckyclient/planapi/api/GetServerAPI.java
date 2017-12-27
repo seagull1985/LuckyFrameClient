@@ -142,7 +142,7 @@ public class GetServerAPI {
 	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		getCasesbyplanid(79);
+
 	}
 
 }

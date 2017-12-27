@@ -72,6 +72,10 @@ public class InvokeMethod {
 				JSONObject jsonpptObject = JSONObject.fromObject(httpppt.toString());
 				ProjectProtocolTemplate ppt = (ProjectProtocolTemplate) JSONObject.toBean(jsonpptObject,
 						ProjectProtocolTemplate.class);
+				if(null==ppt){
+					luckyclient.publicclass.LogUtil.APP.error("协议模板为空，请检查用例使用的协议模板是否已经删除！");
+					return "协议模板为空，请确认用例使用的模板是否已经删除！";
+				}
 
 				String httpptp = HttpRequest
 						.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
@@ -350,6 +354,7 @@ public class InvokeMethod {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+
 	}
 
 }

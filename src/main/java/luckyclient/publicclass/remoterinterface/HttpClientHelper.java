@@ -512,14 +512,13 @@ public class HttpClientHelper {
 	     String responsecode = String.valueOf(statusLine.getStatusCode());
 		// 读取服务器响应数据
 		resultBuffer = new StringBuffer();
-
-		br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
-		String temp;
-		while ((temp = br.readLine()) != null) {
-			resultBuffer.append(temp);
-		}
-		if(resultBuffer.length()==0){
-			resultBuffer.append("读取服务器响应数据异常，响应码："+responsecode);
+		resultBuffer.append("响应码："+responsecode+" ");
+		if(null!=response.getEntity()){
+			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
+			String temp;
+			while ((temp = br.readLine()) != null) {
+				resultBuffer.append(temp);
+			}	
 		}
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
