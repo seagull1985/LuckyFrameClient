@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>LuckyFrame</groupId>
-	<artifactId>LuckyFrame</artifactId>
+	<groupId>LuckyFrameClient</groupId>
+	<artifactId>LuckyFrameClient</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -233,11 +233,6 @@
 			<version>3.3.0</version>
 		</dependency>
 		<dependency>
-			<groupId>io.appium</groupId>
-			<artifactId>java-client</artifactId>
-			<version>4.1.2</version>
-		</dependency>
-		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
 			<version>1.4.01</version>
@@ -263,16 +258,11 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.5.2</version>
 		</dependency>
-		<!-- hessian -->
-<!-- 		<dependency>
-			<groupId>com.caucho</groupId>
-			<artifactId>hessian</artifactId>
-			<version>3.1.5</version>
-		</dependency> -->
-		<!--由于Oracle JDBC驱动包是需要Oracle官方授权才能被下载，如果原maven私库中无此包，请手动添加至私库再在maven中操作update 
-			project -->
-		<!--如果您不需要用到此包，可以注释掉 -->
-		<!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc6</artifactId> 
-			<version>12.1.0.1-atlassian-hosted</version> </dependency> -->
+		<dependency>
+			<groupId>io.appium</groupId>
+			<artifactId>java-client</artifactId>
+			<version>6.0.0-BETA2</version>
+		</dependency>
+
 	</dependencies>
 </project>

@@ -27,10 +27,9 @@ import luckyclient.publicclass.InvokeMethod;
 public class ApiTestCaseDebug{
 
 	/**
-	 * @param 项目名
-	 * @param 用例编号
-	 * @param 用例版本号
 	 * 用于在本地做单条用例调试
+	 * @param projectname
+	 * @param testCaseExternalId
 	 */
 	public static void oneCaseDebug(String projectname,String testCaseExternalId){
 		Map<String,String> variable = new HashMap<String,String>(0);
@@ -156,10 +155,9 @@ public class ApiTestCaseDebug{
 	}
 	
 	/**
-	 * @param 项目名
-	 * @param 用例编号
-	 * @param 用例版本号
 	 * 用于在本地做多条用例串行调试
+	 * @param projectname
+	 * @param addtestcase
 	 */
 	public static void moreCaseDebug(String projectname,Map<String,Integer> addtestcase){
 		System.out.println(addtestcase.size());
