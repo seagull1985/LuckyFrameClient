@@ -273,7 +273,6 @@ public class EncapsulateOperation {
 		// 处理页面对象操作
 		switch (operation) {
 		case "open":
-			operationValue = "http://"+operationValue;
 			wd.get(operationValue);
 			result = "Open页面...【"+operationValue+"】";
 			luckyclient.publicclass.LogUtil.APP.info("Open页面...【"+operationValue+"】");
