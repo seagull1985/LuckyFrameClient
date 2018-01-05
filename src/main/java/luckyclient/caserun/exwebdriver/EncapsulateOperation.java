@@ -52,7 +52,7 @@ public class EncapsulateOperation {
 		return result;
 	}
 	
-	public static String getOperation(WebDriver wd,WebElement we,String operation) throws Exception{
+	public static String getOperation(WebDriver wd,WebElement we,String operation,String value) throws Exception{
 		String result = "";
 		// 获取对象处理
 		switch (operation) {
@@ -63,6 +63,14 @@ public class EncapsulateOperation {
 		case "gettagname":
 			result = "获取到的值是【"+we.getTagName()+"】";
 			luckyclient.publicclass.LogUtil.APP.info("getTagName获取对象tagname属性...【tagname属性值:" + result + "】");
+			break;
+		case "getattribute":
+			result = "获取到的值是【"+we.getAttribute(value)+"】";
+			luckyclient.publicclass.LogUtil.APP.info("getAttribute获取对象【"+value+"】属性...【"+value+"属性值:" + result + "】");
+			break;
+		case "getcssvalue":
+			result = "获取到的值是【"+we.getCssValue(value)+"】";
+			luckyclient.publicclass.LogUtil.APP.info("getCssValue获取对象【"+value+"】属性...【"+value+"属性值:" + result + "】");
 			break;
 		case "getcaptcha":
 			result = "获取到的值是【"+Ocr.getCAPTCHA(wd, we)+"】";

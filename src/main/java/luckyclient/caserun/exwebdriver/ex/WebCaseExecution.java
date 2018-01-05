@@ -222,7 +222,7 @@ public class WebCaseExecution extends TestCaseExecution{
 				if (operation.indexOf("select") > -1) {
 					result = EncapsulateOperation.selectOperation(we, operation, operationValue);
 				} else if (operation.indexOf("get") > -1){
-					result = EncapsulateOperation.getOperation(wd, we, operation);
+					result = EncapsulateOperation.getOperation(wd, we, operation,operationValue);
 				} else if (operation.indexOf("mouse") > -1){
 					result = EncapsulateOperation.actionWeOperation(wd, we, operation, operationValue, property, propertyValue);
 				} else {
