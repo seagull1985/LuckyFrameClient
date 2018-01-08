@@ -155,6 +155,18 @@ public class InvokeMethod {
 						params.put(ptp.getParamname().replaceAll("&quot;", "\""), file);
 						luckyclient.publicclass.LogUtil.APP
 						.info("模板参数【" + ptp.getParamname() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
+					}else if(ptp.getParamtype()==4){
+						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
+						Double dp=Double.valueOf(tempparam);
+						params.put(ptp.getParamname().replaceAll("&quot;", "\""), dp);
+						luckyclient.publicclass.LogUtil.APP
+						.info("模板参数【" + ptp.getParamname() + "】  数字类型参数值:【" + tempparam + "】");
+					}else if(ptp.getParamtype()==5){
+						String tempparam=ptp.getParam().replaceAll("&quot;", "\"");
+						Boolean bn=Boolean.valueOf(tempparam);
+						params.put(ptp.getParamname().replaceAll("&quot;", "\""), bn);
+						luckyclient.publicclass.LogUtil.APP
+						.info("模板参数【" + ptp.getParamname() + "】  Boolean类型参数值:【" + bn + "】");
 					}else{
 						params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
 						luckyclient.publicclass.LogUtil.APP
