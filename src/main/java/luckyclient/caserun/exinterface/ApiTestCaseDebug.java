@@ -36,9 +36,9 @@ public class ApiTestCaseDebug{
 		String packagename =null;
 		String functionname = null;
 		String expectedresults = null;
-		Integer setresult = null;
+		Integer setresult = 1;
 		Object[] getParameterValues = null;
-    	String testnote = null;
+		String testnote = "初始化测试结果";
 		int k = 0;
 		ProjectCase testcaseob = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcaseob.getProjectid()));
@@ -147,7 +147,7 @@ public class ApiTestCaseDebug{
 		     }else{
 		    	 luckyclient.publicclass.LogUtil.APP.error("用例 "+testCaseExternalId+"解析或是调用步骤中的方法出错！"); 
 		     }
-		    if(setresult == 0){
+		    if(0==setresult){
 		    	luckyclient.publicclass.LogUtil.APP.info("用例 "+testCaseExternalId+"步骤全部执行成功！"); 
 		    }else{
 		    	luckyclient.publicclass.LogUtil.APP.error("用例 "+testCaseExternalId+"在执行过程中失败，请检查日志！"); 

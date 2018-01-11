@@ -35,9 +35,9 @@ public class WebTestCaseDebug{
 		String packagename =null;
 		String functionname = null;
 		String expectedresults = null;
-		Integer setresult = null;
+		Integer setresult = 1;
 		Object[] getParameterValues = null;
-    	String testnote = null;
+    	String testnote = "初始化测试结果";
 		int k = 0;
 		ProjectCase testcaseob = GetServerAPI.cgetCaseBysign(sign);
 		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcaseob.getProjectid()));
@@ -92,9 +92,9 @@ public class WebTestCaseDebug{
     				GetServerAPI.cPostDebugLog(sign, executor, "INFO", "开始调用方法："+functionname+" .....");
 			    	if(expectedresults.length()>2 && expectedresults.substring(0, 2).indexOf("$=")>-1){                             
 			    		String expectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
-			    		String temptestnote = InvokeMethod.callCase(packagename,functionname,getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
-			    		variable.put(expectedResultVariable, temptestnote);
-			    		GetServerAPI.cPostDebugLog(sign, executor, "INFO", "赋值变量【"+expectedresults.substring(2, expectedresults.length())+"】： "+temptestnote);
+			    		testnote = InvokeMethod.callCase(packagename,functionname,getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
+			    		variable.put(expectedResultVariable, testnote);
+			    		GetServerAPI.cPostDebugLog(sign, executor, "INFO", "赋值变量【"+expectedResultVariable+"】： "+testnote);
 			    	}else if(expectedresults.length()>2 && expectedresults.substring(0, 2).indexOf("%=")>-1){                    
 				    	testnote = InvokeMethod.callCase(packagename,functionname,getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 				    	if(testnote.indexOf(expectedresults.substring(2))>-1){
@@ -134,10 +134,10 @@ public class WebTestCaseDebug{
 		    //如果调用方法过程中未出错，进入设置测试结果流程
 		    if(testnote.indexOf("CallCase调用出错！")<=-1&&testnote.indexOf("解析出错啦！")<=-1){
 		    	GetServerAPI.cPostDebugLog(sign, executor, "INFOover", "用例 "+sign+"解析成功，并成功调用用例中方法，请继续查看执行结果！");
-		     }else{
+		    }else{
 		    	 GetServerAPI.cPostDebugLog(sign, executor, "ERRORover", "用例 "+sign+"解析或是调用步骤中的方法出错！");
-		     }
-		    if(setresult == 0){
+		    }
+		    if(0 == setresult){
 		    	GetServerAPI.cPostDebugLog(sign, executor, "INFOover", "用例 "+sign+"步骤全部执行成功！");
 		    }else{
 		    	GetServerAPI.cPostDebugLog(sign, executor, "ERRORover", "用例 "+sign+"在执行过程中失败，请检查！");

@@ -53,9 +53,9 @@ public class ThreadForExecuteCase extends Thread {
 		String functionname = null;
 		String packagename = null;
 		String expectedresults = null;
-		Integer setresult = null;
+		Integer setresult = 1;
 		Object[] getParameterValues = null;
-		String testnote = null;
+		String testnote = "初始化测试结果";
 		int k = 0;
 		// 进入循环，解析单个用例所有步骤
 		// 插入开始执行的用例
@@ -115,11 +115,11 @@ public class ThreadForExecuteCase extends Thread {
 				// 把预期结果前两个字符判断是否是要把结果存入变量
 				if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("$=") > -1) { 
 					String expectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
-					String temptestnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,
+					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,
 							steps.get(i).getSteptype(), steps.get(i).getAction());
 					// 用例参数与公共参数冲突，优先用例参数，自动替换
-					variable.put(expectedResultVariable, temptestnote);
-					luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "第" + (i + 1) + "步将测试结果【"+temptestnote+"】赋值给变量【"+expectedResultVariable+"】");
+					variable.put(expectedResultVariable, testnote);
+					luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "第" + (i + 1) + "步将测试结果【"+testnote+"】赋值给变量【"+expectedResultVariable+"】");
 				} else if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("%=") > -1) {
 					// 把预期结果与测试结果做模糊匹配
 					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,
@@ -197,12 +197,12 @@ public class ThreadForExecuteCase extends Thread {
 				setresult = 2;
 				caselog.updateCaseDetail(taskid, caseid, setresult);
 			}
-			if (setresult == 0) {
+			if (0 == setresult) {
 				luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "执行结果成功......");
 				caselog.caseLogDetail(taskid, caseid, "用例步骤执行全部成功......", "info", "ending", "");
 				luckyclient.publicclass.LogUtil.APP
 						.info("*********用例【"+testcaseob.getSign()+"】执行完成,测试结果：成功*********");
-			} else if (setresult == 1) {
+			} else if (1 == setresult) {
 				luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcaseob.getSign() + "执行结果失败......");
 				caselog.caseLogDetail(taskid, caseid, "用例执行结果失败......", "error", "ending", "");
 				luckyclient.publicclass.LogUtil.APP

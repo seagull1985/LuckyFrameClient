@@ -43,9 +43,9 @@ public class TestCaseExecution {
 		String packagename = null;
 		String functionname = null;
 		String expectedresults = null;
-		Integer setresult = null;
+		Integer setresult = 1;
 		Object[] getParameterValues = null;
-		String testnote = null;
+		String testnote = "初始化测试结果";
 		int k = 0;
 		// 删除旧的日志
 		LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid); 
@@ -115,8 +115,9 @@ public class TestCaseExecution {
 				// 把预期结果前两个字符判断是否是要把结果存入变量
 				if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("$=") > -1) { 
 					String expectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
-					String temptestnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
-					variable.put(expectedResultVariable, temptestnote);
+					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
+					variable.put(expectedResultVariable, testnote);
+					luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "第" + (i + 1) + "步将测试结果【"+testnote+"】赋值给变量【"+expectedResultVariable+"】");
 				} else if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("%=") > -1) { 
 					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 					if (testnote.indexOf(expectedresults.substring(2)) > -1) {
@@ -205,9 +206,9 @@ public class TestCaseExecution {
 		String packagename = null;
 		String functionname = null;
 		String expectedresults = null;
-		Integer setresult = null;
+		Integer setresult = 1;
 		Object[] getParameterValues = null;
-		String testnote = null;
+		String testnote = "初始化测试结果";
 		int k = 0;
 		ProjectCase testcaseob = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcaseob.getProjectid()));
@@ -274,8 +275,9 @@ public class TestCaseExecution {
 				// 把预期结果前两个字符判断是否是要把结果存入变量
 				if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("$=") > -1) { 
 					String expectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
-					String temptestnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
-					variable.put(expectedResultVariable, temptestnote);
+					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
+					variable.put(expectedResultVariable, testnote);
+					luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "第" + (i + 1) + "步将测试结果【"+testnote+"】赋值给变量【"+expectedResultVariable+"】");
 				} else if (expectedresults.length() > 2 && expectedresults.substring(0, 2).indexOf("%=") > -1) { 
 					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,steps.get(i).getSteptype(),steps.get(i).getAction());
 					if (testnote.indexOf(expectedresults.substring(2)) > -1) {

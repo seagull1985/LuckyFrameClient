@@ -287,6 +287,9 @@ public class LogOperation {
 		String[] buildname = null;
 		try {
 			casesidsql = dbt.executeQuery("select t.isbuilding,t.buildname from TEST_JOBS t where id in (select jobid from TEST_TASKEXCUTE t where t.id = "+inttaskid+")");
+			if(null==casesidsql||"".equals(casesidsql)){
+				return buildname;
+			}
 			String status = casesidsql.substring(0, casesidsql.indexOf("%"));			
 			if("1".equals(status)){
 				String temp = casesidsql.substring(casesidsql.indexOf("%")+1,casesidsql.length()-1);	
@@ -325,6 +328,9 @@ public class LogOperation {
 		String[] command = null;
 		try {
 			casesidsql = dbt.executeQuery("select t.isrestart,t.restartcomm from TEST_JOBS t where id in (select jobid from TEST_TASKEXCUTE t where t.id = "+inttaskid+")");
+			if(null==casesidsql||"".equals(casesidsql)){
+				return command;
+			}
 			String status = casesidsql.substring(0, casesidsql.indexOf("%"));			
 			if("1".equals(status)){
 				String temp = casesidsql.substring(casesidsql.indexOf("%")+1,casesidsql.length()-1);		
