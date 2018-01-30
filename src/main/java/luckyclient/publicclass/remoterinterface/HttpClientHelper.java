@@ -99,7 +99,11 @@ public class HttpClientHelper {
 			}
 			// 读取返回内容
 			resultBuffer = new StringBuffer();
-			int contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
+			int contentLength =0;
+			if(null!=con.getHeaderField("Content-Length")){
+				contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
+			}
+			
 			if (contentLength > 0) {
 				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
 				String temp;
@@ -203,7 +207,10 @@ public class HttpClientHelper {
 			}
 			// 定义BufferedReader输入流来读取URL的响应
 			resultBuffer = new StringBuffer();
-			int contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
+			int contentLength =0;
+			if(null!=con.getHeaderField("Content-Length")){
+				contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
+			}
 			if (contentLength > 0) {
 				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
 				String temp;
@@ -1245,6 +1252,7 @@ public class HttpClientHelper {
 
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub 
+
 	}
 }

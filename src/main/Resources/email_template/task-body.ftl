@@ -39,11 +39,11 @@ a {
               <p><b>自动构建状态： </b> 【<font color='#5CACEE'>${buildstatus}</font>】</p>
 			  <p><b>自动重启TOMCAT状态： </b> 【<font color='#5CACEE'>${restartstatus}</font>】</p>
             <br>
-            <p><b>本次任务预期执行用例共【<font color='#2828FF'>${taskcount[0]}</font>】条,耗時【${time}】</b></p>
-			<p><b>用例执行成功： </b> 【<font color='#28FF28'>${taskcount[1]}</font>】</p>
-            <p><b>用例执行失败： </b> 【<font color='#FF0000'>${taskcount[2]}</font>】</p>
-            <p><b>用例有可能由于脚本原因未成功解析被锁定：</b> 【<font color='#AE57A4'>${taskcount[3]}</font>】</p>
-            <p><b>用例由于长时间未收到接口Response未执行完成：</b> 【<font color='#FFAD86'>${taskcount[4]}</font>】</p>
+            <p><b>本次任务预期执行用例共【<font color='#2828FF'>${casecount}</font>】条,耗時【${time}】</b></p>
+			<p><b>用例执行成功： </b> 【<font color='#28FF28'>${casesuc}</font>】</p>
+            <p><b>用例执行失败： </b> 【<font color='#FF0000'>${casefail}</font>】</p>
+            <p><b>用例有可能由于脚本原因未成功解析被锁定：</b> 【<font color='#AE57A4'>${caselock}</font>】</p>
+            <p><b>用例由于长时间未收到接口Response未执行完成：</b> 【<font color='#FFAD86'>${caseunex}</font>】</p>
 			<br>
 			<p><b>具体详情请点击：  </b><a href='http://${webip}:${webport}/caseDetail/load.do?taskId=${taskid}' target='任务查询'>查询本次自动化任务执行结果明细</a></p>
 			<p><b>查看全部项目请点击：  </b><a href='http://${webip}:${webport}/autoTestChar/chart.do'>查看全部项目执行情况</a></p>

@@ -1,5 +1,8 @@
 package luckyclient.caserun.exwebdriver;
 
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -297,26 +300,55 @@ public class EncapsulateOperation {
 			break;
 		case "gettitle":
 			result = "获取到的值是【"+wd.getTitle()+"】";
-			luckyclient.publicclass.LogUtil.APP.info("获取页面Title...【"+result+"】");
+			luckyclient.publicclass.LogUtil.APP.info("获取页面Title...【"+wd.getTitle()+"】");
 			break;
 		case "getwindowhandle":
-			result = "获取到的值是【"+wd.getWindowHandle()+"】";
-			luckyclient.publicclass.LogUtil.APP.info("getWindowHandle获取窗口句柄...【句柄值:" + result + "】");
+			Set<String> handles=wd.getWindowHandles();
+			int handlenum=1;
+			for(String handle:handles){
+				if(String.valueOf(handlenum).equals(operationValue)){
+					if(wd.getWindowHandle().equals(handle)){
+						result = "请注意，你指定的handle就是当前页面哦，获取到的值是【"+handle+"】";
+					}else{
+						result = "指定handles的顺序值值是"+operationValue+",获取到的值是【"+handle+"】";
+					}
+					break;
+				}
+				handlenum++;
+			}
+			luckyclient.publicclass.LogUtil.APP.info("getWindowHandle获取窗口句柄..."+result);
 			break;
 		case "gotowindow":
-			wd.switchTo().window(operationValue);
-			luckyclient.publicclass.LogUtil.APP.info("gotowindow切换句柄指定窗口...");
+			Set<String> gotohandles=wd.getWindowHandles();
+			int flag=0;
+			for (String handleName : gotohandles) {
+				if (handleName.contains(operationValue)) {
+					flag=1;
+					wd.switchTo().window(operationValue);
+					break;
+				}
+			}
+			if(flag==1){
+				result = "切换窗口句柄至【"+operationValue+"】";
+				luckyclient.publicclass.LogUtil.APP.info(result);
+			}else{
+				result = "切换窗口失败，未找到句柄值为【"+operationValue+"】的对象";
+				luckyclient.publicclass.LogUtil.APP.info(result);
+			}
 			break;
-		case "wait":
+		case "timeout":
 			try {
-				wd.wait(Integer.valueOf(operationValue) * 1000);
+				//设置页面加载最大时长30秒
+				wd.manage().timeouts().pageLoadTimeout(Integer.valueOf(operationValue), TimeUnit.SECONDS);
+				//设置元素出现最大时长30秒  
+				wd.manage().timeouts().implicitlyWait(Integer.valueOf(operationValue), TimeUnit.SECONDS);
 				result = "当前任务操作等待【"+operationValue+"】秒...";
 				luckyclient.publicclass.LogUtil.APP.info("当前任务操作等待【"+operationValue+"】秒...");
 				break;
-			} catch (NumberFormatException | InterruptedException e) {
+			} catch (NumberFormatException e) {
 				luckyclient.publicclass.LogUtil.APP.error("等待时间转换出错 ！");
 				e.printStackTrace();
-				result = "等待时间转换出错，请检查参数";
+				result = "【等待时间转换出错，请检查参数】";
 				break;
 			}
 		default:
@@ -327,6 +359,7 @@ public class EncapsulateOperation {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+
 	}
 
 }

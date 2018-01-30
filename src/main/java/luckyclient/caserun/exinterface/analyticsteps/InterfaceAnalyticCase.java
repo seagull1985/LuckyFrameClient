@@ -49,7 +49,7 @@ public class InterfaceAnalyticCase{
 			}
 		}
 		//setÔ¤ÆÚ½á¹û
-		if("".equals(resultstr)){
+		if(null==resultstr||"".equals(resultstr)){
 			params.put("ExpectedResults", "");
 		}else{
 			params.put("ExpectedResults", subComment(resultstr));

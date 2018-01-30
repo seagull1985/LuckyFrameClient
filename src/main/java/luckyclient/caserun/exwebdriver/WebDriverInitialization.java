@@ -40,25 +40,18 @@ public class WebDriverInitialization{
 
 		if(drivertype==0){
 			System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
-			DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
-		    ieCapabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
 			webDriver = new InternetExplorerDriver();
 		}else if(drivertype==1){
 			System.setProperty("webdriver.gecko.driver",directory.getCanonicalPath()+"\\geckodriver.exe");
-			DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-			capabilities.setCapability("marionette", true);
-			webDriver = new FirefoxDriver(capabilities);
+			webDriver = new FirefoxDriver();
 		}else if(drivertype==2){
 			System.setProperty("webdriver.chrome.driver",directory.getCanonicalPath()+"\\chromedriver.exe");
-			DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-			webDriver = new ChromeDriver(capabilities);
+			webDriver = new ChromeDriver();
 		}else if(drivertype==3){
 			System.setProperty("webdriver.edge.driver",directory.getCanonicalPath()+"\\MicrosoftWebDriver.exe");
 			webDriver = new EdgeDriver();
 		}else{
 			System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
-			DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
-		    ieCapabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
 			webDriver = new InternetExplorerDriver();
 		}
 		
@@ -79,8 +72,6 @@ public class WebDriverInitialization{
 	public static WebDriver setWebDriverForLocal() throws IOException{
 		File directory = new File("");
 		System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
-		DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
-	    ieCapabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
 		WebDriver webDriver = new InternetExplorerDriver();
 		webDriver.manage().window().maximize();
 		//设置页面加载最大时长30秒

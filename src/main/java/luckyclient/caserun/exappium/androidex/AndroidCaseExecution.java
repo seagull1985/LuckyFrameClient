@@ -1,16 +1,17 @@
-package luckyclient.caserun.exwebdriver.ex;
+package luckyclient.caserun.exappium.androidex;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import luckyclient.caserun.exappium.AppDriverAnalyticCase;
 import luckyclient.caserun.exinterface.TestCaseExecution;
-import luckyclient.caserun.exwebdriver.BaseWebDrive;
 import luckyclient.caserun.exwebdriver.EncapsulateOperation;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.entity.ProjectCase;
@@ -25,15 +26,14 @@ import luckyclient.publicclass.ChangString;
  * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
  * 
- * @author： seagull
- * @date 2017年12月1日 上午9:29:40
- * 
+ * @author seagull
+ * @date 2018年1月21日 上午15:12:48
  */
-public class WebCaseExecution extends TestCaseExecution{
+public class AndroidCaseExecution extends TestCaseExecution{
 	static Map<String, String> variable = new HashMap<String, String>();
 
-	public static void caseExcution(ProjectCase testcase, List<ProjectCasesteps> steps,String taskid, WebDriver wd,LogOperation caselog,List<PublicCaseParams> pcplist)
-			throws InterruptedException {
+	public static void caseExcution(ProjectCase testcase, List<ProjectCasesteps> steps,String taskid, AndroidDriver<AndroidElement> appium,LogOperation caselog,List<PublicCaseParams> pcplist)
+			throws InterruptedException, IOException {
 		// 0:成功 1:失败 2:锁定 其他：锁定
 		int setresult = 0; 
 		String casenote = "备注初始化";
@@ -46,14 +46,14 @@ public class WebCaseExecution extends TestCaseExecution{
 		caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 4);       
 		
 		for (ProjectCasesteps step : steps) {
-			Map<String, String> params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog);
+			Map<String, String> params = AppDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog);
 			
 			if(params.get("exception")!=null&&params.get("exception").toString().indexOf("解析异常")>-1){
 				setresult = 2;
 				break;
 			}
 			
-			String result = WebCaseExecution.runStep(params, wd, taskid, testcase.getSign(), step.getStepnum(), caselog);
+			String result = AndroidCaseExecution.runStep(params, appium, taskid, testcase.getSign(), step.getStepnum(), caselog);
 
 			String expectedResults = params.get("ExpectedResults").toString();
 			expectedResults=ChangString.changparams(expectedResults, variable,"预期结果");
@@ -80,22 +80,22 @@ public class WebCaseExecution extends TestCaseExecution{
 						String checkproperty = params.get("checkproperty").toString();
 						String checkPropertyValue = params.get("checkproperty_value").toString();
 
-						WebElement we = isElementExist(wd, checkproperty, checkPropertyValue);
+						WebElement we = isElementExist(appium, checkproperty, checkPropertyValue);
 						if (null != we) {
 							luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum()
-									+ "步，在当前页面中找到预期结果中对象。当前步骤执行成功！");
-							caselog.caseLogDetail(taskid, testcase.getSign(), "在当前页面中找到预期结果中对象。当前步骤执行成功！",
+									+ "步，在当前APP页面中找到预期结果中对象。当前步骤执行成功！");
+							caselog.caseLogDetail(taskid, testcase.getSign(), "在当前APP页面中找到预期结果中对象。当前步骤执行成功！",
 									"info", String.valueOf(step.getStepnum()),"");
 							continue;
 						} else {
-							casenote = "第" + step.getStepnum() + "步，没有在当前页面中找到预期结果中对象。执行失败！";
+							casenote = "第" + step.getStepnum() + "步，没有在当前APP页面中找到预期结果中对象。执行失败！";
 							setresult = 1;
 							java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 							imagname = timeformat.format(new Date());
-							BaseWebDrive.webScreenShot(wd,imagname);
+							AndroidBaseAppium.screenShot(appium, imagname);
 							luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()
-									+ "步，没有在当前页面中找到预期结果中对象。当前步骤执行失败！");
-							caselog.caseLogDetail(taskid, testcase.getSign(), "在当前页面中没有找到预期结果中对象。当前步骤执行失败！"
+									+ "步，没有在当前APP页面中找到预期结果中对象。当前步骤执行失败！");
+							caselog.caseLogDetail(taskid, testcase.getSign(), "在当前APP页面中没有找到预期结果中对象。当前步骤执行失败！"
 									+ "checkproperty【"+checkproperty+"】  checkproperty_value【"+checkPropertyValue+"】","error", String.valueOf(step.getStepnum()),imagname);
 							break;
 						}
@@ -114,7 +114,7 @@ public class WebCaseExecution extends TestCaseExecution{
 								setresult = 1;
 								java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 								imagname = timeformat.format(new Date());
-								BaseWebDrive.webScreenShot(wd,imagname);
+								AndroidBaseAppium.screenShot(appium, imagname);
 								luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()
 								+ "步，模糊匹配预期结果失败！执行结果："+result);
 						        caselog.caseLogDetail(taskid, testcase.getSign(), "步骤模糊匹配预期结果失败！执行结果："+result,
@@ -133,7 +133,7 @@ public class WebCaseExecution extends TestCaseExecution{
 							setresult = 1;
 							java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 							imagname = timeformat.format(new Date());
-							BaseWebDrive.webScreenShot(wd,imagname);
+							AndroidBaseAppium.screenShot(appium, imagname);
 							luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()
 							+ "步，直接匹配预期结果失败！执行结果："+result);
 					        caselog.caseLogDetail(taskid, testcase.getSign(), "步骤直接匹配预期结果失败！执行结果："+result,
@@ -148,7 +148,7 @@ public class WebCaseExecution extends TestCaseExecution{
 				setresult = 2;
 				java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 				imagname = timeformat.format(new Date());
-				BaseWebDrive.webScreenShot(wd,imagname);
+				AndroidBaseAppium.screenShot(appium, imagname);
 				luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()	+ "步，"+result);
 		        caselog.caseLogDetail(taskid, testcase.getSign(), "当前步骤在执行过程中解析|定位元素|操作对象失败！"+result,
 				"error", String.valueOf(step.getStepnum()),imagname);
@@ -169,7 +169,7 @@ public class WebCaseExecution extends TestCaseExecution{
 		//LogOperation.UpdateTastdetail(taskid, 0);
 	}
 
-	private static String runStep(Map<String, String> params, WebDriver wd,String taskid,String casenum,int stepno,LogOperation caselog) {
+	private static String runStep(Map<String, String> params, AndroidDriver<AndroidElement> appium,String taskid,String casenum,int stepno,LogOperation caselog) {
 		String result = "";
 		String property;
 		String propertyValue;
@@ -208,34 +208,30 @@ public class WebCaseExecution extends TestCaseExecution{
 				}
 			}
 			
-			WebElement we = null;
+			AndroidElement ae = null;
 			// 页面元素层
 			if (null != property && null != propertyValue) { 
-				we = isElementExist(wd, property, propertyValue);
+				ae = isElementExist(appium, property, propertyValue);
 				// 判断此元素是否存在
-				if (null==we) {
+				if (null==ae) {
 					luckyclient.publicclass.LogUtil.APP.error("定位对象失败，isElementExist为null!");
 					return "isElementExist定位元素过程失败！";
 				}
 
 				if (operation.indexOf("select") > -1) {
-					result = EncapsulateOperation.selectOperation(we, operation, operationValue);
+					result = AndroidEncapsulateOperation.selectOperation(ae, operation, operationValue);
 				} else if (operation.indexOf("get") > -1){
-					result = EncapsulateOperation.getOperation(wd, we, operation,operationValue);
-				} else if (operation.indexOf("mouse") > -1){
-					result = EncapsulateOperation.actionWeOperation(wd, we, operation, operationValue, property, propertyValue);
+					result = AndroidEncapsulateOperation.getOperation(ae, operation,operationValue);
 				} else {
-					result = EncapsulateOperation.objectOperation(wd, we, operation, operationValue, property, propertyValue);
+					result = AndroidEncapsulateOperation.objectOperation(appium, ae, operation, operationValue, property, propertyValue);
 				}
 				// Driver层操作
 			} else if (null==property && null != operation) { 				
 				// 处理弹出框事件
 				if (operation.indexOf("alert") > -1){
-					result = EncapsulateOperation.alertOperation(wd, operation);
-				}else if(operation.indexOf("mouse") > -1){
-					result = EncapsulateOperation.actionOperation(wd, operation, operationValue);
+					result = AndroidEncapsulateOperation.alertOperation(appium, operation);
 				}else{
-					result = EncapsulateOperation.driverOperation(wd, operation, operationValue);
+					result = AndroidEncapsulateOperation.driverOperation(appium, operation, operationValue);
 				} 				
 			}else{
 				luckyclient.publicclass.LogUtil.APP.error("元素操作过程失败！");
@@ -254,35 +250,38 @@ public class WebCaseExecution extends TestCaseExecution{
 
 	}
 
-	public static WebElement isElementExist(WebDriver wd, String property, String propertyValue) {
+	public static AndroidElement isElementExist(AndroidDriver<AndroidElement> appium, String property, String propertyValue) {
 		try {
-			WebElement we = null;
+			AndroidElement ae = null;
 
 			// 处理WebElement对象定位
 			switch (property) {
 			case "id":
-				we = wd.findElement(By.id(propertyValue));
+				ae = appium.findElementById(propertyValue);
 				break;
 			case "name":
-				we = wd.findElement(By.name(propertyValue));
+				ae = appium.findElementByAndroidUIAutomator("text(\""+propertyValue+"\")");
 				break;
 			case "xpath":
-				we = wd.findElement(By.xpath(propertyValue));
+				ae = appium.findElementByXPath(propertyValue);
 				break;
 			case "linktext":
-				we = wd.findElement(By.linkText(propertyValue));
+				ae = appium.findElementByLinkText(propertyValue);
 				break;
 			case "tagname":
-				we = wd.findElement(By.tagName(propertyValue));
+				ae = appium.findElementByTagName(propertyValue);
 				break;
 			case "cssselector":
-				we = wd.findElement(By.cssSelector(propertyValue));
+				ae = appium.findElementByCssSelector(propertyValue);
+				break;
+			case "classname":
+				ae = appium.findElementByClassName(propertyValue);
 				break;
 			default:
 				break;
 			}
 
-			return we;
+			return ae;
 
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error("当前对象定位失败："+e.getMessage());

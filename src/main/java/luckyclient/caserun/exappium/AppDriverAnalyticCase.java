@@ -1,4 +1,4 @@
-package luckyclient.caserun.exwebdriver.ex;
+package luckyclient.caserun.exappium;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,13 +20,12 @@ import luckyclient.planapi.entity.ProjectCasesteps;
  * @date 2016Äê9ÔÂ18ÈÕ 
  * 
  */
-public class WebDriverAnalyticCase {
+public class AppDriverAnalyticCase {
 	//private static String splitFlag = "\\|";
 
 	/**
 	 * @param args
 	 */
-	@SuppressWarnings("finally")
 	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid,LogOperation caselog){
 		String time = "0";
 		Map<String,String> params = new HashMap<String,String>(0);
