@@ -109,68 +109,6 @@ public class AppiumInitialization{
 	}
 	
 	public static void main(String args[]) throws IOException, InterruptedException{
-		AndroidDriver<AndroidElement> ad=setAndroidAppium();
-		
-		ProjectCase testcase = new ProjectCase();
-		testcase.setName("test");
-		testcase.setSign("test-1");
-		ProjectCasesteps step=new ProjectCasesteps();
-		step.setPath("name=消费");
-		step.setOperation("click");
-		List<ProjectCasesteps> steps = new ArrayList<ProjectCasesteps>();
-		steps.add(step);
-		
-		step=new ProjectCasesteps();
-		step.setPath("classname=android.widget.EditText");
-		step.setOperation("sendkeys");
-		step.setParameters("100.01");
-		steps.add(step);
-		
-		step=new ProjectCasesteps();
-		step.setPath("name=确定");
-		step.setOperation("click");
-		steps.add(step);
-		LogOperation caselog = new LogOperation();
-		List<PublicCaseParams> pcplist= new ArrayList<PublicCaseParams>();
-		AndroidCaseExecution.caseExcution(testcase, steps, "888888", ad, caselog, pcplist);
-		/*		
-		AndroidBaseAppium.swipePageLeft(ad, 2.0, 1);
-		Thread.sleep(5000);
 
-    	ad.findElementByAndroidUIAutomator("text(\"消费\")").click();
-    	//driver.findElementByClassName("android.widget.EditText").click();
-    	ad.findElementByClassName("android.widget.EditText").sendKeys("100.01");
-    	ad.findElementByAndroidUIAutomator("text(\"确定\")").click();
-    	//Thread.sleep(35000);
-    	System.out.println("提交请求");
-    	
-    	Thread.sleep(10000);
-    	System.out.println("获取到签名页面的取消键");
-    	
-    	ad.findElementById("com.ys.smartpos:id/signature_cancel").click();
-    	System.out.println("取消签名");
-    	Thread.sleep(10000);
-    	
-    	//确定打印商户联
-    	ad.findElementByAndroidUIAutomator("text(\"确定\")").click();
-    	System.out.println("确定打印商户联");
-    	Thread.sleep(10000);
-    	System.out.println("获取响应参数页面");
-    	
-    	
-    	
-    	String transResult=ad.findElement(By.xpath("//android.widget.ListView/android.widget.LinearLayout[21]/android.widget.TextView[3]")).getText();
-    	System.out.println("获取到了transResult值："+transResult);
-    	String traceNo=ad.findElement(By.xpath("//android.widget.ListView/android.widget.LinearLayout[4]/android.widget.TextView[3]")).getText();
-    	System.out.println("获取到了凭证号："+traceNo);
-    	String referNum=ad.findElement(By.xpath("//android.widget.ListView/android.widget.LinearLayout[7]/android.widget.TextView[3]")).getText();
-    	System.out.println("获取到了参考号即订单号："+referNum);
-    	if(transResult.equals("0")){
-    		System.out.println("消费transResult返回值正确");
-    	}else{
-    		System.out.println("消费transResult返回值错误");
-    	}
-    	ad.findElementByAndroidUIAutomator("text(\"确定\")").click();
-    	Thread.sleep(10000);*/
 	}
 }
