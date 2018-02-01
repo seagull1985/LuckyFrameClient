@@ -56,7 +56,6 @@ public class AndroidOneCaseExecute {
 			e.printStackTrace();
 		}
 		ad.closeApp();
-		ad.close();
 	}
 
 }

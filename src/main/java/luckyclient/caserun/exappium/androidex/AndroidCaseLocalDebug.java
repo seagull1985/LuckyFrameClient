@@ -1,5 +1,6 @@
 package luckyclient.caserun.exappium.androidex;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,9 +44,6 @@ public class AndroidCaseLocalDebug {
 			luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
 			e.printStackTrace();
 		}
-		// 关闭APP以及appium会话
-		androiddriver.closeApp();
-		androiddriver.close();
 	}
 
 	/**
@@ -72,11 +70,12 @@ public class AndroidCaseLocalDebug {
 				continue;
 			}
 		}
+		// 关闭APP以及appium会话
+		androiddriver.closeApp();
 	}
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub	
 	}
 
 }

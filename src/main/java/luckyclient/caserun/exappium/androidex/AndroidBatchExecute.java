@@ -84,7 +84,6 @@ public class AndroidBatchExecute {
 			}
 		}
 		ad.closeApp();
-		ad.close();
 	}
 
 }

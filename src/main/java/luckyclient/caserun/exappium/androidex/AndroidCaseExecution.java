@@ -90,7 +90,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 						} else {
 							casenote = "第" + step.getStepnum() + "步，没有在当前APP页面中找到预期结果中对象。执行失败！";
 							setresult = 1;
-							java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
+							java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-HHmmss");
 							imagname = timeformat.format(new Date());
 							AndroidBaseAppium.screenShot(appium, imagname);
 							luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()
