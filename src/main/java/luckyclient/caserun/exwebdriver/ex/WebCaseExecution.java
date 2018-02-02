@@ -257,7 +257,7 @@ public class WebCaseExecution extends TestCaseExecution{
 	public static WebElement isElementExist(WebDriver wd, String property, String propertyValue) {
 		try {
 			WebElement we = null;
-
+			property=property.toLowerCase();
 			// 处理WebElement对象定位
 			switch (property) {
 			case "id":

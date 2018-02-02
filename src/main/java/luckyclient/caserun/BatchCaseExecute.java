@@ -1,8 +1,11 @@
 package luckyclient.caserun;
 
+import java.util.Properties;
+
 import org.apache.log4j.PropertyConfigurator;
 
 import luckyclient.caserun.exappium.androidex.AndroidBatchExecute;
+import luckyclient.caserun.exappium.iosex.IosBatchExecute;
 import luckyclient.caserun.exinterface.BatchTestCaseExecution;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exinterface.testlink.BatchTestLinkCaseExecution;
@@ -52,8 +55,16 @@ public class BatchCaseExecute extends TestControl {
 				}
 
 			} else if (task.getTestJob().getExtype() == 2) {
-				AndroidBatchExecute.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
+				Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+
+				if ("Android".equals(properties.getProperty("platformName"))) {
+					AndroidBatchExecute.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
 							String.valueOf(task.getId()), batchcase);
+				} else if ("IOS".equals(properties.getProperty("platformName"))) {
+					IosBatchExecute.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
+							String.valueOf(task.getId()), batchcase);
+				}
+
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

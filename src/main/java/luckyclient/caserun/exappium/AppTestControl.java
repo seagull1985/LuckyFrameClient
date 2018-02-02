@@ -10,6 +10,7 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import luckyclient.caserun.exappium.androidex.AndroidCaseExecution;
+import luckyclient.caserun.exappium.iosex.IosCaseExecution;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
@@ -79,7 +80,7 @@ public class AppTestControl {
 				if ("Android".equals(properties.getProperty("platformName"))) {
 					AndroidCaseExecution.caseExcution(testcase, steps, taskid, androiddriver, caselog, pcplist);
 				} else if ("IOS".equals(properties.getProperty("platformName"))) {
-					iosdriver.closeApp();
+					IosCaseExecution.caseExcution(testcase, steps, taskid, iosdriver, caselog, pcplist);
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -149,7 +150,7 @@ public class AppTestControl {
 						if ("Android".equals(properties.getProperty("platformName"))) {
 							AndroidCaseExecution.caseExcution(testcase, steps, taskid, androiddriver, caselog, pcplist);
 						} else if ("IOS".equals(properties.getProperty("platformName"))) {
-							iosdriver.closeApp();
+							IosCaseExecution.caseExcution(testcase, steps, taskid, iosdriver, caselog, pcplist);
 						}
 					} catch (InterruptedException | IOException e) {
 						// TODO Auto-generated catch block

@@ -27,7 +27,6 @@ import luckyclient.planapi.entity.PublicCaseParams;
  */
 public class WebOneCaseExecute{
 	
-	@SuppressWarnings("static-access")
 	public static void oneCaseExecuteForTast(String projectname,String testCaseExternalId,int version,String taskid){
 		//记录日志到数据库
 		DbLink.exetype = 0;   

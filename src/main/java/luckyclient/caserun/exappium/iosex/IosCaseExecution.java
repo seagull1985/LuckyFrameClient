@@ -1,4 +1,4 @@
-package luckyclient.caserun.exappium.androidex;
+package luckyclient.caserun.exappium.iosex;
 
 import java.io.IOException;
 import java.util.Date;
@@ -8,11 +8,10 @@ import java.util.Map;
 
 import org.openqa.selenium.WebElement;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.ios.IOSElement;
 import luckyclient.caserun.exappium.AppDriverAnalyticCase;
 import luckyclient.caserun.exinterface.TestCaseExecution;
-import luckyclient.caserun.exwebdriver.EncapsulateOperation;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
@@ -29,10 +28,10 @@ import luckyclient.publicclass.ChangString;
  * @author seagull
  * @date 2018年1月21日 上午15:12:48
  */
-public class AndroidCaseExecution extends TestCaseExecution{
+public class IosCaseExecution extends TestCaseExecution{
 	static Map<String, String> variable = new HashMap<String, String>();
 
-	public static void caseExcution(ProjectCase testcase, List<ProjectCasesteps> steps,String taskid, AndroidDriver<AndroidElement> appium,LogOperation caselog,List<PublicCaseParams> pcplist)
+	public static void caseExcution(ProjectCase testcase, List<ProjectCasesteps> steps,String taskid, IOSDriver<IOSElement> appium,LogOperation caselog,List<PublicCaseParams> pcplist)
 			throws InterruptedException, IOException {
 		// 0:成功 1:失败 2:锁定 其他：锁定
 		int setresult = 0; 
@@ -92,7 +91,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 							setresult = 1;
 							java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-HHmmss");
 							imagname = timeformat.format(new Date());
-							AndroidBaseAppium.screenShot(appium, imagname);
+							IosBaseAppium.screenShot(appium, imagname);
 							luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()
 									+ "步，没有在当前APP页面中找到预期结果中对象。当前步骤执行失败！");
 							caselog.caseLogDetail(taskid, testcase.getSign(), "在当前APP页面中没有找到预期结果中对象。当前步骤执行失败！"
@@ -114,7 +113,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 								setresult = 1;
 								java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 								imagname = timeformat.format(new Date());
-								AndroidBaseAppium.screenShot(appium, imagname);
+								IosBaseAppium.screenShot(appium, imagname);
 								luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()
 								+ "步，模糊匹配预期结果失败！执行结果："+result);
 						        caselog.caseLogDetail(taskid, testcase.getSign(), "步骤模糊匹配预期结果失败！执行结果："+result,
@@ -133,7 +132,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 							setresult = 1;
 							java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 							imagname = timeformat.format(new Date());
-							AndroidBaseAppium.screenShot(appium, imagname);
+							IosBaseAppium.screenShot(appium, imagname);
 							luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()
 							+ "步，直接匹配预期结果失败！执行结果："+result);
 					        caselog.caseLogDetail(taskid, testcase.getSign(), "步骤直接匹配预期结果失败！执行结果："+result,
@@ -148,7 +147,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 				setresult = 2;
 				java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
 				imagname = timeformat.format(new Date());
-				AndroidBaseAppium.screenShot(appium, imagname);
+				IosBaseAppium.screenShot(appium, imagname);
 				luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()	+ "步，"+result);
 		        caselog.caseLogDetail(taskid, testcase.getSign(), "当前步骤在执行过程中解析|定位元素|操作对象失败！"+result,
 				"error", String.valueOf(step.getStepnum()),imagname);
@@ -169,7 +168,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 		//LogOperation.UpdateTastdetail(taskid, 0);
 	}
 
-	private static String runStep(Map<String, String> params, AndroidDriver<AndroidElement> appium,String taskid,String casenum,int stepno,LogOperation caselog) {
+	private static String runStep(Map<String, String> params, IOSDriver<IOSElement> appium,String taskid,String casenum,int stepno,LogOperation caselog) {
 		String result = "";
 		String property;
 		String propertyValue;
@@ -208,7 +207,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 				}
 			}
 			
-			AndroidElement ae = null;
+			IOSElement ae = null;
 			// 页面元素层
 			if (null != property && null != propertyValue) { 
 				ae = isElementExist(appium, property, propertyValue);
@@ -219,19 +218,19 @@ public class AndroidCaseExecution extends TestCaseExecution{
 				}
 
 				if (operation.indexOf("select") > -1) {
-					result = AndroidEncapsulateOperation.selectOperation(ae, operation, operationValue);
+					result = IosEncapsulateOperation.selectOperation(ae, operation, operationValue);
 				} else if (operation.indexOf("get") > -1){
-					result = AndroidEncapsulateOperation.getOperation(ae, operation,operationValue);
+					result = IosEncapsulateOperation.getOperation(ae, operation,operationValue);
 				} else {
-					result = AndroidEncapsulateOperation.objectOperation(appium, ae, operation, operationValue, property, propertyValue);
+					result = IosEncapsulateOperation.objectOperation(appium, ae, operation, operationValue, property, propertyValue);
 				}
 				// Driver层操作
 			} else if (null==property && null != operation) { 				
 				// 处理弹出框事件
 				if (operation.indexOf("alert") > -1){
-					result = AndroidEncapsulateOperation.alertOperation(appium, operation);
+					result = IosEncapsulateOperation.alertOperation(appium, operation);
 				}else{
-					result = AndroidEncapsulateOperation.driverOperation(appium, operation, operationValue);
+					result = IosEncapsulateOperation.driverOperation(appium, operation, operationValue);
 				} 				
 			}else{
 				luckyclient.publicclass.LogUtil.APP.error("元素操作过程失败！");
@@ -250,9 +249,9 @@ public class AndroidCaseExecution extends TestCaseExecution{
 
 	}
 
-	public static AndroidElement isElementExist(AndroidDriver<AndroidElement> appium, String property, String propertyValue) {
+	public static IOSElement isElementExist(IOSDriver<IOSElement> appium, String property, String propertyValue) {
 		try {
-			AndroidElement ae = null;
+			IOSElement ae = null;
 			property=property.toLowerCase();
 			// 处理WebElement对象定位
 			switch (property) {
@@ -260,10 +259,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 				ae = appium.findElementById(propertyValue);
 				break;
 			case "name":
-				ae = appium.findElementByAndroidUIAutomator("text(\""+propertyValue+"\")");
-				break;
-			case "androiduiautomator":
-				ae = appium.findElementByAndroidUIAutomator(propertyValue);
+				ae = appium.findElementByName(propertyValue);
 				break;
 			case "xpath":
 				ae = appium.findElementByXPath(propertyValue);
@@ -280,8 +276,17 @@ public class AndroidCaseExecution extends TestCaseExecution{
 			case "classname":
 				ae = appium.findElementByClassName(propertyValue);
 				break;
-			case "partiallinktext":
-				ae = appium.findElementByPartialLinkText(propertyValue);
+			case "accessibilityid":
+				ae = appium.findElementByAccessibilityId(propertyValue);
+				break;
+			case "iosclasschain":
+				ae = appium.findElementByIosClassChain(propertyValue);
+				break;
+			case "iosnspredicate":
+				ae = appium.findElementByIosNsPredicate(propertyValue);
+				break;
+			case "iosuiautomation":
+				ae = appium.findElementByIosUIAutomation(propertyValue);
 				break;
 			default:
 				break;
@@ -298,6 +303,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+
 	}
 
 }

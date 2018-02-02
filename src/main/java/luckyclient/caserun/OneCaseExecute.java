@@ -1,8 +1,11 @@
 package luckyclient.caserun;
 
+import java.util.Properties;
+
 import org.apache.log4j.PropertyConfigurator;
 
 import luckyclient.caserun.exappium.androidex.AndroidOneCaseExecute;
+import luckyclient.caserun.exappium.iosex.IosOneCaseExecute;
 import luckyclient.caserun.exinterface.TestCaseExecution;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exinterface.testlink.TestLinkCaseExecution;
@@ -53,8 +56,16 @@ public class OneCaseExecute extends TestControl {
 			}
 
 		} else if (task.getTestJob().getExtype() == 2) {
-			AndroidOneCaseExecute.oneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId, version,
-					String.valueOf(task.getId()));
+			Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+
+			if ("Android".equals(properties.getProperty("platformName"))) {
+				AndroidOneCaseExecute.oneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId,
+						version, String.valueOf(task.getId()));
+			} else if ("IOS".equals(properties.getProperty("platformName"))) {
+				IosOneCaseExecute.oneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId, version,
+						String.valueOf(task.getId()));
+			}
+
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package luckyclient.caserun.exappium.androidex;
+package luckyclient.caserun.exappium.iosex;
 
 import java.time.Duration;
 import java.util.Date;
@@ -9,9 +9,9 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.Select;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
-import io.appium.java_client.android.AndroidTouchAction;
+import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.ios.IOSElement;
+import io.appium.java_client.ios.IOSTouchAction;
 import io.appium.java_client.touch.LongPressOptions;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.ElementOption;
@@ -25,14 +25,14 @@ import luckyclient.publicclass.ChangString;
  * =================================================================
  * 
  * @author Seagull
- * @date 2017年1月29日 上午9:31:42
+ * @date 2018年2月2日
  * 
  */
-public class AndroidEncapsulateOperation {
-	public static String selectOperation(AndroidElement ae, String operation, String operationValue) throws Exception {
+public class IosEncapsulateOperation {
+	public static String selectOperation(IOSElement ie, String operation, String operationValue) throws Exception {
 		String result = "";
 		// 下拉框对象处理
-		Select select = new Select(ae);
+		Select select = new Select(ie);
 
 		// 处理下拉框事件
 		switch (operation) {
@@ -50,8 +50,8 @@ public class AndroidEncapsulateOperation {
 			luckyclient.publicclass.LogUtil.APP.info("下拉框对象通过Index属性选择...【Index属性值:" + operationValue + "】");
 			break;
 		case "isselect":
-			result = "获取到的值是【" + ae.isSelected() + "】";
-			luckyclient.publicclass.LogUtil.APP.info("判断对象是否已经被选择...【结果值:" + ae.isSelected() + "】");
+			result = "获取到的值是【" + ie.isSelected() + "】";
+			luckyclient.publicclass.LogUtil.APP.info("判断对象是否已经被选择...【结果值:" + ie.isSelected() + "】");
 			break;
 		default:
 			break;
@@ -59,25 +59,25 @@ public class AndroidEncapsulateOperation {
 		return result;
 	}
 
-	public static String getOperation(AndroidElement ae, String operation, String value) throws Exception {
+	public static String getOperation(IOSElement ie, String operation, String value) throws Exception {
 		String result = "";
 		// 获取对象处理
 		switch (operation) {
 		case "gettext":
-			result = "获取到的值是【" + ae.getText() + "】";
+			result = "获取到的值是【" + ie.getText() + "】";
 			luckyclient.publicclass.LogUtil.APP.info("getText获取对象text属性...【text属性值:" + result + "】");
 			break; // 获取输入框内容
 		case "gettagname":
-			result = "获取到的值是【" + ae.getTagName() + "】";
+			result = "获取到的值是【" + ie.getTagName() + "】";
 			luckyclient.publicclass.LogUtil.APP.info("getTagName获取对象tagname属性...【tagname属性值:" + result + "】");
 			break;
 		case "getattribute":
-			result = "获取到的值是【" + ae.getAttribute(value) + "】";
+			result = "获取到的值是【" + ie.getAttribute(value) + "】";
 			luckyclient.publicclass.LogUtil.APP
 					.info("getAttribute获取对象【" + value + "】属性...【" + value + "属性值:" + result + "】");
 			break;
 		case "getcssvalue":
-			result = "获取到的值是【" + ae.getCssValue(value) + "】";
+			result = "获取到的值是【" + ie.getCssValue(value) + "】";
 			luckyclient.publicclass.LogUtil.APP
 					.info("getCssValue获取对象【" + value + "】属性...【" + value + "属性值:" + result + "】");
 			break;
@@ -87,49 +87,48 @@ public class AndroidEncapsulateOperation {
 		return result;
 	}
 
-	public static String objectOperation(AndroidDriver<AndroidElement> appium, AndroidElement ae, String operation,
+	public static String objectOperation(IOSDriver<IOSElement> appium, IOSElement ie, String operation,
 			String operationValue, String property, String propertyValue) throws Exception {
 		String result = "";
-		AndroidTouchAction action = new AndroidTouchAction(appium);
-
+		IOSTouchAction action = new IOSTouchAction(appium);
 		// 处理WebElement对象操作
 		switch (operation) {
 		case "click":
-			ae.click();
+			ie.click();
 			result = "click点击对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
 			luckyclient.publicclass.LogUtil.APP
 					.info("click点击对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】");
 			break;
 		case "sendkeys":
-			ae.sendKeys(operationValue);
+			ie.sendKeys(operationValue);
 			result = "sendKeys对象输入...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 操作值:" + operationValue
 					+ "】";
 			luckyclient.publicclass.LogUtil.APP.info("sendkeys对象输入...【对象定位属性:" + property + "; 定位属性值:" + propertyValue
 					+ "; 操作值:" + operationValue + "】");
 			break;
 		case "clear":
-			ae.clear();
+			ie.clear();
 			result = "clear清空输入框...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
 			luckyclient.publicclass.LogUtil.APP
 					.info("clear清空输入框...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】");
 			break; // 清空输入框
 		case "isenabled":
-			result = "获取到的值是【" + ae.isEnabled() + "】";
-			luckyclient.publicclass.LogUtil.APP.info("当前对象判断是否可用布尔值为【" + ae.isEnabled() + "】");
+			result = "获取到的值是【" + ie.isEnabled() + "】";
+			luckyclient.publicclass.LogUtil.APP.info("当前对象判断是否可用布尔值为【" + ie.isEnabled() + "】");
 			break;
 		case "isdisplayed":
-			result = "获取到的值是【" + ae.isDisplayed() + "】";
-			luckyclient.publicclass.LogUtil.APP.info("当前对象判断是否可见布尔值为【" + ae.isDisplayed() + "】");
+			result = "获取到的值是【" + ie.isDisplayed() + "】";
+			luckyclient.publicclass.LogUtil.APP.info("当前对象判断是否可见布尔值为【" + ie.isDisplayed() + "】");
 			break;
 		case "exjsob":
 			JavascriptExecutor jse = (JavascriptExecutor) appium;
-			jse.executeScript(operationValue, ae);
+			jse.executeScript(operationValue, ie);
 			result = "执行JS...【" + operationValue + "】";
 			luckyclient.publicclass.LogUtil.APP.info("执行JS...【" + operationValue + "】");
 			break;
 		case "longpresselement":
 			LongPressOptions lpoptions = new LongPressOptions();
-			lpoptions.withElement(ElementOption.element(ae));
+			lpoptions.withElement(ElementOption.element(ie));
 			if (null != operationValue && ChangString.isNumeric(operationValue)) {
 				int nanos = Integer.valueOf(operationValue) * 1000;
 				Duration duration = Duration.ofNanos(nanos);
@@ -146,7 +145,7 @@ public class AndroidEncapsulateOperation {
 		return result;
 	}
 
-	public static String alertOperation(AndroidDriver<AndroidElement> appium, String operation) throws Exception {
+	public static String alertOperation(IOSDriver<IOSElement> appium, String operation) throws Exception {
 		String result = "";
 		Alert alert = appium.switchTo().alert();
 		switch (operation) {
@@ -168,10 +167,10 @@ public class AndroidEncapsulateOperation {
 		return result;
 	}
 
-	public static String driverOperation(AndroidDriver<AndroidElement> appium, String operation, String operationValue)
+	public static String driverOperation(IOSDriver<IOSElement> appium, String operation, String operationValue)
 			throws Exception {
 		String result = "";
-		AndroidTouchAction action = new AndroidTouchAction(appium);
+		IOSTouchAction action = new IOSTouchAction(appium);
 		// 处理页面对象操作
 		switch (operation) {
 		case "getcontexthandles":
@@ -196,18 +195,8 @@ public class AndroidEncapsulateOperation {
 			result = "执行JS...【" + operationValue + "】";
 			luckyclient.publicclass.LogUtil.APP.info("执行JS...【" + operationValue + "】");
 			break;
-		// 模拟手机键盘
-		case "keycode":
-			if (ChangString.isNumeric(operationValue)) {
-				appium.pressKeyCode(Integer.valueOf(operationValue));
-				result = "模拟手机键盘发送指令...keycode【" + operationValue + "】";
-				luckyclient.publicclass.LogUtil.APP.info(result);
-			} else {
-
-			}
-			break;
 		// 隐藏手机键盘
-		case "hidekeyboard":
+		case "hideKeyboard":
 			appium.hideKeyboard();
 			result = "隐藏手机键盘...【hideKeyboard】";
 			luckyclient.publicclass.LogUtil.APP.info(result);
@@ -244,7 +233,7 @@ public class AndroidEncapsulateOperation {
 				Double second = Double.valueOf(tempup[0]);
 				if (null != tempup[1] && ChangString.isNumeric(tempup[1])) {
 					int num = Integer.valueOf(tempup[1]);
-					AndroidBaseAppium.swipePageUp(appium, second, num);
+					IosBaseAppium.swipePageUp(appium, second, num);
 					result = "swipeup页面向上滑动参数...秒|次数【" + second + "|" + num + "】";
 					luckyclient.publicclass.LogUtil.APP.info(result);
 				} else {
@@ -262,7 +251,7 @@ public class AndroidEncapsulateOperation {
 				Double second = Double.valueOf(tempdown[0]);
 				if (null != tempdown[1] && ChangString.isNumeric(tempdown[1])) {
 					int num = Integer.valueOf(tempdown[1]);
-					AndroidBaseAppium.swipePageDown(appium, second, num);
+					IosBaseAppium.swipePageDown(appium, second, num);
 					result = "swipedown页面向下滑动参数...秒|次数【" + second + "|" + num + "】";
 					luckyclient.publicclass.LogUtil.APP.info(result);
 				} else {
@@ -280,7 +269,7 @@ public class AndroidEncapsulateOperation {
 				Double second = Double.valueOf(templeft[0]);
 				if (null != templeft[1] && ChangString.isNumeric(templeft[1])) {
 					int num = Integer.valueOf(templeft[1]);
-					AndroidBaseAppium.swipePageLeft(appium, second, num);
+					IosBaseAppium.swipePageLeft(appium, second, num);
 					result = "swipleft页面向左滑动参数...秒|次数【" + second + "|" + num + "】";
 					luckyclient.publicclass.LogUtil.APP.info(result);
 				} else {
@@ -298,7 +287,7 @@ public class AndroidEncapsulateOperation {
 				Double second = Double.valueOf(tempright[0]);
 				if (null != tempright[1] && ChangString.isNumeric(tempright[1])) {
 					int num = Integer.valueOf(tempright[1]);
-					AndroidBaseAppium.swipePageRight(appium, second, num);
+					IosBaseAppium.swipePageRight(appium, second, num);
 					result = "swipright页面向右滑动参数...秒|次数【" + second + "|" + num + "】";
 					luckyclient.publicclass.LogUtil.APP.info(result);
 				} else {
@@ -383,11 +372,11 @@ public class AndroidEncapsulateOperation {
 				if (null != jspressxy[1] && ChangString.isNumeric(jspressxy[1])) {
 					int jspressy = Integer.valueOf(jspressxy[1]);
 					if (null != jspressxy[2] && ChangString.isNumeric(jspressxy[2])) {
-						AndroidBaseAppium.clickScreenForJs(appium, jspressx, jspressy, Integer.valueOf(jspressxy[2]));
+						IosBaseAppium.clickScreenForJs(appium, jspressx, jspressy, Integer.valueOf(jspressxy[2]));
 						result = "jspressxy在屏幕指定XY坐标上按" + jspressxy[2] + "秒...X|Y【" + jspressx + "|" + jspressy + "】";
 						luckyclient.publicclass.LogUtil.APP.info(result);
 					} else {
-						AndroidBaseAppium.clickScreenForJs(appium, jspressx, jspressy, 2);
+						IosBaseAppium.clickScreenForJs(appium, jspressx, jspressy, 2);
 						result = "jspressxy在屏幕指定XY坐标上按2秒(持续时间判断异常，使用默认2秒时间)...X|Y【" + jspressx + "|" + jspressy + "】";
 						luckyclient.publicclass.LogUtil.APP.info(result);
 					}
@@ -462,7 +451,7 @@ public class AndroidEncapsulateOperation {
 		case "screenshot":
 			java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-HHmmss");
 			String imagname = "FunctionScreenShot_" + timeformat.format(new Date());
-			AndroidBaseAppium.screenShot(appium, imagname);
+			IosBaseAppium.screenShot(appium, imagname);
 			result = "截图名称【" + imagname + "】...";
 			luckyclient.publicclass.LogUtil.APP.info("使用方法主动截取当前屏幕..." + result);
 			break;
