@@ -244,7 +244,7 @@ public class LogOperation {
 	 *  isSendMail varchar(1)  default(0);  --0 不发送 1 发送
          eMailer varchar(100)   ;  --收件人
 	 */
-	@SuppressWarnings("finally")
+
 	public static String[] getEmailAddress(String taskid){
 		int inttaskid = Integer.parseInt(taskid);
 		String casesidsql = null;
@@ -280,7 +280,6 @@ public class LogOperation {
 	 *  isBuilding varchar(1)  default(0);  --0 不自动构建 1 自动构建
          BuildName varchar(100)   ;  --构建项目名称
 	 */
-	@SuppressWarnings("finally")
 	public static String[] getBuildName(String taskid){
 		int inttaskid = Integer.parseInt(taskid);
 		String casesidsql = null;
@@ -321,7 +320,7 @@ public class LogOperation {
                                        格式：服务器IP;服务器用户名;服务器密码;ssh端口;Shell命令;      
                                        例：192.168.222.22;pospsettle;pospsettle;22;cd /home/pospsettle/tomcat-7.0-7080/bin&&./restart.sh;
 	 */
-	@SuppressWarnings("finally")
+
 	public static String[] getrestartcomm(String taskid){
 		int inttaskid = Integer.parseInt(taskid);
 		String casesidsql = null;
@@ -360,7 +359,6 @@ public class LogOperation {
 	/**
 	 * 获取测试计划名称
 	 */
-	@SuppressWarnings("finally")
 	public static String getTestPlanName(String taskid) {
 		int inttaskid = Integer.parseInt(taskid);
 		String testplanname = "NULL";
@@ -380,7 +378,6 @@ public class LogOperation {
 	/**
 	 * 获取任务测试时长
 	 */
-	@SuppressWarnings("finally")
 	public static String getTestTime(String taskid) {
 		int inttaskid = Integer.parseInt(taskid);
 		String desTime = "计算测试时长出错！";

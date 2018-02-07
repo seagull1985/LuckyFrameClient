@@ -42,20 +42,19 @@ public class BuildingInitialization {
 		return buildresult;
 	}
 
-	@SuppressWarnings("finally")
 	public static String buildingRun(String tastid) throws InterruptedException{
 		String result = "Status:true"+" 当前任务没有找到需要构建的项目！";
 		try{
-		String[] buildname = LogOperation.getBuildName(tastid);
+		String[] buildurl = LogOperation.getBuildName(tastid);
 		
-		if(buildname!=null){
+		if(buildurl!=null){
 			luckyclient.publicclass.LogUtil.APP.info("准备将配置的测试项目进行构建！请稍等。。。。");
-			for(int i=0;i<buildname.length;i++){
-				JenkinsBuilding.sendBuilding(buildname[i], 0);
+			for(int i=0;i<buildurl.length;i++){
+				JenkinsBuilding.sendBuilding(buildurl[i]);
 			}
 			//等待构建检查
 			Thread.sleep(10000);  
-			result = booleanBuildingOver(buildname);
+			result = booleanBuildingOver(buildurl);
 		}else{
 			luckyclient.publicclass.LogUtil.APP.info("当前任务没有找到需要构建的项目！");
 		}

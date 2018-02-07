@@ -28,15 +28,11 @@ public class JenkinsBuilding {
      *            延迟多少秒进行构建
      * @return URL 所代表远程资源的响应结果
      */
-    public static String sendBuilding(String buildname, int param) {
+    public static String sendBuilding(String buildurl) {
         String result = "";
         BufferedReader in = null;
-        try {
-        	final String jenkinsurl = "http://10.211.19.19:18080/jenkins/job/";
-        	
-            String urlString = jenkinsurl+buildname + "/build?delay="+param+"sec";
-                      
-            URL realUrl = new URL(urlString);
+        try {                      
+            URL realUrl = new URL(buildurl);
             // 打开和URL之间的连接
             URLConnection connection = realUrl.openConnection();
             // 设置通用的请求属性
@@ -86,13 +82,11 @@ public class JenkinsBuilding {
      * 
      * alt="Success"  alt="In progress"  alt="Failed"
      */
-    public static String buildingResult(String buildname) {
+    public static String buildingResult(String buildurl) {
         String result = "";
         BufferedReader in = null;
-        try {
-        	final String jenkinsurl = "http://10.211.19.19:18080/jenkins/job/";
-        	
-            String urlString = jenkinsurl+buildname + "/lastBuild/";
+        try {     	
+            String urlString = buildurl.substring(0, buildurl.lastIndexOf("/build?delay=")) + "/lastBuild/";
                       
             URL realUrl = new URL(urlString);
             // 打开和URL之间的连接

@@ -56,7 +56,6 @@ public class BatchCaseExecute extends TestControl {
 
 			} else if (task.getTestJob().getExtype() == 2) {
 				Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
-
 				if ("Android".equals(properties.getProperty("platformName"))) {
 					AndroidBatchExecute.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
 							String.valueOf(task.getId()), batchcase);
@@ -64,7 +63,6 @@ public class BatchCaseExecute extends TestControl {
 					IosBatchExecute.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
 							String.valueOf(task.getId()), batchcase);
 				}
-
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
