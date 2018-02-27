@@ -35,6 +35,7 @@ public class SimpleMailSender {
         // 判断是否需要身份认证
         MyAuthenticator authenticator = null;
         Properties pro = mailInfo.getProperties();
+        if (null == pro) return false;
         if (mailInfo.isValidate()) {
             // 如果需要身份认证，则创建一个密码验证器
             authenticator = new MyAuthenticator(mailInfo.getUserName(), mailInfo.getPassword());
@@ -76,6 +77,7 @@ public class SimpleMailSender {
         // 判断是否需要身份认证
         MyAuthenticator authenticator = null;
         Properties pro = mailInfo.getProperties();
+        if (null == pro) return false;
         //如果需要身份认证，则创建一个密码验证器
         if (mailInfo.isValidate()) {
             authenticator = new MyAuthenticator(mailInfo.getUserName(), mailInfo.getPassword());
