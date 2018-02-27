@@ -34,16 +34,19 @@ public class EncapsulateOperation {
 		// 处理下拉框事件
 		switch (operation) {
 		case "selectbyvisibletext":
+			result = "下拉框对象通过VisibleText属性选择...【VisibleText属性值:" + operationValue + "】";
 			select.selectByVisibleText(operationValue);
-			luckyclient.publicclass.LogUtil.APP.info("下拉框对象通过VisibleText属性选择...【VisibleText属性值:" + operationValue + "】");
+			luckyclient.publicclass.LogUtil.APP.info(result);
 			break;
 		case "selectbyvalue":
+			result = "下拉框对象通过Value属性选择...【Value属性值:" + operationValue + "】";
 			select.selectByValue(operationValue);
-			luckyclient.publicclass.LogUtil.APP.info("下拉框对象通过Value属性选择...【Value属性值:" + operationValue + "】");
+			luckyclient.publicclass.LogUtil.APP.info(result);
 			break;
 		case "selectbyindex":
+			result = "下拉框对象通过Index属性选择...【Index属性值:" + operationValue + "】";
 			select.selectByIndex(Integer.valueOf(operationValue));
-			luckyclient.publicclass.LogUtil.APP.info("下拉框对象通过Index属性选择...【Index属性值:" + operationValue + "】");
+			luckyclient.publicclass.LogUtil.APP.info(result);
 			break;
 		case "isselect":
 			result = "获取到的值是【"+we.isSelected()+"】";

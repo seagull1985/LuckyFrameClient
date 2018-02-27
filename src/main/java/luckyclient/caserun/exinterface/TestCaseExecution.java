@@ -32,7 +32,6 @@ public class TestCaseExecution {
 	 * @param 用例版本号
 	 * 用于单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
 	 */
-	@SuppressWarnings("static-access")
 	public static void oneCaseExecuteForTast(String projectname, String testCaseExternalId, int version,
 			String taskid) {
 		Map<String, String> variable = new HashMap<String, String>(0);

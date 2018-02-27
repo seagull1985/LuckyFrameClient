@@ -5,13 +5,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.eti.kinoshita.testlinkjavaapi.util.TestLinkAPIException;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
+import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.PublicCaseParams;
 import luckyclient.publicclass.ChangString;
 import luckyclient.publicclass.InvokeMethod;
+import luckyclient.publicclass.remoterinterface.HttpRequest;
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
@@ -177,6 +180,47 @@ public class ApiTestCaseDebug{
 		}
 	}
 
+	/**
+	 * 获取指定任务名称以及用例号报错日志中的执行预期结果
+	 * casestatus说明  pass:0    fail:1   lock:2   unexcute:4
+	 */
+	public static String getLogDetailExpectresult(String taskname,String caseno,int casestatus){
+		int taskid = LogOperation.getTaskExcuteTaskid(taskname);
+		return LogOperation.getLogDetailExpectResult(taskid, caseno,casestatus);
+	}
+	
+	/**
+	 * 获取指定任务名称以及用例号报错日志中的执行测试结果
+	 * casestatus说明  pass:0    fail:1   lock:2   unexcute:4
+	 */
+	public static String getLogDetailRunresult(String taskname,String caseno,int casestatus){
+		int taskid = LogOperation.getTaskExcuteTaskid(taskname);
+		return LogOperation.getLogDetailTestResult(taskid, caseno,casestatus);
+	}
+	
+	/**
+	 * 更新系统中用例指定步骤的预期结果
+	 */
+	public static String setExpectedResults(String testCaseSign, int steps, String expectedResults) {
+		String results = "设置结果失败";
+		String params="";
+		try {
+			expectedResults = expectedResults.replace("%", "BBFFHH");
+			expectedResults = expectedResults.replace("=", "DHDHDH");
+			expectedResults = expectedResults.replace("&", "ANDAND");
+			params="caseno="+testCaseSign;
+			params+="&stepnum="+steps;
+			params+="&expectedresults="+expectedResults;
+			results=HttpRequest.sendPost("/projectCasesteps/cUpdateStepExpectedResults.do", params);
+		} catch (TestLinkAPIException te) {
+			te.printStackTrace(System.err);
+			results = te.getMessage().toString();
+			return results;
+		}
+		return results;
+
+	}
+	
 	public static void main(String[] args) throws Exception {
 
 	}

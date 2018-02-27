@@ -10,49 +10,53 @@ import luckyclient.dblog.LogOperation;
  * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
  * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
- * 
+ *
  * @author： seagull
  * @date 2017年12月1日 上午9:29:40
- * 
  */
 public class MailSendInitialization {
-	
-	public static void sendMailInitialization(String subject,String content,String taskid){
-		String[] addresses = LogOperation.getEmailAddress(taskid);
-		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
-		if(addresses!=null){
-			 luckyclient.publicclass.LogUtil.APP.info("准备将测试结果发送邮件通知！请稍等。。。。");
-			 //这个类主要是设置邮件   
-		      MailSenderInfo mailInfo = new MailSenderInfo(); 
-		         //这个类主要来发送邮件   
-		      SimpleMailSender sms = new SimpleMailSender();   
-		      mailInfo.setMailServerHost(properties.getProperty("mail.smtp.ip"));    
-		      mailInfo.setMailServerPort(properties.getProperty("mail.smtp.port"));    
-		      mailInfo.setValidate(true);    
-		      mailInfo.setUserName(properties.getProperty("mail.smtp.username"));   
-		      //您的邮箱密码    
-		      mailInfo.setPassword(properties.getProperty("mail.smtp.password"));
-		      mailInfo.setFromAddress(properties.getProperty("mail.smtp.username")); 
-		      //标题
-		      mailInfo.setSubject(subject);  
-		      //内容
-		      mailInfo.setContent(content);    
-		      mailInfo.setToAddresses(addresses);
-			  sms.sendHtmlMail(mailInfo);
 
-			  StringBuilder stringBuilder = new StringBuilder();
-			  for(int i=0;i<addresses.length;i++){
-				  stringBuilder.append(addresses[i]+";");
-			  }
-			  String addressesmail = stringBuilder.toString();
-			  luckyclient.publicclass.LogUtil.APP.info("给"+addressesmail+"的测试结果通知邮件发送完成！");
-		}else{
-			luckyclient.publicclass.LogUtil.APP.info("当前任务不需要发送邮件通知！");
-		}
-	}
+    public static void sendMailInitialization(String subject, String content, String taskid) {
+        String[] addresses = LogOperation.getEmailAddress(taskid);
+        Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
+        if (addresses != null) {
+            luckyclient.publicclass.LogUtil.APP.info("准备将测试结果发送邮件通知！请稍等。。。。");
+            //这个类主要是设置邮件
+            MailSenderInfo mailInfo = new MailSenderInfo();
+            //这个类主要来发送邮件
+            SimpleMailSender sms = new SimpleMailSender();
+            mailInfo.setMailServerHost(properties.getProperty("mail.smtp.ip"));
+            mailInfo.setMailServerPort(properties.getProperty("mail.smtp.port"));
+            mailInfo.setSslenable(properties.getProperty("mail.smtp.ssl.enable").equals("true"));
+            mailInfo.setValidate(true);
+            mailInfo.setUserName(properties.getProperty("mail.smtp.username"));
+            //您的邮箱密码
+            mailInfo.setPassword(properties.getProperty("mail.smtp.password"));
+            mailInfo.setFromAddress(properties.getProperty("mail.smtp.username"));
+            //标题
+            mailInfo.setSubject(subject);
+            //内容
+            mailInfo.setContent(content);
+            mailInfo.setToAddresses(addresses);
+            sms.sendHtmlMail(mailInfo);
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-	}
+            StringBuilder stringBuilder = new StringBuilder();
+            for (String address : addresses) {
+                stringBuilder.append(address).append(";");
+            }
+            String addressesmail = stringBuilder.toString();
+            if (sms.sendHtmlMail(mailInfo)) {
+                luckyclient.publicclass.LogUtil.APP.info("给" + addressesmail + "的测试结果通知邮件发送完成！");
+            } else {
+                luckyclient.publicclass.LogUtil.APP.error("给" + addressesmail + "的测试结果通知邮件发送失败！");
+            }
+        } else {
+            luckyclient.publicclass.LogUtil.APP.info("当前任务不需要发送邮件通知！");
+        }
+    }
+
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+    }
 
 }
