@@ -95,11 +95,13 @@ public class InvokeMethod {
 				//处理头域
 				Map<String, String> headmsg = new HashMap<String, String>(0);
 				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
-					String[] temp=ppt.getHeadmsg().split(";",-1);
+					String headmsgtemp=ppt.getHeadmsg().replaceAll("\\\\;", "!!!fhzh");
+					String[] temp=headmsgtemp.split(";",-1);
 					for(int i=0;i<temp.length;i++){
 						if(null!=temp[i]&&!temp[i].equals("")&&temp[i].indexOf("=")>0){
 							String key=temp[i].substring(0, temp[i].indexOf("="));
 							String value=temp[i].substring(temp[i].indexOf("=")+1);
+							value=value.replaceAll("!!!fhzh",";");
 							headmsg.put(key, value);
 						}						
 					}
@@ -245,11 +247,13 @@ public class InvokeMethod {
 				//处理头域
 				Map<String, String> headmsg = new HashMap<String, String>(0);
 				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
-					String[] temp=ppt.getHeadmsg().split(";",-1);
+					String headmsgtemp=ppt.getHeadmsg().replaceAll("\\\\;", "!!!fhzh");
+					String[] temp=headmsgtemp.split(";",-1);
 					for(int i=0;i<temp.length;i++){
 						if(null!=temp[i]&&!temp[i].equals("")&&temp[i].indexOf("=")>0){
 							String key=temp[i].substring(0, temp[i].indexOf("="));
 							String value=temp[i].substring(temp[i].indexOf("=")+1);
+							value=value.replaceAll("!!!fhzh",";");
 							headmsg.put(key, value);
 						}						
 					}
@@ -366,7 +370,6 @@ public class InvokeMethod {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
 	}
 
 }
