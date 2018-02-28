@@ -38,7 +38,7 @@ public class MailSendInitialization {
             //ÄÚÈİ
             mailInfo.setContent(content);
             mailInfo.setToAddresses(addresses);
-            sms.sendHtmlMail(mailInfo);
+            //sms.sendHtmlMail(mailInfo);
 
             StringBuilder stringBuilder = new StringBuilder();
             for (String address : addresses) {
