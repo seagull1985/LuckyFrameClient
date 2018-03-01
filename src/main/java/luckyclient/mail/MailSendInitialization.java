@@ -12,7 +12,7 @@ import luckyclient.dblog.LogOperation;
  * =================================================================
  *
  * @author： seagull
- * @date 2017年12月1日 上午9:29:40
+ * @date 2018年3月1日
  */
 public class MailSendInitialization {
 
