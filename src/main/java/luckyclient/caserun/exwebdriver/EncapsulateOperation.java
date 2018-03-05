@@ -325,9 +325,9 @@ public class EncapsulateOperation {
 			Set<String> gotohandles=wd.getWindowHandles();
 			int flag=0;
 			for (String handleName : gotohandles) {
-				if (handleName.contains(operationValue)) {
+				if (operationValue.contains(handleName)) {
 					flag=1;
-					wd.switchTo().window(operationValue);
+					wd.switchTo().window(handleName);
 					break;
 				}
 			}

@@ -257,7 +257,7 @@ public class WebCaseExecution extends TestCaseExecution {
         caselog.caseLogDetail(taskid, casenum, result, "info", String.valueOf(stepno), "");
 
         if (result.indexOf("获取到的值是【") > -1 && result.indexOf("】") > -1) {
-            result = result.substring(7, result.length() - 1);
+            result = result.substring(result.indexOf("获取到的值是【")+7, result.length() - 1);
         }
         return result;
 
