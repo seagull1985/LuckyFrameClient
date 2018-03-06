@@ -58,7 +58,7 @@ public class WebDriverAnalyticCase {
 			String expectedResults = subComment(resultstr);
 
 			//´¦Àícheck×Ö¶Î
-			if(expectedResults.indexOf("check(")>-1){
+			if(expectedResults.startsWith("check(")){
 				params.put("checkproperty", expectedResults.substring(expectedResults.indexOf("check(")+6, expectedResults.indexOf("=")));
 				params.put("checkproperty_value", expectedResults.substring(expectedResults.indexOf("=")+1, expectedResults.lastIndexOf(")")));
 			}			
