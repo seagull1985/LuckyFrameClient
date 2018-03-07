@@ -71,7 +71,6 @@ public class InvokeMethod {
                     return "协议模板为空，请确认用例使用的模板是否已经删除！";
                 }
 
-<<<<<<< HEAD
                 String httpptp = HttpRequest.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
                 JSONObject jsonptpObject = JSONObject.fromObject(httpptp);
                 JSONArray jsonarr = JSONArray.fromObject(jsonptpObject.getString("params"));
@@ -104,41 +103,6 @@ public class InvokeMethod {
                 @SuppressWarnings("unchecked")
                 List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(),
                         new JsonConfig());
-=======
-				String httpptp = HttpRequest
-						.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
-				JSONObject jsonptpObject = JSONObject.fromObject(httpptp.toString());
-				JSONArray jsonarr = JSONArray.fromObject(jsonptpObject.getString("params"));
-				
-				//处理json-lib 2.4版本当遇到json格式字符串时，把它当成对象处理的bug
-				for(int i=0;i<jsonarr.size();i++){
-					JSONObject tempobj=(JSONObject) jsonarr.get(i);
-					String str=tempobj.get("param").toString();
-					if(str.length()>0&&"[".equals(str.substring(0, 1))&&"]".equals(str.substring(str.length()-1))){
-					   tempobj.element("param", "***"+str);
-					   jsonarr.set(i, tempobj);
-					}
-				}
-				
-				//处理头域
-				Map<String, String> headmsg = new HashMap<String, String>(0);
-				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
-					String headmsgtemp=ppt.getHeadmsg().replaceAll("\\\\;", "!!!fhzh");
-					String[] temp=headmsgtemp.split(";",-1);
-					for(int i=0;i<temp.length;i++){
-						if(null!=temp[i]&&!temp[i].equals("")&&temp[i].indexOf("=")>0){
-							String key=temp[i].substring(0, temp[i].indexOf("="));
-							String value=temp[i].substring(temp[i].indexOf("=")+1);
-							value=value.replaceAll("!!!fhzh",";");
-							headmsg.put(key, value);
-						}						
-					}
-				}
-				
-				@SuppressWarnings("unchecked")
-				List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(),
-						new JsonConfig());
->>>>>>> origin/master
                 //处理更换参数
                 if (null != getParameterValues) {
                     String booleanheadmsg = "headmsg(";
@@ -253,7 +217,6 @@ public class InvokeMethod {
                     }
                 }
 
-<<<<<<< HEAD
                 //处理头域
                 Map<String, String> headmsg = new HashMap<String, String>(0);
                 if (null != ppt.getHeadmsg() && !ppt.getHeadmsg().equals("") && ppt.getHeadmsg().indexOf("=") > 0) {
@@ -271,41 +234,6 @@ public class InvokeMethod {
 
                 @SuppressWarnings("unchecked")
                 List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(), new JsonConfig());
-=======
-				String httpptp = HttpRequest
-						.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
-				JSONObject jsonptpObject = JSONObject.fromObject(httpptp.toString());
-				JSONArray jsonarr = JSONArray.fromObject(jsonptpObject.getString("params"));
-				
-				//处理json-lib 2.4版本当遇到json格式字符串时，把它当成对象处理的bug
-				for(int i=0;i<jsonarr.size();i++){
-					JSONObject tempobj=(JSONObject) jsonarr.get(i);
-					String str=tempobj.get("param").toString();
-					if(str.length()>0&&"[".equals(str.substring(0, 1))&&"]".equals(str.substring(str.length()-1))){
-					   tempobj.element("param", "***"+str);
-					   jsonarr.set(i, tempobj);
-					}
-				}
-				
-				//处理头域
-				Map<String, String> headmsg = new HashMap<String, String>(0);
-				if(null!=ppt.getHeadmsg()&&!ppt.getHeadmsg().equals("")&&ppt.getHeadmsg().indexOf("=")>0){
-					String headmsgtemp=ppt.getHeadmsg().replaceAll("\\\\;", "!!!fhzh");
-					String[] temp=headmsgtemp.split(";",-1);
-					for(int i=0;i<temp.length;i++){
-						if(null!=temp[i]&&!temp[i].equals("")&&temp[i].indexOf("=")>0){
-							String key=temp[i].substring(0, temp[i].indexOf("="));
-							String value=temp[i].substring(temp[i].indexOf("=")+1);
-							value=value.replaceAll("!!!fhzh",";");
-							headmsg.put(key, value);
-						}						
-					}
-				}
-				
-				@SuppressWarnings("unchecked")
-				List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(),
-						new JsonConfig());
->>>>>>> origin/master
                 //处理更换参数
                 if (null != getParameterValues) {
                     String booleanheadmsg = "headmsg(";
@@ -409,15 +337,9 @@ public class InvokeMethod {
         return true;
     }
 
-<<<<<<< HEAD
     public static void main(String[] args) {
         // TODO Auto-generated method stub
 
     }
-=======
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-	}
->>>>>>> origin/master
 
 }

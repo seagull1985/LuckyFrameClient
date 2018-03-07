@@ -28,8 +28,7 @@ import org.openqa.selenium.WebDriver;
  * =================================================================
  *
  * @author： seagull
-<<<<<<< HEAD
- * @date 2017年12月1日 上午9:29:40
+ * @date 2018年3月1日
  */
 public class TestCaseExecution {
     protected static final String ASSIGNMENT_SIGN = "$=";
@@ -42,7 +41,7 @@ public class TestCaseExecution {
      * @param version            用例版本号
      *                           用于单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
      */
-    @SuppressWarnings("static-access")
+
     public static void oneCaseExecuteForTast(String projectname, String testCaseExternalId, int version, String taskid) {
         Map<String, String> variable = new HashMap<String, String>(0);
         TestControl.TASKID = taskid;
@@ -117,98 +116,6 @@ public class TestCaseExecution {
             try {
                 luckyclient.publicclass.LogUtil.APP.info("开始调用方法：" + functionname + " .....");
                 LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1));
-=======
- * @date 2018年3月1日
- * 
- */
-public class TestCaseExecution {
-	private static final String ASSIGNMENT_SIGN = "$=";
-	private static final String FUZZY_MATCHING_SIGN = "%=";
-	private static final String REGULAR_MATCHING_SIGN = "~=";
-
-	/**
-	 * @param 项目名
-	 * @param 用例编号
-	 * @param 用例版本号
-	 * 用于单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
-	 */
-
-	public static void oneCaseExecuteForTast(String projectname, String testCaseExternalId, int version,
-			String taskid) {
-		Map<String, String> variable = new HashMap<String, String>(0);
-		TestControl.TASKID = taskid;
-		DbLink.exetype = 0;
-		// 初始化写用例结果以及日志模块
-		LogOperation caselog = new LogOperation(); 
-		String packagename = null;
-		String functionname = null;
-		String expectedresults = null;
-		Integer setresult = 1;
-		Object[] getParameterValues = null;
-		String testnote = "初始化测试结果";
-		int k = 0;
-		// 删除旧的日志
-		LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid); 
-		ProjectCase testcaseob = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcaseob.getProjectid()));
-		// 把公共参数加入到MAP中
-		for (PublicCaseParams pcp : pcplist) {
-			variable.put(pcp.getParamsname(), pcp.getParamsvalue());
-		}
-		List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
-		if(steps.size()==0){
-			setresult=2;
-			luckyclient.publicclass.LogUtil.APP.error("用例中未找到步骤，请检查！");
-			LogOperation.updateCaseLogDetail(testCaseExternalId, taskid,"用例中未找到步骤，请检查！", "error", "1");
-			testnote="用例中未找到步骤，请检查！";
-		}
-		// 进入循环，解析用例所有步骤
-		for (int i = 0; i < steps.size(); i++) {
-			Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcaseob, steps.get(i), taskid,caselog);
-			try {
-				packagename = casescript.get("PackageName");
-				packagename = ChangString.changparams(packagename, variable,"包路径");
-				functionname = casescript.get("FunctionName");
-				functionname = ChangString.changparams(functionname, variable,"方法名");
-			} catch (Exception e) {
-				k = 0;
-				luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + "解析包名或是方法名失败，请检查！");
-				caselog.caseLogDetail(taskid, testcaseob.getSign(), "解析包名或是方法名失败，请检查！", "error", String.valueOf(i + 1), "");
-				e.printStackTrace();
-				break; // 某一步骤失败后，此条用例置为失败退出
-			}
-			// 用例名称解析出现异常或是单个步骤参数解析异常
-			if ((null != functionname && functionname.contains("解析异常")) || k == 1) {
-				k = 0;
-				testnote = "用例第" + (i + 1) + "步解析出错啦！";
-				break;
-			}
-			expectedresults = casescript.get("ExpectedResults");
-			expectedresults = ChangString.changparams(expectedresults, variable,"预期结果");
-			// 判断方法是否带参数
-			if (casescript.size() > 4) {
-				// 获取传入参数，放入对象中，初始化参数对象个数
-				getParameterValues = new Object[casescript.size() - 4]; 
-				for (int j = 0; j < casescript.size() - 4; j++) {
-					if (casescript.get("FunctionParams" + (j + 1)) == null) {
-						k = 1;
-						break;
-					}
-					
-					String parameterValues = casescript.get("FunctionParams" + (j + 1));
-					parameterValues = ChangString.changparams(parameterValues, variable,"用例参数");
-					luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues);
-					caselog.caseLogDetail(taskid, testcaseob.getSign(), "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues, "info", String.valueOf(i + 1), "");
-					getParameterValues[j] = parameterValues;
-				}
-			} else {
-				getParameterValues = null;
-			}
-			// 调用动态方法，执行测试用例
-			try {
-				luckyclient.publicclass.LogUtil.APP.info("开始调用方法：" + functionname + " .....");
-				LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1));
->>>>>>> origin/master
 
                 testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getAction());
 
