@@ -24,13 +24,13 @@ import luckyclient.publicclass.InvokeMethod;
  * @ClassName: WebTestCaseDebug
  * @Description: 提供Web端调试接口
  * @author： seagull
- * @date 2017年9月2日 上午9:29:40
+ * @date 2018年3月1日
  */
 public class WebTestCaseDebug {
-    private static final String ASSIGNMENT_SIGN = "$=";
-    private static final String FUZZY_MATCHING_SIGN = "%=";
-    private static final String REGULAR_MATCHING_SIGN = "~=";
-
+	private static final String ASSIGNMENT_SIGN = "$=";
+	private static final String FUZZY_MATCHING_SIGN = "%=";
+	private static final String REGULAR_MATCHING_SIGN = "~=";
+	
     /**
      * @param executor
      * @param sign 用于在WEB页面上调试用例时提供的接口

@@ -12,7 +12,6 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import luckyclient.caserun.exappium.AppDriverAnalyticCase;
 import luckyclient.caserun.exinterface.TestCaseExecution;
-import luckyclient.caserun.exwebdriver.EncapsulateOperation;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
@@ -244,7 +243,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 		caselog.caseLogDetail(taskid, casenum, result,"info", String.valueOf(stepno),"");
 		
 		if(result.indexOf("获取到的值是【")>-1&&result.indexOf("】")>-1){
-			result = result.substring(7, result.length()-1);
+			result = result.substring(result.indexOf("获取到的值是【")+7, result.length()-1);
 		}
 		return result;
 

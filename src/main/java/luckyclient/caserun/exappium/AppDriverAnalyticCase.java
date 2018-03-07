@@ -24,7 +24,6 @@ public class AppDriverAnalyticCase {
 	//private static String splitFlag = "\\|";
 
 	/**
-	 * @param args
 	 */
 	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid,LogOperation caselog){
 		String time = "0";
@@ -58,7 +57,7 @@ public class AppDriverAnalyticCase {
 			String expectedResults = subComment(resultstr);
 
 			//´¦Àícheck×Ö¶Î
-			if(expectedResults.indexOf("check(")>-1){
+			if(expectedResults.startsWith("check(")){
 				params.put("checkproperty", expectedResults.substring(expectedResults.indexOf("check(")+6, expectedResults.indexOf("=")));
 				params.put("checkproperty_value", expectedResults.substring(expectedResults.indexOf("=")+1, expectedResults.lastIndexOf(")")));
 			}			

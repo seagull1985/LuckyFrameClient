@@ -36,7 +36,6 @@ public class TestCaseApi extends TestLinkBaseApi {
 	/**
 	 * 设置用例执行结果
 	 * @param testCaseExternalId
-	 * @param testSuiteName
 	 * @param note
 	 */
 
@@ -140,7 +139,7 @@ public class TestCaseApi extends TestLinkBaseApi {
 	
 	/**
 	 * 获取单个用例的步骤
-	 * @param testCaseExternalID
+	 * @param testCaseExternalId
 	 * @param version
 	 */
 	public static List<TestCaseStep> getTestCaseSteps(String testCaseExternalId,Integer version){
@@ -229,37 +228,6 @@ public class TestCaseApi extends TestLinkBaseApi {
 
 	}
 	
-	/**
-	 * 更新系统中用例指定步骤的预期结果
-	 */
-	public static String setExpectedResults(String testCaseSign, int steps, String expectedResults) {
-		String results = "设置结果失败";
-		String params="";
-		try {
-			expectedResults = expectedResults.replace("%", "BBFFHH");
-			expectedResults = expectedResults.replace("=", "DHDHDH");
-			expectedResults = expectedResults.replace("&", "ANDAND");
-			params="caseno="+testCaseSign;
-			params+="&stepnum="+steps;
-			params+="&expectedresults="+expectedResults;
-			results=HttpRequest.sendPost("/projectCasesteps/cUpdateStepExpectedResults.do", params);
-		} catch (TestLinkAPIException te) {
-			te.printStackTrace(System.err);
-			results = te.getMessage().toString();
-			return results;
-		}
-		return results;
-
-	}
-
-	/**
-	 * 获取指定任务名称以及用例号报错日志中的执行测试结果
-	 * casestatus说明  pass:0    fail:1   lock:2   unexcute:4
-	 */
-	public static String getLogDetailRunresult(String taskname,String caseno,int casestatus){
-		int taskid = LogOperation.getTaskExcuteTaskid(taskname);
-		return LogOperation.getLogDetailTestResult(taskid, caseno,casestatus);
-	}
 	
 	/**
 	 * 拷贝测试用例到系统自带用例库中   接口自动化用例
@@ -428,14 +396,6 @@ public class TestCaseApi extends TestLinkBaseApi {
 		System.out.println(testplan+"中的用例已经全部生成完毕！");
 	}
 	
-	/**
-	 * 获取指定任务名称以及用例号报错日志中的执行预期结果
-	 * casestatus说明  pass:0    fail:1   lock:2   unexcute:4
-	 */
-	public static String getLogDetailExpectresult(String taskname,String caseno,int casestatus){
-		int taskid = LogOperation.getTaskExcuteTaskid(taskname);
-		return LogOperation.getLogDetailExpectResult(taskid, caseno,casestatus);
-	}
 	
 	public static void main(String[] args){
 
