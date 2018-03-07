@@ -31,10 +31,11 @@ import luckyclient.publicclass.ChangString;
  * =================================================================
  *
  * @author： seagull
- * @date 2017年12月1日 上午9:29:40
+ * @date 2018年3月1日
  */
 public class WebCaseExecution extends TestCaseExecution {
     private static Map<String, String> variable = new HashMap<>();
+<<<<<<< HEAD
     // 0:成功 1:失败 2:锁定 其他：锁定
     private static int setresult = 0;
     private static String casenote = "备注初始化";
@@ -42,11 +43,19 @@ public class WebCaseExecution extends TestCaseExecution {
 
 /*
     public static void caseExcutionBak(ProjectCase testcase, List<ProjectCasesteps> steps, String taskid, WebDriver wd, LogOperation caselog, List<PublicCaseParams> pcplist)
+=======
+	private static final String ASSIGNMENT_SIGN = "$=";
+	private static final String FUZZY_MATCHING_SIGN = "%=";
+	private static final String REGULAR_MATCHING_SIGN = "~=";
+	
+    public static void caseExcution(ProjectCase testcase, List<ProjectCasesteps> steps, String taskid, WebDriver wd, LogOperation caselog, List<PublicCaseParams> pcplist)
+>>>>>>> origin/master
             throws InterruptedException {
         // 0:成功 1:失败 2:锁定 其他：锁定
         int setresult = 0;
         String casenote = "备注初始化";
         String imagname = "";
+<<<<<<< HEAD
         // 把公共参数加入到MAP中
         for (PublicCaseParams pcp : pcplist) {
             variable.put(pcp.getParamsname(), pcp.getParamsvalue());
@@ -180,6 +189,8 @@ public class WebCaseExecution extends TestCaseExecution {
 */
 
     public static void caseExcution(ProjectCase testcase, List<ProjectCasesteps> steps, String taskid, WebDriver wd, LogOperation caselog, List<PublicCaseParams> pcplist) throws InterruptedException {
+=======
+>>>>>>> origin/master
         // 把公共参数加入到MAP中
         for (PublicCaseParams pcp : pcplist) {
             variable.put(pcp.getParamsname(), pcp.getParamsvalue());
@@ -208,8 +219,102 @@ public class WebCaseExecution extends TestCaseExecution {
             String expectedResults = params.get("ExpectedResults");
             expectedResults = ChangString.changparams(expectedResults, variable, "预期结果");
 
+<<<<<<< HEAD
             // 判断结果
             if (0 != judgeResult(testcase, step, params, wd, taskid, expectedResults, result, caselog)) break;
+=======
+                    // 赋值传参模式
+                    if (expectedResults.length() > ASSIGNMENT_SIGN.length() && expectedResults.startsWith(ASSIGNMENT_SIGN)) {
+                        variable.put(expectedResults.substring(ASSIGNMENT_SIGN.length()), result);
+                        luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，将测试结果【" + result + "】赋值给变量【" + expectedResults.substring(ASSIGNMENT_SIGN.length()) + "】");
+                        caselog.caseLogDetail(taskid, testcase.getSign(), "将测试结果【" + result + "】赋值给变量【" + expectedResults.substring(ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(step.getStepnum()), "");
+                    }
+                    // WebUI检查模式
+                    else if (params.get("checkproperty") != null && params.get("checkproperty_value") != null) {
+                        String checkproperty = params.get("checkproperty");
+                        String checkPropertyValue = params.get("checkproperty_value");
+
+                        WebElement we = isElementExist(wd, checkproperty, checkPropertyValue);
+                        if (null != we) {
+                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，在当前页面中找到预期结果中对象。当前步骤执行成功！");
+                            caselog.caseLogDetail(taskid, testcase.getSign(), "在当前页面中找到预期结果中对象。当前步骤执行成功！", "info", String.valueOf(step.getStepnum()), "");
+                        } else {
+                            casenote = "第" + step.getStepnum() + "步，没有在当前页面中找到预期结果中对象。执行失败！";
+                            setresult = 1;
+                            java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
+                            imagname = timeformat.format(new Date());
+                            BaseWebDrive.webScreenShot(wd, imagname);
+                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，没有在当前页面中找到预期结果中对象。当前步骤执行失败！");
+                            caselog.caseLogDetail(taskid, testcase.getSign(), "在当前页面中没有找到预期结果中对象。当前步骤执行失败！" + "checkproperty【" + checkproperty + "】  checkproperty_value【" + checkPropertyValue + "】", "error", String.valueOf(step.getStepnum()), imagname);
+                            break;
+                        }
+                    }
+                    // 其它匹配模式
+                    else {
+                        // 模糊匹配预期结果模式
+                        if (expectedResults.length() > FUZZY_MATCHING_SIGN.length() && expectedResults.startsWith(FUZZY_MATCHING_SIGN)) {
+                            if (result.contains(expectedResults.substring(FUZZY_MATCHING_SIGN.length()))) {
+                                luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，模糊匹配预期结果成功！执行结果：" + result);
+                                caselog.caseLogDetail(taskid, testcase.getSign(), "模糊匹配预期结果成功！执行结果：" + result, "info", String.valueOf(step.getStepnum()), "");
+                            } else {
+                                casenote = "第" + step.getStepnum() + "步，模糊匹配预期结果失败！";
+                                setresult = 1;
+                                java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
+                                imagname = timeformat.format(new Date());
+                                BaseWebDrive.webScreenShot(wd, imagname);
+                                luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，模糊匹配预期结果失败！预期结果：" + expectedResults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + result);
+                                caselog.caseLogDetail(taskid, testcase.getSign(), "模糊匹配预期结果失败！预期结果：" + expectedResults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + result, "error", String.valueOf(step.getStepnum()), imagname);
+                                break;
+                            }
+                        }
+                        // 正则匹配预期结果模式
+                        else if (expectedResults.length() > REGULAR_MATCHING_SIGN.length() && expectedResults.startsWith(REGULAR_MATCHING_SIGN)) {
+                            Pattern pattern = Pattern.compile(expectedResults.substring(REGULAR_MATCHING_SIGN.length()));
+                            Matcher matcher = pattern.matcher(result);
+                            if (matcher.find()) {
+                                luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，正则匹配预期结果成功！执行结果：" + result);
+                                caselog.caseLogDetail(taskid, testcase.getSign(), "正则匹配预期结果成功！", "info", String.valueOf(step.getStepnum()), "");
+                            } else {
+                                casenote = "第" + step.getStepnum() + "步，正则匹配预期结果失败！";
+                                setresult = 1;
+                                java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
+                                imagname = timeformat.format(new Date());
+                                BaseWebDrive.webScreenShot(wd, imagname);
+                                luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，正则匹配预期结果失败！预期结果：" + expectedResults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + result);
+                                caselog.caseLogDetail(taskid, testcase.getSign(), "正则匹配预期结果失败！预期结果：" + expectedResults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + result, "error", String.valueOf(step.getStepnum()), imagname);
+                                break;
+                            }
+                        }
+                        // 精确匹配预期结果模式
+                        else {
+                            if (expectedResults.equals(result)) {
+                                luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，精确匹配预期结果成功！执行结果：" + result);
+                                caselog.caseLogDetail(taskid, testcase.getSign(), "精确匹配预期结果成功！", "info", String.valueOf(step.getStepnum()), "");
+                            } else {
+                                casenote = "第" + step.getStepnum() + "步，精确匹配预期结果失败！";
+                                setresult = 1;
+                                java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
+                                imagname = timeformat.format(new Date());
+                                BaseWebDrive.webScreenShot(wd, imagname);
+                                luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，精确匹配预期结果失败！执行结果：" + result);
+                                caselog.caseLogDetail(taskid, testcase.getSign(), "精确匹配预期结果失败！执行结果：" + result, "error", String.valueOf(step.getStepnum()), imagname);
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else {
+                casenote = (null != result) ? result : "";
+                setresult = 2;
+                java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
+                imagname = timeformat.format(new Date());
+                BaseWebDrive.webScreenShot(wd, imagname);
+                luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，" + result);
+                caselog.caseLogDetail(taskid, testcase.getSign(), "当前步骤在执行过程中解析|定位元素|操作对象失败！" + result,
+                        "error", String.valueOf(step.getStepnum()), imagname);
+                break;
+            }
+>>>>>>> origin/master
         }
 
         variable.clear();
@@ -301,11 +406,16 @@ public class WebCaseExecution extends TestCaseExecution {
             return "元素定位过程或是操作过程失败或异常！" + e.getMessage();
         }
 
+<<<<<<< HEAD
         if (result.contains("失败")) caselog.caseLogDetail(taskid, casenum, result, "error", String.valueOf(stepno), "");
         else caselog.caseLogDetail(taskid, casenum, result, "info", String.valueOf(stepno), "");
 
         if (result.contains("获取到的值是【") && result.contains("】")) {
             result = result.substring(7, result.length() - 1);
+=======
+        if (result.indexOf("获取到的值是【") > -1 && result.indexOf("】") > -1) {
+            result = result.substring(result.indexOf("获取到的值是【")+7, result.length() - 1);
+>>>>>>> origin/master
         }
         return result;
 
@@ -501,6 +611,7 @@ public class WebCaseExecution extends TestCaseExecution {
 
     public static void main(String[] args) {
         // TODO Auto-generated method stub
+
     }
 
 }

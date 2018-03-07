@@ -12,7 +12,7 @@ import luckyclient.dblog.LogOperation;
  * =================================================================
  *
  * @author： seagull
- * @date 2017年12月1日 上午9:29:40
+ * @date 2018年3月1日
  */
 public class MailSendInitialization {
 
@@ -38,6 +38,7 @@ public class MailSendInitialization {
             //内容
             mailInfo.setContent(content);
             mailInfo.setToAddresses(addresses);
+            //sms.sendHtmlMail(mailInfo);
 
             StringBuilder stringBuilder = new StringBuilder();
             for (String address : addresses) {

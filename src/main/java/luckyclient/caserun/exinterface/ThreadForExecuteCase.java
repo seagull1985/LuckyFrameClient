@@ -24,7 +24,7 @@ import luckyclient.publicclass.InvokeMethod;
  * @ClassName: ThreadForExecuteCase
  * @Description: 线程池方式执行用例
  * @author： seagull
- * @date 2017年7月13日 上午9:29:40
+ * @date 2018年3月1日
  */
 public class ThreadForExecuteCase extends Thread {
     private static final String ASSIGNMENT_SIGN = "$=";
