@@ -31,7 +31,7 @@ import luckyclient.publicclass.ChangString;
  * =================================================================
  *
  * @author： seagull
- * @date 2017年12月1日 上午9:29:40
+ * @date 2018年3月1日
  */
 public class WebCaseExecution extends TestCaseExecution {
     private static Map<String, String> variable = new HashMap<>();
