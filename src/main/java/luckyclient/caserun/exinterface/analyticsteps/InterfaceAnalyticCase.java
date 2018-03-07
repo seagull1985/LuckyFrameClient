@@ -24,7 +24,6 @@ public class InterfaceAnalyticCase{
 	private static String splitFlag = "\\|";
 
 	/**
-	 * @param args
 	 */
 	@SuppressWarnings("finally")
 	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid,LogOperation caselog){
@@ -69,7 +68,7 @@ public class InterfaceAnalyticCase{
 			caselog.caseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepnum()),"");
 			}
 			luckyclient.publicclass.LogUtil.ERROR.error(e,e);
-			params.put("FunctionName","用例编号："+projectcase.getSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
+			params.put("exception","用例编号："+projectcase.getSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
 			return params;
      }
  	 return params;
