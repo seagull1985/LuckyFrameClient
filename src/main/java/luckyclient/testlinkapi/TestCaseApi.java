@@ -35,8 +35,8 @@ public class TestCaseApi extends TestLinkBaseApi {
 
 	/**
 	 * 设置用例执行结果
+	 * @param projectname
 	 * @param testCaseExternalId
-	 * @param note
 	 */
 
 	public static String setTCResult (String projectname,String testCaseExternalId,String note,Integer version,Integer setresult){
@@ -100,6 +100,7 @@ public class TestCaseApi extends TestLinkBaseApi {
 	
 	/**
 	 * 添加用例到测试计划中
+	 * @param projectname
 	 * @param testCaseExternalID
 	 * @param version
 	 */
