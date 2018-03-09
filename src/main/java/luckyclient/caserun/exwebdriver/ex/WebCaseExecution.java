@@ -247,7 +247,7 @@ public class WebCaseExecution extends TestCaseExecution {
         } catch (Exception e) {
             e.printStackTrace();
             luckyclient.publicclass.LogUtil.APP.error("二次解析用例过程抛出异常！---" + e.getMessage());
-            return "解析用例失败!";
+            return "步骤执行失败：解析用例失败!";
         }
 
         try {
@@ -259,7 +259,7 @@ public class WebCaseExecution extends TestCaseExecution {
                 if (!ex.contains("CallCase调用出错！") && !ex.contains("解析出错啦！") && !ex.contains("失败")) {
                     return ex;
                 } else {
-                    return "调用外部用例过程失败";
+                    return "步骤执行失败：调用外部用例过程失败";
                 }
             }
 
@@ -270,7 +270,7 @@ public class WebCaseExecution extends TestCaseExecution {
                 // 判断此元素是否存在
                 if (null == we) {
                     luckyclient.publicclass.LogUtil.APP.error("定位对象失败，isElementExist为null!");
-                    return "isElementExist定位元素过程失败！";
+                    return "步骤执行失败：定位的元素不存在！";
                 }
 
                 if (operation.contains("select")) {
@@ -294,14 +294,14 @@ public class WebCaseExecution extends TestCaseExecution {
                 }
             } else {
                 luckyclient.publicclass.LogUtil.APP.error("元素操作过程失败！");
-                result = "元素操作过程失败！";
+                result = "步骤执行失败：元素操作过程失败！";
             }
         } catch (Exception e) {
             luckyclient.publicclass.LogUtil.APP.error("元素定位过程或是操作过程失败或异常！" + e.getMessage());
-            return "元素定位过程或是操作过程失败或异常！" + e.getMessage();
+            return "步骤执行失败：元素定位过程或是操作过程失败或异常！" + e.getMessage();
         }
 
-        if (result.contains("失败")) caselog.caseLogDetail(taskid, casenum, result, "error", String.valueOf(stepno), "");
+        if (result.contains("步骤执行失败：")) caselog.caseLogDetail(taskid, casenum, result, "error", String.valueOf(stepno), "");
         else caselog.caseLogDetail(taskid, casenum, result, "info", String.valueOf(stepno), "");
 
         if (result.contains("获取到的值是【") && result.contains("】")) {
@@ -326,7 +326,7 @@ public class WebCaseExecution extends TestCaseExecution {
             if (null != functionname && functionname.contains("解析异常")) {
                 LogUtil.APP.error("用例: " + casenum + ", 解析这个方法【" + functionname + "】失败！");
                 caselog.caseLogDetail(taskid, casenum, "用例: " + casenum + ", 解析这个方法【" + functionname + "】失败！", "error", String.valueOf(step.getStepnum()), "");
-                return "解析用例失败!";
+                return "步骤执行失败：解析用例失败!";
             }
 
             // 判断方法是否带参数
@@ -354,9 +354,9 @@ public class WebCaseExecution extends TestCaseExecution {
 
         } catch (Exception e) {
             LogUtil.APP.error("调用方法过程出错，方法名：" + functionname + "，请重新检查脚本方法名称以及参数！");
-            return "接口调用出错！";
+            return "步骤执行失败：接口调用出错！";
         }
-        if (result.contains("调用异常")) caselog.caseLogDetail(taskid, casenum, result, "error", String.valueOf(step.getStepnum()), "");
+        if (result.contains("步骤执行失败：")) caselog.caseLogDetail(taskid, casenum, result, "error", String.valueOf(step.getStepnum()), "");
         else caselog.caseLogDetail(taskid, casenum, result, "info", String.valueOf(step.getStepnum()), "");
         return result;
     }
@@ -400,7 +400,7 @@ public class WebCaseExecution extends TestCaseExecution {
 
     public static int judgeResult(ProjectCase testcase, ProjectCasesteps step, Map<String, String> params, WebDriver driver, String taskid, String expect, String result, LogOperation caselog) throws InterruptedException {
         setresult = 0;
-        if (null != result && !result.contains("出错") && !result.contains("失败")) {
+        if (null != result && !result.contains("步骤执行失败：")) {
             // 获取步骤间等待时间
             int waitsec = Integer.parseInt(params.get("StepWait"));
             if (waitsec > 0) {

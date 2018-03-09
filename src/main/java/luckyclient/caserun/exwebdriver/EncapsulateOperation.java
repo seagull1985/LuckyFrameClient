@@ -220,37 +220,44 @@ public class EncapsulateOperation {
         switch (operation) {
             case "click":
                 we.click();
-                result = "click点击对象...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】";
+                result = "click点击对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "sendkeys":
                 we.sendKeys(operationValue);
-                result = "sendKeys对象输入...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"; 操作值:"+operationValue+"】";
+                result = "sendKeys对象输入...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 操作值:" + operationValue + "】";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "clear":
                 we.clear();
-                result = "clear清空输入框...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】";
+                result = "clear清空输入框...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break; // 清空输入框
             case "gotoframe":
                 wd.switchTo().frame(we);
-                result = "gotoframe切换Frame...【对象定位属性:"+property+"; 定位属性值:"+propertyValue+"】";
+                result = "gotoframe切换Frame...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "isenabled":
-                result = "获取到的值是【"+we.isEnabled()+"】";
+                result = "获取到的值是【" + we.isEnabled() + "】";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "isdisplayed":
-                result = "获取到的值是【"+we.isDisplayed()+"】";
+                result = "获取到的值是【" + we.isDisplayed() + "】";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "exjsob":
                 JavascriptExecutor jse = (JavascriptExecutor) wd;
-                jse.executeScript(operationValue, we);
-                result = "执行JS...【"+operationValue+"】";
-                luckyclient.publicclass.LogUtil.APP.info(result);
+                Object obj = jse.executeScript(operationValue, we);
+                if (null != obj) {
+                    String tmp = obj.toString();
+                    result = (100 < tmp.length()) ? tmp.substring(0, 100) + "..." : tmp;
+                    result = "获取到的值是【" + result + "】";
+                    LogUtil.APP.info("执行JS...【" + operationValue + "】，返回的结果为：" + result);
+                } else {
+                    result = "执行JS...【" + operationValue + "】";
+                    LogUtil.APP.info(result);
+                }
                 break;
             default:
                 break;
@@ -273,7 +280,7 @@ public class EncapsulateOperation {
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "alertgettext":
-                result = "获取到的值是【"+alert.getText()+"】";
+                result = "获取到的值是【" + alert.getText() + "】";
                 luckyclient.publicclass.LogUtil.APP.info("弹出框对象通过getText获取对象text属性...【Text属性值:" + alert.getText() + "】");
                 break;
             default:
@@ -288,14 +295,21 @@ public class EncapsulateOperation {
         switch (operation) {
             case "open":
                 wd.get(operationValue);
-                result = "Open页面...【"+operationValue+"】";
+                result = "Open页面...【" + operationValue + "】";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "exjs":
                 JavascriptExecutor jse = (JavascriptExecutor) wd;
-                jse.executeScript(operationValue);
-                result = "执行JS...【"+operationValue+"】";
-                luckyclient.publicclass.LogUtil.APP.info(result);
+                Object obj = jse.executeScript(operationValue);
+                if (null != obj) {
+                    String tmp = obj.toString();
+                    result = (100 < tmp.length()) ? tmp.substring(0, 100) + "..." : tmp;
+                    result = "获取到的值是【" + result + "】";
+                    LogUtil.APP.info("执行JS...【" + operationValue + "】，返回的结果为：" + result);
+                } else {
+                    result = "执行JS...【" + operationValue + "】";
+                    LogUtil.APP.info(result);
+                }
                 break;
             case "gotodefaultcontent":
                 wd.switchTo().defaultContent();
@@ -303,8 +317,8 @@ public class EncapsulateOperation {
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "gettitle":
-                result = "获取到的值是【"+wd.getTitle()+"】";
-                luckyclient.publicclass.LogUtil.APP.info("获取页面Title...【"+wd.getTitle()+"】");
+                result = "获取到的值是【" + wd.getTitle() + "】";
+                luckyclient.publicclass.LogUtil.APP.info("获取页面Title...【" + wd.getTitle() + "】");
                 break;
             case "getwindowhandle":
                 result = getTargetWindowHandle(wd, operationValue);
@@ -318,7 +332,7 @@ public class EncapsulateOperation {
                     wd.manage().timeouts().pageLoadTimeout(Integer.valueOf(operationValue), TimeUnit.SECONDS);
                     // 设置元素出现最大时长30秒
                     wd.manage().timeouts().implicitlyWait(Integer.valueOf(operationValue), TimeUnit.SECONDS);
-                    result = "当前任务操作等待【"+operationValue+"】秒...";
+                    result = "当前任务操作等待【" + operationValue + "】秒...";
                     luckyclient.publicclass.LogUtil.APP.info(result);
                     break;
                 } catch (NumberFormatException e) {
@@ -338,7 +352,7 @@ public class EncapsulateOperation {
     private static String getTargetWindowHandle(WebDriver driver, String target) {
         String result;
         if (null != driver) {
-            if (! ChangString.isInteger(target)) {
+            if (!ChangString.isInteger(target)) {
                 result = windowHandleByTitle(driver, target);
             } else {
                 int index = Integer.valueOf(target);
