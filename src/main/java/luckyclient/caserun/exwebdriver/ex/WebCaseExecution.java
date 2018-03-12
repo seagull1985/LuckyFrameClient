@@ -40,145 +40,6 @@ public class WebCaseExecution extends TestCaseExecution {
     private static String casenote = "备注初始化";
     private static String imagname = "";
 
-/*
-    public static void caseExcutionBak(ProjectCase testcase, List<ProjectCasesteps> steps, String taskid, WebDriver wd, LogOperation caselog, List<PublicCaseParams> pcplist)
-            throws InterruptedException {
-        // 0:成功 1:失败 2:锁定 其他：锁定
-        int setresult = 0;
-        String casenote = "备注初始化";
-        String imagname = "";
-        // 把公共参数加入到MAP中
-        for (PublicCaseParams pcp : pcplist) {
-            variable.put(pcp.getParamsname(), pcp.getParamsvalue());
-        }
-        //插入开始执行的用例
-        caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 4);
-
-        for (ProjectCasesteps step : steps) {
-            Map<String, String> params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
-
-            if (params.get("exception") != null && params.get("exception").toString().indexOf("解析异常") > -1) {
-                setresult = 2;
-                break;
-            }
-
-            String result = WebCaseExecution.runStep(params, wd, taskid, testcase.getSign(), step.getStepnum(), caselog);
-
-            String expectedResults = params.get("ExpectedResults").toString();
-            expectedResults = ChangString.changparams(expectedResults, variable, "预期结果");
-            // 运行结果正常
-            if (result.indexOf("出错") < 0 && result.indexOf("失败") < 0) {
-                // 获取步骤间等待时间
-                int waitsec = Integer.parseInt(params.get("StepWait").toString());
-                if (waitsec != 0) {
-                    luckyclient.publicclass.LogUtil.APP.info("操作休眠【" + waitsec + "】秒");
-                    Thread.sleep(waitsec * 1000);
-                }
-                // 有预期结果
-                if (!"".equals(expectedResults)) {
-                    // 判断传参
-                    luckyclient.publicclass.LogUtil.APP.info("expectedResults=【" + expectedResults + "】");
-                    if (expectedResults.length() > 2 && expectedResults.substring(0, 2).indexOf("$=") > -1) {
-                        String expectedResultVariable = expectedResults.substring(2);
-                        variable.put(expectedResultVariable, result);
-                        continue;
-                    }
-
-                    // 判断预期结果-检查模式
-                    if (params.get("checkproperty") != null && params.get("checkproperty_value") != null) {
-                        String checkproperty = params.get("checkproperty").toString();
-                        String checkPropertyValue = params.get("checkproperty_value").toString();
-
-                        WebElement we = isElementExist(wd, checkproperty, checkPropertyValue);
-                        if (null != we) {
-                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum()
-                                    + "步，在当前页面中找到预期结果中对象。当前步骤执行成功！");
-                            caselog.caseLogDetail(taskid, testcase.getSign(), "在当前页面中找到预期结果中对象。当前步骤执行成功！",
-                                    "info", String.valueOf(step.getStepnum()), "");
-                            continue;
-                        } else {
-                            casenote = "第" + step.getStepnum() + "步，没有在当前页面中找到预期结果中对象。执行失败！";
-                            setresult = 1;
-                            java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
-                            imagname = timeformat.format(new Date());
-                            BaseWebDrive.webScreenShot(wd, imagname);
-                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()
-                                    + "步，没有在当前页面中找到预期结果中对象。当前步骤执行失败！");
-                            caselog.caseLogDetail(taskid, testcase.getSign(), "在当前页面中没有找到预期结果中对象。当前步骤执行失败！"
-                                    + "checkproperty【" + checkproperty + "】  checkproperty_value【" + checkPropertyValue + "】", "error", String.valueOf(step.getStepnum()), imagname);
-                            break;
-                        }
-
-                    } else {
-                        // 模糊匹配预期结果模式
-                        if (expectedResults.length() > 2 && expectedResults.substring(0, 2).indexOf("%=") > -1) {
-                            if (result.indexOf(expectedResults.substring(2)) > -1) {
-                                luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum()
-                                        + "步，模糊匹配预期结果成功！执行结果：" + result);
-                                caselog.caseLogDetail(taskid, testcase.getSign(), "步骤模糊匹配预期结果成功！",
-                                        "info", String.valueOf(step.getStepnum()), "");
-                                continue;
-                            } else {
-                                casenote = "第" + step.getStepnum() + "步，模糊匹配预期结果失败！";
-                                setresult = 1;
-                                java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
-                                imagname = timeformat.format(new Date());
-                                BaseWebDrive.webScreenShot(wd, imagname);
-                                luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()
-                                        + "步，模糊匹配预期结果失败！执行结果：" + result);
-                                caselog.caseLogDetail(taskid, testcase.getSign(), "步骤模糊匹配预期结果失败！执行结果：" + result,
-                                        "error", String.valueOf(step.getStepnum()), imagname);
-                                break;
-                            }
-                            // 直接匹配预期结果模式
-                        } else if (expectedResults.equals(result)) {
-                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum()
-                                    + "步，直接匹配预期结果成功！执行结果：" + result);
-                            caselog.caseLogDetail(taskid, testcase.getSign(), "步骤直接匹配预期结果成功！",
-                                    "info", String.valueOf(step.getStepnum()), "");
-                            continue;
-                        } else {
-                            casenote = "第" + step.getStepnum() + "步，直接匹配预期结果失败！";
-                            setresult = 1;
-                            java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
-                            imagname = timeformat.format(new Date());
-                            BaseWebDrive.webScreenShot(wd, imagname);
-                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum()
-                                    + "步，直接匹配预期结果失败！执行结果：" + result);
-                            caselog.caseLogDetail(taskid, testcase.getSign(), "步骤直接匹配预期结果失败！执行结果：" + result,
-                                    "error", String.valueOf(step.getStepnum()), imagname);
-                            break;
-                        }
-                    }
-                }
-
-            } else {
-                casenote = result;
-                setresult = 2;
-                java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
-                imagname = timeformat.format(new Date());
-                BaseWebDrive.webScreenShot(wd, imagname);
-                luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，" + result);
-                caselog.caseLogDetail(taskid, testcase.getSign(), "当前步骤在执行过程中解析|定位元素|操作对象失败！" + result,
-                        "error", String.valueOf(step.getStepnum()), imagname);
-                break;
-            }
-
-        }
-
-        variable.clear();
-        caselog.updateCaseDetail(taskid, testcase.getSign(), setresult);
-        if (setresult == 0) {
-            luckyclient.publicclass.LogUtil.APP.info("用例【" + testcase.getSign() + "】全部步骤执行结果成功...");
-            caselog.caseLogDetail(taskid, testcase.getSign(), "用例全部步骤执行结果成功", "info", "ending", "");
-        } else {
-            luckyclient.publicclass.LogUtil.APP.error("用例【" + testcase.getSign() + "】步骤执行过程中失败或是锁定...请查看具体原因！" + casenote);
-            caselog.caseLogDetail(taskid, testcase.getSign(), "用例执行过程中失败或是锁定" + casenote, "error", "ending", "");
-        }
-        //LogOperation.UpdateTastdetail(taskid, 0);
-    }
-*/
-
     public static void caseExcution(ProjectCase testcase, List<ProjectCasesteps> steps, String taskid, WebDriver wd, LogOperation caselog, List<PublicCaseParams> pcplist) throws InterruptedException {
         // 把公共参数加入到MAP中
         for (PublicCaseParams pcp : pcplist) {
@@ -192,24 +53,33 @@ public class WebCaseExecution extends TestCaseExecution {
             String result;
 
             // 根据步骤类型来分析步骤参数
-            if (1 == step.getSteptype()) params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
-            else params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
+            if (1 == step.getSteptype()){
+            	params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
+            }else{
+            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
+            }
 
             // 判断分析步骤参数是否有异常
-            if (params.get("exception") != null && params.get("exception").contains("解析异常")) {
+            if (null != params.get("exception") && params.get("exception").contains("解析异常")) {
                 setresult = 2;
                 break;
             }
 
             // 根据步骤类型来执行步骤
-            if (1 == step.getSteptype()) result = runWebStep(params, variable, wd, taskid, testcase.getSign(), step.getStepnum(), caselog);
-            else result = runStep(params, variable, taskid, testcase.getSign(), step, caselog);
+            if (1 == step.getSteptype()){
+            	result = runWebStep(params, variable, wd, taskid, testcase.getSign(), step.getStepnum(), caselog);
+            }else{
+            	result = runStep(params, variable, taskid, testcase.getSign(), step, caselog);	
+            }
 
             String expectedResults = params.get("ExpectedResults");
             expectedResults = ChangString.changparams(expectedResults, variable, "预期结果");
 
             // 判断结果
-            if (0 != judgeResult(testcase, step, params, wd, taskid, expectedResults, result, caselog)) break;
+            setresult = judgeResult(testcase, step, params, wd, taskid, expectedResults, result, caselog);
+            if (0 != setresult){
+            	break;
+            }
         }
 
         variable.clear();
@@ -251,11 +121,11 @@ public class WebCaseExecution extends TestCaseExecution {
         }
 
         try {
-            //调用接口用例
+            //调用另一条用例，支持接口，web类型用例
             if (null != operation && null != operationValue && "runcase".equals(operation)) {
                 String[] temp = operationValue.split(",", -1);
                 String ex = TestCaseExecution.oneCaseExecuteForWebCase(temp[0], taskid, caselog, wd);
-//                String ex = TestCaseExecution.oneCaseExecuteForWebDriver(temp[0], taskid, caselog);
+//              String ex = TestCaseExecution.oneCaseExecuteForWebDriver(temp[0], taskid, caselog);
                 if (!ex.contains("CallCase调用出错！") && !ex.contains("解析出错啦！") && !ex.contains("失败")) {
                     return ex;
                 } else {
@@ -356,8 +226,7 @@ public class WebCaseExecution extends TestCaseExecution {
             LogUtil.APP.error("调用方法过程出错，方法名：" + functionname + "，请重新检查脚本方法名称以及参数！");
             return "步骤执行失败：接口调用出错！";
         }
-        if (result.contains("步骤执行失败：")) caselog.caseLogDetail(taskid, casenum, result, "error", String.valueOf(step.getStepnum()), "");
-        else caselog.caseLogDetail(taskid, casenum, result, "info", String.valueOf(step.getStepnum()), "");
+
         return result;
     }
 
@@ -401,12 +270,6 @@ public class WebCaseExecution extends TestCaseExecution {
     public static int judgeResult(ProjectCase testcase, ProjectCasesteps step, Map<String, String> params, WebDriver driver, String taskid, String expect, String result, LogOperation caselog) throws InterruptedException {
         setresult = 0;
         if (null != result && !result.contains("步骤执行失败：")) {
-            // 获取步骤间等待时间
-            int waitsec = Integer.parseInt(params.get("StepWait"));
-            if (waitsec > 0) {
-                luckyclient.publicclass.LogUtil.APP.info("操作休眠【" + waitsec + "】秒");
-                Thread.sleep(waitsec * 1000);
-            }
             // 有预期结果
             if (null != expect && !expect.isEmpty()) {
                 luckyclient.publicclass.LogUtil.APP.info("期望结果为【" + expect + "】");
@@ -495,6 +358,13 @@ public class WebCaseExecution extends TestCaseExecution {
             BaseWebDrive.webScreenShot(driver, imagname);
             luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，执行结果：" + result);
             caselog.caseLogDetail(taskid, testcase.getSign(), "当前步骤在执行过程中解析|定位元素|操作对象失败！" + result, "error", String.valueOf(step.getStepnum()), imagname);
+        }
+        
+        // 获取步骤间等待时间
+        int waitsec = Integer.parseInt(params.get("StepWait"));
+        if (waitsec > 0) {
+            luckyclient.publicclass.LogUtil.APP.info("操作休眠【" + waitsec + "】秒");
+            Thread.sleep(waitsec * 1000);
         }
         return setresult;
     }
