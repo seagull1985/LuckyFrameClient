@@ -24,6 +24,7 @@ public class AppDriverAnalyticCase {
 	//private static String splitFlag = "\\|";
 
 	/**
+	 * @param args
 	 */
 	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid,LogOperation caselog){
 		String time = "0";

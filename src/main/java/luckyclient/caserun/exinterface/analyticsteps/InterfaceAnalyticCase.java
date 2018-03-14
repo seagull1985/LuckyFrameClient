@@ -25,7 +25,6 @@ public class InterfaceAnalyticCase{
 
 	/**
 	 */
-	@SuppressWarnings("finally")
 	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid,LogOperation caselog){
 		String time = "0";
 		Map<String,String> params = new HashMap<String,String>(0);

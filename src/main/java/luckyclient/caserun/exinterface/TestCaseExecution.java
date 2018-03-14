@@ -208,6 +208,7 @@ public class TestCaseExecution {
      * @param taskid             任务ID
      * @param caselog            日志操作对象
      *                           用于在UI的测试过程中，需要调用接口的测试用例
+     * @deprecated
      */
     protected static String oneCaseExecuteForWebDriver(String testCaseExternalId, String taskid, LogOperation caselog) {
         Map<String, String> variable = new HashMap<String, String>(0);
@@ -347,6 +348,16 @@ public class TestCaseExecution {
         return testnote;
     }
 
+    /**
+     * 
+     * @param testCaseExternalId
+     * @param taskid
+     * @param caselog
+     * @param driver
+     * @return
+     * @throws InterruptedException
+     * 提供给Web用例中，runcase的时候使用
+     */
     protected static String oneCaseExecuteForWebCase(String testCaseExternalId, String taskid, LogOperation caselog, WebDriver driver) throws InterruptedException {
         Map<String, String> variable = new HashMap<>(0);
         String expectedresults = null;
@@ -372,8 +383,11 @@ public class TestCaseExecution {
             String result;
 
             // 根据步骤类型来分析步骤参数
-            if (1 == step.getSteptype()) params = WebDriverAnalyticCase.analyticCaseStep(testcaseob, step, taskid, caselog);
-            else params = InterfaceAnalyticCase.analyticCaseStep(testcaseob, step, taskid, caselog);
+            if (1 == step.getSteptype()){
+            	params = WebDriverAnalyticCase.analyticCaseStep(testcaseob, step, taskid, caselog);
+            } else{
+            	params = InterfaceAnalyticCase.analyticCaseStep(testcaseob, step, taskid, caselog);
+            } 
 
             // 判断分析步骤参数是否有异常
             if (params.get("exception") != null && params.get("exception").contains("解析异常")) {
@@ -382,14 +396,20 @@ public class TestCaseExecution {
             }
 
             // 根据步骤类型来执行步骤
-            if (1 == step.getSteptype()) result = WebCaseExecution.runWebStep(params, variable, driver, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
-            else result = WebCaseExecution.runStep(params, variable, taskid, testcaseob.getSign(), step, caselog);
+            if (1 == step.getSteptype()){
+            	result = WebCaseExecution.runWebStep(params, variable, driver, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
+            } else{
+            	result = WebCaseExecution.runStep(params, variable, taskid, testcaseob.getSign(), step, caselog);
+            } 
 
             expectedresults = params.get("ExpectedResults");
             expectedresults = ChangString.changparams(expectedresults, variable, "预期结果");
 
             // 判断结果
-            if (0 != (setresult = WebCaseExecution.judgeResult(testcaseob, step, params, driver, taskid, expectedresults, result, caselog))) break;
+            setresult = WebCaseExecution.judgeResult(testcaseob, step, params, driver, taskid, expectedresults, result, caselog);
+            if (0 != setresult){
+            	break;
+            }
         }
 
         variable.clear(); // 清空传参MAP
