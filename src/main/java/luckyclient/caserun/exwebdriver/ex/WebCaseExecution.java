@@ -69,7 +69,7 @@ public class WebCaseExecution extends TestCaseExecution {
             if (1 == step.getSteptype()){
             	result = runWebStep(params, variable, wd, taskid, testcase.getSign(), step.getStepnum(), caselog);
             }else{
-            	result = runStep(params, variable, taskid, testcase.getSign(), step, caselog);	
+            	result = runStep(params, variable, taskid, testcase.getSign(), step, caselog);
             }
 
             String expectedResults = params.get("ExpectedResults");
@@ -222,8 +222,8 @@ public class WebCaseExecution extends TestCaseExecution {
             LogUtil.APP.error("调用方法过程出错，方法名：" + functionname + "，请重新检查脚本方法名称以及参数！");
             result = "步骤执行失败：接口调用出错！";
         }
-        if (result.contains("步骤执行失败：")) caselog.caseLogDetail(taskid, casenum, result, "error", String.valueOf(stepno), "");
-        else caselog.caseLogDetail(taskid, casenum, result, "info", String.valueOf(stepno), "");
+        if (result.contains("步骤执行失败：")) caselog.caseLogDetail(taskid, casenum, result, "error", String.valueOf(step.getStepnum()), "");
+        else caselog.caseLogDetail(taskid, casenum, result, "info", String.valueOf(step.getStepnum()), "");
         return result;
     }
 
@@ -359,7 +359,7 @@ public class WebCaseExecution extends TestCaseExecution {
             java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
             imagname = timeformat.format(new Date());
             BaseWebDrive.webScreenShot(driver, imagname);
-            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，执行结果：" + casenote);
+            LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，执行结果：" + casenote);
             caselog.caseLogDetail(taskid, testcase.getSign(), "当前步骤在执行过程中解析|定位元素|操作对象失败！" + casenote, "error", String.valueOf(step.getStepnum()), imagname);
         }
 
