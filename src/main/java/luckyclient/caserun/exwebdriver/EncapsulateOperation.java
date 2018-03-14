@@ -118,15 +118,17 @@ public class EncapsulateOperation {
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "mousedrag":
-                String[] temp = operationValue.split(",", -1);
-                action.dragAndDropBy(we, Integer.valueOf(temp[0]), Integer.valueOf(temp[1])).perform();
-                result = "mousedrag鼠标移动至对象相对坐标...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】  坐标x：" + Integer.valueOf(temp[0]) + " 坐标y：" + Integer.valueOf(temp[1]);
+                int[] location = getLocationFromParam(operationValue, ",");
+//                String[] temp = operationValue.split(",", -1);
+                action.dragAndDropBy(we, location[0], location[1]).perform();
+                result = "mousedrag鼠标移动至对象相对坐标...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 相对坐标(x,y):" + location[0] + "," + location[1] + "】";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "mouseto":
-                String[] temp1 = operationValue.split(",", -1);
-                action.moveToElement(we, Integer.valueOf(temp1[0]), Integer.valueOf(temp1[1])).perform();
-                result = "mouseto鼠标移动至对象相对坐标...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】  坐标x：" + Integer.valueOf(temp1[0]) + " 坐标y：" + Integer.valueOf(temp1[1]);
+                int[] location1 = getLocationFromParam(operationValue, ",");
+//                String[] temp1 = operationValue.split(",", -1);
+                action.moveToElement(we, location1[0], location1[1]).perform();
+                result = "mouseto鼠标移动至对象相对坐标...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 相对坐标(x,y):" + location1[0] + "," + location1[1] + "】";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "mouserelease":
@@ -167,9 +169,10 @@ public class EncapsulateOperation {
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "mouseto":
-                String[] temp1 = operationValue.split(",", -1);
-                action.moveByOffset(Integer.valueOf(temp1[0]), Integer.valueOf(temp1[1])).perform();
-                result = "mouseto鼠标移动至对象相对坐标...坐标x：" + Integer.valueOf(temp1[0]) + " 坐标y：" + Integer.valueOf(temp1[1]);
+                int[] location = getLocationFromParam(operationValue, ",");
+//                String[] temp1 = operationValue.split(",", -1);
+                action.moveByOffset(location[0], location[1]).perform();
+                result = "mouseto鼠标移动至对象相对坐标...坐标x：" + location[0] + " 坐标y：" + location[1];
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "mouserelease":
@@ -259,6 +262,17 @@ public class EncapsulateOperation {
                     LogUtil.APP.info(result);
                 }
                 break;
+            case "scrollto":
+                Point location = we.getLocation();
+                ((JavascriptExecutor) wd).executeScript("window.scrollTo(" + location.getX() + ", " + location.getY() + ")");
+                result = "滚动到目标对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 对象坐标(x,y):" + location.getX() + "," + location.getY() + "】";;
+                LogUtil.APP.info(result);
+                break;
+            case "scrollintoview":
+                ((JavascriptExecutor) wd).executeScript("arguments[0].scrollIntoView(" + operationValue + ")", we);
+                result = "将目标对象滚动到可视...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
+                LogUtil.APP.info(result);
+                break;
             default:
                 break;
         }
@@ -316,6 +330,11 @@ public class EncapsulateOperation {
                 result = "gotodefaultcontent切换至默认页面位置...";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
+            case "gotoparentframe":
+                wd.switchTo().parentFrame();
+                result = "gotoparentframe切换至上一级frame位置...";
+                LogUtil.APP.info(result);
+                break;
             case "gettitle":
                 result = "获取到的值是【" + wd.getTitle() + "】";
                 luckyclient.publicclass.LogUtil.APP.info("获取页面Title...【" + wd.getTitle() + "】");
@@ -345,6 +364,24 @@ public class EncapsulateOperation {
                 break;
         }
         return result;
+    }
+
+    private static int[] getLocationFromParam(String param, String split) {
+        int[] location = {0, 0};
+        if (null == param || param.trim().isEmpty()) {
+            return location;
+        } else {
+            // 不包含分隔符
+            if (! param.contains(split)) {
+                location[0] = Integer.valueOf(param.trim());
+            } else {
+                String[] tmp = param.split(split, 2);
+                for (int i = 0; i < 2; i++) {
+                    if (! tmp[i].trim().isEmpty()) location[i] = Integer.valueOf(tmp[i].trim());
+                }
+            }
+        }
+        return location;
     }
 
     // operationValue为目标窗口句柄的下标, 1开始; 小于等于0即获取当前窗口的句柄值
