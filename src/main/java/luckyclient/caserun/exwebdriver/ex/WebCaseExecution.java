@@ -76,7 +76,10 @@ public class WebCaseExecution extends TestCaseExecution {
             expectedResults = ChangString.changparams(expectedResults, variable, "预期结果");
 
             // 判断结果
-            if (0 != (setresult = judgeResult(testcase, step, params, wd, taskid, expectedResults, result, caselog))) break;
+			setresult = judgeResult(testcase, step, params, wd, taskid, expectedResults, result, caselog);
+			if (0 != setresult) {
+				break;
+			}
         }
 
         variable.clear();
