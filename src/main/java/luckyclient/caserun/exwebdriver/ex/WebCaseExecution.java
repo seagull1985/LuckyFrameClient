@@ -130,10 +130,9 @@ public class WebCaseExecution extends TestCaseExecution {
                 }
             }
 
-            WebElement we = null;
             // 页面元素层
             if (null != property && null != propertyValue && null != operation) {
-                we = isElementExist(wd, property, propertyValue);
+                WebElement we = isElementExist(wd, property, propertyValue);
                 // 判断此元素是否存在
                 if (null == we) {
                     luckyclient.publicclass.LogUtil.APP.error("定位对象失败，isElementExist为null!");

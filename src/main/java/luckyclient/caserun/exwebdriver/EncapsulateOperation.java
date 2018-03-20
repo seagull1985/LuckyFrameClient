@@ -269,6 +269,7 @@ public class EncapsulateOperation {
                 LogUtil.APP.info(result);
                 break;
             case "scrollintoview":
+                // 此方法可以用执行js命令来代替
                 ((JavascriptExecutor) wd).executeScript("arguments[0].scrollIntoView(" + operationValue + ")", we);
                 result = "将目标对象滚动到可视...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
                 LogUtil.APP.info(result);
