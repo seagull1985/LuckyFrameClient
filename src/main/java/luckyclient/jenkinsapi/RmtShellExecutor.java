@@ -21,7 +21,6 @@ public class RmtShellExecutor {
 	 * @param passphrase 密钥的密码
 	 * @param command Shell命令   cd /home/pospsettle/tomcat-7.0-7080/bin&&./restart.sh
 	 */
-	@SuppressWarnings("finally")
 	public static String sshShell(String ip, String user, String psw
 	        ,int port,String command) throws Exception{
 		
@@ -69,8 +68,8 @@ public class RmtShellExecutor {
 	    session.connect(30000);        
 	    
 	        //创建sftp通信通道
-	        channel = (Channel) session.openChannel("shell");
-	        channel.connect(1000);
+	    channel = (Channel) session.openChannel("shell");
+	    channel.connect(1000);
 	 
 	        //获取输入流和输出流
 	        InputStream instream = channel.getInputStream();
@@ -101,11 +100,16 @@ public class RmtShellExecutor {
 	        instream.close();
 	    } catch (Exception e) {
 	    	result = "重启TOMCAT过程中，出现异常！";
-	        e.printStackTrace();
+	    	luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 		    return result;
 	    } finally {
-	        session.disconnect();
-	        channel.disconnect();
+	    	if(null!=session){
+	    		session.disconnect();
+	    	}
+	    	if(null!=channel){
+		        channel.disconnect();
+	    	}
+
 	    }
 	    return result;
 	}
