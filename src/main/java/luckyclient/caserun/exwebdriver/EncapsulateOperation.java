@@ -204,7 +204,7 @@ public class EncapsulateOperation {
                         break;
                     case "enter":
                         action.sendKeys(Keys.ENTER).perform();
-                        result = "¼üÅÌ²Ù×÷SHIFT¼ü...";
+                        result = "¼üÅÌ²Ù×÷ENTER¼ü...";
                         luckyclient.publicclass.LogUtil.APP.info(result);
                         break;
                     default:
