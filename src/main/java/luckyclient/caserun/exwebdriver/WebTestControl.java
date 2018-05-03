@@ -102,7 +102,7 @@ public class WebTestControl{
 			if (buildstatus.indexOf("Status:true") > -1) {
 				WebDriver wd = null;
 				try {
-				    wd = WebDriverInitialization.setWebDriverForTask(taskid,drivertype);
+				    wd = WebDriverInitialization.setWebDriverForTask(drivertype);
 				} catch (WebDriverException e1) {
 					luckyclient.publicclass.LogUtil.APP.error("³õÊ¼»¯WebDriver³ö´í WebDriverException£¡", e1);
 					e1.printStackTrace();

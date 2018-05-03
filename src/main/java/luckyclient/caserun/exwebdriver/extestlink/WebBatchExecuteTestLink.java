@@ -34,7 +34,7 @@ public class WebBatchExecuteTestLink{
 		int drivertype = LogOperation.querydrivertype(taskid);
 		WebDriver wd = null;
 		try {
-			wd = WebDriverInitialization.setWebDriverForTask(taskid,drivertype);
+			wd = WebDriverInitialization.setWebDriverForTask(drivertype);
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

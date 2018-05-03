@@ -34,7 +34,7 @@ public class WebOneCaseExecute{
 		int drivertype = LogOperation.querydrivertype(taskid);
 		WebDriver wd = null;
 		try {
-			wd = WebDriverInitialization.setWebDriverForTask(taskid,drivertype);
+			wd = WebDriverInitialization.setWebDriverForTask(drivertype);
 		} catch (IOException e1) {
 			luckyclient.publicclass.LogUtil.APP.error("³õÊ¼»¯WebDriver³ö´í£¡", e1);
 			e1.printStackTrace();

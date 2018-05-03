@@ -28,7 +28,7 @@ public class WebDriverInitialization{
 	 * 初始化WebDriver
 	 * @throws IOException 
 	 */
-	public static WebDriver setWebDriverForTask(String taskid,int drivertype) throws WebDriverException,IOException{
+	public static WebDriver setWebDriverForTask(int drivertype) throws WebDriverException,IOException{
 		// 参数为空
 		File directory = new File("");
 /*		System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
@@ -82,6 +82,7 @@ public class WebDriverInitialization{
 	
 	public static void main(String[] args) throws IOException{
 		// TODO Auto-generated method stub
+
 	}
 
 }
