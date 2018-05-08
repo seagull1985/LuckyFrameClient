@@ -2,6 +2,7 @@ package rmi.remotingservice;
 
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
+import java.util.Properties;
 
 import rmi.service.RunService;
 import rmi.serviceimpl.RunServiceImpl;
@@ -22,12 +23,17 @@ public class Program{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
         try {
+        	Properties properties= luckyclient.publicclass.SysConfig.getConfiguration();
+        	String localhostip=properties.getProperty("client.localhost.ip");
+        	if(!"localhost".toLowerCase().equals(localhostip)){
+            	System.setProperty("java.rmi.server.hostname", localhostip);
+        	}
         	RunService runService=new RunServiceImpl();
 			//注册通讯端口
 			LocateRegistry.createRegistry(6633);
 			//注册通讯路径
-			Naming.rebind("rmi://localhost:6633/RunService", runService);
-			System.out.println("启动客户端监听...端口：6633");
+			Naming.rebind("rmi://"+localhostip+":6633/RunService", runService);
+			System.out.println("启动客户端监听...IP:"+localhostip+"  端口:6633");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
