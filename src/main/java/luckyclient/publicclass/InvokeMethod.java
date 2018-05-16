@@ -88,13 +88,13 @@ public class InvokeMethod {
                 //处理头域
                 Map<String, String> headmsg = new HashMap<>(0);
                 if (null != ppt.getHeadmsg() && !ppt.getHeadmsg().equals("") && ppt.getHeadmsg().indexOf("=") > 0) {
-                    String headmsgtemp = ppt.getHeadmsg().replaceAll("\\\\;", "!!!fhzh");
+                    String headmsgtemp = ppt.getHeadmsg().replace("\\;", "!!!fhzh");
                     String[] temp = headmsgtemp.split(";", -1);
                     for (int i = 0; i < temp.length; i++) {
                         if (null != temp[i] && !temp[i].equals("") && temp[i].indexOf("=") > 0) {
                             String key = temp[i].substring(0, temp[i].indexOf("="));
                             String value = temp[i].substring(temp[i].indexOf("=") + 1);
-                            value = value.replaceAll("!!!fhzh",";");
+                            value = value.replace("!!!fhzh",";");
                             headmsg.put(key, value);
                         }
                     }
@@ -133,33 +133,33 @@ public class InvokeMethod {
                     }
                     //处理参数对象
                     if (ptp.getParamtype() == 1) {
-                        String tempparam = ptp.getParam().replaceAll("&quot;", "\"");
+                        String tempparam = ptp.getParam().replace("&quot;", "\"");
                         JSONObject json = JSONObject.fromObject(tempparam);
-                        params.put(ptp.getParamname().replaceAll("&quot;", "\""), json);
+                        params.put(ptp.getParamname().replace("&quot;", "\""), json);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  JSONObject类型参数值:【" + json.toString() + "】");
                     } else if (ptp.getParamtype() == 2) {
-                        String tempparam = ptp.getParam().replaceAll("&quot;", "\"");
+                        String tempparam = ptp.getParam().replace("&quot;", "\"");
                         JSONArray jarr = JSONArray.fromObject(tempparam);
-                        params.put(ptp.getParamname().replaceAll("&quot;", "\""), jarr);
+                        params.put(ptp.getParamname().replace("&quot;", "\""), jarr);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
                     } else if (ptp.getParamtype() == 3) {
-                        String tempparam = ptp.getParam().replaceAll("&quot;", "\"");
+                        String tempparam = ptp.getParam().replace("&quot;", "\"");
                         File file = new File(tempparam);
-                        params.put(ptp.getParamname().replaceAll("&quot;", "\""), file);
+                        params.put(ptp.getParamname().replace("&quot;", "\""), file);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
                     } else if (ptp.getParamtype() == 4) {
-                        String tempparam = ptp.getParam().replaceAll("&quot;", "\"");
+                        String tempparam = ptp.getParam().replace("&quot;", "\"");
                         Double dp = Double.valueOf(tempparam);
-                        params.put(ptp.getParamname().replaceAll("&quot;", "\""), dp);
+                        params.put(ptp.getParamname().replace("&quot;", "\""), dp);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  数字类型参数值:【" + tempparam + "】");
                     } else if (ptp.getParamtype() == 5) {
-                        String tempparam = ptp.getParam().replaceAll("&quot;", "\"");
+                        String tempparam = ptp.getParam().replace("&quot;", "\"");
                         Boolean bn = Boolean.valueOf(tempparam);
-                        params.put(ptp.getParamname().replaceAll("&quot;", "\""), bn);
+                        params.put(ptp.getParamname().replace("&quot;", "\""), bn);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  Boolean类型参数值:【" + bn + "】");
                     } else {
-                        params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  String类型参数值:【" + ptp.getParam().replaceAll("&quot;", "\"") + "】");
+                        params.put(ptp.getParamname().replace("&quot;", "\""), ptp.getParam().replace("&quot;", "\""));
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  String类型参数值:【" + ptp.getParam().replace("&quot;", "\"") + "】");
                     }
                 }
 
@@ -176,19 +176,19 @@ public class InvokeMethod {
                 } else if (functionname.toLowerCase().equals("urlget")) {
                     result = HttpClientHelper.sendURLGet(packagename, params, ppt.getContentencoding().toLowerCase(), ppt.getConnecttimeout(), headmsg);
                 } else if (functionname.toLowerCase().equals("httpclientpost")) {
-                    result = HttpClientHelper.httpClientPost(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg);
+                    result = HttpClientHelper.httpClientPost(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg , ppt.getCerpath());
                 } else if (functionname.toLowerCase().equals("httpclientuploadfile")) {
-                    result = HttpClientHelper.httpClientUploadFile(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg);
+                    result = HttpClientHelper.httpClientUploadFile(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg , ppt.getCerpath());
                 } else if (functionname.toLowerCase().equals("httpclientpostjson")) {
-                    result = HttpClientHelper.httpClientPostJson(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg);
+                    result = HttpClientHelper.httpClientPostJson(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg , ppt.getCerpath());
                 } else if (functionname.toLowerCase().equals("httpurldelete")) {
                     result = HttpClientHelper.sendHttpURLDel(packagename, params, ppt.getContentencoding().toLowerCase(), ppt.getConnecttimeout(), headmsg);
                 } else if (functionname.toLowerCase().equals("httpclientputjson")) {
-                    result = HttpClientHelper.httpClientPutJson(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg);
+                    result = HttpClientHelper.httpClientPutJson(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg , ppt.getCerpath());
                 } else if (functionname.toLowerCase().equals("httpclientput")) {
-                    result = HttpClientHelper.httpClientPut(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg);
+                    result = HttpClientHelper.httpClientPut(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg , ppt.getCerpath());
                 } else if (functionname.toLowerCase().equals("httpclientget")) {
-                    result = HttpClientHelper.httpClientGet(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg);
+                    result = HttpClientHelper.httpClientGet(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg, ppt.getCerpath());
                 } else {
                     luckyclient.publicclass.LogUtil.APP.error("您的HTTP操作方法异常，检测到的操作方法是：" + functionname);
                     result = "调用异常，请查看错误日志！";
@@ -220,13 +220,13 @@ public class InvokeMethod {
                 //处理头域
                 Map<String, String> headmsg = new HashMap<String, String>(0);
                 if (null != ppt.getHeadmsg() && !ppt.getHeadmsg().equals("") && ppt.getHeadmsg().indexOf("=") > 0) {
-                    String headmsgtemp = ppt.getHeadmsg().replaceAll("\\\\;", "!!!fhzh");
+                    String headmsgtemp = ppt.getHeadmsg().replace("\\;", "!!!fhzh");
                     String[] temp = headmsgtemp.split(";", -1);
                     for (int i = 0; i < temp.length; i++) {
                         if (null != temp[i] && !temp[i].equals("") && temp[i].indexOf("=") > 0) {
                             String key = temp[i].substring(0, temp[i].indexOf("="));
                             String value = temp[i].substring(temp[i].indexOf("=") + 1);
-                            value = value.replaceAll("!!!fhzh",";");
+                            value = value.replace("!!!fhzh",";");
                             headmsg.put(key, value);
                         }
                     }
@@ -263,19 +263,19 @@ public class InvokeMethod {
                     }
                     //处理参数对象
                     if (ptp.getParamtype() == 1) {
-                        String tempparam = ptp.getParam().replaceAll("&quot;", "\"");
+                        String tempparam = ptp.getParam().replace("&quot;", "\"");
                         JSONObject json = JSONObject.fromObject(tempparam);
-                        params.put(ptp.getParamname().replaceAll("&quot;", "\""), json);
+                        params.put(ptp.getParamname().replace("&quot;", "\""), json);
                     } else if (ptp.getParamtype() == 2) {
-                        String tempparam = ptp.getParam().replaceAll("&quot;", "\"");
+                        String tempparam = ptp.getParam().replace("&quot;", "\"");
                         JSONArray jarr = JSONArray.fromObject(tempparam);
-                        params.put(ptp.getParamname().replaceAll("&quot;", "\""), jarr);
+                        params.put(ptp.getParamname().replace("&quot;", "\""), jarr);
                     } else if (ptp.getParamtype() == 3) {
-                        String tempparam = ptp.getParam().replaceAll("&quot;", "\"");
+                        String tempparam = ptp.getParam().replace("&quot;", "\"");
                         File file = new File(tempparam);
-                        params.put(ptp.getParamname().replaceAll("&quot;", "\""), file);
+                        params.put(ptp.getParamname().replace("&quot;", "\""), file);
                     } else {
-                        params.put(ptp.getParamname().replaceAll("&quot;", "\""), ptp.getParam().replaceAll("&quot;", "\""));
+                        params.put(ptp.getParamname().replace("&quot;", "\""), ptp.getParam().replace("&quot;", "\""));
                     }
                 }
 
