@@ -2,6 +2,7 @@ package luckyclient.publicclass.remoterinterface;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,11 +15,18 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.http.HttpEntity;
@@ -29,11 +37,19 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContexts;
 
 import net.sf.json.JSONObject;
 
@@ -480,12 +496,13 @@ public class HttpClientHelper {
 	}
 
 	/**
+	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyManagementException 
 	 * @Description:使用HttpClient以JSON格式发送post请求
 	 */
-	public static String httpClientPostJson(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+	public static String httpClientPostJson(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
-		//HttpClient client = new HttpClient();
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
 	    httpPost.setHeader("Content-Type", "application/json");
 		//替换头域信息
@@ -545,11 +562,13 @@ public class HttpClientHelper {
 	}
 	
 	/**
+	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyManagementException 
 	 * @Description:使用HttpClient发送post请求
 	 */
-	public static String httpClientPost(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+	public static String httpClientPost(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
@@ -613,11 +632,13 @@ public class HttpClientHelper {
 	}
 
 	/**
+	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyManagementException 
 	 * @Description:使用HttpClient上传文件
 	 */
-	public static String httpClientUploadFile(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+	public static String httpClientUploadFile(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
@@ -689,11 +710,13 @@ public class HttpClientHelper {
 	}
 	
 	/**
+	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyManagementException 
 	 * @Description:使用HttpClient发送get请求
 	 */
-	public static String httpClientGet(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+	public static String httpClientGet(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		BufferedReader br = null;
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
@@ -1119,12 +1142,14 @@ public class HttpClientHelper {
 
 
 /**
-	 * @Description:使用HttpClient发送put请求  参数JSON格式
+	 * @throws NoSuchAlgorithmException 
+ * @throws KeyManagementException 
+ * @Description:使用HttpClient发送put请求  参数JSON格式
 	 */
-	public static String httpClientPutJson(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+	public static String httpClientPutJson(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws KeyManagementException, NoSuchAlgorithmException {
 		StringBuffer resultBuffer = null;
 		String responsecode = null;
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
 	    httpput.setHeader("Content-Type", "application/json");
 		//替换头域信息
@@ -1184,12 +1209,14 @@ public class HttpClientHelper {
 	}
 
 	/**
+	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyManagementException 
 	 * @Description:使用HttpClient发送put请求
 	 */
-	public static String httpClientPut(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+	public static String httpClientPut(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws KeyManagementException, NoSuchAlgorithmException {
 		StringBuffer resultBuffer = null;
 		String responsecode = null;
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
@@ -1250,9 +1277,95 @@ public class HttpClientHelper {
 		return responsecode + resultBuffer.toString();
 	}
 
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub 
+    /**
 
+     * 设置信任自签名证书
+
+     * 
+
+     * @param keyStorePath 密钥库路径
+
+     * @param keyStorepass 密钥库密码
+
+     * @return
+
+     */
+
+    private static SSLContext sslContextKeyStore(String keyStorePath, String keyStorepass) {
+        SSLContext sslContext = null;
+        FileInputStream instream = null;
+        KeyStore trustStore = null;
+        luckyclient.publicclass.LogUtil.APP.info("证书路径："+keyStorePath+"  密钥："+keyStorepass);
+        try {
+            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            luckyclient.publicclass.LogUtil.APP.info("开始读取证书文件流...");
+            instream = new FileInputStream(new File(keyStorePath));
+            luckyclient.publicclass.LogUtil.APP.info("开始设置证书以及密钥...");
+            trustStore.load(instream, keyStorepass.toCharArray());
+            // 相信自己的CA和所有自签名的证书
+            sslContext = SSLContexts.custom().loadTrustMaterial(trustStore, new TrustSelfSignedStrategy()).build();
+            // 构造 javax.net.ssl.TrustManager 对象
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509", "SunJSSE");
+            tmf.init(trustStore);
+            TrustManager tms [] = tmf.getTrustManagers();
+            // 使用构造好的 TrustManager 访问相应的 https 站点
+            sslContext = SSLContext.getInstance("SSL", "SunJSSE");
+            sslContext.init(null, tms, new java.security.SecureRandom());
+        } catch (Exception e) {
+        	luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+        } finally {
+            try {
+                instream.close();
+            } catch (IOException e) {
+            	luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+            }
+        }
+        return sslContext;
+    }
+
+    /**
+     * httpclient方式 HTTP/HTTPS初始化
+     * @param urlParam
+     * @param cerpath
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     */
+    private static CloseableHttpClient iniHttpClient(String urlParam,String cerpath) throws NoSuchAlgorithmException, KeyManagementException{
+    	CloseableHttpClient httpclient=null;
+    	urlParam=urlParam.trim();
+    	if(urlParam.startsWith("http://")){
+    		httpclient = HttpClients.createDefault();
+    	}else if(urlParam.startsWith("https://")){
+    		//采用绕过验证的方式处理https请求
+    		SSLContext sslContext=null;
+    		if(null==cerpath||"".equals(cerpath.trim())){
+    			luckyclient.publicclass.LogUtil.APP.info("开始构建HTTPS单向认证请求...");
+    	        TrustManager[] trustManagers = {new MyX509TrustManager()};  
+    	        sslContext = SSLContext.getInstance("TLS");   
+    	        sslContext.init(null, trustManagers, new SecureRandom());
+    		}else{
+    			luckyclient.publicclass.LogUtil.APP.info("开始构建HTTPS双向认证请求...");
+    			String strcerpath[]=cerpath.split(";");
+    			sslContext = sslContextKeyStore(strcerpath[0], strcerpath[1]);
+    		}
+            
+            // 设置协议http和https对应的处理socket链接工厂的对象
+            Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.INSTANCE)
+                .register("https", new SSLConnectionSocketFactory(sslContext))
+                .build();
+            PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+            connManager.setDefaultMaxPerRoute(1);
+            //创建自定义的httpclient对象
+            httpclient = HttpClients.custom().setConnectionManager(connManager).build();
+    	}else{
+    		httpclient = HttpClients.createDefault();
+    	}
+    	return httpclient;
+    }
+	
+	public static void main(String[] args) throws KeyManagementException, NoSuchAlgorithmException {
+		
 	}
 }
