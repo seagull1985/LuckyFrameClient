@@ -51,7 +51,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContexts;
 
-import net.sf.json.JSONObject;
+import com.alibaba.fastjson.JSON;
 
 /**
  * =================================================================
@@ -523,9 +523,9 @@ public class HttpClientHelper {
 		BufferedReader br = null;
 		try {
 		if(params.size()>0){
-				JSONObject jsonObject = JSONObject.fromObject(params); 
-				luckyclient.publicclass.LogUtil.APP.info("设置HTTPPostJson参数信息...【"+jsonObject.toString()+"】");
-				StringEntity entity = new StringEntity(jsonObject.toString(),charset);
+			    String jsonString = JSON.toJSONString(params);
+				luckyclient.publicclass.LogUtil.APP.info("设置HTTPPostJson参数信息...【"+jsonString+"】");
+				StringEntity entity = new StringEntity(jsonString,charset);
 				httpPost.setEntity(entity);
 			}
        
@@ -1170,9 +1170,9 @@ public class HttpClientHelper {
 		BufferedReader br = null;
 		try {
 		if(params.size()>0){
-				JSONObject jsonObject = JSONObject.fromObject(params);
-				luckyclient.publicclass.LogUtil.APP.info("设置HTTPClientPutJson参数信息...【"+jsonObject.toString()+"】");
-				StringEntity entity = new StringEntity(jsonObject.toString(),charset);
+			    String jsonString = JSON.toJSONString(params);
+				luckyclient.publicclass.LogUtil.APP.info("设置HTTPClientPutJson参数信息...【"+jsonString+"】");
+				StringEntity entity = new StringEntity(jsonString,charset);
 				httpput.setEntity(entity);
 			}
        

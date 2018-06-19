@@ -248,10 +248,9 @@
 			<version>2.3.26-incubating</version>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<version>2.4</version>
-			<classifier>jdk15</classifier>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.47</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -264,9 +263,9 @@
 			<version>6.0.0-BETA2</version>
 		</dependency>
 		<dependency>
-	        <groupId>org.apache.httpcomponents</groupId>
-	        <artifactId>httpmime</artifactId>
-	        <version>4.5.4</version>
-        </dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.5.4</version>
+		</dependency>
 	</dependencies>
 </project>

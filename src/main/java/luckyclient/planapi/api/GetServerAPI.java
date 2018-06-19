@@ -1,16 +1,17 @@
 package luckyclient.planapi.api;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
 
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.PublicCaseParams;
 import luckyclient.planapi.entity.TestTaskexcute;
 import luckyclient.publicclass.remoterinterface.HttpRequest;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
+
 
 /**
  * =================================================================
@@ -30,13 +31,13 @@ public class GetServerAPI {
 	 * @param planid
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<ProjectCase> getCasesbyplanid(int planid) {
 		String result = HttpRequest.loadJSON("/projectPlanCase/cgetcasebyplanid.do?planid=" + planid);
-		JSONObject jsonObject = JSONObject.fromObject(result.toString());
-		JSONArray jsonarr = JSONArray.fromObject(jsonObject.getString("cases"));
-		List<ProjectCase> list = JSONArray.toList(jsonarr, new ProjectCase(), new JsonConfig());
-		return list;
+		JSONObject jsonObject = JSONObject.parseObject(result);
+		
+        List<ProjectCase> caseslist = new ArrayList<ProjectCase>();
+        caseslist = JSONObject.parseArray(jsonObject.getString("cases"), ProjectCase.class);  
+		return caseslist;
 	}
 
 	/**
@@ -44,13 +45,13 @@ public class GetServerAPI {
 	 * @param name
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<ProjectCase> getCasesbyplanname(String name) {
 		String result = HttpRequest.loadJSON("/projectPlanCase/cgetcasebyplanname.do?name=" + name);
-		JSONObject jsonObject = JSONObject.fromObject(result.toString());
-		JSONArray jsonarr = JSONArray.fromObject(jsonObject.getString("cases"));
-		List<ProjectCase> list = JSONArray.toList(jsonarr, new ProjectCase(), new JsonConfig());
-		return list;
+		JSONObject jsonObject = JSONObject.parseObject(result);
+		
+        List<ProjectCase> caseslist = new ArrayList<ProjectCase>();
+        caseslist = JSONObject.parseArray(jsonObject.getString("cases"), ProjectCase.class);  
+		return caseslist;
 	}
 
 	/**
@@ -58,13 +59,13 @@ public class GetServerAPI {
 	 * @param caseid
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<ProjectCasesteps> getStepsbycaseid(int caseid) {
 		String result = HttpRequest.loadJSON("/projectCasesteps/cgetStepsByCase.do?caseid=" + caseid);
-		JSONObject jsonObject = JSONObject.fromObject(result.toString());
-		JSONArray jsonarr = JSONArray.fromObject(jsonObject.getString("steps"));
-		List<ProjectCasesteps> list = JSONArray.toList(jsonarr, new ProjectCasesteps(), new JsonConfig());
-		return list;
+		JSONObject jsonObject = JSONObject.parseObject(result);
+		
+        List<ProjectCasesteps> stepslist = new ArrayList<ProjectCasesteps>();
+        stepslist = JSONObject.parseArray(jsonObject.getString("steps"), ProjectCasesteps.class);  
+		return stepslist;
 	}
 
 	/**
@@ -74,8 +75,7 @@ public class GetServerAPI {
 	 */
 	public static TestTaskexcute cgetTaskbyid(int taskid) {
 		String result = HttpRequest.loadJSON("/tastExecute/cgettaskbyid.do?taskid=" + taskid);
-		JSONObject jsonObject = JSONObject.fromObject(result.toString());
-		TestTaskexcute task = (TestTaskexcute) JSONObject.toBean(jsonObject, TestTaskexcute.class);
+		TestTaskexcute task = JSONObject.parseObject(result, TestTaskexcute.class);
 		return task;
 	}
 
@@ -86,8 +86,7 @@ public class GetServerAPI {
 	 */
 	public static ProjectCase cgetCaseBysign(String sign) {
 		String result = HttpRequest.loadJSON("/projectCase/cgetcasebysign.do?sign=" + sign);
-		JSONObject jsonObject = JSONObject.fromObject(result.toString());
-		ProjectCase pc = (ProjectCase) JSONObject.toBean(jsonObject, ProjectCase.class);
+		ProjectCase pc = JSONObject.parseObject(result, ProjectCase.class);
 		return pc;
 	}
 
@@ -98,11 +97,11 @@ public class GetServerAPI {
 	 */
 	public static List<PublicCaseParams> cgetParamsByProjectid(String projectid) {
 		String result = HttpRequest.loadJSON("/publicCaseParams/cgetParamsByProjectid.do?projectid="+projectid);
-		JSONObject jsonObject = JSONObject.fromObject(result.toString());
-		JSONArray jsonarr = JSONArray.fromObject(jsonObject.getString("params"));
-		@SuppressWarnings("unchecked")
-		List<PublicCaseParams> list = JSONArray.toList(jsonarr, new PublicCaseParams(), new JsonConfig());
-		return list;
+		JSONObject jsonObject = JSONObject.parseObject(result);
+		
+        List<PublicCaseParams> paramslist = new ArrayList<PublicCaseParams>();
+        paramslist = JSONObject.parseArray(jsonObject.getString("params"), PublicCaseParams.class);  
+		return paramslist;
 	}
 	
 	/**

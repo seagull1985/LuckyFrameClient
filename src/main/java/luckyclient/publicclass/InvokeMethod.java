@@ -2,17 +2,18 @@ package luckyclient.publicclass;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import luckyclient.planapi.entity.ProjectProtocolTemplate;
 import luckyclient.planapi.entity.ProjectTemplateParams;
 import luckyclient.publicclass.remoterinterface.HttpClientHelper;
 import luckyclient.publicclass.remoterinterface.HttpRequest;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 /**
  * =================================================================
@@ -63,27 +64,16 @@ public class InvokeMethod {
                 luckyclient.publicclass.LogUtil.APP.info("即将使用模板【" + templatenamestr + "】，ID【" + templateidstr + "】发送HTTP请求！");
 
                 String httpppt = HttpRequest.loadJSON("/projectprotocolTemplate/cgetPTemplateById.do?templateid=" + templateidstr);
-                JSONObject jsonpptObject = JSONObject.fromObject(httpppt);
-                ProjectProtocolTemplate ppt = (ProjectProtocolTemplate) JSONObject.toBean(jsonpptObject,
-                        ProjectProtocolTemplate.class);
+                ProjectProtocolTemplate ppt = JSONObject.parseObject(httpppt, ProjectProtocolTemplate.class);
                 if (null == ppt) {
                     luckyclient.publicclass.LogUtil.APP.error("协议模板为空，请检查用例使用的协议模板是否已经删除！");
                     return "协议模板为空，请确认用例使用的模板是否已经删除！";
                 }
 
                 String httpptp = HttpRequest.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
-                JSONObject jsonptpObject = JSONObject.fromObject(httpptp);
-                JSONArray jsonarr = JSONArray.fromObject(jsonptpObject.getString("params"));
-
-                //处理json-lib 2.4版本当遇到json格式字符串时，把它当成对象处理的bug
-                for (int i = 0; i < jsonarr.size(); i++) {
-                    JSONObject tempobj = (JSONObject) jsonarr.get(i);
-                    String str = tempobj.get("param").toString();
-                    if (str.length() > 0 && "[".equals(str.substring(0, 1)) && "]".equals(str.substring(str.length() - 1))) {
-                        tempobj.element("param", "***" + str);
-                        jsonarr.set(i, tempobj);
-                    }
-                }
+                JSONObject jsonptpObject = JSONObject.parseObject(httpptp);
+                List<ProjectTemplateParams> paramslist = new ArrayList<ProjectTemplateParams>();
+                paramslist = JSONObject.parseArray(jsonptpObject.getString("params"), ProjectTemplateParams.class);  
 
                 //处理头域
                 Map<String, String> headmsg = new HashMap<>(0);
@@ -100,9 +90,6 @@ public class InvokeMethod {
                     }
                 }
 
-                @SuppressWarnings("unchecked")
-                List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(),
-                        new JsonConfig());
                 //处理更换参数
                 if (null != getParameterValues) {
                     String booleanheadmsg = "headmsg(";
@@ -128,18 +115,15 @@ public class InvokeMethod {
                 //处理参数
                 Map<String, Object> params = new HashMap<String, Object>(0);
                 for (ProjectTemplateParams ptp : paramslist) {
-                    if (ptp.getParam().contains("***[") && "***[".equals(ptp.getParam().substring(0, 4))) {
-                        ptp.setParam(ptp.getParam().substring(3));
-                    }
                     //处理参数对象
                     if (ptp.getParamtype() == 1) {
                         String tempparam = ptp.getParam().replace("&quot;", "\"");
-                        JSONObject json = JSONObject.fromObject(tempparam);
+                        JSONObject json = JSONObject.parseObject(tempparam);
                         params.put(ptp.getParamname().replace("&quot;", "\""), json);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  JSONObject类型参数值:【" + json.toString() + "】");
                     } else if (ptp.getParamtype() == 2) {
                         String tempparam = ptp.getParam().replace("&quot;", "\"");
-                        JSONArray jarr = JSONArray.fromObject(tempparam);
+                        JSONArray jarr = JSONArray.parseArray(tempparam);
                         params.put(ptp.getParamname().replace("&quot;", "\""), jarr);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
                     } else if (ptp.getParamtype() == 3) {
@@ -199,24 +183,13 @@ public class InvokeMethod {
                 luckyclient.publicclass.LogUtil.APP.info("即将使用模板【" + templatenamestr + "】  ID:【" + templateidstr + "】 发送SOCKET请求！");
 
                 String httpppt = HttpRequest.loadJSON("/projectprotocolTemplate/cgetPTemplateById.do?templateid=" + templateidstr);
-                JSONObject jsonpptObject = JSONObject.fromObject(httpppt);
-                ProjectProtocolTemplate ppt = (ProjectProtocolTemplate) JSONObject.toBean(jsonpptObject,
-                        ProjectProtocolTemplate.class);
+                ProjectProtocolTemplate ppt = JSONObject.parseObject(httpppt,ProjectProtocolTemplate.class);
 
                 String httpptp = HttpRequest.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
-                JSONObject jsonptpObject = JSONObject.fromObject(httpptp);
-                JSONArray jsonarr = JSONArray.fromObject(jsonptpObject.getString("params"));
-
-                //处理json-lib 2.4版本当遇到json格式字符串时，把它当成对象处理的bug
-                for (int i = 0; i < jsonarr.size(); i++) {
-                    JSONObject tempobj = (JSONObject) jsonarr.get(i);
-                    String str = tempobj.get("param").toString();
-                    if (str.length() > 0 && "[".equals(str.substring(0, 1)) && "]".equals(str.substring(str.length() - 1))) {
-                        tempobj.element("param", "***" + str);
-                        jsonarr.set(i, tempobj);
-                    }
-                }
-
+                JSONObject jsonptpObject = JSONObject.parseObject(httpptp);
+                List<ProjectTemplateParams> paramslist = new ArrayList<ProjectTemplateParams>();
+                paramslist = JSONObject.parseArray(jsonptpObject.getString("params"), ProjectTemplateParams.class);  
+                
                 //处理头域
                 Map<String, String> headmsg = new HashMap<String, String>(0);
                 if (null != ppt.getHeadmsg() && !ppt.getHeadmsg().equals("") && ppt.getHeadmsg().indexOf("=") > 0) {
@@ -232,8 +205,6 @@ public class InvokeMethod {
                     }
                 }
 
-                @SuppressWarnings("unchecked")
-                List<ProjectTemplateParams> paramslist = JSONArray.toList(jsonarr, new ProjectTemplateParams(), new JsonConfig());
                 //处理更换参数
                 if (null != getParameterValues) {
                     String booleanheadmsg = "headmsg(";
@@ -258,17 +229,14 @@ public class InvokeMethod {
                 }
                 Map<String, Object> params = new HashMap<String, Object>(0);
                 for (ProjectTemplateParams ptp : paramslist) {
-                    if (ptp.getParam().contains("***[") && "***[".equals(ptp.getParam().substring(0, 4))) {
-                        ptp.setParam(ptp.getParam().substring(3));
-                    }
                     //处理参数对象
                     if (ptp.getParamtype() == 1) {
                         String tempparam = ptp.getParam().replace("&quot;", "\"");
-                        JSONObject json = JSONObject.fromObject(tempparam);
+                        JSONObject json = JSONObject.parseObject(tempparam);
                         params.put(ptp.getParamname().replace("&quot;", "\""), json);
                     } else if (ptp.getParamtype() == 2) {
                         String tempparam = ptp.getParam().replace("&quot;", "\"");
-                        JSONArray jarr = JSONArray.fromObject(tempparam);
+                        JSONArray jarr = JSONArray.parseArray(tempparam);
                         params.put(ptp.getParamname().replace("&quot;", "\""), jarr);
                     } else if (ptp.getParamtype() == 3) {
                         String tempparam = ptp.getParam().replace("&quot;", "\"");
