@@ -57,7 +57,8 @@ public class WebDriverAnalyticCase {
 			String expectedResults = subComment(resultstr);
 
 			//处理check字段
-			if(expectedResults.startsWith("check(")){
+			if(expectedResults.toLowerCase().startsWith("check(")){
+				expectedResults=expectedResults.toLowerCase();
 				params.put("checkproperty", expectedResults.substring(expectedResults.indexOf("check(")+6, expectedResults.indexOf("=")));
 				params.put("checkproperty_value", expectedResults.substring(expectedResults.indexOf("=")+1, expectedResults.lastIndexOf(")")));
 			}			
@@ -67,7 +68,7 @@ public class WebDriverAnalyticCase {
 		
 		//set wait时间
 		 //添加步骤之间等待时间
-		if(null!=step.getAction()&&step.getAction().toLowerCase().indexOf("*wait")>-1){                   
+		if(null!=step.getAction()&&step.getAction().toLowerCase().endsWith("*wait")){                   
 			String action=step.getAction();
 			time=action.substring(0, action.toLowerCase().lastIndexOf("*wait"));
         }
