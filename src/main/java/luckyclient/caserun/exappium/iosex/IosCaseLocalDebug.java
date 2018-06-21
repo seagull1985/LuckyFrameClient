@@ -1,12 +1,8 @@
 package luckyclient.caserun.exappium.iosex;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import luckyclient.dblog.DbLink;
@@ -55,18 +51,12 @@ public class IosCaseLocalDebug {
 	 *            用于在testlink上配置好用例参数后，做多条用例串行调试
 	 */
 	public static void moreCaseDebug(IOSDriver<IOSElement> iosdriver, String projectname,
-			Map<String, Integer> addtestcase) {
-		System.out.println(addtestcase.size());
-		@SuppressWarnings("rawtypes")
-		Iterator it = addtestcase.entrySet().iterator();
-		while (it.hasNext()) {
-			@SuppressWarnings("rawtypes")
-			Map.Entry entry = (Map.Entry) it.next();
-			String testCaseExternalId = (String) entry.getKey();
-			Integer version = (Integer) entry.getValue();
+			List<String> addtestcase) {
+		System.out.println("当前调试用例总共："+addtestcase.size());
+		for(String testCaseExternalId:addtestcase) {
 			try {
 				luckyclient.publicclass.LogUtil.APP
-						.info("开始调用方法，项目名：" + projectname + "，用例编号：" + testCaseExternalId + "，用例版本：" + version);
+						.info("开始调用方法，项目名：" + projectname + "，用例编号：" + testCaseExternalId);
 				oneCasedebug(iosdriver, testCaseExternalId);
 			} catch (Exception e) {
 				continue;
