@@ -70,6 +70,7 @@ public class HttpClientHelper {
 	 */
 	public static String sendHttpURLPost(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
@@ -172,6 +173,7 @@ public class HttpClientHelper {
 	public static String sendURLPost(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			for (Entry<String, Object> e : params.entrySet()) {
@@ -267,6 +269,7 @@ public class HttpClientHelper {
 	 */
 	public static void sendGetAndSaveFile(String urlParam, Map<String, Object> params, String fileSavePath, int timeout,Map<String, String> headmsg) {
 		// 构建请求参数
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			for (Entry<String, Object> entry : params.entrySet()) {
@@ -354,6 +357,7 @@ public class HttpClientHelper {
 	public static String sendHttpURLGet(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			for (Entry<String, Object> entry : params.entrySet()) {
@@ -428,6 +432,7 @@ public class HttpClientHelper {
 	public static String sendURLGet(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			for (Entry<String, Object> entry : params.entrySet()) {
@@ -502,6 +507,7 @@ public class HttpClientHelper {
 	 */
 	public static String httpClientPostJson(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
 	    httpPost.setHeader("Content-Type", "application/json");
@@ -569,6 +575,7 @@ public class HttpClientHelper {
 	public static String httpClientPost(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		HttpPost httpPost = new HttpPost(urlParam);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
@@ -638,6 +645,7 @@ public class HttpClientHelper {
 	 */
 	public static String httpClientUploadFile(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
 		//替换头域信息
@@ -716,6 +724,7 @@ public class HttpClientHelper {
 	 */
 	public static String httpClientGet(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");	
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		BufferedReader br = null;
 		// 构建请求参数
@@ -783,6 +792,7 @@ public class HttpClientHelper {
 	 */
 	public static String sendSocketPost(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
 		String result = "";
+		luckyclient.publicclass.LogUtil.APP.info("设置Socket请求地址:【"+urlParam+"】");
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
@@ -900,6 +910,7 @@ public class HttpClientHelper {
 	 */
 	public static String sendSocketGet(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
 		String result = "";
+		luckyclient.publicclass.LogUtil.APP.info("设置Socket请求地址:【"+urlParam+"】");
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
@@ -1048,6 +1059,7 @@ public class HttpClientHelper {
 		StringBuffer resultBuffer = null;
 		String responsecode = null;
 		// 构建请求参数
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			for (Entry<String, Object> e : params.entrySet()) {
@@ -1149,6 +1161,7 @@ public class HttpClientHelper {
 	public static String httpClientPutJson(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws KeyManagementException, NoSuchAlgorithmException {
 		StringBuffer resultBuffer = null;
 		String responsecode = null;
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
 	    httpput.setHeader("Content-Type", "application/json");
@@ -1216,6 +1229,7 @@ public class HttpClientHelper {
 	public static String httpClientPut(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws KeyManagementException, NoSuchAlgorithmException {
 		StringBuffer resultBuffer = null;
 		String responsecode = null;
+		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
 		//替换头域信息
