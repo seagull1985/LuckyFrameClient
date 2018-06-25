@@ -1,5 +1,8 @@
 package luckyclient.driven;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SubString {
@@ -60,7 +63,7 @@ public class SubString {
 				getstr=str.substring(start,end);
 			}
 		}else{
-			getstr="";
+			getstr="指定的开始或是结束位置字符不是数字类型，请检查！";
 		}
 
 		return getstr;
@@ -84,7 +87,7 @@ public class SubString {
 				getstr=str.substring(start);
 			}
 		}else{
-			getstr="";
+			getstr="指定的开始位置字符不是数字类型，请检查！";
 		}
 
 		return getstr;
@@ -108,11 +111,39 @@ public class SubString {
 				getstr=str.substring(0,end);
 			}
 		}else{
-			getstr="";
+			getstr="指定的结束位置字符不是数字类型，请检查！";
 		}
 
 		return getstr;
 	}
+	
+    public static String subStrRgex(String str,String rgex,String num){    
+        List<String> list = new ArrayList<String>();    
+        Pattern pattern = Pattern.compile(rgex);// 匹配的模式    
+        Matcher m = pattern.matcher(str);    
+        while (m.find()) {    
+            int i = 1;    
+            list.add(m.group(i));    
+            i++;    
+        }
+        
+		String getstr="";
+		if(isInteger(num)){
+			int index=Integer.valueOf(num);
+			if(index<0){
+				getstr="截取字符串索引数字不能小于0";
+			}else if(index>str.length()){
+				getstr="截取字符串索引的数字不能大于字符串本身的长度【"+str.length()+"】";
+			}else if(index>list.size()){
+				getstr="未能在指定字符串中根据正则式找到匹配的字符串或是指定的索引数字大于能找到的匹配字符串索引量";
+			}else{
+				getstr=list.get(index-1);
+			}
+		}else{
+			getstr="指定的索引位置字符不是数字类型，请检查！";
+		}
+        return getstr;    
+    }    
 	
 	private static boolean isInteger(String str) {  
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");  
