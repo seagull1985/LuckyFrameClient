@@ -536,10 +536,9 @@ public class HttpClientHelper {
 			}
        
 		 CloseableHttpResponse response = httpclient.execute(httpPost);
-		 //获取请求对象中的响应行对象  
-		 org.apache.http.StatusLine statusLine = response.getStatusLine();
+
 		 //从状态行中获取状态码  
-	     String responsecode = String.valueOf(statusLine.getStatusCode());
+	     String responsecode = String.valueOf(response.getStatusLine().getStatusCode());
 		// 读取服务器响应数据
 		resultBuffer = new StringBuffer();
 		resultBuffer.append("响应码："+responsecode+" ");
@@ -605,10 +604,8 @@ public class HttpClientHelper {
 			}
 
 			 CloseableHttpResponse response = httpclient.execute(httpPost);
-			 //获取请求对象中的响应行对象  
-			 org.apache.http.StatusLine statusLine = response.getStatusLine();
 			 //从状态行中获取状态码  
-		     String responsecode = String.valueOf(statusLine.getStatusCode());
+		     String responsecode = String.valueOf(response.getStatusLine().getStatusCode());
 			// 读取服务器响应数据
 			resultBuffer = new StringBuffer();
 
@@ -685,10 +682,8 @@ public class HttpClientHelper {
 			}
 
 			 CloseableHttpResponse response = httpclient.execute(httpPost);
-			 //获取请求对象中的响应行对象  
-			 org.apache.http.StatusLine statusLine = response.getStatusLine();
 			 //从状态行中获取状态码  
-		     String responsecode = String.valueOf(statusLine.getStatusCode());
+		     String responsecode = String.valueOf(response.getStatusLine().getStatusCode());
 			// 读取服务器响应数据
 			resultBuffer = new StringBuffer();
 
@@ -762,11 +757,14 @@ public class HttpClientHelper {
 	    	}
         }
 		try {
-			 HttpResponse response = httpclient.execute(httpGet);
+			CloseableHttpResponse response = httpclient.execute(httpGet);
+			
 			// 读取服务器响应数据
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
 			resultBuffer = new StringBuffer();
+			String status="状态码："+response.getStatusLine().getStatusCode()+",";
+			resultBuffer.append(status);
 			while ((temp = br.readLine()) != null) {
 				resultBuffer.append(temp);
 			}

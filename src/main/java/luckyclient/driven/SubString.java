@@ -137,7 +137,7 @@ public class SubString {
 			}else if(index>list.size()){
 				getstr="未能在指定字符串中根据正则式找到匹配的字符串或是指定的索引数字大于能找到的匹配字符串索引量";
 			}else{
-				getstr=list.get(index-1);
+				getstr=m.group(num);
 			}
 		}else{
 			getstr="指定的索引位置字符不是数字类型，请检查！";
