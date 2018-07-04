@@ -96,20 +96,33 @@ public class InvokeMethod {
                     String msgend = ")";
                     for (Object obp : getParameterValues) {
                         String paramob = obp.toString();
-                        String key = paramob.substring(0, paramob.indexOf("#"));
-                        String value = paramob.substring(paramob.indexOf("#") + 1);
-                        if (key.contains(booleanheadmsg) && key.contains(msgend)) {
-                            String head = key.substring(key.indexOf(booleanheadmsg) + 8, key.lastIndexOf(msgend));
-                            headmsg.put(head, value);
-                            continue;
-                        }
-                        for (int i = 0; i < paramslist.size(); i++) {
-                            ProjectTemplateParams ptp = paramslist.get(i);
-                            if (ptp.getParamname().equals(key)) {
-                                ptp.setParam(value);
-                                paramslist.set(i, ptp);
+                        if(paramob.contains("#")){
+                            String key = paramob.substring(0, paramob.indexOf("#"));
+                            String value = paramob.substring(paramob.indexOf("#") + 1);
+                            if (key.contains(booleanheadmsg) && key.contains(msgend)) {
+                                String head = key.substring(key.indexOf(booleanheadmsg) + 8, key.lastIndexOf(msgend));
+                                headmsg.put(head, value);
+                                continue;
                             }
+                            int replaceflag=0;
+                            for (int i = 0; i < paramslist.size(); i++) {
+                                ProjectTemplateParams ptp = paramslist.get(i);
+                                if (ptp.getParamname().equals(key)) {
+                                    ptp.setParam(value);
+                                    paramslist.set(i, ptp);
+                                    replaceflag=1;
+                                    break;
+                                }
+                            }
+                            if(replaceflag==0){
+                            	luckyclient.publicclass.LogUtil.APP.error("步骤参数【"+key+"】没有在模板中找到可替换的参数对应默认值，"
+                            			+ "设置请求参数失败，请检查协议模板中此参数是否存在。");
+                            }
+                        }else{
+                        	luckyclient.publicclass.LogUtil.APP.error("替换模板或是头域参数失败，原因是因为没有检测到#，"
+                        			+ "注意HTTP请求替换参数格式是【headmsg(头域名#头域值)|参数名#参数值|参数名2#参数值2】");
                         }
+
                     }
                 }
                 //处理参数

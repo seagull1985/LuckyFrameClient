@@ -1,7 +1,6 @@
 package luckyclient.caserun.exinterface;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -201,18 +200,12 @@ public class ApiTestCaseDebug {
 	 * @param projectname
 	 * @param addtestcase
 	 */
-	public static void moreCaseDebug(String projectname, Map<String, Integer> addtestcase) {
-		System.out.println(addtestcase.size());
-		@SuppressWarnings("rawtypes")
-		Iterator it = addtestcase.entrySet().iterator();
-		while (it.hasNext()) {
-			@SuppressWarnings("rawtypes")
-			Map.Entry entry = (Map.Entry) it.next();
-			String testCaseExternalId = (String) entry.getKey();
-			Integer version = (Integer) entry.getValue();
+	public static void moreCaseDebug(String projectname, List<String> addtestcase) {
+		System.out.println("当前调试用例总共："+addtestcase.size());
+		for(String testCaseExternalId:addtestcase) {
 			try {
 				luckyclient.publicclass.LogUtil.APP
-						.info("开始调用方法，项目名：" + projectname + "，用例编号：" + testCaseExternalId + "，用例版本：" + version);
+						.info("开始调用方法，项目名：" + projectname + "，用例编号：" + testCaseExternalId);
 				oneCaseDebug(projectname, testCaseExternalId);
 			} catch (Exception e) {
 				continue;
