@@ -34,7 +34,7 @@ public class HtmlMail {
         try {
             Map<String, String> headmsg = new HashMap<>(0);
             Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
-            if ("ture".equals(properties.getProperty("task.push.switch"))) {
+            if ("true".equals(properties.getProperty("task.push.switch").toLowerCase())) {
                 luckyclient.publicclass.LogUtil.APP.info("开始向第三方平台推送任务执行情况....");
                 Map<String, Object> pushparameters = new HashMap<>(0);
                 pushparameters.put("buildstatus", buildstatus);
