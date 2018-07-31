@@ -1,4 +1,4 @@
-package rmi.model;
+package springboot.model;
 
 import java.io.Serializable;
 
@@ -22,7 +22,14 @@ public class RunBatchCaseEntity implements Serializable {
 	private String projectname;
     private String taskid;
     private String batchcase;
+    private String loadpath;
     
+	public String getLoadpath() {
+		return loadpath;
+	}
+	public void setLoadpath(String loadpath) {
+		this.loadpath = loadpath;
+	}
 	public String getProjectname() {
 		return projectname;
 	}

@@ -1,4 +1,4 @@
-package rmi.model;
+package springboot.model;
 
 import java.io.Serializable;
 
@@ -13,26 +13,32 @@ import java.io.Serializable;
  * @date 2017年12月1日 上午9:29:40
  * 
  */
-
-public class RunTaskEntity implements Serializable {
+public class WebDebugCaseEntity implements Serializable {
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String projectname;
-    private String taskid;
+	private String sign;
+    private String executor;
+    private String loadpath;
     
-	public String getProjectname() {
-		return projectname;
+	public String getSign() {
+		return sign;
 	}
-	public void setProjectname(String projectname) {
-		this.projectname = projectname;
+	public void setSign(String sign) {
+		this.sign = sign;
 	}
-	public String getTaskid() {
-		return taskid;
+	public String getExecutor() {
+		return executor;
 	}
-	public void setTaskid(String taskid) {
-		this.taskid = taskid;
+	public void setExecutor(String executor) {
+		this.executor = executor;
+	}
+	public String getLoadpath() {
+		return loadpath;
+	}
+	public void setLoadpath(String loadpath) {
+		this.loadpath = loadpath;
 	}
 
 }
