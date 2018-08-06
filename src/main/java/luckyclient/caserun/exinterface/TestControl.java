@@ -131,7 +131,7 @@ public class TestControl {
 	 *             计划任务模式调度计划执行用例
 	 */
 
-	protected static void taskExecutionPlan(String taskid,TestTaskexcute task) throws Exception {
+	public static void taskExecutionPlan(String taskid,TestTaskexcute task) throws Exception {
 		DbLink.exetype = 0;
 		TestControl.TASKID = taskid;
 		String restartstatus = RestartServerInitialization.restartServerRun(taskid);

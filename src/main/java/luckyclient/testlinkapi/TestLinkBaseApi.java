@@ -16,7 +16,7 @@ import br.eti.kinoshita.testlinkjavaapi.TestLinkAPI;
  * @Description: 初始化TESTLINK接口 
  * @author： seagull
  * @date 2014年6月24日 上午9:29:40  
- * 
+ * @deprecated
  */
 class TestLinkBaseApi{
 

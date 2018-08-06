@@ -98,7 +98,6 @@ public class WebTestCaseDebug {
                 testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getAction());
 
                 if (null != expectedresults && !expectedresults.isEmpty()) {
-                    luckyclient.publicclass.LogUtil.APP.info("expectedResults=¡¾" + expectedresults + "¡¿");
                     // ¸³Öµ´«²Î
                     if (expectedresults.length() > ASSIGNMENT_SIGN.length() && expectedresults.startsWith(ASSIGNMENT_SIGN)) {
                         variable.put(expectedresults.substring(ASSIGNMENT_SIGN.length()), testnote);
@@ -171,5 +170,6 @@ public class WebTestCaseDebug {
     }
 
     public static void main(String[] args) throws Exception {
+    	
     }
 }

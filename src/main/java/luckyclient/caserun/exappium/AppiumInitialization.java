@@ -35,7 +35,7 @@ public class AppiumInitialization {
 		Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		File directory = new File("");
-		File app = new File(directory.getCanonicalPath() + "//" + properties.getProperty("appname"));
+		File app = new File(directory.getCanonicalPath() + File.separator + properties.getProperty("appname"));
 		capabilities.setCapability("app", app.getAbsolutePath());
 		// 自动化测试服务
 		capabilities.setCapability("automationName", properties.getProperty("automationName"));
@@ -74,7 +74,7 @@ public class AppiumInitialization {
 		Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		File directory = new File("");
-		File app = new File(directory.getCanonicalPath() + "//" + properties.getProperty("appname"));
+		File app = new File(directory.getCanonicalPath() + File.separator + properties.getProperty("appname"));
 		capabilities.setCapability("app", app.getAbsolutePath());
 		// 自动化测试服务
 		capabilities.setCapability("automationName", properties.getProperty("automationName"));

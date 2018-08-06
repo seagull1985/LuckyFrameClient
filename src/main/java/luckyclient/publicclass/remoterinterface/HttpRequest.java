@@ -3,6 +3,7 @@ package luckyclient.publicclass.remoterinterface;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
@@ -36,15 +37,16 @@ public class HttpRequest {
 	 * @return
 	 */
 	public static String loadJSON(String repath) {
+		String charset="GBK";
 		StringBuffer resultBuffer = null;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		BufferedReader br = null;
 		// 构建请求参数
 		HttpGet httpGet = new HttpGet(WEB_URL+repath);
 		try {
-			 HttpResponse response = httpclient.execute(httpGet);
+			HttpResponse response = httpclient.execute(httpGet);
 			// 读取服务器响应数据
-			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "GBK"));
+			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
 			resultBuffer = new StringBuffer();
 			while ((temp = br.readLine()) != null) {
@@ -92,15 +94,14 @@ public class HttpRequest {
             // 发送POST请求必须设置如下两行
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            // 获取URLConnection对象对应的输出流
-            out = new PrintWriter(conn.getOutputStream());
+            // 获取URLConnection对象对应的输出流，设置utf-8编码
+            out = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(), "GBK"));
             // 发送请求参数
             out.print(param);
             // flush输出流的缓冲
             out.flush();
-            // 定义BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
+            // 定义BufferedReader输入流来读取URL的响应,设置utf-8编码
+            in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "GBK"));
             String line;
             while ((line = in.readLine()) != null) {
                 result += line;

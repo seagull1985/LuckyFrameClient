@@ -1,5 +1,7 @@
 package springboot;
 
+import java.io.File;
+
 import org.apache.log4j.PropertyConfigurator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +20,8 @@ public class RunService {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		PropertyConfigurator.configure(System.getProperty("user.dir") + "\\log4j.conf");
+		PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator +"bootlog4j.conf");
+		luckyclient.publicclass.LogUtil.APP.info("Æô¶¯¿Í»§¶Ë¼àÌý>>>>>>>>>>>>>>>>>>>>>");
 		SpringApplication.run(RunService.class, args);
 	}
 

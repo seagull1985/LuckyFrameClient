@@ -38,6 +38,7 @@ import com.alibaba.fastjson.JSONObject;
 @RestController
 public class HttpImpl {
 
+	private static final String os=System.getProperty("os.name").toLowerCase();
 	/**
 	 * 运行自动化任务
 	 * @param req
@@ -61,20 +62,24 @@ public class HttpImpl {
 		String projectname = jsonObject.getString("projectname");
 		String taskid = jsonObject.getString("taskid");
 		String loadpath = jsonObject.getString("loadpath");
-		System.out.println("启动任务模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
+		luckyclient.publicclass.LogUtil.APP.info("启动任务模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
 		try{
 			File file =new File(System.getProperty("user.dir")+loadpath); 	   
 			if  (!file .isDirectory())      
 			{       
-				System.out.println("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				luckyclient.publicclass.LogUtil.APP.info("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sbf=new StringBuffer();
 			sbf.append(taskid).append(" ");
 			sbf.append(loadpath);
-			run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+"\\"));
-			
+			if(os.startsWith("win")){
+				run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
+			}else{
+				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task.sh"+ " " +sbf.toString());
+		        ps.waitFor();
+			}			
 		} catch (Exception e) {		
 			e.printStackTrace();
 			return "启动任务模式测试程序异常！！！";
@@ -107,13 +112,13 @@ public class HttpImpl {
 		String loadpath = jsonObject.getString("loadpath");
 		String testCaseExternalId = jsonObject.getString("testCaseExternalId");
 		String version = jsonObject.getString("version");
-		System.out.println("启动单用例模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
-		System.out.println("测试用例编号："+testCaseExternalId+"  用例版本："+version);
+		luckyclient.publicclass.LogUtil.APP.info("启动单用例模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
+		luckyclient.publicclass.LogUtil.APP.info("测试用例编号："+testCaseExternalId+"  用例版本："+version);
 		try{
 			File file =new File(System.getProperty("user.dir")+loadpath); 	   
 			if  (!file .isDirectory())      
 			{   
-				System.out.println("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				luckyclient.publicclass.LogUtil.APP.info("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
@@ -122,7 +127,12 @@ public class HttpImpl {
 			sb.append(testCaseExternalId).append(" ");
 			sb.append(version).append(" ");
 			sb.append(loadpath);
-			run.exec("cmd.exe /k start " + "task_onecase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+"\\"));			
+			if(os.startsWith("win")){
+				run.exec("cmd.exe /k start " + "task_onecase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
+			}else{
+				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task_onecase.sh"+ " " +sb.toString());
+		        ps.waitFor();
+			}	
 		} catch (Exception e) {		
 			e.printStackTrace();
 			return "启动单用例模式测试程序异常！！！";
@@ -153,13 +163,13 @@ public class HttpImpl {
 		String taskid = jsonObject.getString("taskid");
 		String loadpath = jsonObject.getString("loadpath");
 		String batchcase = jsonObject.getString("batchcase");
-		System.out.println("启动批量用例模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
-		System.out.println("批量测试用例："+batchcase);
+		luckyclient.publicclass.LogUtil.APP.info("启动批量用例模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
+		luckyclient.publicclass.LogUtil.APP.info("批量测试用例："+batchcase);
 		try{
 			File file =new File(System.getProperty("user.dir")+loadpath); 	   
 			if  (!file .isDirectory())      
 			{    
-				System.out.println("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				luckyclient.publicclass.LogUtil.APP.info("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
@@ -167,8 +177,12 @@ public class HttpImpl {
 			sb.append(taskid).append(" ");
 			sb.append(batchcase).append(" ");
 			sb.append(loadpath);
-			System.out.println(sb.toString());
-			run.exec("cmd.exe /k start " + "task_batch.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+"\\"));		
+			if(os.startsWith("win")){
+				run.exec("cmd.exe /k start " + "task_batch.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
+			}else{
+				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task_batch.sh"+ " " +sb.toString());
+		        ps.waitFor();
+			}		
 		} catch (Exception e) {		
 			e.printStackTrace();
 			return "启动批量用例模式测试程序异常！！！";
@@ -198,12 +212,12 @@ public class HttpImpl {
 		String sign = jsonObject.getString("sign");
 		String executor = jsonObject.getString("executor");
 		String loadpath = jsonObject.getString("loadpath");
-		System.out.println("Web端调试用例："+sign+" 发起人："+executor);
+		luckyclient.publicclass.LogUtil.APP.info("Web端调试用例："+sign+" 发起人："+executor);
 		try{
 			File file =new File(System.getProperty("user.dir")+loadpath); 	   
 			if  (!file .isDirectory())      
 			{    
-				System.out.println("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				luckyclient.publicclass.LogUtil.APP.info("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
@@ -211,7 +225,12 @@ public class HttpImpl {
 			sb.append(sign).append(" ");
 			sb.append(executor).append(" ");
 			sb.append(loadpath);
-			run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+"\\"));			
+			if(os.startsWith("win")){
+				run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));			
+			}else{
+				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"web_debugcase.sh"+ " " +sb.toString());
+	            ps.waitFor();  
+			}	
 		} catch (Exception e) {		
 			e.printStackTrace();
 			return "启动Web调试模式测试程序异常！！！";
@@ -228,8 +247,8 @@ public class HttpImpl {
 	@GetMapping("/getlogdetail")
 	public String getlogdetail(HttpServletRequest req) throws RemoteException{
 		String fileName=req.getParameter("filename");
-		String ctxPath = System.getProperty("user.dir")+"\\log\\";
-		String downLoadPath = ctxPath + fileName;
+		String ctxPath = System.getProperty("user.dir")+File.separator+"log";
+		String downLoadPath = ctxPath +File.separator+ fileName;
 
 		String str = "";
 		InputStreamReader isr=null;
@@ -251,7 +270,7 @@ public class HttpImpl {
 				sb.append(str).append("##n##");
 			}
 			bos.close();
-			System.out.println("服务端读取本地日志成功!");
+			luckyclient.publicclass.LogUtil.APP.info("服务端读取本地日志成功!");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -269,8 +288,8 @@ public class HttpImpl {
 	@GetMapping("/getlogimg")
 	public byte[] getlogimg(HttpServletRequest req,HttpServletResponse res) throws RemoteException{
 		String imgName=req.getParameter("imgName");
-		String ctxPath = System.getProperty("user.dir")+"\\log\\ScreenShot\\";
-		String downLoadPath = ctxPath+imgName;
+		String ctxPath = System.getProperty("user.dir")+File.separator+"log"+File.separator+"ScreenShot";
+		String downLoadPath = ctxPath+File.separator+imgName;
         byte[] b = null;
         try {
             File file = new File(downLoadPath);
@@ -278,7 +297,7 @@ public class HttpImpl {
             BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
             is.read(b);
             is.close();
-            System.out.println("服务端获取本地图片："+downLoadPath);
+        	luckyclient.publicclass.LogUtil.APP.info("服务端获取本地图片："+downLoadPath);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -307,10 +326,11 @@ public class HttpImpl {
 		String path = System.getProperty("user.dir")+loadpath;
 		if  (!new File(path) .isDirectory())      
 		{    
-			System.out.println("客户端测试驱动桩路径不存在，请检查【"+path+"】");
+			luckyclient.publicclass.LogUtil.APP.info("客户端测试驱动桩路径不存在，请检查【"+path+"】");
 			return "客户端测试驱动桩路径不存在，请检查【"+path+"】";
 		}	
-		String pathName = path +"\\"+ name;
+		String pathName = path +File.separator+ name;
+
 		File file = new File(pathName);
         try { 
             if (file.exists()){
@@ -322,16 +342,16 @@ public class HttpImpl {
             os.write(jarfileByte);
             os.flush();
             os.close();
-            System.out.println("上传JAR包【"+name+"】到客户端驱动目录【"+path+"】成功!");
-            return "上传JAR包【"+name+"】到客户端驱动目录【"+path+"】成功!";
+            luckyclient.publicclass.LogUtil.APP.info("上传JAR包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!");
+            return "上传JAR包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!";
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            return "客户端未找到正确路径或文件，上传失败！";
+            return "客户端未找到正确路径或文件，上传失败！文件路径名称："+pathName;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            return "客户端IOException";
+            return "客户端IOExceptiona或是未找到驱动路径！文件路径名称："+pathName;
         }
 	}
 	

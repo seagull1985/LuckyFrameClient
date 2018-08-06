@@ -199,7 +199,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 			//调用接口用例
 			if(null != operation&&null != operationValue&&"runcase".equals(operation)){
 				String[] temp=operationValue.split(",",-1);
-				String ex = TestCaseExecution.oneCaseExecuteForWebDriver(temp[0],taskid,caselog);
+				String ex = TestCaseExecution.oneCaseExecuteForWebCase(temp[0], taskid, caselog, appium);
 				if(ex.indexOf("CallCase调用出错！")<=-1&&ex.indexOf("解析出错啦！")<=-1&&ex.indexOf("匹配失败")<=-1){
 					return ex;
 				}else{
