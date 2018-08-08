@@ -349,8 +349,8 @@ public class WebCaseExecution extends TestCaseExecution {
                             java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
                             imagname = timeformat.format(new Date());
                             BaseWebDrive.webScreenShot(driver, imagname);
-                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，精确匹配预期结果失败！执行结果：" + result);
-                            caselog.caseLogDetail(taskid, testcase.getSign(), "精确匹配预期结果失败！执行结果：" + result, "error", String.valueOf(step.getStepnum()), imagname);
+                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，精确匹配预期结果失败！预期结果是：【"+expect+"】  执行结果：【"+ result+"】");
+                            caselog.caseLogDetail(taskid, testcase.getSign(), "精确匹配预期结果失败！预期结果是：【"+expect+"】  执行结果：【"+ result+"】", "error", String.valueOf(step.getStepnum()), imagname);
                         }
                     }
                 }

@@ -58,7 +58,6 @@ public class WebDriverAnalyticCase {
 
 			//´¦Àícheck×Ö¶Î
 			if(expectedResults.toLowerCase().startsWith("check(")){
-				expectedResults=expectedResults.toLowerCase();
 				params.put("checkproperty", expectedResults.substring(expectedResults.indexOf("check(")+6, expectedResults.indexOf("=")));
 				params.put("checkproperty_value", expectedResults.substring(expectedResults.indexOf("=")+1, expectedResults.lastIndexOf(")")));
 			}			

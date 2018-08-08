@@ -10,7 +10,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.rmi.RemoteException;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +50,7 @@ public class HttpImpl {
 	 * @throws RemoteException
 	 */
 	@PostMapping("/runtask")
-	public String runtask(HttpServletRequest req) throws RemoteException {
+	private String runtask(HttpServletRequest req) throws RemoteException {
 		StringBuilder sb = new StringBuilder();
 		try (BufferedReader reader = req.getReader();) {
 			char[] buff = new char[1024];
@@ -95,7 +98,7 @@ public class HttpImpl {
 	 * @throws RemoteException
 	 */
 	@PostMapping("/runcase")
-	public String runcase(HttpServletRequest req) throws RemoteException {
+	private String runcase(HttpServletRequest req) throws RemoteException {
 		StringBuilder sbd = new StringBuilder();
 		try (BufferedReader reader = req.getReader();) {
 			char[] buff = new char[1024];
@@ -147,7 +150,7 @@ public class HttpImpl {
 	 * @throws RemoteException
 	 */
 	@PostMapping("/runbatchcase")
-	public String runbatchcase(HttpServletRequest req) throws RemoteException {
+	private String runbatchcase(HttpServletRequest req) throws RemoteException {
 		StringBuilder sbd = new StringBuilder();
 		try (BufferedReader reader = req.getReader();) {
 			char[] buff = new char[1024];
@@ -197,7 +200,7 @@ public class HttpImpl {
 	 * @throws RemoteException
 	 */
 	@PostMapping("/webdebugcase")
-	public String webdebugcase(HttpServletRequest req) throws RemoteException {
+	private String webdebugcase(HttpServletRequest req) throws RemoteException {
 		StringBuilder sbd = new StringBuilder();
 		try (BufferedReader reader = req.getReader();) {
 			char[] buff = new char[1024];
@@ -245,7 +248,7 @@ public class HttpImpl {
 	 * @throws RemoteException
 	 */
 	@GetMapping("/getlogdetail")
-	public String getlogdetail(HttpServletRequest req) throws RemoteException{
+	private String getlogdetail(HttpServletRequest req) throws RemoteException{
 		String fileName=req.getParameter("filename");
 		String ctxPath = System.getProperty("user.dir")+File.separator+"log";
 		String downLoadPath = ctxPath +File.separator+ fileName;
@@ -286,7 +289,7 @@ public class HttpImpl {
 	 * @throws RemoteException
 	 */
 	@GetMapping("/getlogimg")
-	public byte[] getlogimg(HttpServletRequest req,HttpServletResponse res) throws RemoteException{
+	private byte[] getlogimg(HttpServletRequest req,HttpServletResponse res) throws RemoteException{
 		String imgName=req.getParameter("imgName");
 		String ctxPath = System.getProperty("user.dir")+File.separator+"log"+File.separator+"ScreenShot";
 		String downLoadPath = ctxPath+File.separator+imgName;
@@ -311,7 +314,7 @@ public class HttpImpl {
 	}
 	
 	@PostMapping("/uploadjar")
-	public String uploadjar(HttpServletRequest req,HttpServletResponse res, HttpSession session,@RequestParam("jarfile") MultipartFile jarfile) throws IOException, ServletException{
+	private String uploadjar(HttpServletRequest req,HttpServletResponse res, HttpSession session,@RequestParam("jarfile") MultipartFile jarfile) throws IOException, ServletException{
 		if (!jarfile.isEmpty()){
             if (!FilenameUtils.getExtension(jarfile.getOriginalFilename())
                     .equalsIgnoreCase("jar")) {
@@ -362,9 +365,37 @@ public class HttpImpl {
 	 * @throws RemoteException
 	 */
 	@GetMapping("/getclientstatus")
-	public String getClientStatus(HttpServletRequest req) throws RemoteException{
+	private String getClientStatus(HttpServletRequest req) throws RemoteException{
 		return "success";
 	}
+	
+	public static boolean checkhostnet() {
+		luckyclient.publicclass.LogUtil.APP.info("检查客户端配置中,请稍后......");
+		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
+		String dbip=properties.getProperty("mysql.db.ip");
+		int dbport=Integer.valueOf(properties.getProperty("mysql.db.port"));
+		String webip=properties.getProperty("server.web.ip");
+		int webport=Integer.valueOf(properties.getProperty("server.web.port"));
+        Socket dbsocket = new Socket();
+        Socket websocket = new Socket();
+        try {
+        	dbsocket.connect(new InetSocketAddress(dbip, dbport));
+        	luckyclient.publicclass.LogUtil.APP.info("客户端访问数据库配置："+dbip+":"+dbport+"   检测通过......");
+        	websocket.connect(new InetSocketAddress(webip, webport));
+        	luckyclient.publicclass.LogUtil.APP.info("客户端访问Web端配置："+webip+":"+webport+"   检测通过......");
+        } catch (IOException e) {
+        	luckyclient.publicclass.LogUtil.APP.info("客户端配置检测异常，请确认您项目根目录下的客户端配置文件(sys_config.properties)是否已经正确配置。",e);
+            return false;
+        } finally {
+            try {
+            	dbsocket.close();
+            	websocket.close();
+            } catch (IOException e) {
+            	luckyclient.publicclass.LogUtil.APP.info("关闭Socket链接异常......",e);
+            }
+        }
+        return true;
+    }
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
