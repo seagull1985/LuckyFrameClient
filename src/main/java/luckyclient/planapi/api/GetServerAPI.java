@@ -25,7 +25,6 @@ import luckyclient.publicclass.remoterinterface.HttpRequest;
  * 
  */
 public class GetServerAPI {
-
 	/**
 	 * 通过计划ID获取测试用例对象集
 	 * @param planid

@@ -29,7 +29,7 @@ import luckyclient.publicclass.remoterinterface.HttpRequest;
  * @Description: 二次封装关于测试用例部分的API 
  * @author： seagull
  * @date 2014年6月24日 上午9:29:40  
- * 
+ * @deprecated
  */
 public class TestCaseApi extends TestLinkBaseApi {
 

@@ -1,5 +1,6 @@
 package luckyclient.caserun;
 
+import java.io.File;
 import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
@@ -30,7 +31,7 @@ public class BatchCaseExecute extends TestControl {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
-			PropertyConfigurator.configure(System.getProperty("user.dir") + "\\log4j.conf");
+			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
 			String taskid = args[0];
 			String batchcase = args[1];
 			TestTaskexcute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
@@ -56,6 +57,7 @@ public class BatchCaseExecute extends TestControl {
 
 			} else if (task.getTestJob().getExtype() == 2) {
 				Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+
 				if ("Android".equals(properties.getProperty("platformName"))) {
 					AndroidBatchExecute.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
 							String.valueOf(task.getId()), batchcase);
@@ -63,6 +65,7 @@ public class BatchCaseExecute extends TestControl {
 					IosBatchExecute.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
 							String.valueOf(task.getId()), batchcase);
 				}
+
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

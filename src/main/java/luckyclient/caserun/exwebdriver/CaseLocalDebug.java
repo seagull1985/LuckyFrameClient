@@ -1,8 +1,6 @@
 package luckyclient.caserun.exwebdriver;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
 
@@ -40,7 +38,7 @@ public class CaseLocalDebug{
 			WebCaseExecution.caseExcution(testcase,steps, "888888",wd,caselog,pcplist);
 			luckyclient.publicclass.LogUtil.APP.info("当前用例：【"+testcase.getSign()+"】执行完成......进入下一条");
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+			luckyclient.publicclass.LogUtil.ERROR.info("用户执行过程中抛出异常！", e);
 			e.printStackTrace();
 		}
         //关闭浏览器

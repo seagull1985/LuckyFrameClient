@@ -1,5 +1,7 @@
 package luckyclient.caserun;
 
+import java.io.File;
+
 import org.apache.log4j.PropertyConfigurator;
 
 import luckyclient.caserun.exappium.AppTestControl;
@@ -23,7 +25,7 @@ public class RunAutomationTest extends TestControl {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
-			PropertyConfigurator.configure(System.getProperty("user.dir") + "\\log4j.conf");
+			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
 			String taskid = args[0];
 			TestTaskexcute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
 
@@ -36,7 +38,6 @@ public class RunAutomationTest extends TestControl {
 			} else if (task.getTestJob().getExtype() == 2) {
 				AppTestControl.taskExecutionPlan(taskid, task);
 			}
-
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -19,7 +19,7 @@ import luckyclient.dblog.LogOperation;
  * @Description: 解析单个用例中描述部分的脚本
  * @author： seagull
  * @date 2016年9月18日 
- * 
+ * @deprecated
  */
 public class WebDriverAnalyticTestLinkCase {
 	private static String splitFlag = "\\|";

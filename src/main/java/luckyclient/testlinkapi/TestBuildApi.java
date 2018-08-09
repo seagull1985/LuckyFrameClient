@@ -18,7 +18,7 @@ import luckyclient.dblog.LogOperation;
  * @Description: 二次封装关于测试版本部分的API 
  * @author： seagull
  * @date 2014年6月24日 上午9:29:40  
- * 
+ * @deprecated
  */
 public class TestBuildApi extends TestLinkBaseApi {
 	/**

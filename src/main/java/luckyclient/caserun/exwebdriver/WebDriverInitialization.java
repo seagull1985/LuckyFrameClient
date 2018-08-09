@@ -23,34 +23,56 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
  * 
  */
 public class WebDriverInitialization{
+	private static final String os=System.getProperty("os.name").toLowerCase();
 	/**
-	 * @param args
 	 * 初始化WebDriver
-	 * @throws IOException 
+	 * @param drivertype
+	 * @return
+	 * @throws WebDriverException
+	 * @throws IOException
 	 */
 	public static WebDriver setWebDriverForTask(int drivertype) throws WebDriverException,IOException{
 		// 参数为空
 		File directory = new File("");
-/*		System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
-        DesiredCapabilities ieCapabilities = DesiredCapabilities.internetExplorer();
-        ieCapabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
-        WebDriver webDriver = new InternetExplorerDriver(ieCapabilities);*/
+		String drivenpath=directory.getCanonicalPath()+File.separator+"BrowserDriven"+File.separator;
 		WebDriver webDriver = null;
-
+		luckyclient.publicclass.LogUtil.APP.info("准备初始化WebDriver对象...检查到当前操作系统是："+os);
 		if(drivertype==0){
-			System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
-			webDriver = new InternetExplorerDriver();
+			if(os.startsWith("win")){
+				System.setProperty("webdriver.ie.driver",drivenpath+"IEDriverServer.exe");
+				webDriver = new InternetExplorerDriver();
+			}else{
+				luckyclient.publicclass.LogUtil.ERROR.info("当前操作系统无法进行IE浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
+			}		
 		}else if(drivertype==1){
-			System.setProperty("webdriver.gecko.driver",directory.getCanonicalPath()+"\\geckodriver.exe");
+			if(os.startsWith("win")){
+				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver.exe");
+			}else if(os.indexOf("mac")>=0){
+				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver_mac");
+			}else{
+				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver_linux64");
+			}
 			webDriver = new FirefoxDriver();
 		}else if(drivertype==2){
-			System.setProperty("webdriver.chrome.driver",directory.getCanonicalPath()+"\\chromedriver.exe");
+			if(os.startsWith("win")){
+				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver.exe");
+			}else if(os.indexOf("mac")>=0){
+				System.setProperty("webdriver.gecko.driver",drivenpath+"chromedriver_mac");
+			}else{
+				System.setProperty("webdriver.gecko.driver",drivenpath+"chromedriver_linux64");
+			}			
 			webDriver = new ChromeDriver();
 		}else if(drivertype==3){
-			System.setProperty("webdriver.edge.driver",directory.getCanonicalPath()+"\\MicrosoftWebDriver.exe");
-			webDriver = new EdgeDriver();
+			if(os.startsWith("win")){
+				System.setProperty("webdriver.edge.driver",drivenpath+"MicrosoftWebDriver.exe");
+				webDriver = new EdgeDriver();
+			}else{
+				luckyclient.publicclass.LogUtil.ERROR.info("当前操作系统无法进行Edge浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
+			}
 		}else{
-			System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
+			luckyclient.publicclass.LogUtil.ERROR.info("浏览器类型标识："+drivertype);
+			luckyclient.publicclass.LogUtil.ERROR.info("获取到的浏览器类型标识未定义，默认IE浏览器进行执行....");
+			System.setProperty("webdriver.ie.driver",drivenpath+"IEDriverServer.exe");
 			webDriver = new InternetExplorerDriver();
 		}
 		
@@ -70,7 +92,8 @@ public class WebDriverInitialization{
 	 */
 	public static WebDriver setWebDriverForLocal() throws IOException{
 		File directory = new File("");
-		System.setProperty("webdriver.ie.driver",directory.getCanonicalPath()+"\\IEDriverServer.exe");
+		String drivenpath=directory.getCanonicalPath()+File.separator+"BrowserDriven"+File.separator;
+		System.setProperty("webdriver.ie.driver",drivenpath+"IEDriverServer.exe");
 		WebDriver webDriver = new InternetExplorerDriver();
 		webDriver.manage().window().maximize();
 		//设置页面加载最大时长30秒
