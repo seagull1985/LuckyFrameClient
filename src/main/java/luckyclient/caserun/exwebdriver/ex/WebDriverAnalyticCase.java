@@ -79,11 +79,11 @@ public class WebDriverAnalyticCase {
 		  caselog.caseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepnum()),"");
 		}
 		}catch(Exception e) {
-			luckyclient.publicclass.LogUtil.ERROR.error("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本出错！");
+			luckyclient.publicclass.LogUtil.APP.error("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本出错！");
 			if(null!=caselog){
 			  caselog.caseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepnum()),"");
 			}
-			luckyclient.publicclass.LogUtil.ERROR.error(e,e);
+			luckyclient.publicclass.LogUtil.APP.error(e,e);
 			params.put("exception","用例编号："+projectcase.getSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
 			return params;
      }

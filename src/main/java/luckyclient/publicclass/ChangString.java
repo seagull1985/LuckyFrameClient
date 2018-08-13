@@ -1,7 +1,12 @@
 package luckyclient.publicclass;
 
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * =================================================================
@@ -111,6 +116,84 @@ public class ChangString {
         return pattern.matcher(str).matches();
     }
 
+    /**
+     * 替换变量类型
+     * @param object
+     * @param str
+     * @return
+     */
+    public static Object settype(Object object,String str){
+    	if(object instanceof Integer){
+    		return Integer.valueOf(str);
+    	}else if(object instanceof Boolean){
+    		return Boolean.valueOf(str);
+    	}else if(object instanceof Long){
+    		return Long.valueOf(str);
+    	}else if(object instanceof Timestamp){
+    		return Timestamp.valueOf(str);
+    	}else if(object instanceof JSONObject){
+    		return JSONObject.parseObject(str);
+    	}else if(object instanceof JSONArray){
+    		return JSONArray.parseArray(str);
+    	}else{
+    		return str;
+    	}
+    } 
+    
+    /**
+     * 替换json中的变量
+     * @param json
+     * @param key
+     * @param value
+     * @return
+     */
+	public static Map<String,String> changjson(String json, String key, String value) {
+		Map<String,String> map=new HashMap<String,String>(0);
+		map.put("boolean", "false");
+		map.put("json", json);
+		if (json.startsWith("{") && json.endsWith("}")) {
+			try {
+				JSONObject jsonStr = JSONObject.parseObject(json);
+				if(jsonStr.containsKey(key)){
+					jsonStr.put(key, settype(jsonStr.get(key),value));
+					map.put("boolean", "true");
+					map.put("json", jsonStr.toJSONString());
+					luckyclient.publicclass.LogUtil.APP.info("JSON字符串替换成功，原始JSON:【"+json+"】   新JSON:【"+jsonStr.toJSONString()+"】");
+				}
+			} catch (Exception e) {
+				luckyclient.publicclass.LogUtil.APP.error("格式化成JSON异常，请检查参数："+json,e);
+				return map;
+			}
+		} else if (json.startsWith("[") && json.endsWith("]")) {
+			try {
+				JSONArray jsonarr = JSONArray.parseArray(json);
+				JSONObject jsonStr=new JSONObject();
+				int index=0;
+				if(key.indexOf("[")>=0 && key.endsWith("]")){
+			    	index=Integer.valueOf(key.substring(key.lastIndexOf("[")+1,key.lastIndexOf("]")));
+			    	key=key.substring(0, key.lastIndexOf("["));
+			    	jsonStr = jsonarr.getJSONObject(index);
+			    	luckyclient.publicclass.LogUtil.APP.info("准备替换JSONArray中的参数值，未检测到指定参数名序号，默认替换第1个参数...");
+				}else{
+					jsonStr = jsonarr.getJSONObject(index);
+					luckyclient.publicclass.LogUtil.APP.info("准备替换JSONArray中的参数值，替换指定第"+index+"个参数...");
+				}
+				
+				if(jsonStr.containsKey(key)){
+					jsonStr.put(key, settype(jsonStr.get(key),value));
+					jsonarr.set(index, jsonStr);
+					map.put("boolean", "true");
+					map.put("json", jsonarr.toJSONString());
+				}
+				luckyclient.publicclass.LogUtil.APP.info("JSONARRAY字符串替换成功，原始JSONARRAY:【"+json+"】   新JSONARRAY:【"+jsonarr.toJSONString()+"】");
+			} catch (Exception e) {
+				luckyclient.publicclass.LogUtil.APP.error("格式化成JSONArray异常，请检查参数："+json,e);
+				return map;
+			}
+		}
+		return map;
+	}
+    
     public static void main(String[] args) {
 
     }
