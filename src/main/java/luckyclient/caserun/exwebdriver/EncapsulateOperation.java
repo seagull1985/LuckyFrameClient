@@ -323,7 +323,7 @@ public class EncapsulateOperation {
                     LogUtil.APP.info("执行JS...【" + operationValue + "】，返回的结果为：" + result);
                 } else {
                     result = "执行JS...【" + operationValue + "】";
-                    LogUtil.APP.info(result);
+                    LogUtil.APP.info(result+"，执行JS返回null或没有返回");
                 }
                 break;
             case "gotodefaultcontent":

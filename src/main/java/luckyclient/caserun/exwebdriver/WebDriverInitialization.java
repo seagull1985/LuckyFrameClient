@@ -42,7 +42,7 @@ public class WebDriverInitialization{
 				System.setProperty("webdriver.ie.driver",drivenpath+"IEDriverServer.exe");
 				webDriver = new InternetExplorerDriver();
 			}else{
-				luckyclient.publicclass.LogUtil.ERROR.info("当前操作系统无法进行IE浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
+				luckyclient.publicclass.LogUtil.APP.error("当前操作系统无法进行IE浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
 			}		
 		}else if(drivertype==1){
 			if(os.startsWith("win")){
@@ -67,11 +67,11 @@ public class WebDriverInitialization{
 				System.setProperty("webdriver.edge.driver",drivenpath+"MicrosoftWebDriver.exe");
 				webDriver = new EdgeDriver();
 			}else{
-				luckyclient.publicclass.LogUtil.ERROR.info("当前操作系统无法进行Edge浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
+				luckyclient.publicclass.LogUtil.APP.error("当前操作系统无法进行Edge浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
 			}
 		}else{
-			luckyclient.publicclass.LogUtil.ERROR.info("浏览器类型标识："+drivertype);
-			luckyclient.publicclass.LogUtil.ERROR.info("获取到的浏览器类型标识未定义，默认IE浏览器进行执行....");
+			luckyclient.publicclass.LogUtil.APP.error("浏览器类型标识："+drivertype);
+			luckyclient.publicclass.LogUtil.APP.error("获取到的浏览器类型标识未定义，默认IE浏览器进行执行....");
 			System.setProperty("webdriver.ie.driver",drivenpath+"IEDriverServer.exe");
 			webDriver = new InternetExplorerDriver();
 		}

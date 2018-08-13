@@ -70,7 +70,7 @@ public class HttpImpl {
 			File file =new File(System.getProperty("user.dir")+loadpath); 	   
 			if  (!file .isDirectory())      
 			{       
-				luckyclient.publicclass.LogUtil.APP.info("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
@@ -85,6 +85,7 @@ public class HttpImpl {
 			}			
 		} catch (Exception e) {		
 			e.printStackTrace();
+			luckyclient.publicclass.LogUtil.APP.error("启动任务模式测试程序异常！！！",e);
 			return "启动任务模式测试程序异常！！！";
 		}
 		return "启动任务模式测试程序正常";
@@ -121,7 +122,7 @@ public class HttpImpl {
 			File file =new File(System.getProperty("user.dir")+loadpath); 	   
 			if  (!file .isDirectory())      
 			{   
-				luckyclient.publicclass.LogUtil.APP.info("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
@@ -138,6 +139,7 @@ public class HttpImpl {
 			}	
 		} catch (Exception e) {		
 			e.printStackTrace();
+			luckyclient.publicclass.LogUtil.APP.error("启动单用例模式测试程序异常！！！",e);
 			return "启动单用例模式测试程序异常！！！";
 		} 
 		return "启动单用例模式测试程序正常";
@@ -172,7 +174,7 @@ public class HttpImpl {
 			File file =new File(System.getProperty("user.dir")+loadpath); 	   
 			if  (!file .isDirectory())      
 			{    
-				luckyclient.publicclass.LogUtil.APP.info("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
@@ -188,6 +190,7 @@ public class HttpImpl {
 			}		
 		} catch (Exception e) {		
 			e.printStackTrace();
+			luckyclient.publicclass.LogUtil.APP.error("启动批量用例模式测试程序异常！！！",e);
 			return "启动批量用例模式测试程序异常！！！";
 		} 
 		return "启动批量用例模式测试程序正常";
@@ -220,7 +223,7 @@ public class HttpImpl {
 			File file =new File(System.getProperty("user.dir")+loadpath); 	   
 			if  (!file .isDirectory())      
 			{    
-				luckyclient.publicclass.LogUtil.APP.info("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
@@ -236,6 +239,7 @@ public class HttpImpl {
 			}	
 		} catch (Exception e) {		
 			e.printStackTrace();
+			luckyclient.publicclass.LogUtil.APP.error("启动Web调试模式测试程序异常！！！",e);
 			return "启动Web调试模式测试程序异常！！！";
 		} 
 		return "启动Web调试模式测试程序正常";
@@ -263,6 +267,7 @@ public class HttpImpl {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			luckyclient.publicclass.LogUtil.APP.error("读取日志路径错误，请检查客户端日志路径是否存在!downLoadPath: "+downLoadPath,e);
 			return "读取日志路径错误，请检查客户端日志路径是否存在!downLoadPath: "+downLoadPath;
 		}
 		BufferedReader bos = new BufferedReader(isr);
@@ -277,6 +282,7 @@ public class HttpImpl {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			luckyclient.publicclass.LogUtil.APP.error("客户端转BufferedReader失败！请检查原因！",e);
 			return "客户端转BufferedReader失败！请检查原因！";
 		}
 		return sb.toString();
@@ -304,6 +310,7 @@ public class HttpImpl {
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            luckyclient.publicclass.LogUtil.APP.error("此文件不存在，请检查："+downLoadPath,e);
             return b;
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -318,9 +325,11 @@ public class HttpImpl {
 		if (!jarfile.isEmpty()){
             if (!FilenameUtils.getExtension(jarfile.getOriginalFilename())
                     .equalsIgnoreCase("jar")) {
+            	luckyclient.publicclass.LogUtil.APP.error("文件格式后续不是.jar，上传失败");
                 return "文件格式后续不是.jar，上传失败";
             }
 		}else{
+			luckyclient.publicclass.LogUtil.APP.error("上传文件为空，请检查！");
             return "上传文件为空，请检查！";
 		}
 
@@ -329,7 +338,7 @@ public class HttpImpl {
 		String path = System.getProperty("user.dir")+loadpath;
 		if  (!new File(path) .isDirectory())      
 		{    
-			luckyclient.publicclass.LogUtil.APP.info("客户端测试驱动桩路径不存在，请检查【"+path+"】");
+			luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+path+"】");
 			return "客户端测试驱动桩路径不存在，请检查【"+path+"】";
 		}	
 		String pathName = path +File.separator+ name;
@@ -350,10 +359,12 @@ public class HttpImpl {
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            luckyclient.publicclass.LogUtil.APP.error("客户端未找到正确路径或文件，上传失败！文件路径名称："+pathName,e);
             return "客户端未找到正确路径或文件，上传失败！文件路径名称："+pathName;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            luckyclient.publicclass.LogUtil.APP.error("客户端IOExceptiona或是未找到驱动路径！文件路径名称："+pathName,e);
             return "客户端IOExceptiona或是未找到驱动路径！文件路径名称："+pathName;
         }
 	}
@@ -384,14 +395,14 @@ public class HttpImpl {
         	websocket.connect(new InetSocketAddress(webip, webport));
         	luckyclient.publicclass.LogUtil.APP.info("客户端访问Web端配置："+webip+":"+webport+"   检测通过......");
         } catch (IOException e) {
-        	luckyclient.publicclass.LogUtil.APP.info("客户端配置检测异常，请确认您项目根目录下的客户端配置文件(sys_config.properties)是否已经正确配置。",e);
+        	luckyclient.publicclass.LogUtil.APP.error("客户端配置检测异常，请确认您项目根目录下的客户端配置文件(sys_config.properties)是否已经正确配置。",e);
             return false;
         } finally {
             try {
             	dbsocket.close();
             	websocket.close();
             } catch (IOException e) {
-            	luckyclient.publicclass.LogUtil.APP.info("关闭Socket链接异常......",e);
+            	luckyclient.publicclass.LogUtil.APP.error("关闭Socket链接异常......",e);
             }
         }
         return true;
