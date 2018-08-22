@@ -7,8 +7,10 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 /**
@@ -45,23 +47,35 @@ public class WebDriverInitialization{
 				luckyclient.publicclass.LogUtil.APP.error("当前操作系统无法进行IE浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
 			}		
 		}else if(drivertype==1){
+			FirefoxOptions options = new FirefoxOptions();
 			if(os.startsWith("win")){
 				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver.exe");
 			}else if(os.indexOf("mac")>=0){
 				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver_mac");
 			}else{
+				luckyclient.publicclass.LogUtil.APP.info("检测到当前系统环境是Linux,默认使用headless方式运行Firefox浏览器的Web UI自动化...");
+				//无界面参数
+				options.setHeadless(true);
+				//禁用沙盒
+				options.addArguments("no-sandbox");
 				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver_linux64");
 			}
-			webDriver = new FirefoxDriver();
+			webDriver = new FirefoxDriver(options);
 		}else if(drivertype==2){
+			ChromeOptions options = new ChromeOptions();
 			if(os.startsWith("win")){
 				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver.exe");
 			}else if(os.indexOf("mac")>=0){
 				System.setProperty("webdriver.gecko.driver",drivenpath+"chromedriver_mac");
 			}else{
+				luckyclient.publicclass.LogUtil.APP.info("检测到当前系统环境是Linux,默认使用headless方式运行Chrome浏览器的Web UI自动化...");
+				//无界面参数
+				options.setHeadless(true);
+				//禁用沙盒
+				options.addArguments("no-sandbox");
 				System.setProperty("webdriver.gecko.driver",drivenpath+"chromedriver_linux64");
 			}			
-			webDriver = new ChromeDriver();
+			webDriver = new ChromeDriver(options);
 		}else if(drivertype==3){
 			if(os.startsWith("win")){
 				System.setProperty("webdriver.edge.driver",drivenpath+"MicrosoftWebDriver.exe");
