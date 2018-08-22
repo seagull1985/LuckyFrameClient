@@ -1,6 +1,8 @@
 package luckyclient.publicclass;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,33 +32,47 @@ import luckyclient.publicclass.remoterinterface.HttpRequest;
 public class InvokeMethod {
 
     /**
-     * @throws Throwable
+     * 动态调用JAVA
+     * @param packagename
+     * @param functionname
+     * @param getParameterValues
+     * @param steptype
+     * @param action
+     * @return
      */
     public static String callCase(String packagename, String functionname, Object[] getParameterValues, int steptype, String action) {
         String result = "调用异常，请查看错误日志！";
         try {
-            if (steptype == 0) {
-                // 调用非静态方法用到
-                Object server = Class.forName(packagename).newInstance();
-                @SuppressWarnings("rawtypes")
-                Class[] getParameterTypes = null;
-                if (getParameterValues != null) {
-                    int paramscount = getParameterValues.length;
-                    // 赋值数组，定义类型
-                    getParameterTypes = new Class[paramscount];
-                    for (int i = 0; i < paramscount; i++) {
-                        getParameterTypes[i] = String.class;
+            if (steptype == 0) {                
+                if(functionname.toLowerCase().endsWith(".py")){
+                	//调用Python脚本
+                	luckyclient.publicclass.LogUtil.APP.info("准备开始调用Python脚本......");
+                	result = callPy(packagename, functionname, getParameterValues);
+                }else{
+                	//调用JAVA
+                    // 调用非静态方法用到
+                	luckyclient.publicclass.LogUtil.APP.info("准备开始调用JAVA驱动桩程序......");
+                    Object server = Class.forName(packagename).newInstance();
+                    @SuppressWarnings("rawtypes")
+                    Class[] getParameterTypes = null;
+                    if (getParameterValues != null) {
+                        int paramscount = getParameterValues.length;
+                        // 赋值数组，定义类型
+                        getParameterTypes = new Class[paramscount];
+                        for (int i = 0; i < paramscount; i++) {
+                            getParameterTypes[i] = String.class;
+                        }
                     }
-                }
-                Method method = getMethod(server.getClass().getMethods(), functionname, getParameterTypes);
-                if (method == null) {
-                    throw new Exception("客户端本地驱动目录下没有在包名为【" + packagename + "】中找到被调用的方法【" + functionname + "】,请检查方法名称以及参数个数是否一致！");
-                }
-                Object str = method.invoke(server, getParameterValues);
-                if (str == null) {
-                    result = "调用异常，返回结果是null";
-                } else {
-                    result = str.toString();
+                    Method method = getMethod(server.getClass().getMethods(), functionname, getParameterTypes);
+                    if (method == null) {
+                        throw new Exception("客户端本地驱动目录下没有在包名为【" + packagename + "】中找到被调用的方法【" + functionname + "】,请检查方法名称以及参数个数是否一致！");
+                    }
+                    Object str = method.invoke(server, getParameterValues);
+                    if (str == null) {
+                        result = "调用异常，返回结果是null";
+                    } else {
+                        result = str.toString();
+                    }
                 }
             } else if (steptype == 2) {
                 String templateidstr = action.substring(1, action.indexOf("】"));
@@ -393,7 +409,74 @@ public class InvokeMethod {
 
         return true;
     }
+    
+    /**
+     * 调用Python脚本
+     * @param packagename
+     * @param functionname
+     * @param getParameterValues
+     * @return
+     */
+    private static String callPy(String packagename, String functionname, Object[] getParameterValues){
+    	String result = "调用Python脚本过程异常，返回结果是null";
+    	try {
+    		// 定义缓冲区、正常结果输出流、错误信息输出流
+    		byte[] buffer = new byte[1024];
+    		ByteArrayOutputStream outStream = new ByteArrayOutputStream();  
+    		ByteArrayOutputStream outerrStream = new ByteArrayOutputStream();
+    		int params=0;
+    		if(getParameterValues!=null){
+    			params=getParameterValues.length;
+    		}
+    		String[] args = new String[2+params];
+    		args[0]="python";
+            if(packagename.endsWith(File.separator)){
+            	args[1]=packagename+functionname;   //"E:\\PycharmProjects\\untitled\\venv\\testaaa.py";
+            }else{
+            	args[1]=packagename+File.separator+functionname;   //"E:\\PycharmProjects\\untitled\\venv\\testaaa.py";
+            }
+            luckyclient.publicclass.LogUtil.APP.info("调用Python脚本路径:"+args[1]);
+    		for(int i=0;i < params;i++){
+    			args[2+i]=getParameterValues[i].toString();
+    		}
 
+            Process proc=Runtime.getRuntime().exec(args);
+            InputStream errStream = proc.getErrorStream();
+            InputStream stream = proc.getInputStream();
+            
+            // 流读取与写入
+            int len = -1;  
+            while ((len = errStream.read(buffer)) != -1) {  
+                outerrStream.write(buffer, 0, len);  
+            }  
+            while ((len = stream.read(buffer)) != -1) {  
+                outStream.write(buffer, 0, len);  
+            }
+            
+            proc.waitFor();
+            // 打印流信息
+            if(outerrStream.toString().equals("")){
+            	result = outStream.toString();
+            	luckyclient.publicclass.LogUtil.APP.info("成功调用Python脚本，返回结果:"+result);
+            }else{
+            	result = outerrStream.toString();
+            	if(result.indexOf("ModuleNotFoundError")>-1){
+            		luckyclient.publicclass.LogUtil.APP.error("调用Python脚本出现异常，有相关Python模块未引用到，请在Python脚本中注意设置系统环境路径(例: sys.path.append(\"E:\\PycharmProjects\\untitled\\venv\\Lib\\site-packages\"))，"
+            				+ "详细错误信息:"+result);
+            	}else if(result.indexOf("No such file or directory")>-1){
+            		luckyclient.publicclass.LogUtil.APP.error("调用Python脚本出现异常，在指定路径下未找到Python脚本，原因有可能是Python脚本路径错误或是传入Python指定参数个数不一致，详细错误信息:"+result);
+            	}else{
+            		luckyclient.publicclass.LogUtil.APP.error("调用Python脚本出现异常，错误信息:"+result);
+            	}        	
+            }
+           } 
+         catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
+    	return result;
+    }
+    
     public static void main(String[] args) {
         // TODO Auto-generated method stub
 
