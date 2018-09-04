@@ -41,6 +41,8 @@ public class AppiumInitialization {
 		capabilities.setCapability("automationName", properties.getProperty("automationName"));
 		// 设备名称
 		capabilities.setCapability("deviceName", properties.getProperty("deviceName"));
+		// 平台类型
+		capabilities.setCapability("platformName", properties.getProperty("platformName"));
 		// 系统版本
 		capabilities.setCapability("platformVersion", properties.getProperty("platformVersion"));
 		// 模拟器上的ip地址
@@ -80,6 +82,8 @@ public class AppiumInitialization {
 		capabilities.setCapability("automationName", properties.getProperty("automationName"));
 		// 设备名称
 		capabilities.setCapability("deviceName", properties.getProperty("deviceName"));
+		// 平台类型
+		capabilities.setCapability("platformName", properties.getProperty("platformName"));
 		// 系统版本
 		capabilities.setCapability("platformVersion", properties.getProperty("platformVersion"));
 		// 模拟器上的ip地址
