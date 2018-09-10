@@ -40,8 +40,9 @@ public class BaseWebDrive {
 			luckyclient.publicclass.LogUtil.APP.error("截图操作失败，抛出异常请查看日志...", e);
 			e.printStackTrace();
 		}
+		scrFile.deleteOnExit();
 		luckyclient.publicclass.LogUtil.APP
-				.info("已对当前界面进行截图操作，请前往服务器上查看...【" + relativelyPath + "\\log\\ScreenShot\\" + imgname + ".png】");
+				.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【" + relativelyPath + "\\log\\ScreenShot\\" + imgname + ".png】");
 		return result;
 	}
 
