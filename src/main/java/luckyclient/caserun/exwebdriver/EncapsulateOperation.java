@@ -346,6 +346,10 @@ public class EncapsulateOperation {
             case "gotowindow":
                 result = switchToTargetWindow(wd, operationValue);
                 break;
+            case "closewindow":
+                wd.close();
+                result = "关闭当前浏览器窗口...";
+                break;
             case "timeout":
                 try {
                     // 设置页面加载最大时长30秒
