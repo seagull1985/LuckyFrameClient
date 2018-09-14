@@ -196,8 +196,13 @@ public class AndroidEncapsulateOperation {
 			result = "执行JS...【" + operationValue + "】";
 			luckyclient.publicclass.LogUtil.APP.info("执行JS...【" + operationValue + "】");
 			break;
-		// 模拟手机键盘
+		case "exAdbShell":
+			Runtime.getRuntime().exec(operationValue);
+			result = "执行安卓adb命令...【" + operationValue + "】";
+			luckyclient.publicclass.LogUtil.APP.info("执行安卓adb命令...【" + operationValue + "】");		   
+		    break;
 		case "keycode":
+			// 模拟手机键盘
 			if (ChangString.isNumeric(operationValue)) {
 				appium.pressKeyCode(Integer.valueOf(operationValue));
 				result = "模拟手机键盘发送指令...keycode【" + operationValue + "】";
