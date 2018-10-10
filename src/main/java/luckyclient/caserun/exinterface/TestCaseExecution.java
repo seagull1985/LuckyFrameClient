@@ -6,6 +6,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openqa.selenium.WebDriver;
+
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.ios.IOSElement;
+import luckyclient.caserun.exappium.AppDriverAnalyticCase;
+import luckyclient.caserun.exappium.androidex.AndroidCaseExecution;
+import luckyclient.caserun.exappium.iosex.IosCaseExecution;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.exwebdriver.ex.WebCaseExecution;
 import luckyclient.caserun.exwebdriver.ex.WebDriverAnalyticCase;
@@ -18,7 +27,6 @@ import luckyclient.planapi.entity.PublicCaseParams;
 import luckyclient.publicclass.ChangString;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.LogUtil;
-import org.openqa.selenium.WebDriver;
 
 /**
  * =================================================================
@@ -358,7 +366,7 @@ public class TestCaseExecution {
      * @throws InterruptedException
      * 提供给Web用例中，runcase的时候使用
      */
-    protected static String oneCaseExecuteForWebCase(String testCaseExternalId, String taskid, LogOperation caselog, WebDriver driver) throws InterruptedException {
+    protected static String oneCaseExecuteForUICase(String testCaseExternalId, String taskid, LogOperation caselog, Object driver) throws InterruptedException {
         Map<String, String> variable = new HashMap<>(0);
         String expectedresults = null;
         Integer setresult = 1;
@@ -385,6 +393,8 @@ public class TestCaseExecution {
             // 根据步骤类型来分析步骤参数
             if (1 == step.getSteptype()){
             	params = WebDriverAnalyticCase.analyticCaseStep(testcaseob, step, taskid, caselog);
+            }else if (4 == step.getSteptype()){
+            	params = AppDriverAnalyticCase.analyticCaseStep(testcaseob, step, taskid,caselog);
             } else{
             	params = InterfaceAnalyticCase.analyticCaseStep(testcaseob, step, taskid, caselog);
             } 
@@ -395,18 +405,32 @@ public class TestCaseExecution {
                 break;
             }
 
-            // 根据步骤类型来执行步骤
-            if (1 == step.getSteptype()){
-            	result = WebCaseExecution.runWebStep(params, variable, driver, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
-            } else{
-            	result = WebCaseExecution.runStep(params, variable, taskid, testcaseob.getSign(), step, caselog);
-            } 
-
             expectedresults = params.get("ExpectedResults");
             expectedresults = ChangString.changparams(expectedresults, variable, "预期结果");
+            
+            // 根据步骤类型来执行步骤
+            if (1 == step.getSteptype()){
+            	WebDriver wd=(WebDriver)driver;
+            	result = WebCaseExecution.runWebStep(params, variable, wd, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
+                // 判断结果
+                setresult = WebCaseExecution.judgeResult(testcaseob, step, params, wd, taskid, expectedresults, result, caselog);
+            }else if (4 == step.getSteptype()){
+            	if (driver instanceof AndroidDriver){
+            		AndroidDriver<AndroidElement> ad=(AndroidDriver<AndroidElement>)driver;
+            		result = AndroidCaseExecution.androidRunStep(params, variable, ad, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
+            		// 判断结果
+                    setresult = AndroidCaseExecution.judgeResult(testcaseob, step, params, ad, taskid, expectedresults, result, caselog);
+            	}else{
+            		IOSDriver<IOSElement> ios=(IOSDriver<IOSElement>)driver;
+            		result = IosCaseExecution.iosRunStep(params, variable, ios, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
+            		// 判断结果
+                    setresult = IosCaseExecution.judgeResult(testcaseob, step, params, ios, taskid, expectedresults, result, caselog);
+            	}
+            	
+            } else{
+            	result = runStep(params, variable, taskid, testcaseob.getSign(), step, caselog);
+            } 
 
-            // 判断结果
-            setresult = WebCaseExecution.judgeResult(testcaseob, step, params, driver, taskid, expectedresults, result, caselog);
             if (0 != setresult){
             	break;
             }
@@ -422,4 +446,64 @@ public class TestCaseExecution {
         }
         return testnote;
     }
+    
+    /**
+     * 其他类型测试用例中调用接口测试步骤
+     * @param params
+     * @param variable
+     * @param taskid
+     * @param casenum
+     * @param step
+     * @param caselog
+     * @return
+     */
+    public static String runStep(Map<String, String> params, Map<String, String> variable, String taskid, String casenum, ProjectCasesteps step, LogOperation caselog) {
+        String result = "";
+        String packagename = "";
+        String functionname = "";
+        Object[] getParameterValues = null;
+
+        try {
+            packagename = params.get("PackageName");
+            packagename = ChangString.changparams(packagename, variable, "包路径");
+            functionname = params.get("FunctionName");
+            functionname = ChangString.changparams(functionname, variable, "方法名");
+
+            if (null != functionname && functionname.contains("解析异常")) {
+                LogUtil.APP.error("用例: " + casenum + ", 解析这个方法【" + functionname + "】失败！");
+                caselog.caseLogDetail(taskid, casenum, "用例: " + casenum + ", 解析这个方法【" + functionname + "】失败！", "error", String.valueOf(step.getStepnum()), "");
+                result = "步骤执行失败：解析用例失败!";
+            } else {
+                // 判断方法是否带参数
+                if (params.size() > 4) {
+                    // 获取传入参数，放入对象中
+                    getParameterValues = new Object[params.size() - 4];
+                    for (int j = 0; j < params.size() - 4; j++) {
+                        if (params.get("FunctionParams" + (j + 1)) == null) {
+                            break;
+                        }
+                        String parameterValues = params.get("FunctionParams" + (j + 1));
+                        parameterValues = ChangString.changparams(parameterValues, variable, "用例参数");
+                        luckyclient.publicclass.LogUtil.APP.info("用例: " + casenum + ", 解析包路径：" + packagename + "; 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues);
+                        caselog.caseLogDetail(taskid, casenum, "用例: " + casenum + ", 解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues, "info", String.valueOf(step.getStepnum()), "");
+                        getParameterValues[j] = parameterValues;
+                    }
+                } else {
+                    getParameterValues = null;
+                }
+
+                LogUtil.APP.info("二次解析用例过程完成，等待进行接口操作......");
+                caselog.caseLogDetail(taskid, casenum, "包路径: " + packagename + "; 方法名: " + functionname, "info", String.valueOf(step.getStepnum()), "");
+
+                result = InvokeMethod.callCase(packagename, functionname, getParameterValues, step.getSteptype(), step.getAction());
+            }
+        } catch (Exception e) {
+            LogUtil.APP.error("调用方法过程出错，方法名：" + functionname + "，请重新检查脚本方法名称以及参数！");
+            result = "步骤执行失败：接口调用出错！";
+        }
+        if (result.contains("步骤执行失败：")) caselog.caseLogDetail(taskid, casenum, result, "error", String.valueOf(step.getStepnum()), "");
+        else caselog.caseLogDetail(taskid, casenum, result, "info", String.valueOf(step.getStepnum()), "");
+        return result;
+    }
+    
 }

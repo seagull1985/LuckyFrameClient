@@ -88,10 +88,6 @@ public class AppiumInitialization {
 		capabilities.setCapability("platformVersion", properties.getProperty("platformVersion"));
 		// 模拟器上的ip地址
 		capabilities.setCapability("udid", properties.getProperty("udid"));
-		// Android应用的包名
-		capabilities.setCapability("appPackage", properties.getProperty("appPackage"));
-		// 启动的Android Activity
-		capabilities.setCapability("appActivity", properties.getProperty("appActivity"));
 		// 支持中文输入，会自动安装Unicode输入
 		capabilities.setCapability("unicodeKeyboard", properties.getProperty("unicodeKeyboard"));
 		// 重置输入法到原有状态
