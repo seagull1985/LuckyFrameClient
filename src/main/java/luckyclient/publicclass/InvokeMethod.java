@@ -124,8 +124,18 @@ public class InvokeMethod {
                             for (int i = 0; i < paramslist.size(); i++) {
                                 ProjectTemplateParams ptp = paramslist.get(i);
                                 if("_forTextJson".equals(ptp.getParamname())){
+                            		//分析参数替换序号
+                            		int index = 1;
+                            		if (key.contains("[") && key.endsWith("]")) {
+                            			index = Integer.valueOf(key.substring(key.lastIndexOf("[") + 1, key.lastIndexOf("]")));
+                            			key = key.substring(0, key.lastIndexOf("["));
+                            			luckyclient.publicclass.LogUtil.APP.info("准备替换JSON对象中的参数值，替换指定第" + index + "个参数...");
+                            		} else {
+                            			luckyclient.publicclass.LogUtil.APP.info("准备替换JSON对象中的参数值，未检测到指定参数名序号，默认替换第1个参数...");                       			
+                            		}
+                            		
                                 	if(ptp.getParam().indexOf("\""+key+"\":")>=0){
-                                		Map<String,String> map=ChangString.changjson(ptp.getParam(), key, value);
+                                		Map<String,String> map=ChangString.changjson(ptp.getParam(), key, value,index);
                                 		if("true".equals(map.get("boolean"))){
                                             ptp.setParam(map.get("json"));
                                             paramslist.set(i, ptp);
@@ -279,7 +289,17 @@ public class InvokeMethod {
                                 ProjectTemplateParams ptp = paramslist.get(i);
                                 if("_forTextJson".equals(ptp.getParamname())){
                                 	if(ptp.getParam().indexOf("\""+key+"\":")>=0){
-                                		Map<String,String> map=ChangString.changjson(ptp.getParam(), key, value);
+                                 		//分析参数替换序号
+                                		int index = 1;
+                                		if (key.indexOf("[") >= 0 && key.endsWith("]")) {
+                                			index = Integer.valueOf(key.substring(key.lastIndexOf("[") + 1, key.lastIndexOf("]")));
+                                			key = key.substring(0, key.lastIndexOf("["));
+                                			luckyclient.publicclass.LogUtil.APP.info("准备替换JSON对象中的参数值，未检测到指定参数名序号，默认替换第1个参数...");
+                                		} else {
+                                			luckyclient.publicclass.LogUtil.APP.info("准备替换JSON对象中的参数值，替换指定第" + index + "个参数...");
+                                		}
+                                		
+                                		Map<String,String> map=ChangString.changjson(ptp.getParam(), key, value,index);
                                 		if("true".equals(map.get("boolean"))){
                                             ptp.setParam(map.get("json"));
                                             paramslist.set(i, ptp);
