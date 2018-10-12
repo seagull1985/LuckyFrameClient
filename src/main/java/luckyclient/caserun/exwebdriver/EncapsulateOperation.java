@@ -1,19 +1,22 @@
 package luckyclient.caserun.exwebdriver;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import luckyclient.caserun.exwebdriver.ocr.Ocr;
 import luckyclient.publicclass.ChangString;
 import luckyclient.publicclass.LogUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 
-import luckyclient.caserun.exwebdriver.ocr.Ocr;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -313,6 +316,16 @@ public class EncapsulateOperation {
                 result = "Open页面...【" + operationValue + "】";
                 luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
+            case "addcookie":
+                List<Cookie> cookies = buildCookie(operationValue);
+                if (null != cookies && cookies.size() > 0) {
+                    for (Cookie cookie : cookies) {
+                        wd.manage().addCookie(cookie);
+                    }
+                }
+                result = "添加cookie...【" + operationValue + "】";
+                luckyclient.publicclass.LogUtil.APP.info(result);
+                break;
             case "exjs":
                 JavascriptExecutor jse = (JavascriptExecutor) wd;
                 Object obj = jse.executeScript(operationValue);
@@ -369,6 +382,41 @@ public class EncapsulateOperation {
                 break;
         }
         return result;
+    }
+
+    private static List<Cookie> buildCookie(String operationValue) {
+        if (StringUtils.isBlank(operationValue)) {
+            return null;
+        }
+        try {
+            JSONArray objects = JSON.parseArray(operationValue);
+            if (null == objects) {
+                return null;
+            }
+            List<Cookie> result = new ArrayList<>(objects.size());
+            for (int i = 0; i < objects.size(); i++) {
+                JSONObject jsonObject = objects.getJSONObject(i);
+                if (null == jsonObject) {
+                    continue;
+                }
+                String name = jsonObject.getString("name");
+                String val = jsonObject.getString("val");
+                String domain = jsonObject.getString("domain");
+                String path = jsonObject.getString("path");
+                // TODO 缓存多长时间，算出失效时间,单位：秒
+                String expire = jsonObject.getString("expire");
+                if (StringUtils.isBlank(name) || StringUtils.isBlank(val)) {
+                    System.out.println("cookie:" + jsonObject + "错误");
+                    continue;
+                }
+                Cookie cookie = new Cookie(name, val, domain, path, null);
+                result.add(cookie);
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private static int[] getLocationFromParam(String param, String split) {
