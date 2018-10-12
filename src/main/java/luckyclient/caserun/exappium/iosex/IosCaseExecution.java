@@ -230,12 +230,6 @@ public class IosCaseExecution extends TestCaseExecution{
         java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
         imagname = timeformat.format(new Date());
         if (null != result && !result.contains("步骤执行失败：")) {
-            // 获取步骤间等待时间
-            int waitsec = Integer.parseInt(params.get("StepWait"));
-            if (waitsec > 0) {
-                luckyclient.publicclass.LogUtil.APP.info("操作休眠【" + waitsec + "】秒");
-                Thread.sleep(waitsec * 1000);
-            }
             // 有预期结果
             if (null != expect && !expect.isEmpty()) {
                 luckyclient.publicclass.LogUtil.APP.info("期望结果为【" + expect + "】");
@@ -246,8 +240,8 @@ public class IosCaseExecution extends TestCaseExecution{
                     luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，将测试结果【" + result + "】赋值给变量【" + expect.substring(ASSIGNMENT_SIGN.length()) + "】");
                     caselog.caseLogDetail(taskid, testcase.getSign(), "将测试结果【" + result + "】赋值给变量【" + expect.substring(ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(step.getStepnum()), "");
                 }
-                // WebUI检查模式
-                else if (1 == step.getSteptype() && params.get("checkproperty") != null && params.get("checkproperty_value") != null) {
+                // 移动端 UI检查模式
+                else if (4 == step.getSteptype() && params.get("checkproperty") != null && params.get("checkproperty_value") != null) {
                     String checkproperty = params.get("checkproperty");
                     String checkPropertyValue = params.get("checkproperty_value");
 
@@ -316,6 +310,13 @@ public class IosCaseExecution extends TestCaseExecution{
             caselog.caseLogDetail(taskid, testcase.getSign(), "当前步骤在执行过程中解析|定位元素|操作对象失败！" + casenote, "error", String.valueOf(step.getStepnum()), imagname);
         }
 
+        // 获取步骤间等待时间
+        int waitsec = Integer.parseInt(params.get("StepWait"));
+        if (waitsec > 0) {
+            luckyclient.publicclass.LogUtil.APP.info("操作休眠【" + waitsec + "】秒");
+            Thread.sleep(waitsec * 1000);
+        }
+        
         return setresult;
     }
 	
