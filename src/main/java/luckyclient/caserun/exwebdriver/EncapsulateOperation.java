@@ -321,10 +321,10 @@ public class EncapsulateOperation {
                 if (null != cookies && cookies.size() > 0) {
                     for (Cookie cookie : cookies) {
                         wd.manage().addCookie(cookie);
+                        luckyclient.publicclass.LogUtil.APP.info("添加Cookie:【"+cookie+"】成功！");
                     }
                 }
                 result = "添加cookie...【" + operationValue + "】";
-                luckyclient.publicclass.LogUtil.APP.info(result);
                 break;
             case "exjs":
                 JavascriptExecutor jse = (JavascriptExecutor) wd;
@@ -386,11 +386,13 @@ public class EncapsulateOperation {
 
     private static List<Cookie> buildCookie(String operationValue) {
         if (StringUtils.isBlank(operationValue)) {
+        	luckyclient.publicclass.LogUtil.APP.info("获取Cookie值：operationValue为空！");
             return null;
         }
         try {
             JSONArray objects = JSON.parseArray(operationValue);
             if (null == objects) {
+            	luckyclient.publicclass.LogUtil.APP.info("格式化Cookie字符串成JSONArray，对象为空！");
                 return null;
             }
             List<Cookie> result = new ArrayList<>(objects.size());
@@ -404,17 +406,19 @@ public class EncapsulateOperation {
                 String domain = jsonObject.getString("domain");
                 String path = jsonObject.getString("path");
                 // TODO 缓存多长时间，算出失效时间,单位：秒
-                String expire = jsonObject.getString("expire");
-                if (StringUtils.isBlank(name) || StringUtils.isBlank(val)) {
-                    System.out.println("cookie:" + jsonObject + "错误");
-                    continue;
+                //String expire = jsonObject.getString("expire");
+                if (!StringUtils.isBlank(name) && !StringUtils.isBlank(val)) {
+                    Cookie cookie = new Cookie(name, val, domain, path, null);
+                	luckyclient.publicclass.LogUtil.APP.info("解析Cookie成功：【"+cookie+"】");
+                    result.add(cookie);
+                }else{
+                    luckyclient.publicclass.LogUtil.APP.error("cookie:" + jsonObject + "错误,name或是val为空！");
                 }
-                Cookie cookie = new Cookie(name, val, domain, path, null);
-                result.add(cookie);
             }
             return result;
         } catch (Exception e) {
             e.printStackTrace();
+            luckyclient.publicclass.LogUtil.APP.error("格式化Cookie对象出错，请检查您的格式是否正确！【"+operationValue+"】");
             return null;
         }
     }

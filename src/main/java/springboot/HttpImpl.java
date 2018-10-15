@@ -1,6 +1,25 @@
 package springboot;
 
-import com.alibaba.fastjson.JSONObject;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.rmi.RemoteException;
+import java.util.Properties;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,15 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.rmi.RemoteException;
-import java.util.Properties;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * =================================================================
@@ -67,10 +78,7 @@ public class HttpImpl {
 			sbf.append(taskid).append(" ");
 			sbf.append(loadpath);
 			if(os.startsWith("win")){
-                // String file1 = HttpImpl.class.getClassLoader().getResource("task.cmd").getFile();
-                // file1 = file1.substring(1);
-                // run.exec("cmd.exe /k start " + file1 +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));
-                run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));
+				run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
 			}else{
 				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task.sh"+ " " +sbf.toString());
 		        ps.waitFor();
