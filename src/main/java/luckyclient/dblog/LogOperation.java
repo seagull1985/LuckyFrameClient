@@ -1,9 +1,10 @@
 package luckyclient.dblog;
 
+import luckyclient.publicclass.DBOperation;
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import luckyclient.publicclass.DBOperation;
 
 /**
  * =================================================================
@@ -91,7 +92,7 @@ public class LogOperation {
 					 luckyclient.publicclass.LogUtil.APP.info("用例【"+caseno+"】第"+step+"步，日志级别"+loggrade+",日志明细【"+detail+"】...");
 					 detail="日志明细超过5000字符无法存入数据库，已在LOG4J日志中打印，请前往查看...";
 				}
-				String sql = "Insert into test_logDetail(LOGTIME,TASKID,CASEID,DETAIL,LOGGRADE,STEP,IMGNAME)  "
+				String sql = "Insert into test_logdetail(LOGTIME,TASKID,CASEID,DETAIL,LOGGRADE,STEP,IMGNAME)  "
 						+ "Values (str_to_date('" + df.format(new Date()) + "','%Y-%m-%d %T')," + taskidtoint + ","
 						+ caseid + ",'" + detail + "','" + loggrade + "','" + step + "','" + imgname + "')";
 				try {
@@ -186,11 +187,11 @@ public class LogOperation {
 			int inttaskid = Integer.parseInt(taskid);
 			String casesidsql;
 			casesidsql = dbt.executeQuery(
-					"select id from TEST_CASEDETAIL t where caseno = '" + caseno + "' and taskid = " + inttaskid);
+					"select id from test_casedetail t where caseno = '" + caseno + "' and taskid = " + inttaskid);
 			int casesid = Integer.parseInt(casesidsql.substring(0, casesidsql.indexOf("%")));
 
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String sql = "Insert into test_logDetail(LOGTIME,TASKID,CASEID,DETAIL,LOGGRADE,STEP,IMGNAME)  "
+			String sql = "Insert into test_logdetail(LOGTIME,TASKID,CASEID,DETAIL,LOGGRADE,STEP,IMGNAME)  "
 					+ "Values (str_to_date('" + df.format(new Date()) + "','%Y-%m-%d %T')," + inttaskid + "," + casesid
 					+ ",'" + detail + "','" + loggrade + "','" + step + "','')";
 
@@ -213,10 +214,10 @@ public class LogOperation {
 		String casesidsql;
 		try {
 			casesidsql = dbt.executeQuery(
-					"select id from TEST_CASEDETAIL t where caseno = '" + caseno + "' and taskid = " + inttaskid);
+					"select id from test_casedetail t where caseno = '" + caseno + "' and taskid = " + inttaskid);
 			int casesid = Integer.parseInt(casesidsql.substring(0, casesidsql.lastIndexOf("%")));
 			// 删除原来的日志
-			dbt.executeSql("delete from TEST_LOGDETAIL where caseid = " + casesid + " and taskid = " + inttaskid);
+			dbt.executeSql("delete from test_logdetail where caseid = " + casesid + " and taskid = " + inttaskid);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -230,7 +231,7 @@ public class LogOperation {
 		int inttaskid = Integer.parseInt(taskid);
 		try {
 			// 删除原来的用例
-			dbt.executeSql("delete from TEST_CASEDETAIL where caseno = '" + caseno + "' and taskid = " + inttaskid);
+			dbt.executeSql("delete from test_casedetail where caseno = '" + caseno + "' and taskid = " + inttaskid);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -244,7 +245,7 @@ public class LogOperation {
 		int inttaskid = Integer.parseInt(taskid);
 		String casesidsql = null;
 		try {
-			casesidsql = dbt.executeQuery("select caseno,caseversion from TEST_CASEDETAIL t where t.taskid = "
+			casesidsql = dbt.executeQuery("select caseno,caseversion from test_casedetail t where t.taskid = "
 					+ inttaskid + " and t.casestatus <> 0");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -264,7 +265,7 @@ public class LogOperation {
 		String[] address = null;
 		try {
 			casesidsql = dbt.executeQuery(
-					"select t.issendmail,t.emailer from TEST_JOBS t where id in (select jobid from TEST_TASKEXCUTE t where t.id = "
+					"select t.issendmail,t.emailer from test_jobs t where id in (select jobid from test_taskexcute t where t.id = "
 							+ inttaskid + ")");
 			String status = casesidsql.substring(0, casesidsql.indexOf("%"));
 			if ("1".equals(status)) {
@@ -300,7 +301,7 @@ public class LogOperation {
 		String[] buildname = null;
 		try {
 			casesidsql = dbt.executeQuery(
-					"select t.isbuilding,t.buildname from TEST_JOBS t where id in (select jobid from TEST_TASKEXCUTE t where t.id = "
+					"select t.isbuilding,t.buildname from test_jobs t where id in (select jobid from test_taskexcute t where t.id = "
 							+ inttaskid + ")");
 			if (null == casesidsql || "".equals(casesidsql)) {
 				return buildname;
@@ -342,7 +343,7 @@ public class LogOperation {
 		String[] command = null;
 		try {
 			casesidsql = dbt.executeQuery(
-					"select t.isrestart,t.restartcomm from TEST_JOBS t where id in (select jobid from TEST_TASKEXCUTE t where t.id = "
+					"select t.isrestart,t.restartcomm from test_jobs t where id in (select jobid from test_taskexcute t where t.id = "
 							+ inttaskid + ")");
 			if (null == casesidsql || "".equals(casesidsql)) {
 				return command;
@@ -380,7 +381,7 @@ public class LogOperation {
 		String testplanname = "NULL";
 		try {
 			String sql = dbt.executeQuery(
-					"select t.testlinkname from TEST_JOBS t where id in (select jobid from TEST_TASKEXCUTE t where t.id = "
+					"select t.testlinkname from test_jobs t where id in (select jobid from test_taskexcute t where t.id = "
 							+ inttaskid + ")");
 			testplanname = sql.substring(0, sql.lastIndexOf("%"));
 		} catch (Exception e) {
@@ -399,20 +400,22 @@ public class LogOperation {
 		String desTime = "计算测试时长出错！";
 		try {
 			String sql = dbt.executeQuery(
-					"select date_format(t.createtime,'%Y-%m-%d %T'),date_format(t.finishtime,'%Y-%m-%d %T') from TEST_TASKEXCUTE t where t.id= "
+					"select date_format(t.createtime,'%Y-%m-%d %T'),date_format(t.finishtime,'%Y-%m-%d %T') from test_taskexcute t where t.id= "
 							+ inttaskid);
 			String starttime = sql.substring(0, sql.indexOf("%"));
 			String finishtime = sql.substring(sql.indexOf("%") + 1, sql.length() - 1);
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date start = df.parse(starttime);
-			Date finish = df.parse(finishtime);
-			long l = finish.getTime() - start.getTime();
-			long day = l / (24 * 60 * 60 * 1000);
-			long hour = (l / (60 * 60 * 1000) - day * 24);
-			long min = ((l / (60 * 1000)) - day * 24 * 60 - hour * 60);
-			long s = (l / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
-			desTime = "<font color='#2828FF'>" + hour + "</font>小时<font color='#2828FF'>" + min
-					+ "</font>分<font color='#2828FF'>" + s + "</font>秒";
+            if (StringUtils.isNotBlank(finishtime) && !StringUtils.equalsIgnoreCase(finishtime, "null")) {
+                Date finish = df.parse(finishtime);
+                long l = finish.getTime() - start.getTime();
+                long day = l / (24 * 60 * 60 * 1000);
+                long hour = (l / (60 * 60 * 1000) - day * 24);
+                long min = ((l / (60 * 1000)) - day * 24 * 60 - hour * 60);
+                long s = (l / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
+                desTime = "<font color='#2828FF'>" + hour + "</font>小时<font color='#2828FF'>" + min
+                        + "</font>分<font color='#2828FF'>" + s + "</font>秒";
+            }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -429,7 +432,7 @@ public class LogOperation {
 		int drivertype = 0;
 		try {
 			String sqlresult = dbt.executeQuery(
-					"select browsertype from test_jobs where id = (select jobid from TEST_TASKEXCUTE where id = "
+					"select browsertype from test_jobs where id = (select jobid from test_taskexcute where id = "
 							+ taskidtoint + ")");
 			drivertype = Integer.parseInt(sqlresult.substring(0, sqlresult.lastIndexOf("%")));
 		} catch (Exception e) {
