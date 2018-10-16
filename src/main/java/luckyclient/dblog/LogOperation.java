@@ -38,6 +38,7 @@ public class LogOperation {
 				dbt.executeSql(sql);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				luckyclient.publicclass.LogUtil.APP.error("执行插入用例执行记录SQL出现异常，请确认数据库链接是否正常！", e);
 				e.printStackTrace();
 			}
 		}
@@ -58,6 +59,7 @@ public class LogOperation {
 				dbt.executeSql(sql);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				luckyclient.publicclass.LogUtil.APP.error("执行更新用例执行状态SQL出现异常，请确认数据库链接是否正常！", e);
 				e.printStackTrace();
 			}
 		}
@@ -79,6 +81,7 @@ public class LogOperation {
 						+ " and caseno = '" + caseno + "' order by id desc");
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
+				luckyclient.publicclass.LogUtil.APP.error("执行查询用例执行ID SQL出现异常，请确认数据库链接是否正常！", e1);
 				e1.printStackTrace();
 			}
 
@@ -102,6 +105,7 @@ public class LogOperation {
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
+					luckyclient.publicclass.LogUtil.APP.error("执行插入用例执行日志SQL出现异常，请确认数据库链接是否正常！", e);
 					e.printStackTrace();
 				}
 
@@ -145,13 +149,14 @@ public class LogOperation {
 				taskcount[3] = caselock;
 				taskcount[4] = casenoexec;
 
-				String sql = "update test_TaskExcute set casetotal_count = " + casecount + ",casesucc_count = "
+				String sql = "update test_taskexcute set casetotal_count = " + casecount + ",casesucc_count = "
 						+ casesuc + ",casefail_count = " + casefail + ",caselock_count = " + caselock
 						+ ",casenoexec_count = " + casenoexec + ",finishtime =  str_to_date('" + df.format(new Date())
 						+ "','%Y-%m-%d %T'), " + "taskStatus  = 2 where id = " + id;
 				dbt.executeSql(sql);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				luckyclient.publicclass.LogUtil.APP.error("执行更新本次任务执行统计情况SQL出现异常，请确认数据库链接是否正常！", e);
 				e.printStackTrace();
 			}
 		}
@@ -165,12 +170,13 @@ public class LogOperation {
 		if (0 == exetype) {
 			try {
 				int id = Integer.parseInt(taskid);
-				String sql = "update test_TaskExcute set casetotal_count= " + casecount + ",taskStatus  = 1 where id = "
+				String sql = "update test_taskexcute set casetotal_count= " + casecount + ",taskStatus  = 1 where id = "
 						+ id;
 
 				dbt.executeSql(sql);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				luckyclient.publicclass.LogUtil.APP.error("执行更新本次任务的执行状态SQL出现异常，请确认数据库链接是否正常！", e);
 				e.printStackTrace();
 			}
 		}
@@ -201,6 +207,7 @@ public class LogOperation {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行更新本次任务的单条用例执行日志SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 		}
 
@@ -220,6 +227,7 @@ public class LogOperation {
 			dbt.executeSql("delete from test_logdetail where caseid = " + casesid + " and taskid = " + inttaskid);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行删除单次任务指定的用例日志明细SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 		}
 	}
@@ -234,6 +242,7 @@ public class LogOperation {
 			dbt.executeSql("delete from test_casedetail where caseno = '" + caseno + "' and taskid = " + inttaskid);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行删除单次任务指定的用例明细SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 		}
 	}
@@ -249,6 +258,7 @@ public class LogOperation {
 					+ inttaskid + " and t.casestatus <> 0");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行取出指定任务ID中的不属于成功状态的用例编写以及版本号SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 		}
 		return casesidsql;
@@ -285,6 +295,7 @@ public class LogOperation {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行取出指定任务ID中所属的调度是否要发送邮件状态及收件人地址SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return address;
 		}
@@ -324,6 +335,7 @@ public class LogOperation {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行取出指定任务ID中所属的调度是否要自动构建以及构建的项目名称SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return buildname;
 		}
@@ -366,6 +378,7 @@ public class LogOperation {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行取出指定任务ID中所属的调度是否要自动重启TOMCAT SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return command;
 		}
@@ -386,6 +399,7 @@ public class LogOperation {
 			testplanname = sql.substring(0, sql.lastIndexOf("%"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行获取测试计划名称SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return testplanname;
 		}
@@ -418,6 +432,7 @@ public class LogOperation {
             }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行获取任务测试时长SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return desTime;
 		}
@@ -437,6 +452,7 @@ public class LogOperation {
 			drivertype = Integer.parseInt(sqlresult.substring(0, sqlresult.lastIndexOf("%")));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行查询web执行浏览器类型SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return drivertype;
 		}
@@ -460,6 +476,7 @@ public class LogOperation {
 			sqlresult = sqlresult.substring(sqlresult.indexOf("测试结果：") + 5, sqlresult.lastIndexOf("%"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行查询任务中用例步骤日志执行实际结果SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return sqlresult;
 		}
@@ -476,6 +493,7 @@ public class LogOperation {
 			sqlresult = sqlresult.substring(0, sqlresult.lastIndexOf("%"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行根据任务名称查询任务ID SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return Integer.parseInt(sqlresult);
 		}
@@ -499,6 +517,7 @@ public class LogOperation {
 			sqlresult = sqlresult.substring(sqlresult.indexOf("预期结果：") + 5, sqlresult.lastIndexOf("测试结果：") - 1);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			luckyclient.publicclass.LogUtil.APP.error("执行查询任务中用例步骤日志预期结果 SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return sqlresult;
 		}
