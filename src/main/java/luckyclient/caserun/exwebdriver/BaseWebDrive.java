@@ -30,19 +30,20 @@ public class BaseWebDrive {
 	public static Boolean webScreenShot(WebDriver driver,String imgname) {
 		Boolean result = false;
 		String relativelyPath = System.getProperty("user.dir");
+		String pngpath=relativelyPath +File.separator+ "log"+File.separator+"ScreenShot" +File.separator+ imgname + ".png";
 
 		// 对远程系统进行截图
 		driver = new Augmenter().augment(driver);
 		File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		try {
-			FileUtils.copyFile(scrFile, new File(relativelyPath + "\\log\\ScreenShot\\" + imgname + ".png"));
+			FileUtils.copyFile(scrFile, new File(pngpath));
 		} catch (IOException e) {
 			luckyclient.publicclass.LogUtil.APP.error("截图操作失败，抛出异常请查看日志...", e);
 			e.printStackTrace();
 		}
 		scrFile.deleteOnExit();
 		luckyclient.publicclass.LogUtil.APP
-				.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【" + relativelyPath + "\\log\\ScreenShot\\" + imgname + ".png】");
+				.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【" + pngpath + "】");
 		return result;
 	}
 

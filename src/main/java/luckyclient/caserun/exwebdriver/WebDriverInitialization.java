@@ -66,14 +66,14 @@ public class WebDriverInitialization{
 			if(os.startsWith("win")){
 				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver.exe");
 			}else if(os.indexOf("mac")>=0){
-				System.setProperty("webdriver.gecko.driver",drivenpath+"chromedriver_mac");
+				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver_mac");
 			}else{
 				luckyclient.publicclass.LogUtil.APP.info("检测到当前系统环境是Linux,默认使用headless方式运行Chrome浏览器的Web UI自动化...");
 				//无界面参数
 				options.setHeadless(true);
 				//禁用沙盒
 				options.addArguments("no-sandbox");
-				System.setProperty("webdriver.gecko.driver",drivenpath+"chromedriver_linux64");
+				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver_linux64");
 			}			
 			webDriver = new ChromeDriver(options);
 		}else if(drivertype==3){

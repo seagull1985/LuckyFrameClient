@@ -11,8 +11,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 
 /**
  * =================================================================
@@ -169,27 +171,123 @@ public class ChangString {
 	}
 
 	/**
-	 * 替换json中的变量
-	 * 
+	 * 用于计数替换KEY的序号
+	 */
+	private static int COUNTER=1;
+	/**
+	 * 用于分辩是否把参数替换成功
+	 */
+	private static Boolean BCHANG=false;
+	/**
+	 * 遍历JSON对象
 	 * @param json
 	 * @param key
 	 * @param value
+	 * @param keyindex
 	 * @return
 	 */
-	public static Map<String, String> changjson(String json, String key, String value) {
+	public static JSONObject parseJsonString(String json,String key,String value,int keyindex){
+		LinkedHashMap<String, Object> jsonMap = JSON.parseObject(json, new TypeReference<LinkedHashMap<String, Object>>(){});
+		for (Map.Entry<String, Object> entry : jsonMap.entrySet()) {
+			parseJsonMap(entry,key,value,keyindex);
+			}
+		return new JSONObject(jsonMap);
+		}
+	
+	/**
+	 * 替换遍历后JSON对象中的KEY
+	 * @param entry
+	 * @param key
+	 * @param value
+	 * @param keyindex
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map.Entry<String, Object> parseJsonMap(Map.Entry<String, Object> entry,String key,String value,int keyindex){
+		//如果是单个map继续遍历
+		if(entry.getValue() instanceof Map){
+		LinkedHashMap<String, Object> jsonMap = JSON.parseObject(entry.getValue().toString(), new TypeReference<LinkedHashMap<String, Object>>(){});
+		for (Map.Entry<String, Object> entry2 : jsonMap.entrySet()) {
+			parseJsonMap(entry2,key,value,keyindex);
+			}
+		entry.setValue(jsonMap);
+		}
+		//如果是list就提取出来
+		if(entry.getValue() instanceof List){
+			@SuppressWarnings("rawtypes")
+			List list = (List)entry.getValue();
+			for (int i = 0; i < list.size(); i++) {
+				//如何还有，循环提取
+				list.set(i, parseJsonString(list.get(i).toString(),key,value,keyindex));
+				}
+			entry.setValue(list);
+			}
+		//如果是String就获取它的值
+		if(entry.getValue() instanceof String){
+			if(key.equals(entry.getKey())){
+				if(keyindex==COUNTER){
+					luckyclient.publicclass.LogUtil.APP.info("对象原始String值：【"+entry.getValue()+"】");
+					entry.setValue(value);
+					luckyclient.publicclass.LogUtil.APP.info("对象替换后String值：【"+entry.getValue()+"】");
+					BCHANG=true;
+				}			
+				COUNTER++;
+			}
+		}
+		//如果是Integer就获取它的值
+		if(entry.getValue() instanceof Integer){
+			if(key.equals(entry.getKey())){
+				if(keyindex==COUNTER){
+					luckyclient.publicclass.LogUtil.APP.info("对象原始Integer值：【"+entry.getValue()+"】");
+					entry.setValue(Integer.valueOf(value));
+					luckyclient.publicclass.LogUtil.APP.info("对象替换后Integer值：【"+entry.getValue()+"】");
+					BCHANG=true;
+				}
+				COUNTER++;
+			}
+		}
+		//如果是Boolean就获取它的值
+		if(entry.getValue() instanceof Boolean){
+			if(key.equals(entry.getKey())){
+				if(keyindex==COUNTER){
+					luckyclient.publicclass.LogUtil.APP.info("对象原始Boolean值：【"+entry.getValue()+"】");
+					entry.setValue(Boolean.valueOf(value));
+					luckyclient.publicclass.LogUtil.APP.info("对象替换后Boolean值：【"+entry.getValue()+"】");
+					BCHANG=true;
+				}
+				COUNTER++;
+			}
+		}
+		
+		return entry;
+		}
+
+	/**
+	 * 替换json对象中指定KEY入口方法
+	 * @param json
+	 * @param key
+	 * @param value
+	 * @param index
+	 * @return
+	 */
+	public static Map<String, String> changjson(String json, String key, String value,int index) {
+		luckyclient.publicclass.LogUtil.APP.info("原始JSON：【"+json+"】");
+		luckyclient.publicclass.LogUtil.APP.info("待替换JSON KEY：【"+key+"】");
+		luckyclient.publicclass.LogUtil.APP.info("待替换JSON VALUE：【"+value+"】");
+		luckyclient.publicclass.LogUtil.APP.info("待替换JSON KEY序号：【"+index+"】");
 		Map<String, String> map = new HashMap<String, String>(0);
-		map.put("boolean", "false");
 		map.put("json", json);
+		map.put("boolean", BCHANG.toString().toLowerCase());
+		
 		if (json.startsWith("{") && json.endsWith("}")) {
 			try {
-				JSONObject jsonStr = JSONObject.parseObject(json);
-				if (jsonStr.containsKey(key)) {
-					jsonStr.put(key, settype(jsonStr.get(key), value));
-					map.put("boolean", "true");
-					map.put("json", jsonStr.toJSONString());
+				JSONObject jsonStr = JSONObject.parseObject(json);				
+				jsonStr=parseJsonString(json,key,value,index);
+				if (BCHANG) {
 					luckyclient.publicclass.LogUtil.APP
-							.info("JSON字符串替换成功，原始JSON:【" + json + "】   新JSON:【" + jsonStr.toJSONString() + "】");
+							.info("JSON字符串替换成功，新JSON:【" + jsonStr.toJSONString() + "】");
 				}
+				map.put("json", jsonStr.toJSONString());
 			} catch (Exception e) {
 				luckyclient.publicclass.LogUtil.APP.error("格式化成JSON异常，请检查参数：" + json, e);
 				return map;
@@ -197,31 +295,27 @@ public class ChangString {
 		} else if (json.startsWith("[") && json.endsWith("]")) {
 			try {
 				JSONArray jsonarr = JSONArray.parseArray(json);
-				JSONObject jsonStr = new JSONObject();
-				int index = 0;
-				if (key.indexOf("[") >= 0 && key.endsWith("]")) {
-					index = Integer.valueOf(key.substring(key.lastIndexOf("[") + 1, key.lastIndexOf("]")));
-					key = key.substring(0, key.lastIndexOf("["));
-					jsonStr = jsonarr.getJSONObject(index);
-					luckyclient.publicclass.LogUtil.APP.info("准备替换JSONArray中的参数值，未检测到指定参数名序号，默认替换第1个参数...");
-				} else {
-					jsonStr = jsonarr.getJSONObject(index);
-					luckyclient.publicclass.LogUtil.APP.info("准备替换JSONArray中的参数值，替换指定第" + index + "个参数...");
+				
+				for(int i=0;i<jsonarr.size();i++){
+					JSONObject jsonStr = jsonarr.getJSONObject(i);		
+					jsonStr=parseJsonString(jsonStr.toJSONString(),key,value,index);
+					if(BCHANG){
+						jsonarr.set(i, jsonStr);
+						luckyclient.publicclass.LogUtil.APP.info(
+								"JSONARRAY字符串替换成功，新JSONARRAY:【" + jsonarr.toJSONString() + "】");
+						break;
+					}
 				}
-
-				if (jsonStr.containsKey(key)) {
-					jsonStr.put(key, settype(jsonStr.get(key), value));
-					jsonarr.set(index, jsonStr);
-					map.put("boolean", "true");
-					map.put("json", jsonarr.toJSONString());
-				}
-				luckyclient.publicclass.LogUtil.APP.info(
-						"JSONARRAY字符串替换成功，原始JSONARRAY:【" + json + "】   新JSONARRAY:【" + jsonarr.toJSONString() + "】");
+				map.put("json", jsonarr.toJSONString());
+				
 			} catch (Exception e) {
 				luckyclient.publicclass.LogUtil.APP.error("格式化成JSONArray异常，请检查参数：" + json, e);
 				return map;
 			}
 		}
+		map.put("boolean", BCHANG.toString().toLowerCase());
+		BCHANG=false;
+		COUNTER=1;
 		return map;
 	}
 

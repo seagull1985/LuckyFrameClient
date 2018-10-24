@@ -38,6 +38,8 @@ public class IosBaseAppium {
 	public static void screenShot(IOSDriver<IOSElement> appium, String imagname){
 		imagname = imagname + ".png";
 		String relativelyPath = System.getProperty("user.dir");
+		String pngpath=relativelyPath +File.separator+ "log"+File.separator+"ScreenShot" +File.separator+ imagname;
+		
 		try {
 			try {
 				Thread.sleep(3000);
@@ -46,11 +48,11 @@ public class IosBaseAppium {
 				e.printStackTrace();
 			}
 			File imageFile = ((TakesScreenshot) (new Augmenter().augment(appium))).getScreenshotAs(OutputType.FILE);
-			File screenFile = new File(relativelyPath + "\\log\\ScreenShot\\" + imagname);
+			File screenFile = new File(pngpath);
 			FileUtils.copyFile(imageFile, screenFile);
 			imageFile.deleteOnExit();
 			luckyclient.publicclass.LogUtil.APP
-			.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【" + relativelyPath + "\\log\\ScreenShot\\" + imagname + ".png】");
+			.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【" + pngpath + "】");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

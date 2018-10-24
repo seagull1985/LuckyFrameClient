@@ -221,12 +221,6 @@ public class WebCaseExecution extends TestCaseExecution {
         imagname = timeformat.format(new Date());
         
         if (null != result && !result.contains("步骤执行失败：")) {
-            // 获取步骤间等待时间
-            int waitsec = Integer.parseInt(params.get("StepWait"));
-            if (waitsec > 0) {
-                luckyclient.publicclass.LogUtil.APP.info("操作休眠【" + waitsec + "】秒");
-                Thread.sleep(waitsec * 1000);
-            }
             // 有预期结果
             if (null != expect && !expect.isEmpty()) {
                 luckyclient.publicclass.LogUtil.APP.info("期望结果为【" + expect + "】");
@@ -307,6 +301,13 @@ public class WebCaseExecution extends TestCaseExecution {
             caselog.caseLogDetail(taskid, testcase.getSign(), "当前步骤在执行过程中解析|定位元素|操作对象失败！" + casenote, "error", String.valueOf(step.getStepnum()), imagname);
         }
 
+        // 获取步骤间等待时间
+        int waitsec = Integer.parseInt(params.get("StepWait"));
+        if (waitsec > 0) {
+            luckyclient.publicclass.LogUtil.APP.info("操作休眠【" + waitsec + "】秒");
+            Thread.sleep(waitsec * 1000);
+        }
+        
         return setresult;
     }
 
