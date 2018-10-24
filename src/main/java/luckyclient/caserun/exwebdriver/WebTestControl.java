@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import luckyclient.planapi.entity.*;
 import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -19,10 +20,6 @@ import luckyclient.jenkinsapi.RestartServerInitialization;
 import luckyclient.mail.HtmlMail;
 import luckyclient.mail.MailSendInitialization;
 import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.planapi.entity.PublicCaseParams;
-import luckyclient.planapi.entity.TestTaskexcute;
 import luckyclient.testlinkapi.TestBuildApi;
 import luckyclient.testlinkapi.TestCaseApi;
 
@@ -96,7 +93,9 @@ public class WebTestControl{
 		task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
 		String jobname = task.getTestJob().getTaskName();
 		int drivertype = LogOperation.querydrivertype(taskid);
-		// 判断是否要自动重启TOMCAT
+        TestJobs testJob = task.getTestJob();
+        // 判断是否要自动重启TOMCAT
+        int[] tastcount=null;
 		if (restartstatus.indexOf("Status:true") > -1) {
 			// 判断是否构建是否成功
 			if (buildstatus.indexOf("Status:true") > -1) {
@@ -111,7 +110,7 @@ public class WebTestControl{
 					e2.printStackTrace();
 				}
 				LogOperation caselog = new LogOperation(); 
-				int[] tastcount=null;
+
 				if(task.getTestJob().getProjecttype()==1){
 					TestBuildApi.getBuild(projectname);
 					TestCase[] testCases = TestCaseApi.getplantestcase(projectname, taskid,"");
@@ -158,18 +157,18 @@ public class WebTestControl{
 				String testtime = LogOperation.getTestTime(taskid);
 				luckyclient.publicclass.LogUtil.APP.info("当前项目【" + projectname + "】测试计划中的用例已经全部执行完成...");
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
-						HtmlMail.htmlContentFormat(tastcount, taskid, buildstatus, restartstatus, testtime,jobname), taskid);
+						HtmlMail.htmlContentFormat(tastcount, taskid, buildstatus, restartstatus, testtime,jobname), taskid, testJob, tastcount);
 				// 关闭浏览器
 				wd.quit();
 			} else {
 				luckyclient.publicclass.LogUtil.APP.error("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
 				MailSendInitialization.sendMailInitialization(jobname,
-						"构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskid);
+						"构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskid, testJob, tastcount);
 			}
 		} else {
 			luckyclient.publicclass.LogUtil.APP.error("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
 			MailSendInitialization.sendMailInitialization(jobname,
-					"项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid);
+					"项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid, testJob, tastcount);
 		}
 	}
 

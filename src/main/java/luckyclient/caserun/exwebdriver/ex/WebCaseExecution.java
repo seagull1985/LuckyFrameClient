@@ -1,16 +1,5 @@
 package luckyclient.caserun.exwebdriver.ex;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
 import luckyclient.caserun.exinterface.TestCaseExecution;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.exwebdriver.BaseWebDrive;
@@ -21,6 +10,16 @@ import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.PublicCaseParams;
 import luckyclient.publicclass.ChangString;
 import luckyclient.publicclass.LogUtil;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * =================================================================
@@ -76,9 +75,15 @@ public class WebCaseExecution extends TestCaseExecution {
 
             // 判断结果
 			setresult = judgeResult(testcase, step, params, wd, taskid, expectedResults, result, caselog);
-			if (0 != setresult) {
-				break;
-			}
+			// 失败，并且不在继续,直接终止
+            if (0 != setresult) {
+                if (step.getFailcontinue() == 0) {
+                    luckyclient.publicclass.LogUtil.APP.error("用例【" + testcase.getSign() + "】步骤【" + step.getOperation() + "】执行过程中失败！本次步骤设置为了失败就终止:" + step.getFailcontinue());
+                    break;
+                } else {
+                    luckyclient.publicclass.LogUtil.APP.error("用例【" + testcase.getSign() + "】步骤【" + step.getOperation() + "】执行过程中失败！本次步骤设置为了失败就继续:" + step.getFailcontinue());
+                }
+            }
         }
 
         variable.clear();
