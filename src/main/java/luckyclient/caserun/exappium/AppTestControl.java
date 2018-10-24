@@ -1,10 +1,5 @@
 package luckyclient.caserun.exappium;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
@@ -19,10 +14,12 @@ import luckyclient.jenkinsapi.RestartServerInitialization;
 import luckyclient.mail.HtmlMail;
 import luckyclient.mail.MailSendInitialization;
 import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.planapi.entity.PublicCaseParams;
-import luckyclient.planapi.entity.TestTaskexcute;
+import luckyclient.planapi.entity.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * =================================================================
@@ -114,8 +111,10 @@ public class AppTestControl {
 				.cgetParamsByProjectid(task.getTestJob().getProjectid().toString());
 		String projectname = task.getTestJob().getPlanproj();
 		task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
+        TestJobs testJob = task.getTestJob();
 		String jobname = task.getTestJob().getTaskName();
 		// 判断是否要自动重启TOMCAT
+        int[] tastcount = null;
 		if (restartstatus.indexOf("Status:true") > -1) {
 			// 判断是否构建是否成功
 			if (buildstatus.indexOf("Status:true") > -1) {
@@ -135,7 +134,6 @@ public class AppTestControl {
 					e.printStackTrace();
 				}
 				LogOperation caselog = new LogOperation();
-				int[] tastcount = null;
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanid(task.getTestJob().getPlanid());
 				luckyclient.publicclass.LogUtil.APP.info("当前计划中读取到用例共 " + cases.size() + " 个");
 				LogOperation.updateTastStatus(taskid, cases.size());
@@ -164,7 +162,7 @@ public class AppTestControl {
 				luckyclient.publicclass.LogUtil.APP.info("当前项目【" + projectname + "】测试计划中的用例已经全部执行完成...");
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
 						HtmlMail.htmlContentFormat(tastcount, taskid, buildstatus, restartstatus, testtime, jobname),
-						taskid);
+						taskid, testJob, tastcount);
 				// 关闭APP以及appium会话
 				if ("Android".equals(properties.getProperty("platformName"))) {
 					androiddriver.closeApp();
@@ -173,11 +171,11 @@ public class AppTestControl {
 				}
 			} else {
 				luckyclient.publicclass.LogUtil.APP.error("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
-				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskid);
+				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskid, testJob, tastcount);
 			}
 		} else {
 			luckyclient.publicclass.LogUtil.APP.error("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
-			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid);
+			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid, testJob, tastcount);
 		}
 	}
 
