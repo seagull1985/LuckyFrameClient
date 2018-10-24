@@ -76,8 +76,13 @@ public class WebCaseExecution extends TestCaseExecution {
             // 判断结果
 			setresult = judgeResult(testcase, step, params, wd, taskid, expectedResults, result, caselog);
 			// 失败，并且不在继续,直接终止
-            if (0 != setresult && step.getFailcontinue() == 0) {
-                break;
+            if (0 != setresult) {
+                if (step.getFailcontinue() == 0) {
+                    luckyclient.publicclass.LogUtil.APP.error("用例【" + testcase.getSign() + "】步骤【" + step.getOperation() + "】执行过程中失败！本次步骤设置为了失败就终止:" + step.getFailcontinue());
+                    break;
+                } else {
+                    luckyclient.publicclass.LogUtil.APP.error("用例【" + testcase.getSign() + "】步骤【" + step.getOperation() + "】执行过程中失败！本次步骤设置为了失败就继续:" + step.getFailcontinue());
+                }
             }
         }
 
