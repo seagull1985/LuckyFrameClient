@@ -113,8 +113,8 @@ public class AppTestControl {
 		task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
         TestJobs testJob = task.getTestJob();
 		String jobname = task.getTestJob().getTaskName();
-		// 判断是否要自动重启TOMCAT
         int[] tastcount = null;
+		// 判断是否要自动重启TOMCAT
 		if (restartstatus.indexOf("Status:true") > -1) {
 			// 判断是否构建是否成功
 			if (buildstatus.indexOf("Status:true") > -1) {

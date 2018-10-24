@@ -12,10 +12,6 @@ package luckyclient.planapi.entity;
  * 
  */
 public class TestJobs implements java.io.Serializable {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String taskName;

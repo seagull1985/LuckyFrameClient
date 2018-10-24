@@ -137,11 +137,11 @@ public class TestControl {
 		String projectname=task.getTestJob().getPlanproj();
 		int timeout = task.getTestJob().getTimeout();
         TestJobs testJob = task.getTestJob();
+        int[] tastcount=null;
 		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(task.getTestJob().getProjectid().toString());
 		// 初始化写用例结果以及日志模块
 		LogOperation caselog = new LogOperation(); 
 		// 判断是否要自动重启TOMCAT
-        int[] tastcount=null;
 		if (restartstatus.indexOf("Status:true") > -1) {
 			// 判断是否构建是否成功
 			if (buildstatus.indexOf("Status:true") > -1) {

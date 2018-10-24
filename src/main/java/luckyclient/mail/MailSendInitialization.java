@@ -24,13 +24,13 @@ public class MailSendInitialization {
         } else {
             if (taskCount.length == 5 && null != testJob) {
                 Integer sendCondition = testJob.getSendCondition();
-                // 成功了发送, casecount != casesuc
+                // 用例全部成功了发送, casecount != casesuc
                 if (1 == sendCondition) {
                     if (taskCount[0] == taskCount[1]) {
                         isSend = true;
                     }
                 }
-                // 失败了发送
+                // 用例部分失败了发送
                 if (-1 == sendCondition) {
                     if (taskCount[2] > 0) {
                         isSend = true;

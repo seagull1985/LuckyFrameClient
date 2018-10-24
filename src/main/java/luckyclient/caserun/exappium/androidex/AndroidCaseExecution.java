@@ -32,8 +32,6 @@ import luckyclient.publicclass.LogUtil;
  */
 public class AndroidCaseExecution extends TestCaseExecution{
 	static Map<String, String> variable = new HashMap<String, String>();
-    // 0:成功 1:失败 2:锁定 其他：锁定
-    private static int setresult = 0;
     private static String casenote = "备注初始化";
     private static String imagname = "";
 
@@ -45,7 +43,8 @@ public class AndroidCaseExecution extends TestCaseExecution{
 		}
 		//插入开始执行的用例
 		caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 4);       
-		
+	    // 0:成功 1:失败 2:锁定 其他：锁定
+	    int setcaseresult = 0;
 		for (ProjectCasesteps step : steps) {
             Map<String, String> params;
             String result;
@@ -58,7 +57,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
             }
 			
 			if(params.get("exception")!=null&&params.get("exception").toString().indexOf("解析异常")>-1){
-				setresult = 2;
+				setcaseresult = 2;
 				break;
 			}
 			
@@ -73,15 +72,22 @@ public class AndroidCaseExecution extends TestCaseExecution{
 			expectedResults=ChangString.changparams(expectedResults, variable,"预期结果");
 			
             // 判断结果
-			setresult = judgeResult(testcase, step, params, appium, taskid, expectedResults, result, caselog);
-			if (0 != setresult) {
-				break;
-			}
+			int stepresult = judgeResult(testcase, step, params, appium, taskid, expectedResults, result, caselog);
+			// 失败，并且不在继续,直接终止
+            if (0 != stepresult) {
+            	setcaseresult = stepresult;
+                if (testcase.getFailcontinue() == 0) {
+                    luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getSign()+"】第【"+step.getStepnum()+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                    break;
+                } else {
+                    luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getSign()+"】第【"+step.getStepnum()+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                }
+            }
 		}
 
 		variable.clear();
-		caselog.updateCaseDetail(taskid, testcase.getSign(), setresult);
-		if(setresult==0){
+		caselog.updateCaseDetail(taskid, testcase.getSign(), setcaseresult);
+		if(setcaseresult==0){
 			luckyclient.publicclass.LogUtil.APP.info("用例【"+testcase.getSign()+"】全部步骤执行结果成功...");
 	        caselog.caseLogDetail(taskid, testcase.getSign(), "用例全部步骤执行结果成功","info", "ending","");
 		}else{
@@ -219,7 +225,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 	}
 
     public static int judgeResult(ProjectCase testcase, ProjectCasesteps step, Map<String, String> params, AndroidDriver<AndroidElement> appium, String taskid, String expect, String result, LogOperation caselog) throws InterruptedException {
-        setresult = 0;
+        int setresult = 0;
         java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
         imagname = timeformat.format(new Date());
         
