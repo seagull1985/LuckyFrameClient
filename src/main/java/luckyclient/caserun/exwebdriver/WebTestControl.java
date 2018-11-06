@@ -69,6 +69,8 @@ public class WebTestControl{
 			i++;
 			luckyclient.publicclass.LogUtil.APP.info("开始执行第"+i+"条用例：【"+testcase.getSign()+"】......");
 			try {
+		        //插入开始执行的用例
+		        caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 4);
 				WebCaseExecution.caseExcution(testcase,steps,taskid,wd,caselog,pcplist);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -144,6 +146,8 @@ public class WebTestControl{
 						}
 						luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【" + testcase.getSign() + "】......");
 						try {
+					        //插入开始执行的用例
+					        caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 4);
 							WebCaseExecution.caseExcution(testcase, steps, taskid, wd, caselog,pcplist);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block

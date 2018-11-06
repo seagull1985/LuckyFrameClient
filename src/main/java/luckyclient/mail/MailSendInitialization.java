@@ -31,7 +31,7 @@ public class MailSendInitialization {
                     }
                 }
                 // 用例部分失败了发送
-                if (-1 == sendCondition) {
+                if (2 == sendCondition) {
                     if (taskCount[2] > 0) {
                         isSend = true;
                     }

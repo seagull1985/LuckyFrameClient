@@ -41,8 +41,6 @@ public class WebCaseExecution extends TestCaseExecution {
         for (PublicCaseParams pcp : pcplist) {
             variable.put(pcp.getParamsname(), pcp.getParamsvalue());
         }
-        //插入开始执行的用例
-        caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 4);
         // 0:成功 1:失败 2:锁定 其他：锁定
         int setcaseresult = 0;
         for (ProjectCasesteps step : steps) {

@@ -15,7 +15,6 @@ import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.PublicCaseParams;
 import luckyclient.planapi.entity.TestTaskexcute;
-import luckyclient.testlinkapi.TestBuildApi;
 
 /**
  * =================================================================
@@ -42,7 +41,6 @@ public class IosBatchExecute {
 			e1.printStackTrace();
 		}
 		LogOperation caselog = new LogOperation();
-		TestBuildApi.getBuild(projectname);
 		TestTaskexcute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
 		List<PublicCaseParams> pcplist = GetServerAPI
 				.cgetParamsByProjectid(task.getTestJob().getProjectid().toString());
@@ -54,8 +52,6 @@ public class IosBatchExecute {
 				String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
 				ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 				List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcase.getId());
-				// 删除旧的用例
-				LogOperation.deleteCaseDetail(testCaseExternalId, taskid);
 				// 删除旧的日志
 				LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);
 				try {
@@ -74,6 +70,8 @@ public class IosBatchExecute {
 				// Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()));
 				ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 				List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcase.getId());
+				// 删除旧的日志
+				LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);
 				try {
 					IosCaseExecution.caseExcution(testcase, steps, taskid, iosd, caselog, pcplist);
 				} catch (InterruptedException e) {
@@ -83,6 +81,7 @@ public class IosBatchExecute {
 				}
 			}
 		}
+		LogOperation.updateTastdetail(taskid, 0);
 		iosd.closeApp();
 	}
 

@@ -74,6 +74,8 @@ public class AppTestControl {
 			i++;
 			luckyclient.publicclass.LogUtil.APP.info("开始执行第" + i + "条用例：【" + testcase.getSign() + "】......");
 			try {
+				//插入开始执行的用例
+				caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 4);
 				if ("Android".equals(properties.getProperty("platformName"))) {
 					AndroidCaseExecution.caseExcution(testcase, steps, taskid, androiddriver, caselog, pcplist);
 				} else if ("IOS".equals(properties.getProperty("platformName"))) {
@@ -145,6 +147,8 @@ public class AppTestControl {
 					}
 					luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【" + testcase.getSign() + "】......");
 					try {
+						//插入开始执行的用例
+						caselog.addCaseDetail(taskid, testcase.getSign(), "1", testcase.getName(), 4);
 						if ("Android".equals(properties.getProperty("platformName"))) {
 							AndroidCaseExecution.caseExcution(testcase, steps, taskid, androiddriver, caselog, pcplist);
 						} else if ("IOS".equals(properties.getProperty("platformName"))) {
