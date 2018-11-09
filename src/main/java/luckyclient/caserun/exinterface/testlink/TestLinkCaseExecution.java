@@ -33,9 +33,9 @@ public class TestLinkCaseExecution{
 	 * 用于在testlink上配置好用例参数后，做单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
 	 */
 	@SuppressWarnings("static-access")
-	public static void oneCaseExecuteForTast(String projectname,String testCaseExternalId,int version,String tastid){
+	public static void oneCaseExecuteForTast(String projectname,String testCaseExternalId,int version,String taskid){
 		Map<String,String> variable = new HashMap<String,String>(0);
-		TestControl.TASKID = tastid;
+		TestControl.TASKID = taskid;
 		DbLink.exetype = 0;
 		LogOperation caselog = new LogOperation();       
 		String packagename =null;
@@ -45,12 +45,12 @@ public class TestLinkCaseExecution{
 		Object[] getParameterValues = null;
     	String testnote = null;
 		int k = 0;
-		LogOperation.deleteCaseLogDetail(testCaseExternalId, tastid);    
+		LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    
 		TestCase testcaseob = TestCaseApi.getTestCaseByExternalId(testCaseExternalId, version);
 		if(testcaseob.getExecutionType()==ExecutionType.AUTOMATED){
 		    //进入循环，解析用例所有步骤
 		    for(int i=0;i<testcaseob.getSteps().size();i++){		    	
-		    	Map<String,String> casescript = InterfaceAnalyticTestLinkCase.analyticCaseStep(testcaseob, i+1,tastid,caselog);    
+		    	Map<String,String> casescript = InterfaceAnalyticTestLinkCase.analyticCaseStep(testcaseob, i+1,taskid,caselog);    
 		    	packagename = casescript.get("PackageName").toString();
 		    	functionname = casescript.get("FunctionName").toString();
 		    	//用例名称解析出现异常或是单个步骤参数解析异常
@@ -100,7 +100,7 @@ public class TestLinkCaseExecution{
 				    					casescript.get("FunctionParams"+(j+1)).indexOf(uservariable1)-1);
 		    				}else{
 		    					luckyclient.publicclass.LogUtil.APP.error("你好像在一个参数中引用了超过3个以上的变量哦！我处理不过来啦！");
-		    					LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "你好像在一个参数中引用了超过2个以上的变量哦！我处理不过来啦！", "error",String.valueOf(i+1));
+		    					caselog.caseLogDetail(taskid, testCaseExternalId, "你好像在一个参数中引用了超过2个以上的变量哦！我处理不过来啦！", "error",String.valueOf(i+1), "");
 			    			}
 			    			@SuppressWarnings("rawtypes")
 							Iterator keys = variable.keySet().iterator();
@@ -154,14 +154,14 @@ public class TestLinkCaseExecution{
 						    	}
 					    		luckyclient.publicclass.LogUtil.APP.info("解析包名："+packagename+" 方法名："+functionname
 					    				+" 第"+(j+1)+"个参数："+parameterValues);
-					    		LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "解析包名："+packagename+" 方法名："+functionname
-					    				+" 第"+(j+1)+"个参数："+parameterValues, "info",String.valueOf(i+1));
+					    		caselog.caseLogDetail(taskid, testCaseExternalId, "解析包名："+packagename+" 方法名："+functionname
+					    				+" 第"+(j+1)+"个参数："+parameterValues, "info",String.valueOf(i+1), "");
 					    		getParameterValues[j] = parameterValues;
 			    			}else{
 			    				luckyclient.publicclass.LogUtil.APP.error("没有找到你要的变量哦，再找下吧！第一个变量名称是："+uservariable+"，第"
 			    						+ "二个变量名称是："+uservariable1+"，第三个变量名称是："+uservariable2);
-			    				LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "没有找到你要的变量哦，再找下吧！第二变量名称是："+uservariable+"，第"
-			    						+ "二个变量名称是："+uservariable1+"，第三个变量名称是："+uservariable2, "error",String.valueOf(i+1));
+			    				caselog.caseLogDetail(taskid, testCaseExternalId, "没有找到你要的变量哦，再找下吧！第二变量名称是："+uservariable+"，第"
+			    						+ "二个变量名称是："+uservariable1+"，第三个变量名称是："+uservariable2, "error",String.valueOf(i+1), "");
 			    			}
 
 			    		}else{
@@ -173,8 +173,8 @@ public class TestLinkCaseExecution{
 					    	}
 				    		luckyclient.publicclass.LogUtil.APP.info("解析包名："+packagename+" 方法名："+functionname
 				    				+" 第"+(j+1)+"个参数："+parameterValues1);
-				    		LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "解析包名："+packagename+" 方法名："+functionname
-				    				+" 第"+(j+1)+"个参数："+parameterValues1, "info",String.valueOf(i+1));
+				    		caselog.caseLogDetail(taskid, testCaseExternalId, "解析包名："+packagename+" 方法名："+functionname
+				    				+" 第"+(j+1)+"个参数："+parameterValues1, "info",String.valueOf(i+1), "");
 				    		getParameterValues[j] = parameterValues1;
 			    		}
 			    	}
@@ -184,7 +184,7 @@ public class TestLinkCaseExecution{
 		    	//调用动态方法，执行测试用例
 			    try{
 			    	luckyclient.publicclass.LogUtil.APP.info("开始调用方法："+functionname+" .....");
-			    	LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "开始调用方法："+functionname+" .....", "info",String.valueOf(i+1));
+			    	caselog.caseLogDetail(taskid, testCaseExternalId, "开始调用方法："+functionname+" .....", "info",String.valueOf(i+1), "");
 			    	if(expectedresults.length()>2 && expectedresults.substring(0, 2).indexOf("$=")>-1){                             
 			    		String expectedResultVariable = casescript.get("ExpectedResults").toString().substring(2);
 			    		String temptestnote = InvokeMethod.callCase(packagename,functionname,getParameterValues,0,"");
@@ -194,11 +194,11 @@ public class TestLinkCaseExecution{
 				    	if(testnote.indexOf(expectedresults.substring(2))>-1){
 				    		setresult = 0;
 				    		luckyclient.publicclass.LogUtil.APP.info("用例执行结果是："+testnote+"，与预期结果匹配成功！");
-				    		LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "用例执行结果是："+testnote+"，与预期结果匹配成功！", "info",String.valueOf(i+1));
+				    		caselog.caseLogDetail(taskid, testCaseExternalId, "用例执行结果是："+testnote+"，与预期结果匹配成功！", "info",String.valueOf(i+1), "");
 				    	}else{
 				    		setresult = 1;
 				    		luckyclient.publicclass.LogUtil.APP.error("用例第"+(i+1)+"步执行结果与预期结果匹配失败！");
-				    		LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "用例第"+(i+1)+"步执行结果与预期结果匹配失败！预期结果："+expectedresults+"      测试结果："+testnote, "error",String.valueOf(i+1));
+				    		caselog.caseLogDetail(taskid, testCaseExternalId, "用例第"+(i+1)+"步执行结果与预期结果匹配失败！预期结果："+expectedresults+"      测试结果："+testnote, "error",String.valueOf(i+1), "");
 				    		luckyclient.publicclass.LogUtil.APP.error("预期结果："+expectedresults+"      测试结果："+testnote);
 				    		testnote = "用例第"+(i+1)+"步执行结果与预期结果匹配失败！";
 				    		break;        //某一步骤失败后，此条用例置为失败退出
@@ -208,12 +208,12 @@ public class TestLinkCaseExecution{
 				    	if(expectedresults.equals(testnote)){
 				    		setresult = 0;
 				    		luckyclient.publicclass.LogUtil.APP.info("用例执行结果是："+testnote+"，与预期结果匹配成功！");
-				    		LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "用例执行结果是："+testnote+"，与预期结果匹配成功！", "info",String.valueOf(i+1));
+				    		caselog.caseLogDetail(taskid, testCaseExternalId, "用例执行结果是："+testnote+"，与预期结果匹配成功！", "info",String.valueOf(i+1), "");
 				    	}else{
 				    		setresult = 1;
 				    		luckyclient.publicclass.LogUtil.APP.error("用例第"+(i+1)+"步执行结果与预期结果匹配失败！");
-				    		LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "用例第"+(i+1)+"步执行结果与预期结果匹配失败！预期结果："
-				    		+expectedresults+"      测试结果："+testnote, "error",String.valueOf(i+1));
+				    		caselog.caseLogDetail(taskid, testCaseExternalId, "用例第"+(i+1)+"步执行结果与预期结果匹配失败！预期结果："
+						    		+expectedresults+"      测试结果："+testnote, "error",String.valueOf(i+1), "");
 				    		luckyclient.publicclass.LogUtil.APP.error("预期结果："+expectedresults+"      测试结果："+testnote);
 							StringBuilder stringBuilder = new StringBuilder();
 							stringBuilder.append("用例第"+(i+1)+"步执行结果与预期结果匹配失败！预期结果："+expectedresults+"      测试结果：");
@@ -228,7 +228,7 @@ public class TestLinkCaseExecution{
 			    	}
 			    }catch(Exception e){
 			    	luckyclient.publicclass.LogUtil.APP.error("调用方法过程出错，方法名："+functionname+" 请重新检查脚本方法名称以及参数！");
-			    	LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "调用方法过程出错，方法名："+functionname+" 请重新检查脚本方法名称以及参数！", "error",String.valueOf(i+1));
+			    	caselog.caseLogDetail(taskid, testCaseExternalId, "调用方法过程出错，方法名："+functionname+" 请重新检查脚本方法名称以及参数！", "error",String.valueOf(i+1), "");
 					luckyclient.publicclass.LogUtil.APP.error(e,e);
 					testnote = "CallCase调用出错！";
 					setresult = 1;
@@ -240,28 +240,28 @@ public class TestLinkCaseExecution{
 		    //如果调用方法过程中未出错，进入设置测试结果流程
 		    if(testnote.indexOf("CallCase调用出错！")<=-1&&testnote.indexOf("解析出错啦！")<=-1){
 		    	luckyclient.publicclass.LogUtil.APP.info("用例 "+testCaseExternalId+"解析成功，并成功调用用例中方法，请继续查看执行结果！"); 
-		    	LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "解析成功，并成功调用用例中方法，请继续查看执行结果！", "info","SETCASERESULT...");
+		    	caselog.caseLogDetail(taskid, testCaseExternalId, "解析成功，并成功调用用例中方法，请继续查看执行结果！", "info","SETCASERESULT...", "");
 		    	//TCResult = TestCaseApi.setTCResult(projectname,testCaseExternalId, testnote, version,setresult);	
-		    	caselog.updateCaseDetail(tastid, testCaseExternalId, setresult);
+		    	caselog.updateCaseDetail(taskid, testCaseExternalId, setresult);
 		     }else{
 		    	 setresult = 1;
 		    	 luckyclient.publicclass.LogUtil.APP.error("用例 "+testCaseExternalId+"解析或是调用步骤中的方法出错！"); 
-		    	 LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "解析或是调用步骤中的方法出错！", "error","SETCASERESULT...");
+		    	 caselog.caseLogDetail(taskid, testCaseExternalId, "解析或是调用步骤中的方法出错！", "error","SETCASERESULT...", "");
 		    	// TCResult = TestCaseApi.setTCResult(projectname,testCaseExternalId, testnote, version,2);
-		    	 caselog.updateCaseDetail(tastid, testCaseExternalId, 2);
+		    	 caselog.updateCaseDetail(taskid, testCaseExternalId, 2);
 		     }
 		    if(0==setresult){
 		    	luckyclient.publicclass.LogUtil.APP.info("用例 "+testCaseExternalId+"步骤全部执行成功！"); 
-		    	LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "步骤全部执行成功！", "info","EXECUTECASESUC...");
+		    	caselog.caseLogDetail(taskid, testCaseExternalId, "步骤全部执行成功！", "info","EXECUTECASESUC...", "");
 		    }else{
 		    	luckyclient.publicclass.LogUtil.APP.error("用例 "+testCaseExternalId+"在执行过程中失败，请检查日志！"); 
-		    	LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "在执行过程中失败，请检查日志！", "error","EXECUTECASESUC...");
+		    	caselog.caseLogDetail(taskid, testCaseExternalId, "在执行过程中失败，请检查日志！", "error","EXECUTECASESUC...", "");
 		    }
 		}else{
 			luckyclient.publicclass.LogUtil.APP.error("用例 "+testCaseExternalId+"不是一个自动化的用例哦！先去把它设置一下吧！"); 
-			LogOperation.updateCaseLogDetail(testCaseExternalId, tastid, "不是一个自动化的用例哦！先去把它设置一下吧！", "error","EXECUTECASEFAIL...");
+			caselog.caseLogDetail(taskid, testCaseExternalId, "不是一个自动化的用例哦！先去把它设置一下吧！", "error","EXECUTECASEFAIL...", "");
 		}
-		LogOperation.updateTastdetail(tastid, 0);
+		LogOperation.updateTastdetail(taskid, 0);
 	}
 
 	
@@ -271,7 +271,7 @@ public class TestLinkCaseExecution{
 	 * @param 用例版本号
 	 * 用于在UI的测试过程中，需要调用接口的测试用例
 	 */
-	protected static String oneCaseExecuteForWebDriver(String testCaseExternalId,int version,String tastid,LogOperation caselog){
+	protected static String oneCaseExecuteForWebDriver(String testCaseExternalId,int version,String taskid,LogOperation caselog){
 		Map<String,String> variable = new HashMap<String,String>(0);
 		String packagename =null;
 		String functionname = null;
@@ -284,7 +284,7 @@ public class TestLinkCaseExecution{
 		if(testcaseob.getExecutionType()==ExecutionType.AUTOMATED){
 		    //进入循环，解析用例所有步骤
 		    for(int i=0;i<testcaseob.getSteps().size();i++){		    	
-		    	Map<String,String> casescript = InterfaceAnalyticTestLinkCase.analyticCaseStep(testcaseob, i+1,tastid,caselog);    
+		    	Map<String,String> casescript = InterfaceAnalyticTestLinkCase.analyticCaseStep(testcaseob, i+1,taskid,caselog);    
 		    	packagename = casescript.get("PackageName").toString();
 		    	functionname = casescript.get("FunctionName").toString();
 		    	//用例名称解析出现异常或是单个步骤参数解析异常

@@ -25,25 +25,25 @@ public class MailSendInitialization {
             if (taskCount.length == 5 && null != testJob) {
                 Integer sendCondition = testJob.getSendCondition();
                 // 用例全部成功了发送, casecount != casesuc
-                if (1 == sendCondition) {
+                if (null!=sendCondition&&1 == sendCondition) {
                     if (taskCount[0] == taskCount[1]) {
                         isSend = true;
                     }
                 }
                 // 用例部分失败了发送
-                if (2 == sendCondition) {
+                if (null!=sendCondition&&2 == sendCondition) {
                     if (taskCount[2] > 0) {
                         isSend = true;
                     }
                 }
                 // 全发
-                if (0 == sendCondition) {
+                if (null!=sendCondition&&0 == sendCondition) {
                     isSend = true;
                 }
             }
         }
         if (!isSend) {
-            luckyclient.publicclass.LogUtil.APP.info("当前任务不需要发送邮件通知！ taskCount:" + taskCount);
+            luckyclient.publicclass.LogUtil.APP.info("当前任务不需要发送邮件通知!");
             return;
         }
         String[] addresses = LogOperation.getEmailAddress(taskid);

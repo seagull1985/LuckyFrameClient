@@ -38,6 +38,7 @@ public class RunAutomationTest extends TestControl {
 			} else if (task.getTestJob().getExtype() == 2) {
 				AppTestControl.taskExecutionPlan(taskid, task);
 			}
+	 		System.exit(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -183,37 +183,6 @@ public class LogOperation {
 	}
 
 	/**
-	 * 更新本次任务的单条用例执行日志
-	 */
-	public static void updateCaseLogDetail(String caseno, String taskid, String detail, String loggrade, String step) {
-		try {
-			if (detail.indexOf("'") > -1) {
-				detail = detail.replaceAll("'", "''");
-			}
-			int inttaskid = Integer.parseInt(taskid);
-			String casesidsql;
-			casesidsql = dbt.executeQuery(
-					"select id from test_casedetail t where caseno = '" + caseno + "' and taskid = " + inttaskid);
-			int casesid = Integer.parseInt(casesidsql.substring(0, casesidsql.indexOf("%")));
-
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String sql = "Insert into test_logdetail(LOGTIME,TASKID,CASEID,DETAIL,LOGGRADE,STEP,IMGNAME)  "
-					+ "Values (str_to_date('" + df.format(new Date()) + "','%Y-%m-%d %T')," + inttaskid + "," + casesid
-					+ ",'" + detail + "','" + loggrade + "','" + step + "','')";
-
-			String re = dbt.executeSql(sql);
-			if (re.indexOf("成功") < 0) {
-				throw new Exception("更新用例：" + caseno + "步骤" + step + "日志到数据库中出现异常！！！");
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行更新本次任务的单条用例执行日志SQL出现异常，请确认数据库链接是否正常！", e);
-			e.printStackTrace();
-		}
-
-	}
-
-	/**
 	 * 删除单次任务指定的用例日志明细
 	 */
 	public static void deleteCaseLogDetail(String caseno, String taskid) {

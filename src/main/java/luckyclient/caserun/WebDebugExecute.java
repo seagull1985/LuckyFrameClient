@@ -26,5 +26,6 @@ public class WebDebugExecute extends TestControl{
  		String sign = args[0];
  		String executor = args[1];
  		WebTestCaseDebug.oneCaseDebug(sign,executor);
+ 		System.exit(0);
 	}
 }
