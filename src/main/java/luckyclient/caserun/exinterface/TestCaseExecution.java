@@ -338,7 +338,6 @@ public class TestCaseExecution {
      * 提供给Web用例中，runcase的时候使用
      */
     protected static String oneCaseExecuteForUICase(String testCaseExternalId, String taskid, LogOperation caselog, Object driver) throws InterruptedException {
-        Map<String, String> variable = new HashMap<>(0);
         String expectedresults = null;
         Integer setresult = 1;
         String testnote = "初始化测试结果";
@@ -346,7 +345,7 @@ public class TestCaseExecution {
         List<PublicCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcaseob.getProjectid()));
         // 把公共参数加入到MAP中
         for (PublicCaseParams pcp : pcplist) {
-            variable.put(pcp.getParamsname(), pcp.getParamsvalue());
+        	VARIABLE.put(pcp.getParamsname(), pcp.getParamsvalue());
         }
         List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
         if (steps.size() == 0) {
@@ -377,29 +376,29 @@ public class TestCaseExecution {
             }
 
             expectedresults = params.get("ExpectedResults");
-            expectedresults = ChangString.changparams(expectedresults, variable, "预期结果");
+            expectedresults = ChangString.changparams(expectedresults, VARIABLE, "预期结果");
             
             // 根据步骤类型来执行步骤
             if (1 == step.getSteptype()){
             	WebDriver wd=(WebDriver)driver;
-            	result = WebCaseExecution.runWebStep(params, variable, wd, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
+            	result = WebCaseExecution.runWebStep(params, VARIABLE, wd, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
                 // 判断结果
                 setresult = WebCaseExecution.judgeResult(testcaseob, step, params, wd, taskid, expectedresults, result, caselog);
             }else if (4 == step.getSteptype()){
             	if (driver instanceof AndroidDriver){
             		AndroidDriver<AndroidElement> ad=(AndroidDriver<AndroidElement>)driver;
-            		result = AndroidCaseExecution.androidRunStep(params, variable, ad, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
+            		result = AndroidCaseExecution.androidRunStep(params, VARIABLE, ad, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
             		// 判断结果
                     setresult = AndroidCaseExecution.judgeResult(testcaseob, step, params, ad, taskid, expectedresults, result, caselog);
             	}else{
             		IOSDriver<IOSElement> ios=(IOSDriver<IOSElement>)driver;
-            		result = IosCaseExecution.iosRunStep(params, variable, ios, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
+            		result = IosCaseExecution.iosRunStep(params, VARIABLE, ios, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
             		// 判断结果
                     setresult = IosCaseExecution.judgeResult(testcaseob, step, params, ios, taskid, expectedresults, result, caselog);
             	}
             	
             } else{
-            	result = runStep(params, variable, taskid, testcaseob.getSign(), step, caselog);
+            	result = runStep(params, VARIABLE, taskid, testcaseob.getSign(), step, caselog);
             	// 判断结果
             	setresult = interfaceJudgeResult(testcaseob, step, taskid, expectedresults, testnote, caselog);
             } 
@@ -409,7 +408,7 @@ public class TestCaseExecution {
             }
         }
 
-        variable.clear(); // 清空传参MAP
+        VARIABLE.clear(); // 清空传参MAP
         if (0 == setresult) {
             testnote = "调用用例【" + testcaseob.getSign() + "】执行成功！";
             luckyclient.publicclass.LogUtil.APP.info("用例 " + testcaseob.getSign() + "步骤全部执行成功！");
