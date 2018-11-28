@@ -451,9 +451,9 @@ public class InvokeMethod {
     		String[] args = new String[2+params];
     		args[0]="python";
             if(packagename.endsWith(File.separator)){
-            	args[1]=packagename+functionname;   //"E:\\PycharmProjects\\untitled\\venv\\testaaa.py";
+            	args[1]=packagename+functionname;
             }else{
-            	args[1]=packagename+File.separator+functionname;   //"E:\\PycharmProjects\\untitled\\venv\\testaaa.py";
+            	args[1]=packagename+File.separator+functionname;
             }
             luckyclient.publicclass.LogUtil.APP.info("调用Python脚本路径:"+args[1]);
     		for(int i=0;i < params;i++){
@@ -476,10 +476,10 @@ public class InvokeMethod {
             proc.waitFor();
             // 打印流信息
             if(outerrStream.toString().equals("")){
-            	result = outStream.toString();
+            	result = outStream.toString().trim();
             	luckyclient.publicclass.LogUtil.APP.info("成功调用Python脚本，返回结果:"+result);
             }else{
-            	result = outerrStream.toString();
+            	result = outerrStream.toString().trim();
             	if(result.indexOf("ModuleNotFoundError")>-1){
             		luckyclient.publicclass.LogUtil.APP.error("调用Python脚本出现异常，有相关Python模块未引用到，请在Python脚本中注意设置系统环境路径(例: sys.path.append(\"E:\\PycharmProjects\\untitled\\venv\\Lib\\site-packages\"))，"
             				+ "详细错误信息:"+result);
