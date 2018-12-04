@@ -180,7 +180,7 @@ public class WebTestCaseDebug {
             GetServerAPI.cPostDebugLog(sign, executor, "ERRORover", "用例 " + sign + "解析或是调用步骤中的方法出错！");
         }
         if (0 == setcaseresult) {
-            GetServerAPI.cPostDebugLog(sign, executor, "INFOover", "用例 " + sign + "步骤全部执行成功！");
+            GetServerAPI.cPostDebugLog(sign, executor, "INFOover", "用例 " + sign + "步骤全部执行完成！");
         } else {
             GetServerAPI.cPostDebugLog(sign, executor, "ERRORover", "用例 " + sign + "在执行过程中失败，请检查！");
         }
