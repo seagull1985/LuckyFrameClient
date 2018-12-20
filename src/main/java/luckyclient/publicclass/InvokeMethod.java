@@ -75,6 +75,11 @@ public class InvokeMethod {
                     }
                 }
             } else if (steptype == 2) {
+            	if(null==action||"".equals(action)||!action.contains("】")){
+            		result = "您当前步骤是HTTP请求，请确认是否没有配置对应的HTTP协议模板...";
+            		luckyclient.publicclass.LogUtil.APP.error("您当前步骤是HTTP请求，请确认是否没有配置对应的HTTP协议模板...");
+            		return result;
+            	}
                 String templateidstr = action.substring(1, action.indexOf("】"));
                 String templatenamestr = action.substring(action.indexOf("】") + 1);
                 luckyclient.publicclass.LogUtil.APP.info("即将使用模板【" + templatenamestr + "】，ID:【" + templateidstr + "】发送HTTP请求！");
