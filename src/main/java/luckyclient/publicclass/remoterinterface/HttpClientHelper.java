@@ -41,6 +41,7 @@ import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.StringEntity;
@@ -1616,18 +1617,21 @@ public class HttpClientHelper {
     		if(null==cerpath||"".equals(cerpath.trim())){
     			luckyclient.publicclass.LogUtil.APP.info("开始构建HTTPS单向认证请求...");
     	        TrustManager[] trustManagers = {new MyX509TrustManager()};  
-    	        sslContext = SSLContext.getInstance("TLS");   
+    	        sslContext = SSLContext.getInstance("TLS");
     	        sslContext.init(null, trustManagers, new SecureRandom());
     		}else{
     			luckyclient.publicclass.LogUtil.APP.info("开始构建HTTPS双向认证请求...");
-    			String strcerpath[]=cerpath.split(";");
+    			String strcerpath[]=cerpath.split(";",-1);
     			sslContext = sslContextKeyStore(strcerpath[0], strcerpath[1]);
     		}
             
             // 设置协议http和https对应的处理socket链接工厂的对象
             Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
-                .register("https", new SSLConnectionSocketFactory(sslContext))
+                // 正常的SSL连接会验证所有证书信息
+                // .register("https", new SSLConnectionSocketFactory(sslContext)).build();
+                // 忽略域名验证
+                .register("https", new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
                 .build();
             PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
             connManager.setDefaultMaxPerRoute(1);
