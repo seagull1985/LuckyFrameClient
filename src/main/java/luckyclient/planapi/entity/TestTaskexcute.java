@@ -27,6 +27,7 @@ public class TestTaskexcute implements java.io.Serializable {
 	private TestJobs testJob = new TestJobs();
 
 	private int jobid;
+	private int projectid;
 	private String caseIsExec;
 	private String finishtime;
 	private String taskStatus;
@@ -36,6 +37,14 @@ public class TestTaskexcute implements java.io.Serializable {
 	private String name;
 	
 	private String taskName;
+
+	public int getProjectid() {
+		return projectid;
+	}
+
+	public void setProjectid(int projectid) {
+		this.projectid = projectid;
+	}
 
 	public String getTaskName() {
 		return taskName;
