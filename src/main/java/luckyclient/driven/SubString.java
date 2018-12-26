@@ -146,17 +146,20 @@ public class SubString {
     }    
 	
 	/**
-	 * 获取JSON字符串的value
-	 * @param str
-	 * @param startstr
-	 * @param endstr
+	 * 取出JSON中指定序号key的值
+	 * @param jsonstr
+	 * @param key
+	 * @param indexstr 序号从1开始
 	 * @return
 	 */
 	public static String getJsonValue(String jsonstr, String key, String indexstr) {
 		String result = "格式化成JSON异常";
 		int index = 0;
-		if (isInteger(indexstr)) {
-			index = Integer.valueOf(indexstr);
+		if (isInteger(indexstr)&&!"0".equals(indexstr)) {
+			index = Integer.valueOf(indexstr)-1;
+		}else{
+			result = "指定的key值序号不是整数或是0(序号从1开始)，请检查！";
+			return result;
 		}
 
 		try {
