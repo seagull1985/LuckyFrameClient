@@ -297,6 +297,7 @@ public class ChangString {
 	 * @return
 	 */
 	public static Map<String, String> changjson(String json, String key, String value,int index) {
+		json=json.trim();
 		luckyclient.publicclass.LogUtil.APP.info("Ô­Ê¼JSON£º¡¾"+json+"¡¿");
 		luckyclient.publicclass.LogUtil.APP.info("´ýÌæ»»JSON KEY£º¡¾"+key+"¡¿");
 		luckyclient.publicclass.LogUtil.APP.info("´ýÌæ»»JSON VALUE£º¡¾"+value+"¡¿");
