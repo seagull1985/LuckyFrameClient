@@ -36,14 +36,14 @@ public class InterfaceAnalyticCase{
 	    String action = step.getAction();
 	    params.put("PackageName", packagenage.trim()); 
 		params.put("FunctionName", functionname.trim());
-		String stepParams = step.getParameters();
+		String stepParams = replaceSpi(step.getParameters(),0);
 		String[] temp=stepParams.split(splitFlag,-1);
 		for(int i=0;i<temp.length;i++){
             if("".equals(temp[i])){
 				continue;
 			}else{
 				 //set第N个传入参数
-				params.put("FunctionParams"+(i+1), temp[i]);  
+				params.put("FunctionParams"+(i+1), replaceSpi(temp[i],1));  
 			}
 		}
 		//set预期结果
@@ -152,8 +152,26 @@ public class InterfaceAnalyticCase{
         return str;
     } 
     
-
+    /**
+     * 当遇到参数中带了|字符串时，在界面\\|进行转义
+     * @param str
+     * @param flag
+     * @return
+     */
+    private static String replaceSpi(String str,int flag){
+    	String replacestr="&brvbar_rep;";
+    	String result=str;
+    	if(str.contains("\\\\|")&&flag==0){
+    		result=str.replace("\\\\|", replacestr);
+    	}
+    	if(str.contains(replacestr)&&flag==1){
+    		result=str.replace(replacestr,"|");
+    	}
+    	return result;
+    }
+    
     public static void main(String[] args){
 		// TODO Auto-generated method stub
+    	
 	}
 }

@@ -1,11 +1,5 @@
 package luckyclient.caserun.exinterface;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
 import luckyclient.caserun.exinterface.testlink.ThreadForTestLinkExecuteCase;
 import luckyclient.dblog.DbLink;
@@ -15,12 +9,15 @@ import luckyclient.jenkinsapi.RestartServerInitialization;
 import luckyclient.mail.HtmlMail;
 import luckyclient.mail.MailSendInitialization;
 import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.planapi.entity.PublicCaseParams;
-import luckyclient.planapi.entity.TestTaskexcute;
+import luckyclient.planapi.entity.*;
 import luckyclient.testlinkapi.TestBuildApi;
 import luckyclient.testlinkapi.TestCaseApi;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * =================================================================
@@ -139,6 +136,8 @@ public class TestControl {
 		String jobname = task.getTestJob().getTaskName();
 		String projectname=task.getTestJob().getPlanproj();
 		int timeout = task.getTestJob().getTimeout();
+        TestJobs testJob = task.getTestJob();
+        int[] tastcount=null;
 		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(task.getTestJob().getProjectid().toString());
 		// 初始化写用例结果以及日志模块
 		LogOperation caselog = new LogOperation(); 
@@ -151,7 +150,6 @@ public class TestControl {
 				ThreadPoolExecutor threadExecute = new ThreadPoolExecutor(threadcount, 20, 3, TimeUnit.SECONDS,
 						new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 				
-				int[] tastcount=null;
 				if(task.getTestJob().getProjecttype()==1){
 					TestBuildApi.getBuild(projectname);
 					TestCase[] testCases= TestCaseApi.getplantestcase(projectname, taskid, "");
@@ -206,18 +204,21 @@ public class TestControl {
 
 				String testtime = LogOperation.getTestTime(taskid);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
-						HtmlMail.htmlContentFormat(tastcount, taskid, buildstatus, restartstatus, testtime,jobname), taskid);
+						HtmlMail.htmlContentFormat(tastcount, taskid, buildstatus, restartstatus, testtime,jobname), taskid, testJob,
+                        tastcount);
 				threadExecute.shutdown();
 				luckyclient.publicclass.LogUtil.APP.info("亲，没有下一条啦！我发现你的用例已经全部执行完毕，快去看看有没有失败的用例吧！");
 			} else {
 				luckyclient.publicclass.LogUtil.APP.error("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
 				MailSendInitialization.sendMailInitialization(jobname,
-						"构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskid);
+						"构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskid, testJob,
+                        tastcount);
 			}
 		} else {
 			luckyclient.publicclass.LogUtil.APP.error("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
 			MailSendInitialization.sendMailInitialization(jobname,
-					"项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid);
+					"项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid, testJob,
+                    tastcount);
 		}
 	}
 	

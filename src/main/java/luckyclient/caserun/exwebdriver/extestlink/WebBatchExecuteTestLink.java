@@ -26,7 +26,6 @@ import luckyclient.testlinkapi.TestCaseApi;
  */
 public class WebBatchExecuteTestLink{
 	
-	@SuppressWarnings("static-access")
 	public static void batchCaseExecuteForTast(String projectname,String taskid,String batchcase) throws IOException{
 		//记录日志到数据库
 		DbLink.exetype = 0;   

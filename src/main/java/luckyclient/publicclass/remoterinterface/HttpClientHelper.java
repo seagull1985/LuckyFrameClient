@@ -29,6 +29,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -40,6 +41,7 @@ import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.StringEntity;
@@ -51,6 +53,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContexts;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * =================================================================
@@ -73,7 +76,8 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendHttpURLPost(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
+	public static String sendHttpURLPost(String urlParam, Map<String, Object> params, String charset, int timeout,
+			Map<String, String> headmsg,int responsehead,int responsecode) {
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		// 构建请求参数
@@ -131,14 +135,22 @@ public class HttpClientHelper {
 				contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
 			}
 			
-			if (contentLength > 0) {
+			if(1==responsehead){
+				Map<String, List<String>> headmsgstr=con.getHeaderFields();
+				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
+				resultBuffer.append("RESPONSE_HEAD:【"+itemJSONObj+"】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+con.getResponseCode()+"】 ");
+			}
+			if (contentLength > 0||"chunked".equals(con.getHeaderField("Transfer-Encoding"))) {
 				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
 				String temp;
 				while ((temp = br.readLine()) != null) {
 					resultBuffer.append(temp);
 				}
 			}else{
-				resultBuffer.append("Content-Length=0 响应码："+con.getResponseCode());
+				resultBuffer.append("Content-Length=0");
 			}
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
@@ -186,7 +198,8 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendURLPost(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
+	public static String sendURLPost(String urlParam, Map<String, Object> params, String charset, int timeout,
+			Map<String, String> headmsg,int responsehead,int responsecode) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -250,7 +263,15 @@ public class HttpClientHelper {
 			if(null!=con.getHeaderField("Content-Length")){
 				contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
 			}
-			if (contentLength > 0) {
+			if(1==responsehead){
+				Map<String, List<String>> headmsgstr=con.getHeaderFields();
+				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
+				resultBuffer.append("RESPONSE_HEAD:【"+itemJSONObj+"】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+con.getHeaderField(null)+"】 ");
+			}
+			if (contentLength >= 0||"chunked".equals(con.getHeaderField("Transfer-Encoding"))) {
 				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
 				String temp;
 				while ((temp = br.readLine()) != null) {
@@ -293,7 +314,8 @@ public class HttpClientHelper {
 	 * @param timeout
 	 * @param headmsg
 	 */
-	public static void sendGetAndSaveFile(String urlParam, Map<String, Object> params, String fileSavePath, int timeout,Map<String, String> headmsg) {
+	public static String sendGetAndSaveFile(String urlParam, Map<String, Object> params, String fileSavePath, int timeout,
+			Map<String, String> headmsg,int responsehead,int responsecode) {
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
@@ -338,6 +360,16 @@ public class HttpClientHelper {
 	        }
 			con.setConnectTimeout(timeout*1000);
 			con.connect();
+			// 定义BufferedReader输入流来读取URL的响应
+			StringBuffer resultBuffer = new StringBuffer();
+			if(1==responsehead){
+				Map<String, List<String>> headmsgstr=con.getHeaderFields();
+				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
+				resultBuffer.append("RESPONSE_HEAD:【"+itemJSONObj+"】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+con.getResponseCode()+"】 ");
+			}
 			InputStream is = con.getInputStream();
 			os = new FileOutputStream(fileSavePath);
 			byte buf[] = new byte[1024];
@@ -346,6 +378,7 @@ public class HttpClientHelper {
 				os.write(buf, 0, count);
 			}
 			os.flush();
+			return resultBuffer.toString()+"下载文件成功，请前往客户端路径:" + fileSavePath + " 查看附件。";
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
@@ -390,7 +423,8 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendHttpURLGet(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
+	public static String sendHttpURLGet(String urlParam, Map<String, Object> params, String charset, int timeout,
+			Map<String, String> headmsg,int responsehead,int responsecode) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -437,6 +471,14 @@ public class HttpClientHelper {
 			con.setConnectTimeout(timeout*1000);
 			con.connect();
 			resultBuffer = new StringBuffer();
+			if(1==responsehead){
+				Map<String, List<String>> headmsgstr=con.getHeaderFields();
+				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
+				resultBuffer.append("RESPONSE_HEAD:【"+itemJSONObj+"】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+con.getResponseCode()+"】 ");
+			}
 			br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
 			String temp;
 			while ((temp = br.readLine()) != null) {
@@ -476,7 +518,8 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendURLGet(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
+	public static String sendURLGet(String urlParam, Map<String, Object> params, String charset, int timeout,
+			Map<String, String> headmsg,int responsehead,int responsecode) {
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -528,6 +571,14 @@ public class HttpClientHelper {
 			// 建立连接
 			con.connect();
 			resultBuffer = new StringBuffer();
+			if(1==responsehead){
+				Map<String, List<String>> headmsgstr=con.getHeaderFields();
+				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
+				resultBuffer.append("RESPONSE_HEAD:【"+itemJSONObj+"】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+con.getHeaderField(null)+"】 ");
+			}
 			br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
 			String temp;
 			while ((temp = br.readLine()) != null) {
@@ -564,7 +615,8 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public static String httpClientPostJson(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
+	public static String httpClientPostJson(String urlParam, Map<String, Object> params, String charset,
+			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
@@ -602,11 +654,19 @@ public class HttpClientHelper {
        
 		 CloseableHttpResponse response = httpclient.execute(httpPost);
 
-		 //从状态行中获取状态码  
-	     String responsecode = String.valueOf(response.getStatusLine().getStatusCode());
 		// 读取服务器响应数据
 		resultBuffer = new StringBuffer();
-		resultBuffer.append("响应码："+responsecode+" ");
+		if(1==responsehead){
+			Header[] headmsgstr=response.getAllHeaders();
+			resultBuffer.append("RESPONSE_HEAD:【{");
+			for(Header header:headmsgstr){
+				resultBuffer.append("\""+header.getName()+"\":\""+header.getValue()+"\",");
+			}
+			resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}】 ");
+		}
+		if(1==responsecode){
+			resultBuffer.append("RESPONSE_CODE:【"+response.getStatusLine().getStatusCode()+"】 ");
+		}
 		if(null!=response.getEntity()){
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
@@ -642,7 +702,8 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public static String httpClientPost(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
+	public static String httpClientPost(String urlParam, Map<String, Object> params, String charset,
+			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -680,18 +741,26 @@ public class HttpClientHelper {
 			}
 
 			 CloseableHttpResponse response = httpclient.execute(httpPost);
-			 //从状态行中获取状态码  
-		     String responsecode = String.valueOf(response.getStatusLine().getStatusCode());
 			// 读取服务器响应数据
 			resultBuffer = new StringBuffer();
-
+			if(1==responsehead){
+				Header[] headmsgstr=response.getAllHeaders();
+				resultBuffer.append("RESPONSE_HEAD:【{");
+				for(Header header:headmsgstr){
+					resultBuffer.append("\""+header.getName()+"\":\""+header.getValue()+"\",");
+				}
+				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+response.getStatusLine().getStatusCode()+"】 ");
+			}
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
 			while ((temp = br.readLine()) != null) {
 				resultBuffer.append(temp);
 			}
 			if(resultBuffer.length()==0){
-				resultBuffer.append("读取服务器响应数据异常，响应码："+responsecode);
+				resultBuffer.append("读取服务器响应数据异常，响应码："+response.getStatusLine().getStatusCode());
 			}
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
@@ -722,7 +791,8 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public static String httpClientUploadFile(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
+	public static String httpClientUploadFile(String urlParam, Map<String, Object> params, String charset,
+			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
@@ -769,18 +839,26 @@ public class HttpClientHelper {
 			}
 
 			 CloseableHttpResponse response = httpclient.execute(httpPost);
-			 //从状态行中获取状态码  
-		     String responsecode = String.valueOf(response.getStatusLine().getStatusCode());
 			// 读取服务器响应数据
 			resultBuffer = new StringBuffer();
-
+			if(1==responsehead){
+				Header[] headmsgstr=response.getAllHeaders();
+				resultBuffer.append("RESPONSE_HEAD:【{");
+				for(Header header:headmsgstr){
+					resultBuffer.append("\""+header.getName()+"\":\""+header.getValue()+"\",");
+				}
+				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+response.getStatusLine().getStatusCode()+"】 ");
+			}
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
 			while ((temp = br.readLine()) != null) {
 				resultBuffer.append(temp);
 			}
 			if(resultBuffer.length()==0){
-				resultBuffer.append("读取服务器响应数据异常，响应码："+responsecode);
+				resultBuffer.append("读取服务器响应数据异常，响应码："+response.getStatusLine().getStatusCode());
 			}
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
@@ -810,7 +888,8 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public static String httpClientGet(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws NoSuchAlgorithmException, KeyManagementException {
+	public static String httpClientGet(String urlParam, Map<String, Object> params, String charset,
+			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws NoSuchAlgorithmException, KeyManagementException {
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");	
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
@@ -862,8 +941,17 @@ public class HttpClientHelper {
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
 			resultBuffer = new StringBuffer();
-			String status="状态码："+response.getStatusLine().getStatusCode()+",";
-			resultBuffer.append(status);
+			if(1==responsehead){
+				Header[] headmsgstr=response.getAllHeaders();
+				resultBuffer.append("RESPONSE_HEAD:【{");
+				for(Header header:headmsgstr){
+					resultBuffer.append("\""+header.getName()+"\":\""+header.getValue()+"\",");
+				}
+				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+response.getStatusLine().getStatusCode()+"】 ");
+			}
 			while ((temp = br.readLine()) != null) {
 				resultBuffer.append(temp);
 			}
@@ -892,7 +980,8 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendSocketPost(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
+	public static String sendSocketPost(String urlParam, Map<String, Object> params, String charset,
+			Map<String, String> headmsg) {
 		String result = "";
 		luckyclient.publicclass.LogUtil.APP.info("设置Socket请求地址:【"+urlParam+"】");
 		// 构建请求参数
@@ -1184,9 +1273,9 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendHttpURLDel(String urlParam, Map<String, Object> params, String charset, int timeout,Map<String, String> headmsg) {
+	public static String sendHttpURLDel(String urlParam, Map<String, Object> params, String charset, int timeout,
+			Map<String, String> headmsg,int responsehead,int responsecode) {
 		StringBuffer resultBuffer = null;
-		String responsecode = null;
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
@@ -1238,10 +1327,17 @@ public class HttpClientHelper {
 			}
 			// 读取返回内容
 			resultBuffer = new StringBuffer();
-		    responsecode = String.valueOf(con.getResponseCode());
+			if(1==responsehead){
+				Map<String, List<String>> headmsgstr=con.getHeaderFields();
+				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
+				resultBuffer.append("RESPONSE_HEAD:【"+itemJSONObj+"】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+con.getResponseCode()+"】 ");
+			}
 		    if(null!=con.getHeaderField("Content-Length")){
 				int contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
-				if (contentLength > 0) {
+				if (contentLength > 0||"chunked".equals(con.getHeaderField("Transfer-Encoding"))) {
 					br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
 					String temp;
 					while ((temp = br.readLine()) != null) {
@@ -1283,7 +1379,7 @@ public class HttpClientHelper {
 			}
 		}
 
-		return responsecode + resultBuffer.toString();
+		return resultBuffer.toString();
 	}
 
 
@@ -1298,9 +1394,9 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static String httpClientPutJson(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws KeyManagementException, NoSuchAlgorithmException {
+	public static String httpClientPutJson(String urlParam, Map<String, Object> params, String charset,
+			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws KeyManagementException, NoSuchAlgorithmException {
 		StringBuffer resultBuffer = null;
-		String responsecode = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
@@ -1340,10 +1436,17 @@ public class HttpClientHelper {
 
 			// 读取服务器响应数据
 			resultBuffer = new StringBuffer();
-			//获取请求对象中的响应行对象  
-			org.apache.http.StatusLine statusLine = response.getStatusLine();
-			//从状态行中获取状态码  
-	        responsecode = String.valueOf(statusLine.getStatusCode());
+			if(1==responsehead){
+				Header[] headmsgstr=response.getAllHeaders();
+				resultBuffer.append("RESPONSE_HEAD:【{");
+				for(Header header:headmsgstr){
+					resultBuffer.append("\""+header.getName()+"\":\""+header.getValue()+"\",");
+				}
+				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+response.getStatusLine().getStatusCode()+"】 ");
+			}
 	        if(null!=response.getEntity()){
 	        	br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 				String temp;
@@ -1365,7 +1468,7 @@ public class HttpClientHelper {
 				}
 			}
 		}		
-		return responsecode + resultBuffer.toString();
+		return resultBuffer.toString();
 	}
 
 	/**
@@ -1379,9 +1482,9 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static String httpClientPut(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg,String cerpath) throws KeyManagementException, NoSuchAlgorithmException {
+	public static String httpClientPut(String urlParam, Map<String, Object> params, String charset,
+			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws KeyManagementException, NoSuchAlgorithmException {
 		StringBuffer resultBuffer = null;
-		String responsecode = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
@@ -1422,10 +1525,17 @@ public class HttpClientHelper {
 
 			// 读取服务器响应数据
 			resultBuffer = new StringBuffer();
-			//获取请求对象中的响应行对象  
-			org.apache.http.StatusLine statusLine = response.getStatusLine();
-			//从状态行中获取状态码  
-	        responsecode = String.valueOf(statusLine.getStatusCode());
+			if(1==responsehead){
+				Header[] headmsgstr=response.getAllHeaders();
+				resultBuffer.append("RESPONSE_HEAD:【{");
+				for(Header header:headmsgstr){
+					resultBuffer.append("\""+header.getName()+"\":\""+header.getValue()+"\",");
+				}
+				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append("RESPONSE_CODE:【"+response.getStatusLine().getStatusCode()+"】 ");
+			}
 	        if(null!=response.getEntity()){
 	        	br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 				String temp;
@@ -1447,7 +1557,7 @@ public class HttpClientHelper {
 				}
 			}
 		}		
-		return responsecode + resultBuffer.toString();
+		return resultBuffer.toString();
 	}
 
     /**
@@ -1507,18 +1617,21 @@ public class HttpClientHelper {
     		if(null==cerpath||"".equals(cerpath.trim())){
     			luckyclient.publicclass.LogUtil.APP.info("开始构建HTTPS单向认证请求...");
     	        TrustManager[] trustManagers = {new MyX509TrustManager()};  
-    	        sslContext = SSLContext.getInstance("TLS");   
+    	        sslContext = SSLContext.getInstance("TLS");
     	        sslContext.init(null, trustManagers, new SecureRandom());
     		}else{
     			luckyclient.publicclass.LogUtil.APP.info("开始构建HTTPS双向认证请求...");
-    			String strcerpath[]=cerpath.split(";");
+    			String strcerpath[]=cerpath.split(";",-1);
     			sslContext = sslContextKeyStore(strcerpath[0], strcerpath[1]);
     		}
             
             // 设置协议http和https对应的处理socket链接工厂的对象
             Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
-                .register("https", new SSLConnectionSocketFactory(sslContext))
+                // 正常的SSL连接会验证所有证书信息
+                // .register("https", new SSLConnectionSocketFactory(sslContext)).build();
+                // 忽略域名验证
+                .register("https", new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
                 .build();
             PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
             connManager.setDefaultMaxPerRoute(1);

@@ -68,5 +68,6 @@ public class OneCaseExecute extends TestControl {
 			}
 
 		}
+		System.exit(0);
 	}
 }

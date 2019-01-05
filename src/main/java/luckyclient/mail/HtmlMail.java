@@ -49,7 +49,7 @@ public class HtmlMail {
                 pushparameters.put("jobname", jobname);
 
                 String pushurl = properties.getProperty("task.push.url");
-                HttpClientHelper.httpClientPostJson(pushurl, pushparameters, "utf-8", headmsg,null);
+                HttpClientHelper.httpClientPostJson(pushurl, pushparameters, "utf-8", headmsg,null,0,0);
             }
         } catch (Exception e) {
             luckyclient.publicclass.LogUtil.APP.error("向第三方平台推送任务执行情况出现异常，请检查！", e);

@@ -1,8 +1,9 @@
 package luckyclient.mail;
 
-import java.util.Properties;
-
 import luckyclient.dblog.LogOperation;
+import luckyclient.planapi.entity.TestJobs;
+
+import java.util.Properties;
 
 /**
  * =================================================================
@@ -16,7 +17,35 @@ import luckyclient.dblog.LogOperation;
  */
 public class MailSendInitialization {
 
-    public static void sendMailInitialization(String subject, String content, String taskid) {
+    public static void sendMailInitialization(String subject, String content, String taskid, TestJobs testJob, int[] taskCount) {
+        boolean isSend = false;
+        if (null == taskCount) {
+            isSend = true;
+        } else {
+            if (taskCount.length == 5 && null != testJob) {
+                Integer sendCondition = testJob.getSendCondition();
+                // 用例全部成功了发送, casecount != casesuc
+                if (null!=sendCondition&&1 == sendCondition) {
+                    if (taskCount[0] == taskCount[1]) {
+                        isSend = true;
+                    }
+                }
+                // 用例部分失败了发送
+                if (null!=sendCondition&&2 == sendCondition) {
+                    if (taskCount[2] > 0) {
+                        isSend = true;
+                    }
+                }
+                // 全发
+                if (null!=sendCondition&&0 == sendCondition) {
+                    isSend = true;
+                }
+            }
+        }
+        if (!isSend) {
+            luckyclient.publicclass.LogUtil.APP.info("当前任务不需要发送邮件通知!");
+            return;
+        }
         String[] addresses = LogOperation.getEmailAddress(taskid);
         Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
         if (addresses != null) {

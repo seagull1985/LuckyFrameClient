@@ -1,5 +1,6 @@
 package luckyclient.publicclass;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -246,6 +247,31 @@ public class ChangString {
 				COUNTER++;
 			}
 		}
+		//如果是Long就获取它的值
+		if(entry.getValue() instanceof Long){
+			if(key.equals(entry.getKey())){
+				if(keyindex==COUNTER){
+					luckyclient.publicclass.LogUtil.APP.info("对象原始Long值：【"+entry.getValue()+"】");
+					entry.setValue(Long.valueOf(value));
+					luckyclient.publicclass.LogUtil.APP.info("对象替换后Long值：【"+entry.getValue()+"】");
+					BCHANG=true;
+				}
+				COUNTER++;
+			}
+		}
+		//如果是Double就获取它的值
+		if(entry.getValue() instanceof BigDecimal){
+			if(key.equals(entry.getKey())){
+				if(keyindex==COUNTER){
+					luckyclient.publicclass.LogUtil.APP.info("对象原始BigDecimal值：【"+entry.getValue()+"】");
+					BigDecimal bd = new BigDecimal(value);
+					entry.setValue(bd);
+					luckyclient.publicclass.LogUtil.APP.info("对象替换后BigDecimal值：【"+entry.getValue()+"】");
+					BCHANG=true;
+				}
+				COUNTER++;
+			}
+		}
 		//如果是Boolean就获取它的值
 		if(entry.getValue() instanceof Boolean){
 			if(key.equals(entry.getKey())){
@@ -271,6 +297,7 @@ public class ChangString {
 	 * @return
 	 */
 	public static Map<String, String> changjson(String json, String key, String value,int index) {
+		json=json.trim();
 		luckyclient.publicclass.LogUtil.APP.info("原始JSON：【"+json+"】");
 		luckyclient.publicclass.LogUtil.APP.info("待替换JSON KEY：【"+key+"】");
 		luckyclient.publicclass.LogUtil.APP.info("待替换JSON VALUE：【"+value+"】");
@@ -320,7 +347,7 @@ public class ChangString {
 	}
 
 	public static void main(String[] args) {
-
+		
 	}
 
 }

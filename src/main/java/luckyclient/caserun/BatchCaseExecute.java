@@ -71,6 +71,7 @@ public class BatchCaseExecute extends TestControl {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 
 }

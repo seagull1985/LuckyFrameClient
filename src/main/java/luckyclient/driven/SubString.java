@@ -15,7 +15,7 @@ public class SubString {
 	 * @return
 	 */
 	public static String subCentreStr(String str,String startstr,String endstr){
-		String getstr=str.substring(str.indexOf(startstr)+startstr.length(), str.indexOf(endstr));
+		String getstr=str.substring(str.indexOf(startstr)+startstr.length(), str.indexOf(endstr,str.indexOf(startstr)+startstr.length()));
 		return getstr;
 	}
 	
@@ -144,6 +144,62 @@ public class SubString {
 		}
         return getstr;    
     }    
+	
+	/**
+	 * 取出JSON中指定序号key的值
+	 * @param jsonstr
+	 * @param key
+	 * @param indexstr 序号从1开始
+	 * @return
+	 */
+	public static String getJsonValue(String jsonstr, String key, String indexstr) {
+		String result = "格式化成JSON异常";
+		int index = 0;
+		if (isInteger(indexstr)&&!"0".equals(indexstr)) {
+			index = Integer.valueOf(indexstr)-1;
+		}else{
+			result = "指定的key值序号不是整数或是0(序号从1开始)，请检查！";
+			return result;
+		}
+
+		try {
+			String[] restr = jsonstr.split("\"" + key + "\":",0);
+			if (restr.length >= index) {
+				if(restr[index].contains(",\"")){
+					result = restr[index].substring(0,restr[index].indexOf(",\""));
+				}
+				if(result.contains("\"}")||"格式化成JSON异常".equals(result)){
+					if("格式化成JSON异常".equals(result)){
+						result = restr[index].substring(0,restr[index].indexOf("\"}"));
+					}else{
+						result = result.substring(0,result.indexOf("\"}"));
+					}
+
+				}
+				if(result.contains("}")||"格式化成JSON异常".equals(result)){
+					if("格式化成JSON异常".equals(result)){
+						result = restr[index].substring(0,restr[index].indexOf("\"}"));
+					}else{
+						result = result.substring(0,result.indexOf("}"));
+					}
+				}
+				if(result.startsWith("\"")){
+					result=result.substring(1);
+				}
+			}else{
+				if(restr.length==1){
+					result = "没有在JSON中找到Key:"+key+" 对象，请检查JSON:" + jsonstr;
+				}else{
+					result = "指定序号"+index+" 小于在JSON中找到的Key:"+key+" 个数，请检查JSON:" + jsonstr;
+				}
+			}
+			
+		} catch (Exception e) {
+			result = "获取JSON中Key:"+key+" 的Value出现异常，请检查参数：" + jsonstr;
+			return result;
+		}
+		return result;
+	}
 	
 	private static boolean isInteger(String str) {  
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");  

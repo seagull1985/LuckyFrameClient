@@ -42,16 +42,15 @@ public class TestCaseExecution {
     protected static final String ASSIGNMENT_SIGN = "$=";
     protected static final String FUZZY_MATCHING_SIGN = "%=";
     protected static final String REGULAR_MATCHING_SIGN = "~=";
-
+    private static Map<String, String> VARIABLE = new HashMap<String, String>(0);
+    
     /**
      * @param projectname        项目名
      * @param testCaseExternalId 用例编号
      * @param version            用例版本号
      *                           用于单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
      */
-
     public static void oneCaseExecuteForTast(String projectname, String testCaseExternalId, int version, String taskid) {
-        Map<String, String> variable = new HashMap<String, String>(0);
         TestControl.TASKID = taskid;
         DbLink.exetype = 0;
         // 初始化写用例结果以及日志模块
@@ -59,7 +58,7 @@ public class TestCaseExecution {
         String packagename = null;
         String functionname = null;
         String expectedresults = null;
-        Integer setresult = 1;
+        Integer setcaseresult = 0;
         Object[] getParameterValues = null;
         String testnote = "初始化测试结果";
         int k = 0;
@@ -69,13 +68,13 @@ public class TestCaseExecution {
         List<PublicCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcaseob.getProjectid()));
         // 把公共参数加入到MAP中
         for (PublicCaseParams pcp : pcplist) {
-            variable.put(pcp.getParamsname(), pcp.getParamsvalue());
+        	VARIABLE.put(pcp.getParamsname(), pcp.getParamsvalue());
         }
         List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
         if (steps.size() == 0) {
-            setresult = 2;
+            setcaseresult = 2;
             luckyclient.publicclass.LogUtil.APP.error("用例中未找到步骤，请检查！");
-            LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "用例中未找到步骤，请检查！", "error", "1");
+            caselog.caseLogDetail(taskid, testCaseExternalId, "用例中未找到步骤，请检查！", "error", "1", "");
             testnote = "用例中未找到步骤，请检查！";
         }
         // 进入循环，解析用例所有步骤
@@ -83,9 +82,9 @@ public class TestCaseExecution {
             Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcaseob, steps.get(i), taskid, caselog);
             try {
                 packagename = casescript.get("PackageName");
-                packagename = ChangString.changparams(packagename, variable, "包路径");
+                packagename = ChangString.changparams(packagename, VARIABLE, "包路径");
                 functionname = casescript.get("FunctionName");
-                functionname = ChangString.changparams(functionname, variable, "方法名");
+                functionname = ChangString.changparams(functionname, VARIABLE, "方法名");
             } catch (Exception e) {
                 k = 0;
                 luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + "解析包名或是方法名失败，请检查！");
@@ -100,7 +99,7 @@ public class TestCaseExecution {
                 break;
             }
             expectedresults = casescript.get("ExpectedResults");
-            expectedresults = ChangString.changparams(expectedresults, variable, "预期结果");
+            expectedresults = ChangString.changparams(expectedresults, VARIABLE, "预期结果");
             // 判断方法是否带参数
             if (casescript.size() > 4) {
                 // 获取传入参数，放入对象中，初始化参数对象个数
@@ -112,7 +111,7 @@ public class TestCaseExecution {
                     }
 
                     String parameterValues = casescript.get("FunctionParams" + (j + 1));
-                    parameterValues = ChangString.changparams(parameterValues, variable, "用例参数");
+                    parameterValues = ChangString.changparams(parameterValues, VARIABLE, "用例参数");
                     luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues);
                     caselog.caseLogDetail(taskid, testcaseob.getSign(), "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues, "info", String.valueOf(i + 1), "");
                     getParameterValues[j] = parameterValues;
@@ -123,90 +122,62 @@ public class TestCaseExecution {
             // 调用动态方法，执行测试用例
             try {
                 luckyclient.publicclass.LogUtil.APP.info("开始调用方法：" + functionname + " .....");
-                LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1));
-
+                caselog.caseLogDetail(taskid, testCaseExternalId, "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1), "");
                 testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getAction());
 
-                if (null != expectedresults && !expectedresults.isEmpty()) {
-                    luckyclient.publicclass.LogUtil.APP.info("expectedResults=【" + expectedresults + "】");
-                    // 赋值传参
-                    if (expectedresults.length() > ASSIGNMENT_SIGN.length() && expectedresults.startsWith(ASSIGNMENT_SIGN)) {
-                        variable.put(expectedresults.substring(ASSIGNMENT_SIGN.length()), testnote);
-                        luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】");
-                    }
-                    // 模糊匹配
-                    else if (expectedresults.length() > FUZZY_MATCHING_SIGN.length() && expectedresults.startsWith(FUZZY_MATCHING_SIGN)) {
-                        if (testnote.contains(expectedresults.substring(FUZZY_MATCHING_SIGN.length()))) {
-                            setresult = 0;
-                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，模糊匹配预期结果成功！执行结果：" + testnote);
-                        } else {
-                            setresult = 1;
-                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，模糊匹配预期结果失败！预期结果：" + expectedresults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote);
-                            testnote = "用例第" + (i + 1) + "步，模糊匹配预期结果失败！";
-                            break; // 某一步骤失败后，此条用例置为失败退出
-                        }
-                    }
-                    // 正则匹配
-                    else if (expectedresults.length() > REGULAR_MATCHING_SIGN.length() && expectedresults.startsWith(REGULAR_MATCHING_SIGN)) {
-                        Pattern pattern = Pattern.compile(expectedresults.substring(REGULAR_MATCHING_SIGN.length()));
-                        Matcher matcher = pattern.matcher(testnote);
-                        if (matcher.find()) {
-                            setresult = 0;
-                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，正则匹配预期结果成功！执行结果：" + testnote);
-                        } else {
-                            setresult = 1;
-                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，正则匹配预期结果失败！预期结果：" + expectedresults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote);
-                            testnote = "用例第" + (i + 1) + "步，正则匹配预期结果失败！";
-                            break; // 某一步骤失败后，此条用例置为失败退出
-                        }
-                    }
-                    // 完全相等
-                    else {
-                        if (expectedresults.equals(testnote)) {
-                            setresult = 0;
-                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，精确匹配预期结果成功！执行结果：" + testnote);
-                        } else {
-                            setresult = 1;
-                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，精确匹配预期结果失败！预期结果：" + expectedresults + "，测试结果：" + testnote);
-                            testnote = "用例第" + (i + 1) + "步，精确匹配预期结果失败！";
-                            break; // 某一步骤失败后，此条用例置为失败退出
-                        }
+                // 判断结果
+                int stepresult = interfaceJudgeResult(testcaseob, steps.get(i), taskid, expectedresults, testnote, caselog);
+    			// 失败，并且不在继续,直接终止
+                if (0 != stepresult) {
+                	setcaseresult = stepresult;
+                    if (testcaseob.getFailcontinue() == 0) {
+                        luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+steps.get(i).getStepnum()+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                        break;
+                    } else {
+                        luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+steps.get(i).getStepnum()+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
                     }
                 }
-
+                
                 // 获取步骤间等待时间
                 int waitsec = Integer.parseInt(casescript.get("StepWait"));
                 if (waitsec > 0) {
                     Thread.sleep(waitsec * 1000);
                 }
+                
             } catch (Exception e) {
                 luckyclient.publicclass.LogUtil.ERROR.error("调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！");
-                LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！", "error", String.valueOf(i + 1));
+                caselog.caseLogDetail(taskid, testCaseExternalId, "调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！", "error", String.valueOf(i + 1), "");
                 luckyclient.publicclass.LogUtil.ERROR.error(e, e);
                 testnote = "CallCase调用出错！";
-                setresult = 1;
+                setcaseresult = 1;
                 e.printStackTrace();
-                break;
+                if (testcaseob.getFailcontinue() == 0) {
+                    luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                    break;
+                } else {
+                    luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                }
             }
         }
-        variable.clear(); // 清空传参MAP
+        
+        VARIABLE.clear(); // 清空传参MAP
         // 如果调用方法过程中未出错，进入设置测试结果流程
         if (!testnote.contains("CallCase调用出错！") && !testnote.contains("解析出错啦！")) {
             luckyclient.publicclass.LogUtil.APP.info("用例 " + testCaseExternalId + "解析成功，并成功调用用例中方法，请继续查看执行结果！");
-            LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "解析成功，并成功调用用例中方法，请继续查看执行结果！", "info", "SETCASERESULT...");
-            caselog.updateCaseDetail(taskid, testCaseExternalId, setresult);
+            caselog.caseLogDetail(taskid, testCaseExternalId, "解析成功，并成功调用用例中方法，请继续查看执行结果！", "info", "SETCASERESULT...", "");
+            caselog.updateCaseDetail(taskid, testCaseExternalId, setcaseresult);
         } else {
-            setresult = 1;
+            setcaseresult = 1;
             luckyclient.publicclass.LogUtil.APP.error("用例 " + testCaseExternalId + "解析或是调用步骤中的方法出错！");
-            LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "解析或是调用步骤中的方法出错！", "error", "SETCASERESULT...");
+            caselog.caseLogDetail(taskid, testCaseExternalId, "解析或是调用步骤中的方法出错！", "error", "SETCASERESULT...", "");
             caselog.updateCaseDetail(taskid, testCaseExternalId, 2);
         }
-        if (0 == setresult) {
+        if (0 == setcaseresult) {
             luckyclient.publicclass.LogUtil.APP.info("用例 " + testCaseExternalId + "步骤全部执行成功！");
-            LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "步骤全部执行成功！", "info", "EXECUTECASESUC...");
+            caselog.caseLogDetail(taskid, testCaseExternalId, "步骤全部执行成功！", "info", "EXECUTECASESUC...", "");
         } else {
             luckyclient.publicclass.LogUtil.APP.error("用例 " + testCaseExternalId + "在执行过程中失败，请检查日志！");
-            LogOperation.updateCaseLogDetail(testCaseExternalId, taskid, "在执行过程中失败，请检查日志！", "error", "EXECUTECASESUC...");
+            caselog.caseLogDetail(taskid, testCaseExternalId, "在执行过程中失败，请检查日志！", "error", "EXECUTECASESUC...", "");
         }
         LogOperation.updateTastdetail(taskid, 0);
     }
@@ -367,7 +338,6 @@ public class TestCaseExecution {
      * 提供给Web用例中，runcase的时候使用
      */
     protected static String oneCaseExecuteForUICase(String testCaseExternalId, String taskid, LogOperation caselog, Object driver) throws InterruptedException {
-        Map<String, String> variable = new HashMap<>(0);
         String expectedresults = null;
         Integer setresult = 1;
         String testnote = "初始化测试结果";
@@ -375,7 +345,7 @@ public class TestCaseExecution {
         List<PublicCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcaseob.getProjectid()));
         // 把公共参数加入到MAP中
         for (PublicCaseParams pcp : pcplist) {
-            variable.put(pcp.getParamsname(), pcp.getParamsvalue());
+        	VARIABLE.put(pcp.getParamsname(), pcp.getParamsvalue());
         }
         List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
         if (steps.size() == 0) {
@@ -406,29 +376,31 @@ public class TestCaseExecution {
             }
 
             expectedresults = params.get("ExpectedResults");
-            expectedresults = ChangString.changparams(expectedresults, variable, "预期结果");
+            expectedresults = ChangString.changparams(expectedresults, VARIABLE, "预期结果");
             
             // 根据步骤类型来执行步骤
             if (1 == step.getSteptype()){
             	WebDriver wd=(WebDriver)driver;
-            	result = WebCaseExecution.runWebStep(params, variable, wd, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
+            	result = WebCaseExecution.runWebStep(params, VARIABLE, wd, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
                 // 判断结果
                 setresult = WebCaseExecution.judgeResult(testcaseob, step, params, wd, taskid, expectedresults, result, caselog);
             }else if (4 == step.getSteptype()){
             	if (driver instanceof AndroidDriver){
             		AndroidDriver<AndroidElement> ad=(AndroidDriver<AndroidElement>)driver;
-            		result = AndroidCaseExecution.androidRunStep(params, variable, ad, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
+            		result = AndroidCaseExecution.androidRunStep(params, VARIABLE, ad, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
             		// 判断结果
                     setresult = AndroidCaseExecution.judgeResult(testcaseob, step, params, ad, taskid, expectedresults, result, caselog);
             	}else{
             		IOSDriver<IOSElement> ios=(IOSDriver<IOSElement>)driver;
-            		result = IosCaseExecution.iosRunStep(params, variable, ios, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
+            		result = IosCaseExecution.iosRunStep(params, VARIABLE, ios, taskid, testcaseob.getSign(), step.getStepnum(), caselog);
             		// 判断结果
                     setresult = IosCaseExecution.judgeResult(testcaseob, step, params, ios, taskid, expectedresults, result, caselog);
             	}
             	
             } else{
-            	result = runStep(params, variable, taskid, testcaseob.getSign(), step, caselog);
+            	result = runStep(params, VARIABLE, taskid, testcaseob.getSign(), step, caselog);
+            	// 判断结果
+            	setresult = interfaceJudgeResult(testcaseob, step, taskid, expectedresults, testnote, caselog);
             } 
 
             if (0 != setresult){
@@ -436,7 +408,7 @@ public class TestCaseExecution {
             }
         }
 
-        variable.clear(); // 清空传参MAP
+        VARIABLE.clear(); // 清空传参MAP
         if (0 == setresult) {
             testnote = "调用用例【" + testcaseob.getSign() + "】执行成功！";
             luckyclient.publicclass.LogUtil.APP.info("用例 " + testcaseob.getSign() + "步骤全部执行成功！");
@@ -505,5 +477,64 @@ public class TestCaseExecution {
         else caselog.caseLogDetail(taskid, casenum, result, "info", String.valueOf(step.getStepnum()), "");
         return result;
     }
+    
+    private static int interfaceJudgeResult(ProjectCase testcase, ProjectCasesteps step, String taskid, String expectedresults, String testnote, LogOperation caselog){
+        int setresult = 0;
+        try{
+        	if (null != expectedresults && !expectedresults.isEmpty()) {
+                luckyclient.publicclass.LogUtil.APP.info("expectedResults=【" + expectedresults + "】");
+                // 赋值传参
+                if (expectedresults.length() > ASSIGNMENT_SIGN.length() && expectedresults.startsWith(ASSIGNMENT_SIGN)) {
+                	VARIABLE.put(expectedresults.substring(ASSIGNMENT_SIGN.length()), testnote);
+                    luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】");
+                    caselog.caseLogDetail(taskid, testcase.getSign(), "将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(step.getStepnum()), "");
+                }
+                // 模糊匹配
+                else if (expectedresults.length() > FUZZY_MATCHING_SIGN.length() && expectedresults.startsWith(FUZZY_MATCHING_SIGN)) {
+                    if (testnote.contains(expectedresults.substring(FUZZY_MATCHING_SIGN.length()))) {
+                        luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，模糊匹配预期结果成功！执行结果：" + testnote);
+                        caselog.caseLogDetail(taskid, testcase.getSign(), "模糊匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(step.getStepnum()), "");
+                    } else {
+                    	setresult = 1;
+                        luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，模糊匹配预期结果失败！预期结果：" + expectedresults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote);
+                        caselog.caseLogDetail(taskid, testcase.getSign(), "模糊匹配预期结果失败！预期结果：" + expectedresults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote, "error", String.valueOf(step.getStepnum()), "");
+                        testnote = "用例第" + step.getStepnum() + "步，模糊匹配预期结果失败！";
+                    }
+                }
+                // 正则匹配
+                else if (expectedresults.length() > REGULAR_MATCHING_SIGN.length() && expectedresults.startsWith(REGULAR_MATCHING_SIGN)) {
+                    Pattern pattern = Pattern.compile(expectedresults.substring(REGULAR_MATCHING_SIGN.length()));
+                    Matcher matcher = pattern.matcher(testnote);
+                    if (matcher.find()) {
+                        luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，正则匹配预期结果成功！执行结果：" + testnote);
+                        caselog.caseLogDetail(taskid, testcase.getSign(), "正则匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(step.getStepnum()), "");
+                    } else {
+                        setresult = 1;
+                        luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，正则匹配预期结果失败！预期结果：" + expectedresults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote);
+                        caselog.caseLogDetail(taskid, testcase.getSign(), "正则匹配预期结果失败！预期结果：" + expectedresults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote, "error", String.valueOf(step.getStepnum()), "");
+                        testnote = "用例第" + step.getStepnum() + "步，正则匹配预期结果失败！";
+                    }
+                }
+                // 完全相等
+                else {
+                    if (expectedresults.equals(testnote)) {
+                        luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，精确匹配预期结果成功！执行结果：" + testnote);
+                        caselog.caseLogDetail(taskid, testcase.getSign(), "精确匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(step.getStepnum()), "");
+                    } else {
+                        setresult = 1;
+                        luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，精确匹配预期结果失败！预期结果：" + expectedresults + "，测试结果：" + testnote);
+                        caselog.caseLogDetail(taskid, testcase.getSign(), "精确匹配预期结果失败！预期结果：" + expectedresults + "，测试结果：" + testnote, "error", String.valueOf(step.getStepnum()), "");
+                        testnote = "用例第" + step.getStepnum() + "步，精确匹配预期结果失败！";
+                    }
+                }
+            }
+        }catch(Exception e){
+        	e.printStackTrace();
+        	setresult = 2; 
+        	return setresult;
+        }
+        return setresult; 	
+    }
+    
     
 }

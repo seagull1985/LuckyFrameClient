@@ -50,7 +50,8 @@ public class WebDriverInitialization{
 			FirefoxOptions options = new FirefoxOptions();
 			if(os.startsWith("win")){
 				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver.exe");
-			}else if(os.indexOf("mac")>=0){
+			}else if(os.contains("mac")){
+				options.addArguments("start-maximized");
 				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver_mac");
 			}else{
 				luckyclient.publicclass.LogUtil.APP.info("检测到当前系统环境是Linux,默认使用headless方式运行Firefox浏览器的Web UI自动化...");
@@ -58,6 +59,7 @@ public class WebDriverInitialization{
 				options.setHeadless(true);
 				//禁用沙盒
 				options.addArguments("no-sandbox");
+				options.addArguments("start-maximized");
 				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver_linux64");
 			}
 			webDriver = new FirefoxDriver(options);
@@ -65,7 +67,8 @@ public class WebDriverInitialization{
 			ChromeOptions options = new ChromeOptions();
 			if(os.startsWith("win")){
 				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver.exe");
-			}else if(os.indexOf("mac")>=0){
+			}else if(os.contains("mac")){
+				options.addArguments("start-maximized");
 				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver_mac");
 			}else{
 				luckyclient.publicclass.LogUtil.APP.info("检测到当前系统环境是Linux,默认使用headless方式运行Chrome浏览器的Web UI自动化...");
@@ -73,6 +76,7 @@ public class WebDriverInitialization{
 				options.setHeadless(true);
 				//禁用沙盒
 				options.addArguments("no-sandbox");
+				options.addArguments("start-maximized");
 				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver_linux64");
 			}			
 			webDriver = new ChromeDriver(options);
@@ -90,7 +94,11 @@ public class WebDriverInitialization{
 			webDriver = new InternetExplorerDriver();
 		}
 		
-		webDriver.manage().window().maximize();
+		//解决webdriver在unix环境中，最大化会出现异常的bug，unix最大化在options中单独设置
+		if(os.startsWith("win")){
+			webDriver.manage().window().maximize();
+		}
+
 		//设置页面加载最大时长30秒
 		webDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 		//设置元素出现最大时长30秒  

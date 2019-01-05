@@ -12,10 +12,6 @@ package luckyclient.planapi.entity;
  * 
  */
 public class TestJobs implements java.io.Serializable {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String taskName;
@@ -96,6 +92,8 @@ public class TestJobs implements java.io.Serializable {
 	private String endTimestr;
 	private String createTime;
 	private String noEndDate;
+    // ·¢ËÍÌõ¼þ
+    private Integer sendCondition;
 	
 	public Integer getProjecttype() {
 		return projecttype;
@@ -385,4 +383,11 @@ public class TestJobs implements java.io.Serializable {
 		this.showRun = showRun;
 	}
 
+    public Integer getSendCondition() {
+        return sendCondition;
+    }
+
+    public void setSendCondition(Integer sendCondition) {
+        this.sendCondition = sendCondition;
+    }
 }
