@@ -21,23 +21,26 @@ import luckyclient.planapi.entity.ProjectCasesteps;
  * 
  */
 public class InterfaceAnalyticCase{
-	private static String splitFlag = "\\|";
-
 	/**
+	 * 解析用例步骤
+	 * @param projectcase
+	 * @param step
+	 * @param taskid
+	 * @param caselog
+	 * @return
 	 */
 	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid,LogOperation caselog){
-		String time = "0";
 		Map<String,String> params = new HashMap<String,String>(0);
 
 		try {
 	    String packagenage = step.getPath();
 	    String functionname = step.getOperation();
 	    String resultstr = step.getExpectedresult();
-	    String action = step.getAction();
+		params.put("Action", step.getAction());
 	    params.put("PackageName", packagenage.trim()); 
 		params.put("FunctionName", functionname.trim());
 		String stepParams = replaceSpi(step.getParameters(),0);
-		String[] temp=stepParams.split(splitFlag,-1);
+		String[] temp=stepParams.split("\\|",-1);
 		for(int i=0;i<temp.length;i++){
             if("".equals(temp[i])){
 				continue;
@@ -52,11 +55,6 @@ public class InterfaceAnalyticCase{
 		}else{
 			params.put("ExpectedResults", subComment(resultstr));
 		}
-		//set后续操作
-		if(null!=action&&action.toLowerCase().indexOf("*wait")>-1){
-			time=action.substring(0, action.toLowerCase().lastIndexOf("*wait"));
-		}
-		params.put("StepWait", time);
 		luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！");
 		if(null!=caselog){
 			caselog.caseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepnum()),"");

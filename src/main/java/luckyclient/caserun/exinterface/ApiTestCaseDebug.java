@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.eti.kinoshita.testlinkjavaapi.util.TestLinkAPIException;
+import luckyclient.caserun.exinterface.analyticsteps.ActionManageForSteps;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
@@ -105,8 +106,8 @@ public class ApiTestCaseDebug {
 			try {
 				luckyclient.publicclass.LogUtil.APP.info("开始调用方法：" + functionname + " .....");
 				testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,
-						steps.get(i).getSteptype(), steps.get(i).getAction());
-
+						steps.get(i).getSteptype(), steps.get(i).getExtend());
+				testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
 				if (null != expectedresults && !expectedresults.isEmpty()) {
 					luckyclient.publicclass.LogUtil.APP.info("expectedResults=【" + expectedresults + "】");
 					// 赋值传参
@@ -177,11 +178,6 @@ public class ApiTestCaseDebug {
 			                }
 						}
 					}
-				}
-				// 获取步骤间等待时间
-				int waitsec = Integer.parseInt(casescript.get("StepWait").toString());
-				if (waitsec != 0) {
-					Thread.sleep(waitsec * 1000);
 				}
 			} catch (Exception e) {
 				setcaseresult = 1;

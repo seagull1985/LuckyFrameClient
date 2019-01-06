@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import luckyclient.planapi.entity.ProjectProtocolTemplate;
 import luckyclient.publicclass.remoterinterface.HttpClientHelper;
 
 /**
@@ -49,7 +50,10 @@ public class HtmlMail {
                 pushparameters.put("jobname", jobname);
 
                 String pushurl = properties.getProperty("task.push.url");
-                HttpClientHelper.httpClientPostJson(pushurl, pushparameters, "utf-8", headmsg,null,0,0);
+                ProjectProtocolTemplate ppt=new ProjectProtocolTemplate();
+                ppt.setContentencoding("utf-8");
+                ppt.setConnecttimeout(60);
+                HttpClientHelper.httpClientPostJson(pushurl, pushparameters, headmsg,ppt);
             }
         } catch (Exception e) {
             luckyclient.publicclass.LogUtil.APP.error("向第三方平台推送任务执行情况出现异常，请检查！", e);

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import luckyclient.caserun.exinterface.analyticsteps.ActionManageForSteps;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.entity.ProjectCase;
@@ -110,8 +111,8 @@ public class ThreadForExecuteCase extends Thread {
                 luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "开始调用方法：" + functionname + " .....");
                 caselog.caseLogDetail(taskid, caseid, "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1), "");
 
-                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getAction());
-
+                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getExtend());
+                testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 if (null != expectedresults && !expectedresults.isEmpty()) {
                     luckyclient.publicclass.LogUtil.APP.info("expectedResults=【" + expectedresults + "】");
                     // 赋值传参
@@ -176,12 +177,6 @@ public class ThreadForExecuteCase extends Thread {
                             }
                         }
                     }
-                }
-
-                // 获取步骤间等待时间
-                int waitsec = Integer.parseInt(casescript.get("StepWait"));
-                if (waitsec > 0) {
-                    Thread.sleep(waitsec * 1000);
                 }
             } catch (Exception e) {
                 luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcaseob.getSign() + "调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！");

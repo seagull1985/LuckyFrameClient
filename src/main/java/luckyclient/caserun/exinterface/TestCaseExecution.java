@@ -15,6 +15,7 @@ import io.appium.java_client.ios.IOSElement;
 import luckyclient.caserun.exappium.AppDriverAnalyticCase;
 import luckyclient.caserun.exappium.androidex.AndroidCaseExecution;
 import luckyclient.caserun.exappium.iosex.IosCaseExecution;
+import luckyclient.caserun.exinterface.analyticsteps.ActionManageForSteps;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.exwebdriver.ex.WebCaseExecution;
 import luckyclient.caserun.exwebdriver.ex.WebDriverAnalyticCase;
@@ -123,8 +124,8 @@ public class TestCaseExecution {
             try {
                 luckyclient.publicclass.LogUtil.APP.info("开始调用方法：" + functionname + " .....");
                 caselog.caseLogDetail(taskid, testCaseExternalId, "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1), "");
-                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getAction());
-
+                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getExtend());
+                testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 // 判断结果
                 int stepresult = interfaceJudgeResult(testcaseob, steps.get(i), taskid, expectedresults, testnote, caselog);
     			// 失败，并且不在继续,直接终止
@@ -136,12 +137,6 @@ public class TestCaseExecution {
                     } else {
                         luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+steps.get(i).getStepnum()+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
                     }
-                }
-                
-                // 获取步骤间等待时间
-                int waitsec = Integer.parseInt(casescript.get("StepWait"));
-                if (waitsec > 0) {
-                    Thread.sleep(waitsec * 1000);
                 }
                 
             } catch (Exception e) {
@@ -256,8 +251,8 @@ public class TestCaseExecution {
             try {
                 luckyclient.publicclass.LogUtil.APP.info("开始调用方法：" + functionname + " .....");
 
-                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getAction());
-
+                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getExtend());
+                testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 if (null != expectedresults && !expectedresults.isEmpty()) {
                     luckyclient.publicclass.LogUtil.APP.info("expectedResults=【" + expectedresults + "】");
                     // 赋值传参
@@ -303,11 +298,6 @@ public class TestCaseExecution {
                             break; // 某一步骤失败后，此条用例置为失败退出
                         }
                     }
-                }
-
-                int waitsec = Integer.parseInt(casescript.get("StepWait"));
-                if (waitsec > 0) {
-                    Thread.sleep(waitsec * 1000);
                 }
             } catch (Exception e) {
                 LogUtil.ERROR.error("调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！");
@@ -467,7 +457,7 @@ public class TestCaseExecution {
                 LogUtil.APP.info("二次解析用例过程完成，等待进行接口操作......");
                 caselog.caseLogDetail(taskid, casenum, "包路径: " + packagename + "; 方法名: " + functionname, "info", String.valueOf(step.getStepnum()), "");
 
-                result = InvokeMethod.callCase(packagename, functionname, getParameterValues, step.getSteptype(), step.getAction());
+                result = InvokeMethod.callCase(packagename, functionname, getParameterValues, step.getSteptype(), step.getExtend());
             }
         } catch (Exception e) {
             LogUtil.APP.error("调用方法过程出错，方法名：" + functionname + "，请重新检查脚本方法名称以及参数！");
