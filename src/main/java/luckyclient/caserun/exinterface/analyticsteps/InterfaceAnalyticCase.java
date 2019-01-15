@@ -44,6 +44,9 @@ public class InterfaceAnalyticCase{
 		for(int i=0;i<temp.length;i++){
             if("".equals(temp[i])){
 				continue;
+			}if(" ".equals(temp[i])){
+				 //带一个空格的时候，传入空字符串
+				params.put("FunctionParams"+(i+1), "");  
 			}else{
 				 //set第N个传入参数
 				params.put("FunctionParams"+(i+1), replaceSpi(temp[i],1));  

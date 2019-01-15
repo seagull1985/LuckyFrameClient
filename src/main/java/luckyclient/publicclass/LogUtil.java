@@ -8,7 +8,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * 系统日志记录
- * @author HuGuobo
+ * @author Seagull
  *
  */
 public class LogUtil {

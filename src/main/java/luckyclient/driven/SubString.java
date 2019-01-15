@@ -13,6 +13,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
 
+/**
+ * 公用驱动
+ * =================================================================
+ * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改 有任何疑问欢迎联系作者讨论。 QQ:1573584944 Seagull
+ * =================================================================
+ * @author Seagull
+ * @date 2019年1月15日
+ */
 public class SubString {
 	/**
 	 * 截取指定字符串的中间字段
@@ -23,9 +32,20 @@ public class SubString {
 	 * @return
 	 */
 	public static String subCentreStr(String str, String startstr, String endstr) {
-		String getstr = str.substring(str.indexOf(startstr) + startstr.length(),
-				str.indexOf(endstr, str.indexOf(startstr) + startstr.length()));
-		return getstr;
+		try{
+			int startnum=0;
+			int endnum=str.length();
+			if(!"".equals(startstr)){
+				startnum=str.indexOf(startstr) + startstr.length();
+			}
+			if(!"".equals(endstr)){
+				endnum=str.indexOf(endstr, str.indexOf(startstr) + startstr.length());
+			}
+			String getstr = str.substring(startnum,endnum);
+			return getstr;
+		}catch(Exception e){
+			return "截取字符串出现异常，请检查参数！";
+		}
 	}
 
 	/**
@@ -36,8 +56,12 @@ public class SubString {
 	 * @return
 	 */
 	public static String subStartStr(String str, String startstr) {
-		String getstr = str.substring(str.indexOf(startstr) + startstr.length());
-		return getstr;
+		try{
+			String getstr = str.substring(str.indexOf(startstr) + startstr.length());
+			return getstr;
+		}catch(Exception e){
+			return "截取字符串出现异常，请检查参数！";
+		}
 	}
 
 	/**
@@ -48,8 +72,12 @@ public class SubString {
 	 * @return
 	 */
 	public static String subEndStr(String str, String endstr) {
-		String getstr = str.substring(0, str.indexOf(endstr));
-		return getstr;
+		try{
+			String getstr = str.substring(0, str.indexOf(endstr));
+			return getstr;
+		}catch(Exception e){
+			return "截取字符串出现异常，请检查参数！";
+		}
 	}
 
 	/**
@@ -62,23 +90,33 @@ public class SubString {
 	 */
 	public static String subCentreNum(String str, String startnum, String endnum) {
 		String getstr = "";
-		if (isInteger(startnum) && isInteger(endnum)) {
-			int start = Integer.valueOf(startnum);
-			int end = Integer.valueOf(endnum);
-			if (start > end) {
-				getstr = "截取字符串开始位置数字不能大于结束位置数字";
-			} else if (start < 0 || end < 0) {
-				getstr = "截取字符串位置的数字不能小于0";
-			} else if (start > str.length() || end > str.length()) {
-				getstr = "截取字符串位置的数字不能大于字符串本身的长度【" + str.length() + "】";
-			} else {
-				getstr = str.substring(start, end);
-			}
-		} else {
-			getstr = "指定的开始或是结束位置字符不是数字类型，请检查！";
+		if("".equals(startnum)){
+			startnum="0";
 		}
+		if("".equals(endnum)){
+			endnum=String.valueOf(str.length());
+		}
+		try{
+			if (isInteger(startnum) && isInteger(endnum)) {
+				int start = Integer.valueOf(startnum);
+				int end = Integer.valueOf(endnum);
+				if (start > end) {
+					getstr = "截取字符串开始位置数字不能大于结束位置数字";
+				} else if (start < 0 || end < 0) {
+					getstr = "截取字符串位置的数字不能小于0";
+				} else if (start > str.length() || end > str.length()) {
+					getstr = "截取字符串位置的数字不能大于字符串本身的长度【" + str.length() + "】";
+				} else {
+					getstr = str.substring(start, end);
+				}
+			} else {
+				getstr = "指定的开始或是结束位置字符不是数字类型，请检查！";
+			}
 
-		return getstr;
+			return getstr;
+		}catch(Exception e){
+			return "截取字符串出现异常，请检查参数！";
+		}
 	}
 
 	/**
@@ -90,20 +128,24 @@ public class SubString {
 	 */
 	public static String subStartNum(String str, String startnum) {
 		String getstr = "";
-		if (isInteger(startnum)) {
-			int start = Integer.valueOf(startnum);
-			if (start < 0) {
-				getstr = "截取字符串位置的数字不能小于0";
-			} else if (start > str.length()) {
-				getstr = "截取字符串位置的数字不能大于字符串本身的长度【" + str.length() + "】";
+		try{
+			if (isInteger(startnum)) {
+				int start = Integer.valueOf(startnum);
+				if (start < 0) {
+					getstr = "截取字符串位置的数字不能小于0";
+				} else if (start > str.length()) {
+					getstr = "截取字符串位置的数字不能大于字符串本身的长度【" + str.length() + "】";
+				} else {
+					getstr = str.substring(start);
+				}
 			} else {
-				getstr = str.substring(start);
+				getstr = "指定的开始位置字符不是数字类型，请检查！";
 			}
-		} else {
-			getstr = "指定的开始位置字符不是数字类型，请检查！";
-		}
 
-		return getstr;
+			return getstr;
+		}catch(Exception e){
+			return "截取字符串出现异常，请检查参数！";
+		}
 	}
 
 	/**
@@ -115,48 +157,56 @@ public class SubString {
 	 */
 	public static String subEndNum(String str, String endnum) {
 		String getstr = "";
-		if (isInteger(endnum)) {
-			int end = Integer.valueOf(endnum);
-			if (end < 0) {
-				getstr = "截取字符串位置的数字不能小于0";
-			} else if (end > str.length()) {
-				getstr = "截取字符串位置的数字不能大于字符串本身的长度【" + str.length() + "】";
+		try{
+			if (isInteger(endnum)) {
+				int end = Integer.valueOf(endnum);
+				if (end < 0) {
+					getstr = "截取字符串位置的数字不能小于0";
+				} else if (end > str.length()) {
+					getstr = "截取字符串位置的数字不能大于字符串本身的长度【" + str.length() + "】";
+				} else {
+					getstr = str.substring(0, end);
+				}
 			} else {
-				getstr = str.substring(0, end);
+				getstr = "指定的结束位置字符不是数字类型，请检查！";
 			}
-		} else {
-			getstr = "指定的结束位置字符不是数字类型，请检查！";
-		}
 
-		return getstr;
+			return getstr;
+		}catch(Exception e){
+			return "截取字符串出现异常，请检查参数！";
+		}
 	}
 
 	public static String subStrRgex(String str, String rgex, String num) {
 		List<String> list = new ArrayList<String>();
-		Pattern pattern = Pattern.compile(rgex);// 匹配的模式
-		Matcher m = pattern.matcher(str);
-		while (m.find()) {
-			int i = 1;
-			list.add(m.group(i));
-			i++;
-		}
-
-		String getstr = "";
-		if (isInteger(num)) {
-			int index = Integer.valueOf(num);
-			if (index < 0) {
-				getstr = "截取字符串索引数字不能小于0";
-			} else if (index > str.length()) {
-				getstr = "截取字符串索引的数字不能大于字符串本身的长度【" + str.length() + "】";
-			} else if (index > list.size()) {
-				getstr = "未能在指定字符串中根据正则式找到匹配的字符串或是指定的索引数字大于能找到的匹配字符串索引量";
-			} else {
-				getstr = list.get(index - 1);
+		try{
+			Pattern pattern = Pattern.compile(rgex);// 匹配的模式
+			Matcher m = pattern.matcher(str);
+			while (m.find()) {
+				int i = 1;
+				list.add(m.group(i));
+				i++;
 			}
-		} else {
-			getstr = "指定的索引位置字符不是数字类型，请检查！";
+
+			String getstr = "";
+			if (isInteger(num)) {
+				int index = Integer.valueOf(num);
+				if (index < 0) {
+					getstr = "截取字符串索引数字不能小于0";
+				} else if (index > str.length()) {
+					getstr = "截取字符串索引的数字不能大于字符串本身的长度【" + str.length() + "】";
+				} else if (index > list.size()) {
+					getstr = "未能在指定字符串中根据正则式找到匹配的字符串或是指定的索引数字大于能找到的匹配字符串索引量";
+				} else {
+					getstr = list.get(index - 1);
+				}
+			} else {
+				getstr = "指定的索引位置字符不是数字类型，请检查！";
+			}
+			return getstr;
+		}catch(Exception e){
+			return "截取字符串出现异常，请检查参数！";
 		}
-		return getstr;
 	}
 
 	private static boolean isInteger(String str) {

@@ -3,8 +3,9 @@ package luckyclient.caserun.exwebdriver;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
 import luckyclient.caserun.exwebdriver.ocr.Ocr;
-import luckyclient.publicclass.ChangString;
+import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.publicclass.LogUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.*;

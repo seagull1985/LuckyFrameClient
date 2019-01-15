@@ -16,7 +16,7 @@ import io.appium.java_client.touch.LongPressOptions;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.ElementOption;
 import io.appium.java_client.touch.offset.PointOption;
-import luckyclient.publicclass.ChangString;
+import luckyclient.caserun.publicdispose.ChangString;
 
 /**
  * =================================================================

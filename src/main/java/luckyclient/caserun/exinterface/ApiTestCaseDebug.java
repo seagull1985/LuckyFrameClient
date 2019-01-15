@@ -7,14 +7,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import br.eti.kinoshita.testlinkjavaapi.util.TestLinkAPIException;
-import luckyclient.caserun.exinterface.analyticsteps.ActionManageForSteps;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
+import luckyclient.caserun.publicdispose.ActionManageForSteps;
+import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.PublicCaseParams;
-import luckyclient.publicclass.ChangString;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.remoterinterface.HttpRequest;
 

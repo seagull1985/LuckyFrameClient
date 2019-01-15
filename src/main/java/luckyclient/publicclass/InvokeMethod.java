@@ -12,6 +12,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.planapi.entity.ProjectProtocolTemplate;
 import luckyclient.planapi.entity.ProjectTemplateParams;
 import luckyclient.publicclass.remoterinterface.HttpClientHelper;
@@ -456,8 +457,10 @@ public class InvokeMethod {
     		args[0]="python";
             if(packagename.endsWith(File.separator)){
             	args[1]=packagename+functionname;
+            	//args[1]="E:\\PycharmProjects\\untitled\\venv\\testaaa.py";
             }else{
             	args[1]=packagename+File.separator+functionname;
+            	//args[1]="E:\\PycharmProjects\\untitled\\venv\\testaaa.py";
             }
             luckyclient.publicclass.LogUtil.APP.info("调用Python脚本路径:"+args[1]);
     		for(int i=0;i < params;i++){

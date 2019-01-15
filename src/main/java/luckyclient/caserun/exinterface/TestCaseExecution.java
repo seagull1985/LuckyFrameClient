@@ -15,17 +15,17 @@ import io.appium.java_client.ios.IOSElement;
 import luckyclient.caserun.exappium.AppDriverAnalyticCase;
 import luckyclient.caserun.exappium.androidex.AndroidCaseExecution;
 import luckyclient.caserun.exappium.iosex.IosCaseExecution;
-import luckyclient.caserun.exinterface.analyticsteps.ActionManageForSteps;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.exwebdriver.ex.WebCaseExecution;
 import luckyclient.caserun.exwebdriver.ex.WebDriverAnalyticCase;
+import luckyclient.caserun.publicdispose.ActionManageForSteps;
+import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.PublicCaseParams;
-import luckyclient.publicclass.ChangString;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.LogUtil;
 
@@ -458,6 +458,7 @@ public class TestCaseExecution {
                 caselog.caseLogDetail(taskid, casenum, "包路径: " + packagename + "; 方法名: " + functionname, "info", String.valueOf(step.getStepnum()), "");
 
                 result = InvokeMethod.callCase(packagename, functionname, getParameterValues, step.getSteptype(), step.getExtend());
+                result = ActionManageForSteps.actionManage(step.getAction(), result);
             }
         } catch (Exception e) {
             LogUtil.APP.error("调用方法过程出错，方法名：" + functionname + "，请重新检查脚本方法名称以及参数！");
