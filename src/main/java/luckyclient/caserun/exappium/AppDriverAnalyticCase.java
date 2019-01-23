@@ -24,10 +24,16 @@ public class AppDriverAnalyticCase {
 	//private static String splitFlag = "\\|";
 
 	/**
-	 * @param args
+	 * 移动端的用例步骤解析
+	 * @param projectcase
+	 * @param step
+	 * @param taskid
+	 * @param caselog
+	 * @return
+	 * @author Seagull
+	 * @date 2019年1月17日
 	 */
 	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid,LogOperation caselog){
-		String time = "0";
 		Map<String,String> params = new HashMap<String,String>(0);
 
 		String resultstr = null;
@@ -66,14 +72,6 @@ public class AppDriverAnalyticCase {
 			luckyclient.publicclass.LogUtil.APP.info("预期结果解析：ExpectedResults:"+expectedResults);
 		}
 		
-		//set wait时间
-		 //添加步骤之间等待时间
-		if(null!=step.getAction()&&step.getAction().toLowerCase().indexOf("*wait")>-1){                   
-			String action=step.getAction();
-			time=action.substring(0, action.toLowerCase().lastIndexOf("*wait"));
-        }
-		
-		params.put("StepWait", time);
 		luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！");
 		if(null!=caselog){
 		  caselog.caseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepnum()),"");

@@ -20,6 +20,7 @@ import luckyclient.caserun.exwebdriver.ex.WebCaseExecution;
 import luckyclient.caserun.exwebdriver.ex.WebDriverAnalyticCase;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
 import luckyclient.caserun.publicdispose.ChangString;
+import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
@@ -43,6 +44,7 @@ public class TestCaseExecution {
     protected static final String ASSIGNMENT_SIGN = "$=";
     protected static final String FUZZY_MATCHING_SIGN = "%=";
     protected static final String REGULAR_MATCHING_SIGN = "~=";
+    protected static final String ASSIGNMENT_GLOBALSIGN = "$A=";
     private static Map<String, String> VARIABLE = new HashMap<String, String>(0);
     
     /**
@@ -71,6 +73,8 @@ public class TestCaseExecution {
         for (PublicCaseParams pcp : pcplist) {
         	VARIABLE.put(pcp.getParamsname(), pcp.getParamsvalue());
         }
+        // 加入全局变量
+        VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
         List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
         if (steps.size() == 0) {
             setcaseresult = 2;
@@ -337,6 +341,8 @@ public class TestCaseExecution {
         for (PublicCaseParams pcp : pcplist) {
         	VARIABLE.put(pcp.getParamsname(), pcp.getParamsvalue());
         }
+        // 加入全局变量
+        VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
         List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
         if (steps.size() == 0) {
             setresult = 2;
@@ -479,6 +485,13 @@ public class TestCaseExecution {
                 	VARIABLE.put(expectedresults.substring(ASSIGNMENT_SIGN.length()), testnote);
                     luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】");
                     caselog.caseLogDetail(taskid, testcase.getSign(), "将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(step.getStepnum()), "");
+                }
+                // 赋值全局变量
+                else if (expectedresults.length() > ASSIGNMENT_GLOBALSIGN.length() && expectedresults.startsWith(ASSIGNMENT_GLOBALSIGN)) {
+                	VARIABLE.put(expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()), testnote);
+                    ParamsManageForSteps.GLOBAL_VARIABLE.put(expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()), testnote);
+                    luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，将测试结果【" + testnote + "】赋值给全局变量【" + expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】");
+                    caselog.caseLogDetail(taskid, testcase.getSign(), "将测试结果【" + testnote + "】赋值给全局变量【" + expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】", "info", String.valueOf(step.getStepnum()), "");
                 }
                 // 模糊匹配
                 else if (expectedresults.length() > FUZZY_MATCHING_SIGN.length() && expectedresults.startsWith(FUZZY_MATCHING_SIGN)) {

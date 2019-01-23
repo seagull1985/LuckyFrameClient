@@ -281,7 +281,7 @@ public class ThreadForTestLinkExecuteCase extends Thread{
 			e.printStackTrace();
 	    }finally{
 	    	variable.clear();                     //一条用例结束后，清空变量存储空间
-	    	TestControl.Debugcount--;        //多线程计数--，用于检测线程是否全部执行完
+	    	TestControl.THREAD_COUNT--;        //多线程计数--，用于检测线程是否全部执行完
 	    }
 	}
 	

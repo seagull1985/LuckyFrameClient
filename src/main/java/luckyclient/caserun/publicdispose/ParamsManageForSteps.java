@@ -2,6 +2,8 @@ package luckyclient.caserun.publicdispose;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,7 +18,7 @@ import java.util.regex.Pattern;
  * @date 2019年1月15日
  */
 public class ParamsManageForSteps {
-
+	public static Map<String, String> GLOBAL_VARIABLE = new HashMap<>(0);
 	/**
 	 * 进内置参数管理
 	 * @param params

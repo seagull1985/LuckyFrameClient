@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import luckyclient.caserun.publicdispose.ChangString;
+import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.planapi.entity.ProjectProtocolTemplate;
 import luckyclient.planapi.entity.ProjectTemplateParams;
 import luckyclient.publicclass.remoterinterface.HttpClientHelper;
@@ -107,6 +108,7 @@ public class InvokeMethod {
                             String key = temp[i].substring(0, temp[i].indexOf("="));
                             String value = temp[i].substring(temp[i].indexOf("=") + 1);
                             value = value.replace("!!!fhzh",";");
+                            value = ParamsManageForSteps.paramsManage(value);
                             headmsg.put(key, value);
                         }
                     }
@@ -121,6 +123,7 @@ public class InvokeMethod {
                         if(paramob.contains("#")){
                             String key = paramob.substring(0, paramob.indexOf("#"));
                             String value = paramob.substring(paramob.indexOf("#") + 1);
+                            value = ParamsManageForSteps.paramsManage(value);
                             if (key.contains(booleanheadmsg) && key.contains(msgend)) {
                                 String head = key.substring(key.indexOf(booleanheadmsg) + 8, key.lastIndexOf(msgend));
                                 headmsg.put(head, value);
@@ -129,6 +132,7 @@ public class InvokeMethod {
                             int replaceflag=0;
                             for (int i = 0; i < paramslist.size(); i++) {
                                 ProjectTemplateParams ptp = paramslist.get(i);
+                                ptp.setParam(ParamsManageForSteps.paramsManage(ptp.getParam()));
                                 if("_forTextJson".equals(ptp.getParamname())){
                             		//分析参数替换序号
                             		int index = 1;
@@ -140,7 +144,7 @@ public class InvokeMethod {
                             			luckyclient.publicclass.LogUtil.APP.info("准备替换JSON对象中的参数值，未检测到指定参数名序号，默认替换第1个参数...");                       			
                             		}
                             		
-                                	if(ptp.getParam().indexOf("\""+key+"\":")>=0){
+                                	if(ptp.getParam().contains("\""+key+"\":")){
                                 		Map<String,String> map=ChangString.changjson(ptp.getParam(), key, value,index);
                                 		if("true".equals(map.get("boolean"))){
                                             ptp.setParam(map.get("json"));
@@ -149,7 +153,7 @@ public class InvokeMethod {
                                             luckyclient.publicclass.LogUtil.APP.info("替换参数"+key+"完成...");
                                             break;
                                 		}
-                                	}else if(ptp.getParam().indexOf(key)>=0){
+                                	}else if(ptp.getParam().contains(key)){
                                 		ptp.setParam(ptp.getParam().replace(key, value));
                                 		paramslist.set(i, ptp);
                                         replaceflag=1;

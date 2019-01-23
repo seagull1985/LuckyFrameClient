@@ -28,7 +28,7 @@ public class ThreadForBatchCase extends Thread{
 	@Override
 	public void run(){		
 		 TestCaseExecution.oneCaseExecuteForTast(projectname, testCaseExternalId, version, tastid);
-		 TestControl.Debugcount--;        //多线程计数--，用于检测线程是否全部执行完
+		 TestControl.THREAD_COUNT--;        //多线程计数--，用于检测线程是否全部执行完
 	}
 	
 

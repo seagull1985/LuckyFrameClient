@@ -1,5 +1,11 @@
 package luckyclient.caserun.exinterface;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import br.eti.kinoshita.testlinkjavaapi.model.TestCase;
 import luckyclient.caserun.exinterface.testlink.ThreadForTestLinkExecuteCase;
 import luckyclient.dblog.DbLink;
@@ -9,15 +15,13 @@ import luckyclient.jenkinsapi.RestartServerInitialization;
 import luckyclient.mail.HtmlMail;
 import luckyclient.mail.MailSendInitialization;
 import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.*;
+import luckyclient.planapi.entity.ProjectCase;
+import luckyclient.planapi.entity.ProjectCasesteps;
+import luckyclient.planapi.entity.PublicCaseParams;
+import luckyclient.planapi.entity.TestJobs;
+import luckyclient.planapi.entity.TestTaskexcute;
 import luckyclient.testlinkapi.TestBuildApi;
 import luckyclient.testlinkapi.TestCaseApi;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * =================================================================
@@ -34,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TestControl {
 	public static String TASKID = "NULL";
-	public static int Debugcount = 0;
+	public static int THREAD_COUNT = 0;
 
 	/**
 	 * @param args
@@ -57,14 +61,14 @@ public class TestControl {
 			if (testcase.getSteps().size() == 0) {
 				continue;
 			}
-			Debugcount++; // 多线程计数++，用于检测线程是否全部执行完
+			THREAD_COUNT++; // 多线程计数++，用于检测线程是否全部执行完
 			threadExecute
 					.execute(new ThreadForTestLinkExecuteCase(projectname, testcase.getFullExternalId(), testcase, taskid));
 			// new ThreadForExecuteCase(projectname,caseid,testcaseob).run();
 		}
 		// 多线程计数，用于检测线程是否全部执行完
 		int i = 0;
-		while (Debugcount != 0) {
+		while (THREAD_COUNT != 0) {
 			i++;
 			if (i > 600) {
 				break;
@@ -105,13 +109,13 @@ public class TestControl {
 				caselog.caseLogDetail(taskid, testcase.getSign(),"在用例中没有找到步骤，请检查","error", "1", "");
 				continue;
 			}
-			Debugcount++; // 多线程计数++，用于检测线程是否全部执行完
+			THREAD_COUNT++; // 多线程计数++，用于检测线程是否全部执行完
 			threadExecute
 					.execute(new ThreadForExecuteCase(testcase, steps,taskid,pcplist,caselog));
 		}
 		// 多线程计数，用于检测线程是否全部执行完
 		int i = 0;
-		while (Debugcount != 0) {
+		while (THREAD_COUNT != 0) {
 			i++;
 			if (i > 600) {
 				break;
@@ -158,13 +162,13 @@ public class TestControl {
 						if (testcase.getSteps().size() == 0) {
 							continue;
 						}
-						Debugcount++; // 多线程计数++，用于检测线程是否全部执行完
+						THREAD_COUNT++; // 多线程计数++，用于检测线程是否全部执行完
 						threadExecute.execute(
 								new ThreadForTestLinkExecuteCase(projectname, testcase.getFullExternalId(), testcase, taskid));
 					}
 					// 多线程计数，用于检测线程是否全部执行完
 					int i = 0;
-					while (Debugcount != 0) {
+					while (THREAD_COUNT != 0) {
 						i++;
 						if (i > timeout * 10) {
 							break;
@@ -176,6 +180,7 @@ public class TestControl {
 				}else{
 					 List<ProjectCase> cases=GetServerAPI.getCasesbyplanid(task.getTestJob().getPlanid());
 					 LogOperation.updateTastStatus(taskid, cases.size());
+					 int casepriority=0;
 						for (int j=0;j<cases.size();j++) {
 							ProjectCase projectcase =cases.get(j);
 							List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(projectcase.getId());
@@ -185,13 +190,27 @@ public class TestControl {
 								caselog.caseLogDetail(taskid, projectcase.getSign(),"在用例中没有找到步骤，请检查","error", "1", "");
 								continue;
 							}
-							Debugcount++; // 多线程计数++，用于检测线程是否全部执行完
+							// 多线程计数,如果用例设置了优先级，必须等优先级高的用例执行完成，才继续后面的用例
+							if(casepriority<projectcase.getPriority()){
+								luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getSign()+"  casepriority："+casepriority+"   projectcase.getPriority()："+projectcase.getPriority());
+								luckyclient.publicclass.LogUtil.APP.info("THREAD_COUNT："+THREAD_COUNT);
+								int i = 0;
+								while (THREAD_COUNT != 0) {
+									i++;
+									if (i > timeout*60*5/cases.size()) {
+										break;
+									}
+									Thread.sleep(1000);
+								}
+							}
+							casepriority=projectcase.getPriority();
+							THREAD_COUNT++; // 多线程计数++，用于检测线程是否全部执行完
 							threadExecute.execute(
 									new ThreadForExecuteCase(projectcase, steps,taskid,pcplist,caselog));
 						}
 						// 多线程计数，用于检测线程是否全部执行完
 						int i = 0;
-						while (Debugcount != 0) {
+						while (THREAD_COUNT != 0) {
 							i++;
 							if (i > timeout * 10) {
 								break;
@@ -223,7 +242,9 @@ public class TestControl {
 	}
 	
 	public static void main(String[] args) throws Exception {
-
+		int timeout=10;
+		int a=timeout*60*5/13;
+		System.out.println(a);
 	}
 
 }

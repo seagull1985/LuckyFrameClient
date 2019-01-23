@@ -42,7 +42,7 @@ public class BatchTestLinkCaseExecution {
 			for(int i=0;i<temp.length;i++){
   			   String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
 			   int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()-1));
-			   TestControl.Debugcount++;   //多线程计数++，用于检测线程是否全部执行完
+			   TestControl.THREAD_COUNT++;   //多线程计数++，用于检测线程是否全部执行完
 			   threadExecute.execute(new ThreadForTestLinkBatchCase(projectname,testCaseExternalId,version,taskid));
 			}			
 		}else{                                           //批量执行用例
@@ -50,13 +50,13 @@ public class BatchTestLinkCaseExecution {
 			for(int i=0;i<temp.length;i++){
 				String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
 				int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()));
-				TestControl.Debugcount++;   //多线程计数++，用于检测线程是否全部执行完
+				TestControl.THREAD_COUNT++;   //多线程计数++，用于检测线程是否全部执行完
 				threadExecute.execute(new ThreadForTestLinkBatchCase(projectname,testCaseExternalId,version,taskid));
 			}
 		}
 		//多线程计数，用于检测线程是否全部执行完
 		int i=0;
-		while(TestControl.Debugcount!=0){
+		while(TestControl.THREAD_COUNT!=0){
 			i++;
 			if(i>600){
 				break;
