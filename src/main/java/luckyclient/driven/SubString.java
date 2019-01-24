@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
@@ -266,7 +267,19 @@ public class SubString {
 			List list = (List) entry.getValue();
 			for (int i = 0; i < list.size(); i++) {
 				// 如果还有，循环提取
-				list.set(i, parseJsonString(list.get(i).toString(), key, keyindex));
+				//list.set(i, parseJsonString(list.get(i).toString(), key, keyindex));
+				//如何还有，循环提取
+				try{
+					list.set(i, parseJsonString(list.get(i).toString(), key, keyindex));
+				}catch(JSONException jsone){
+					if(key.equals(entry.getKey())){
+						if(keyindex==COUNTER){
+							JSONVALUE = entry.getValue().toString();
+						}			
+						COUNTER++;
+					}
+					break;
+				}
 			}
 		}
 		// 获取key中的value
@@ -295,7 +308,7 @@ public class SubString {
 		if (isInteger(indexstr) && !"0".equals(indexstr)) {
 			index = Integer.valueOf(indexstr);
 		} else {
-			result = JSONVALUE + "指定的key值序号不是整数或是0(序号从1开始)，请检查！";
+			result = JSONVALUE + "指定的key值序号不是大于0的整数(序号从1开始)，请检查！";
 			return result;
 		}
 

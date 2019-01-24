@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 
@@ -219,9 +220,23 @@ public class ChangString {
 			List list = (List)entry.getValue();
 			for (int i = 0; i < list.size(); i++) {
 				//如何还有，循环提取
-				list.set(i, parseJsonString(list.get(i).toString(),key,value,keyindex));
+				try{
+					list.set(i, parseJsonString(list.get(i).toString(),key,value,keyindex));
+					entry.setValue(list);
+				}catch(JSONException jsone){
+					if(key.equals(entry.getKey())){
+						if(keyindex==COUNTER){
+							luckyclient.publicclass.LogUtil.APP.info("对象原始List值：【"+entry.getValue()+"】");
+							JSONArray jsonarr = JSONArray.parseArray(value);
+							entry.setValue(jsonarr);
+							luckyclient.publicclass.LogUtil.APP.info("对象替换后List值：【"+entry.getValue()+"】");
+							BCHANG=true;
+						}			
+						COUNTER++;
+					}
+					break;
 				}
-			entry.setValue(list);
+				}
 			}
 		//如果是String就获取它的值
 		if(entry.getValue() instanceof String){
@@ -347,7 +362,7 @@ public class ChangString {
 	}
 
 	public static void main(String[] args) {
-		
+
 	}
 
 }
