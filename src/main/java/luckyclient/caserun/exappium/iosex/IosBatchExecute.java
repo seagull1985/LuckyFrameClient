@@ -3,10 +3,12 @@ package luckyclient.caserun.exappium.iosex;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Properties;
 
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import luckyclient.caserun.exappium.AppiumInitialization;
+import luckyclient.caserun.exappium.AppiumService;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
@@ -29,13 +31,22 @@ import luckyclient.planapi.entity.TestTaskexcute;
  */
 public class IosBatchExecute {
 
-	public static void batchCaseExecuteForTast(String projectname, String taskid, String batchcase) throws IOException {
+	public static void batchCaseExecuteForTast(String projectname, String taskid, String batchcase) throws IOException, InterruptedException {
 		// 记录日志到数据库
 		DbLink.exetype = 0;
 		TestControl.TASKID = taskid;
 		IOSDriver<IOSElement> iosd = null;
+		AppiumService as=null;
 		try {
-			iosd = AppiumInitialization.setIosAppium();
+			Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+			//根据配置自动启动Appiume服务
+			if(Boolean.valueOf(properties.getProperty("autoRunAppiumService"))){
+				as =new AppiumService();
+				as.start();
+				Thread.sleep(10000);
+			}
+			
+			iosd = AppiumInitialization.setIosAppium(properties);
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -83,6 +94,10 @@ public class IosBatchExecute {
 		}
 		LogOperation.updateTastdetail(taskid, 0);
 		iosd.closeApp();
+		//关闭Appium服务的线程
+		if(as!=null){
+			as.interrupt();
+		}
 	}
 
 }

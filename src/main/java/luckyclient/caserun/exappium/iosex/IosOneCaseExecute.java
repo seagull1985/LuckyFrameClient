@@ -2,10 +2,12 @@ package luckyclient.caserun.exappium.iosex;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import luckyclient.caserun.exappium.AppiumInitialization;
+import luckyclient.caserun.exappium.AppiumService;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
@@ -28,13 +30,22 @@ import luckyclient.planapi.entity.PublicCaseParams;
 public class IosOneCaseExecute {
 
 	public static void oneCaseExecuteForTast(String projectname, String testCaseExternalId, int version, String taskid)
-			throws IOException {
+			throws IOException, InterruptedException {
 		// 记录日志到数据库
 		DbLink.exetype = 0;
 		TestControl.TASKID = taskid;
 		IOSDriver<IOSElement> iosd = null;
+		AppiumService as=null;
 		try {
-			iosd = AppiumInitialization.setIosAppium();
+			Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+			//根据配置自动启动Appiume服务
+			if(Boolean.valueOf(properties.getProperty("autoRunAppiumService"))){
+				as =new AppiumService();
+				as.start();
+				Thread.sleep(10000);
+			}
+			
+			iosd = AppiumInitialization.setIosAppium(properties);
 		} catch (IOException e1) {
 			luckyclient.publicclass.LogUtil.APP.error("初始化IOSDriver出错！", e1);
 			e1.printStackTrace();
@@ -55,6 +66,10 @@ public class IosOneCaseExecute {
 		}
 		LogOperation.updateTastdetail(taskid, 0);
 		iosd.closeApp();
+		//关闭Appium服务的线程
+		if(as!=null){
+			as.interrupt();
+		}
 	}
 
 }

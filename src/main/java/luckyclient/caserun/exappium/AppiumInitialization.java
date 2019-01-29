@@ -30,9 +30,8 @@ public class AppiumInitialization {
 	 * 
 	 * @throws IOException
 	 */
-	public static AndroidDriver<AndroidElement> setAndroidAppium() throws IOException {
+	public static AndroidDriver<AndroidElement> setAndroidAppium(Properties properties) throws IOException {
 		AndroidDriver<AndroidElement> appium = null;
-		Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		File directory = new File("");
 		File app = new File(directory.getCanonicalPath() + File.separator + properties.getProperty("appname"));
@@ -71,9 +70,8 @@ public class AppiumInitialization {
 	 * 
 	 * @throws IOException
 	 */
-	public static IOSDriver<IOSElement> setIosAppium() throws IOException {
+	public static IOSDriver<IOSElement> setIosAppium(Properties properties) throws IOException {
 		IOSDriver<IOSElement> appium = null;
-		Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		File directory = new File("");
 		File app = new File(directory.getCanonicalPath() + File.separator + properties.getProperty("appname"));
@@ -102,5 +100,5 @@ public class AppiumInitialization {
 		appium.manage().timeouts().implicitlyWait(waittime, TimeUnit.SECONDS);
 		return appium;
 	}
-
+	
 }
