@@ -216,27 +216,38 @@ public class ChangString {
 		}
 		//如果是list就提取出来
 		if(entry.getValue() instanceof List){
-			@SuppressWarnings("rawtypes")
-			List list = (List)entry.getValue();
-			for (int i = 0; i < list.size(); i++) {
-				//如何还有，循环提取
-				try{
-					list.set(i, parseJsonString(list.get(i).toString(),key,value,keyindex));
-					entry.setValue(list);
-				}catch(JSONException jsone){
-					if(key.equals(entry.getKey())){
-						if(keyindex==COUNTER){
-							luckyclient.publicclass.LogUtil.APP.info("对象原始List值：【"+entry.getValue()+"】");
-							JSONArray jsonarr = JSONArray.parseArray(value);
-							entry.setValue(jsonarr);
-							luckyclient.publicclass.LogUtil.APP.info("对象替换后List值：【"+entry.getValue()+"】");
-							BCHANG=true;
-						}			
-						COUNTER++;
+			if(key.equals(entry.getKey())){
+				if(keyindex==COUNTER){
+					luckyclient.publicclass.LogUtil.APP.info("对象原始String值：【"+entry.getValue()+"】");
+					JSONArray jsonarr = JSONArray.parseArray(value);
+					entry.setValue(jsonarr);
+					luckyclient.publicclass.LogUtil.APP.info("对象替换后String值：【"+entry.getValue()+"】");
+					BCHANG=true;
+				}			
+				COUNTER++;
+			}else{
+				@SuppressWarnings("rawtypes")
+				List list = (List)entry.getValue();
+				for (int i = 0; i < list.size(); i++) {
+					//如何还有，循环提取
+					try{
+						list.set(i, parseJsonString(list.get(i).toString(),key,value,keyindex));
+						entry.setValue(list);
+					}catch(JSONException jsone){
+						if(key.equals(entry.getKey())){
+							if(keyindex==COUNTER){
+								luckyclient.publicclass.LogUtil.APP.info("对象原始List值：【"+entry.getValue()+"】");
+								JSONArray jsonarr = JSONArray.parseArray(value);
+								entry.setValue(jsonarr);
+								luckyclient.publicclass.LogUtil.APP.info("对象替换后List值：【"+entry.getValue()+"】");
+								BCHANG=true;
+							}			
+							COUNTER++;
+						}
+						break;
 					}
-					break;
-				}
-				}
+					}
+			  }
 			}
 		//如果是String就获取它的值
 		if(entry.getValue() instanceof String){
