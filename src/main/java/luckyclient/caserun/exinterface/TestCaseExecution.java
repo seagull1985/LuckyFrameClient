@@ -18,13 +18,15 @@ import luckyclient.caserun.exappium.iosex.IosCaseExecution;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.exwebdriver.ex.WebCaseExecution;
 import luckyclient.caserun.exwebdriver.ex.WebDriverAnalyticCase;
+import luckyclient.caserun.publicdispose.ActionManageForSteps;
+import luckyclient.caserun.publicdispose.ChangString;
+import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.PublicCaseParams;
-import luckyclient.publicclass.ChangString;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.LogUtil;
 
@@ -42,6 +44,7 @@ public class TestCaseExecution {
     protected static final String ASSIGNMENT_SIGN = "$=";
     protected static final String FUZZY_MATCHING_SIGN = "%=";
     protected static final String REGULAR_MATCHING_SIGN = "~=";
+    protected static final String ASSIGNMENT_GLOBALSIGN = "$A=";
     private static Map<String, String> VARIABLE = new HashMap<String, String>(0);
     
     /**
@@ -70,6 +73,8 @@ public class TestCaseExecution {
         for (PublicCaseParams pcp : pcplist) {
         	VARIABLE.put(pcp.getParamsname(), pcp.getParamsvalue());
         }
+        // 加入全局变量
+        VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
         List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
         if (steps.size() == 0) {
             setcaseresult = 2;
@@ -123,8 +128,8 @@ public class TestCaseExecution {
             try {
                 luckyclient.publicclass.LogUtil.APP.info("开始调用方法：" + functionname + " .....");
                 caselog.caseLogDetail(taskid, testCaseExternalId, "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1), "");
-                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getAction());
-
+                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getExtend());
+                testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 // 判断结果
                 int stepresult = interfaceJudgeResult(testcaseob, steps.get(i), taskid, expectedresults, testnote, caselog);
     			// 失败，并且不在继续,直接终止
@@ -136,12 +141,6 @@ public class TestCaseExecution {
                     } else {
                         luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+steps.get(i).getStepnum()+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
                     }
-                }
-                
-                // 获取步骤间等待时间
-                int waitsec = Integer.parseInt(casescript.get("StepWait"));
-                if (waitsec > 0) {
-                    Thread.sleep(waitsec * 1000);
                 }
                 
             } catch (Exception e) {
@@ -256,8 +255,8 @@ public class TestCaseExecution {
             try {
                 luckyclient.publicclass.LogUtil.APP.info("开始调用方法：" + functionname + " .....");
 
-                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getAction());
-
+                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getExtend());
+                testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 if (null != expectedresults && !expectedresults.isEmpty()) {
                     luckyclient.publicclass.LogUtil.APP.info("expectedResults=【" + expectedresults + "】");
                     // 赋值传参
@@ -304,11 +303,6 @@ public class TestCaseExecution {
                         }
                     }
                 }
-
-                int waitsec = Integer.parseInt(casescript.get("StepWait"));
-                if (waitsec > 0) {
-                    Thread.sleep(waitsec * 1000);
-                }
             } catch (Exception e) {
                 LogUtil.ERROR.error("调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！");
                 LogUtil.ERROR.error(e, e);
@@ -347,6 +341,8 @@ public class TestCaseExecution {
         for (PublicCaseParams pcp : pcplist) {
         	VARIABLE.put(pcp.getParamsname(), pcp.getParamsvalue());
         }
+        // 加入全局变量
+        VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
         List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcaseob.getId());
         if (steps.size() == 0) {
             setresult = 2;
@@ -467,7 +463,8 @@ public class TestCaseExecution {
                 LogUtil.APP.info("二次解析用例过程完成，等待进行接口操作......");
                 caselog.caseLogDetail(taskid, casenum, "包路径: " + packagename + "; 方法名: " + functionname, "info", String.valueOf(step.getStepnum()), "");
 
-                result = InvokeMethod.callCase(packagename, functionname, getParameterValues, step.getSteptype(), step.getAction());
+                result = InvokeMethod.callCase(packagename, functionname, getParameterValues, step.getSteptype(), step.getExtend());
+                result = ActionManageForSteps.actionManage(step.getAction(), result);
             }
         } catch (Exception e) {
             LogUtil.APP.error("调用方法过程出错，方法名：" + functionname + "，请重新检查脚本方法名称以及参数！");
@@ -488,6 +485,13 @@ public class TestCaseExecution {
                 	VARIABLE.put(expectedresults.substring(ASSIGNMENT_SIGN.length()), testnote);
                     luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】");
                     caselog.caseLogDetail(taskid, testcase.getSign(), "将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(step.getStepnum()), "");
+                }
+                // 赋值全局变量
+                else if (expectedresults.length() > ASSIGNMENT_GLOBALSIGN.length() && expectedresults.startsWith(ASSIGNMENT_GLOBALSIGN)) {
+                	VARIABLE.put(expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()), testnote);
+                    ParamsManageForSteps.GLOBAL_VARIABLE.put(expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()), testnote);
+                    luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，将测试结果【" + testnote + "】赋值给全局变量【" + expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】");
+                    caselog.caseLogDetail(taskid, testcase.getSign(), "将测试结果【" + testnote + "】赋值给全局变量【" + expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】", "info", String.valueOf(step.getStepnum()), "");
                 }
                 // 模糊匹配
                 else if (expectedresults.length() > FUZZY_MATCHING_SIGN.length() && expectedresults.startsWith(FUZZY_MATCHING_SIGN)) {

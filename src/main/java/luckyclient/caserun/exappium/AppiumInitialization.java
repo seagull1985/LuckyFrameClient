@@ -30,9 +30,8 @@ public class AppiumInitialization {
 	 * 
 	 * @throws IOException
 	 */
-	public static AndroidDriver<AndroidElement> setAndroidAppium() throws IOException {
+	public static AndroidDriver<AndroidElement> setAndroidAppium(Properties properties) throws IOException {
 		AndroidDriver<AndroidElement> appium = null;
-		Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		File directory = new File("");
 		File app = new File(directory.getCanonicalPath() + File.separator + properties.getProperty("appname"));
@@ -52,11 +51,11 @@ public class AppiumInitialization {
 		// 启动的Android Activity
 		capabilities.setCapability("appActivity", properties.getProperty("appActivity"));
 		// 支持中文输入，会自动安装Unicode输入
-		capabilities.setCapability("unicodeKeyboard", properties.getProperty("unicodeKeyboard"));
+		capabilities.setCapability("unicodeKeyboard", Boolean.valueOf(properties.getProperty("unicodeKeyboard")));
 		// 重置输入法到原有状态
-		capabilities.setCapability("resetKeyboard", properties.getProperty("resetKeyboard"));
+		capabilities.setCapability("resetKeyboard", Boolean.valueOf(properties.getProperty("resetKeyboard")));
 		// 不重新签名apk
-		capabilities.setCapability("noSign", properties.getProperty("noSign"));
+		capabilities.setCapability("noSign", Boolean.valueOf(properties.getProperty("noSign")));
 		// 等待超时没接收到命令关闭appium
 		capabilities.setCapability("newCommandTimeout", properties.getProperty("newCommandTimeout"));
 		appium = new AndroidDriver<AndroidElement>(
@@ -71,9 +70,8 @@ public class AppiumInitialization {
 	 * 
 	 * @throws IOException
 	 */
-	public static IOSDriver<IOSElement> setIosAppium() throws IOException {
+	public static IOSDriver<IOSElement> setIosAppium(Properties properties) throws IOException {
 		IOSDriver<IOSElement> appium = null;
-		Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		File directory = new File("");
 		File app = new File(directory.getCanonicalPath() + File.separator + properties.getProperty("appname"));
@@ -89,11 +87,11 @@ public class AppiumInitialization {
 		// 模拟器上的ip地址
 		capabilities.setCapability("udid", properties.getProperty("udid"));
 		// 支持中文输入，会自动安装Unicode输入
-		capabilities.setCapability("unicodeKeyboard", properties.getProperty("unicodeKeyboard"));
+		capabilities.setCapability("unicodeKeyboard", Boolean.valueOf(properties.getProperty("unicodeKeyboard")));
 		// 重置输入法到原有状态
-		capabilities.setCapability("resetKeyboard", properties.getProperty("resetKeyboard"));
+		capabilities.setCapability("resetKeyboard", Boolean.valueOf(properties.getProperty("resetKeyboard")));
 		// 不重新签名apk
-		capabilities.setCapability("noSign", properties.getProperty("noSign"));
+		capabilities.setCapability("noSign", Boolean.valueOf(properties.getProperty("noSign")));
 		// 等待超时没接收到命令关闭appium
 		capabilities.setCapability("newCommandTimeout", properties.getProperty("newCommandTimeout"));
 		appium = new IOSDriver<IOSElement>(new URL("http://" + properties.getProperty("appiumsever") + "/wd/hub"),
@@ -102,8 +100,5 @@ public class AppiumInitialization {
 		appium.manage().timeouts().implicitlyWait(waittime, TimeUnit.SECONDS);
 		return appium;
 	}
-
-	public static void main(String args[]) throws IOException, InterruptedException {
-
-	}
+	
 }

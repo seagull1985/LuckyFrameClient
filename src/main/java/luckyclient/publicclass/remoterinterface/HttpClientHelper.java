@@ -32,6 +32,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -55,6 +56,8 @@ import org.apache.http.ssl.SSLContexts;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import luckyclient.planapi.entity.ProjectProtocolTemplate;
+
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
@@ -76,8 +79,12 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendHttpURLPost(String urlParam, Map<String, Object> params, String charset, int timeout,
-			Map<String, String> headmsg,int responsehead,int responsecode) {
+	public static String sendHttpURLPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
+		String charset=ppt.getContentencoding().toLowerCase();
+		int timeout=ppt.getConnecttimeout();
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		// 构建请求参数
@@ -198,8 +205,12 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendURLPost(String urlParam, Map<String, Object> params, String charset, int timeout,
-			Map<String, String> headmsg,int responsehead,int responsecode) {
+	public static String sendURLPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
+		String charset=ppt.getContentencoding().toLowerCase();
+		int timeout=ppt.getConnecttimeout();
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -314,10 +325,13 @@ public class HttpClientHelper {
 	 * @param timeout
 	 * @param headmsg
 	 */
-	public static String sendGetAndSaveFile(String urlParam, Map<String, Object> params, String fileSavePath, int timeout,
-			Map<String, String> headmsg,int responsehead,int responsecode) {
+	public static String sendGetAndSaveFile(String urlParam, Map<String, Object> params, String fileSavePath, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		int timeout=ppt.getConnecttimeout();
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
@@ -423,8 +437,12 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendHttpURLGet(String urlParam, Map<String, Object> params, String charset, int timeout,
-			Map<String, String> headmsg,int responsehead,int responsecode) {
+	public static String sendHttpURLGet(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
+		String charset=ppt.getContentencoding().toLowerCase();
+		int timeout=ppt.getConnecttimeout();
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -518,8 +536,12 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendURLGet(String urlParam, Map<String, Object> params, String charset, int timeout,
-			Map<String, String> headmsg,int responsehead,int responsecode) {
+	public static String sendURLGet(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
+		String charset=ppt.getContentencoding().toLowerCase();
+		int timeout=ppt.getConnecttimeout();
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -615,13 +637,23 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public static String httpClientPostJson(String urlParam, Map<String, Object> params, String charset,
-			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws NoSuchAlgorithmException, KeyManagementException {
+	public static String httpClientPostJson(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
+		String charset=ppt.getContentencoding().toLowerCase();
+		String cerpath=ppt.getCerpath();
+		int timeout=ppt.getConnecttimeout()*1000;
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
 	    httpPost.setHeader("Content-Type", "application/json");
+	    RequestConfig requestConfig = RequestConfig.custom()  
+	            .setConnectTimeout(timeout)
+	            .setConnectionRequestTimeout(timeout)  
+	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	    httpPost.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
@@ -702,12 +734,22 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public static String httpClientPost(String urlParam, Map<String, Object> params, String charset,
-			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws NoSuchAlgorithmException, KeyManagementException {
+	public static String httpClientPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
+		String charset=ppt.getContentencoding().toLowerCase();
+		String cerpath=ppt.getCerpath();
+		int timeout=ppt.getConnecttimeout()*1000;
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		HttpPost httpPost = new HttpPost(urlParam);
+	    RequestConfig requestConfig = RequestConfig.custom()  
+	            .setConnectTimeout(timeout)
+	            .setConnectionRequestTimeout(timeout)  
+	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	    httpPost.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
@@ -791,12 +833,22 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public static String httpClientUploadFile(String urlParam, Map<String, Object> params, String charset,
-			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws NoSuchAlgorithmException, KeyManagementException {
+	public static String httpClientUploadFile(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
+		String charset=ppt.getContentencoding().toLowerCase();
+		String cerpath=ppt.getCerpath();
+		int timeout=ppt.getConnecttimeout()*1000;
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
+	    RequestConfig requestConfig = RequestConfig.custom()  
+	            .setConnectTimeout(timeout)
+	            .setConnectionRequestTimeout(timeout)  
+	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	    httpPost.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
@@ -888,8 +940,13 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 * @throws KeyManagementException
 	 */
-	public static String httpClientGet(String urlParam, Map<String, Object> params, String charset,
-			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws NoSuchAlgorithmException, KeyManagementException {
+	public static String httpClientGet(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
+		String charset=ppt.getContentencoding().toLowerCase();
+		String cerpath=ppt.getCerpath();
+		int timeout=ppt.getConnecttimeout()*1000;
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");	
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
@@ -920,6 +977,11 @@ public class HttpClientHelper {
 			urlParam = urlParam + "?" + sbParams.substring(0, sbParams.length() - 1);
 		}
 		HttpGet httpGet = new HttpGet(urlParam);
+	    RequestConfig requestConfig = RequestConfig.custom()  
+	            .setConnectTimeout(timeout)
+	            .setConnectionRequestTimeout(timeout)  
+	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	    httpGet.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
@@ -1273,8 +1335,12 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendHttpURLDel(String urlParam, Map<String, Object> params, String charset, int timeout,
-			Map<String, String> headmsg,int responsehead,int responsecode) {
+	public static String sendHttpURLDel(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
+		String charset=ppt.getContentencoding().toLowerCase();
+		int timeout=ppt.getConnecttimeout();
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -1394,13 +1460,23 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static String httpClientPutJson(String urlParam, Map<String, Object> params, String charset,
-			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws KeyManagementException, NoSuchAlgorithmException {
+	public static String httpClientPutJson(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws KeyManagementException, NoSuchAlgorithmException {
+		String charset=ppt.getContentencoding().toLowerCase();
+		String cerpath=ppt.getCerpath();
+		int timeout=ppt.getConnecttimeout()*1000;
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
 	    httpput.setHeader("Content-Type", "application/json");
+	    RequestConfig requestConfig = RequestConfig.custom()  
+	            .setConnectTimeout(timeout)
+	            .setConnectionRequestTimeout(timeout)  
+	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	    httpput.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
@@ -1482,12 +1558,22 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static String httpClientPut(String urlParam, Map<String, Object> params, String charset,
-			Map<String, String> headmsg,String cerpath,int responsehead,int responsecode) throws KeyManagementException, NoSuchAlgorithmException {
+	public static String httpClientPut(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws KeyManagementException, NoSuchAlgorithmException {
+		String charset=ppt.getContentencoding().toLowerCase();
+		String cerpath=ppt.getCerpath();
+		int timeout=ppt.getConnecttimeout()*1000;
+		int responsehead=ppt.getResponsehead();
+		int responsecode=ppt.getResponsecode();
+		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
+	    RequestConfig requestConfig = RequestConfig.custom()  
+	            .setConnectTimeout(timeout)
+	            .setConnectionRequestTimeout(timeout)  
+	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	    httpput.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();

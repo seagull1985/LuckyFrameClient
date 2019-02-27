@@ -7,11 +7,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
+import luckyclient.caserun.publicdispose.ActionManageForSteps;
+import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.planapi.api.GetServerAPI;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.PublicCaseParams;
-import luckyclient.publicclass.ChangString;
 import luckyclient.publicclass.InvokeMethod;
 
 /**
@@ -95,8 +96,8 @@ public class WebTestCaseDebug {
             try {
                 GetServerAPI.cPostDebugLog(sign, executor, "INFO", "开始调用方法：" + functionname + " .....");
 
-                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getAction());
-
+                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getExtend());
+                testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 if (null != expectedresults && !expectedresults.isEmpty()) {
                     // 赋值传参
                     if (expectedresults.length() > ASSIGNMENT_SIGN.length() && expectedresults.startsWith(ASSIGNMENT_SIGN)) {
@@ -153,11 +154,6 @@ public class WebTestCaseDebug {
                             }
                         }
                     }
-                }
-
-                int waitsec = Integer.parseInt(casescript.get("StepWait"));
-                if (waitsec > 0) {
-                    Thread.sleep(waitsec * 1000);
                 }
             } catch (Exception e) {
                 setcaseresult = 1;

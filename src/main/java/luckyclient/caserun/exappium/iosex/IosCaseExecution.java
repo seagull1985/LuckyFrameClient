@@ -13,11 +13,13 @@ import io.appium.java_client.ios.IOSElement;
 import luckyclient.caserun.exappium.AppDriverAnalyticCase;
 import luckyclient.caserun.exinterface.TestCaseExecution;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
+import luckyclient.caserun.publicdispose.ActionManageForSteps;
+import luckyclient.caserun.publicdispose.ChangString;
+import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.dblog.LogOperation;
 import luckyclient.planapi.entity.ProjectCase;
 import luckyclient.planapi.entity.ProjectCasesteps;
 import luckyclient.planapi.entity.PublicCaseParams;
-import luckyclient.publicclass.ChangString;
 import luckyclient.publicclass.LogUtil;
 
 /**
@@ -41,7 +43,9 @@ public class IosCaseExecution extends TestCaseExecution{
 		for (PublicCaseParams pcp : pcplist) {
 			variable.put(pcp.getParamsname(), pcp.getParamsvalue());
 		}
-
+		// 加入全局变量
+        variable.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
+        
 	    // 0:成功 1:失败 2:锁定 其他：锁定
 	    int setcaseresult = 0;
 		for (ProjectCasesteps step : steps) {
@@ -234,6 +238,8 @@ public class IosCaseExecution extends TestCaseExecution{
         int setresult = 0;
         java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
         imagname = timeformat.format(new Date());
+        
+        result = ActionManageForSteps.actionManage(step.getAction(), result);
         if (null != result && !result.contains("步骤执行失败：")) {
             // 有预期结果
             if (null != expect && !expect.isEmpty()) {
@@ -244,6 +250,13 @@ public class IosCaseExecution extends TestCaseExecution{
                     variable.put(expect.substring(ASSIGNMENT_SIGN.length()), result);
                     luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，将测试结果【" + result + "】赋值给变量【" + expect.substring(ASSIGNMENT_SIGN.length()) + "】");
                     caselog.caseLogDetail(taskid, testcase.getSign(), "将测试结果【" + result + "】赋值给变量【" + expect.substring(ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(step.getStepnum()), "");
+                }
+                // 赋值全局变量
+                else if (expect.length() > ASSIGNMENT_GLOBALSIGN.length() && expect.startsWith(ASSIGNMENT_GLOBALSIGN)) {
+                	variable.put(expect.substring(ASSIGNMENT_GLOBALSIGN.length()), result);
+                	ParamsManageForSteps.GLOBAL_VARIABLE.put(expect.substring(ASSIGNMENT_GLOBALSIGN.length()), result);
+                    luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，将测试结果【" + result + "】赋值给全局变量【" + expect.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】");
+                    caselog.caseLogDetail(taskid, testcase.getSign(), "将测试结果【" + result + "】赋值给全局变量【" + expect.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】", "info", String.valueOf(step.getStepnum()), "");
                 }
                 // 移动端 UI检查模式
                 else if (4 == step.getSteptype() && params.get("checkproperty") != null && params.get("checkproperty_value") != null) {
@@ -313,13 +326,6 @@ public class IosCaseExecution extends TestCaseExecution{
             IosBaseAppium.screenShot(appium, imagname);
             LogUtil.APP.error("用例：" + testcase.getSign() + " 第" + step.getStepnum() + "步，执行结果：" + casenote);
             caselog.caseLogDetail(taskid, testcase.getSign(), "当前步骤在执行过程中解析|定位元素|操作对象失败！" + casenote, "error", String.valueOf(step.getStepnum()), imagname);
-        }
-
-        // 获取步骤间等待时间
-        int waitsec = Integer.parseInt(params.get("StepWait"));
-        if (waitsec > 0) {
-            luckyclient.publicclass.LogUtil.APP.info("操作休眠【" + waitsec + "】秒");
-            Thread.sleep(waitsec * 1000);
         }
         
         return setresult;

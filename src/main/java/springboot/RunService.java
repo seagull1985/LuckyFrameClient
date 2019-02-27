@@ -23,13 +23,13 @@ public class RunService {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator +"bootlog4j.conf");
+		SpringApplication.run(RunService.class, args);
         try {
         	String host = InetAddress.getLocalHost().getHostAddress();
     		luckyclient.publicclass.LogUtil.APP.info("启动客户端监听,请稍后......监听IP："+host);
         } catch (UnknownHostException e) {
         	luckyclient.publicclass.LogUtil.APP.error("获取服务IP出现异常......", e);
         }
-		SpringApplication.run(RunService.class, args);
 		HttpImpl.checkhostnet();
 	}
 

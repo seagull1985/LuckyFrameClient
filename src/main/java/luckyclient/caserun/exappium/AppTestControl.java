@@ -49,9 +49,9 @@ public class AppTestControl {
 		Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
 		try {
 			if ("Android".equals(properties.getProperty("platformName"))) {
-				androiddriver = AppiumInitialization.setAndroidAppium();
+				androiddriver = AppiumInitialization.setAndroidAppium(properties);
 			} else if ("IOS".equals(properties.getProperty("platformName"))) {
-				iosdriver = AppiumInitialization.setIosAppium();
+				iosdriver = AppiumInitialization.setIosAppium(properties);
 			}
 
 		} catch (IOException e) {
@@ -107,6 +107,14 @@ public class AppTestControl {
 		AndroidDriver<AndroidElement> androiddriver = null;
 		IOSDriver<IOSElement> iosdriver = null;
 		Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+		AppiumService as=null;
+		//根据配置自动启动Appiume服务
+		if(Boolean.valueOf(properties.getProperty("autoRunAppiumService"))){
+			as =new AppiumService();
+			as.start();
+			Thread.sleep(10000);
+		}
+		
 		String restartstatus = RestartServerInitialization.restartServerRun(taskid);
 		String buildstatus = BuildingInitialization.buildingRun(taskid);
 		List<PublicCaseParams> pcplist = GetServerAPI
@@ -122,11 +130,11 @@ public class AppTestControl {
 			if (buildstatus.indexOf("Status:true") > -1) {
 				try {
 					if ("Android".equals(properties.getProperty("platformName"))) {
-						androiddriver = AppiumInitialization.setAndroidAppium();
+						androiddriver = AppiumInitialization.setAndroidAppium(properties);
 						luckyclient.publicclass.LogUtil.APP.info("完成AndroidDriver初始化动作...APPIUM Server【http://"
 								+ properties.getProperty("appiumsever") + "/wd/hub】");
 					} else if ("IOS".equals(properties.getProperty("platformName"))) {
-						iosdriver = AppiumInitialization.setIosAppium();
+						iosdriver = AppiumInitialization.setIosAppium(properties);
 						luckyclient.publicclass.LogUtil.APP.info("完成IOSDriver初始化动作...APPIUM Server【http://"
 								+ properties.getProperty("appiumsever") + "/wd/hub】");
 					}
@@ -180,6 +188,10 @@ public class AppTestControl {
 		} else {
 			luckyclient.publicclass.LogUtil.APP.error("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
 			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid, testJob, tastcount);
+		}
+		//关闭Appium服务的线程
+		if(as!=null){
+			as.interrupt();
 		}
 	}
 

@@ -12,6 +12,8 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import luckyclient.caserun.publicdispose.ChangString;
+import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.planapi.entity.ProjectProtocolTemplate;
 import luckyclient.planapi.entity.ProjectTemplateParams;
 import luckyclient.publicclass.remoterinterface.HttpClientHelper;
@@ -40,7 +42,7 @@ public class InvokeMethod {
      * @param action
      * @return
      */
-    public static String callCase(String packagename, String functionname, Object[] getParameterValues, int steptype, String action) {
+    public static String callCase(String packagename, String functionname, Object[] getParameterValues, int steptype, String extend) {
         String result = "调用异常，请查看错误日志！";
         try {
             if (steptype == 0) {                
@@ -75,13 +77,13 @@ public class InvokeMethod {
                     }
                 }
             } else if (steptype == 2) {
-            	if(null==action||"".equals(action)||!action.contains("】")){
+            	if(null==extend||"".equals(extend)||!extend.contains("】")){
             		result = "您当前步骤是HTTP请求，请确认是否没有配置对应的HTTP协议模板...";
             		luckyclient.publicclass.LogUtil.APP.error("您当前步骤是HTTP请求，请确认是否没有配置对应的HTTP协议模板...");
             		return result;
             	}
-                String templateidstr = action.substring(1, action.indexOf("】"));
-                String templatenamestr = action.substring(action.indexOf("】") + 1);
+                String templateidstr = extend.substring(1, extend.indexOf("】"));
+                String templatenamestr = extend.substring(extend.indexOf("】") + 1);
                 luckyclient.publicclass.LogUtil.APP.info("即将使用模板【" + templatenamestr + "】，ID:【" + templateidstr + "】发送HTTP请求！");
 
                 String httpppt = HttpRequest.loadJSON("/projectprotocolTemplate/cgetPTemplateById.do?templateid=" + templateidstr);
@@ -106,6 +108,7 @@ public class InvokeMethod {
                             String key = temp[i].substring(0, temp[i].indexOf("="));
                             String value = temp[i].substring(temp[i].indexOf("=") + 1);
                             value = value.replace("!!!fhzh",";");
+                            value = ParamsManageForSteps.paramsManage(value);
                             headmsg.put(key, value);
                         }
                     }
@@ -120,6 +123,7 @@ public class InvokeMethod {
                         if(paramob.contains("#")){
                             String key = paramob.substring(0, paramob.indexOf("#"));
                             String value = paramob.substring(paramob.indexOf("#") + 1);
+                            value = ParamsManageForSteps.paramsManage(value);
                             if (key.contains(booleanheadmsg) && key.contains(msgend)) {
                                 String head = key.substring(key.indexOf(booleanheadmsg) + 8, key.lastIndexOf(msgend));
                                 headmsg.put(head, value);
@@ -128,6 +132,7 @@ public class InvokeMethod {
                             int replaceflag=0;
                             for (int i = 0; i < paramslist.size(); i++) {
                                 ProjectTemplateParams ptp = paramslist.get(i);
+                                ptp.setParam(ParamsManageForSteps.paramsManage(ptp.getParam()));
                                 if("_forTextJson".equals(ptp.getParamname())){
                             		//分析参数替换序号
                             		int index = 1;
@@ -139,7 +144,7 @@ public class InvokeMethod {
                             			luckyclient.publicclass.LogUtil.APP.info("准备替换JSON对象中的参数值，未检测到指定参数名序号，默认替换第1个参数...");                       			
                             		}
                             		
-                                	if(ptp.getParam().indexOf("\""+key+"\":")>=0){
+                                	if(ptp.getParam().contains("\""+key+"\":")){
                                 		Map<String,String> map=ChangString.changjson(ptp.getParam(), key, value,index);
                                 		if("true".equals(map.get("boolean"))){
                                             ptp.setParam(map.get("json"));
@@ -148,7 +153,7 @@ public class InvokeMethod {
                                             luckyclient.publicclass.LogUtil.APP.info("替换参数"+key+"完成...");
                                             break;
                                 		}
-                                	}else if(ptp.getParam().indexOf(key)>=0){
+                                	}else if(ptp.getParam().contains(key)){
                                 		ptp.setParam(ptp.getParam().replace(key, value));
                                 		paramslist.set(i, ptp);
                                         replaceflag=1;
@@ -214,37 +219,37 @@ public class InvokeMethod {
                 }
 
                 if (functionname.toLowerCase().equals("httpurlpost")) {
-                    result = HttpClientHelper.sendHttpURLPost(packagename, params, ppt.getContentencoding().toLowerCase(), ppt.getConnecttimeout(), headmsg,ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.sendHttpURLPost(packagename, params,headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("urlpost")) {
-                    result = HttpClientHelper.sendURLPost(packagename, params, ppt.getContentencoding().toLowerCase(), ppt.getConnecttimeout(), headmsg,ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.sendURLPost(packagename, params, headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("getandsavefile")) {
                     String fileSavePath = System.getProperty("user.dir") + "\\HTTPSaveFile\\";
-                    result = HttpClientHelper.sendGetAndSaveFile(packagename, params, fileSavePath, ppt.getConnecttimeout(), headmsg,ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.sendGetAndSaveFile(packagename, params, fileSavePath, headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("httpurlget")) {
-                    result = HttpClientHelper.sendHttpURLGet(packagename, params, ppt.getContentencoding().toLowerCase(), ppt.getConnecttimeout(), headmsg,ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.sendHttpURLGet(packagename, params, headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("urlget")) {
-                    result = HttpClientHelper.sendURLGet(packagename, params, ppt.getContentencoding().toLowerCase(), ppt.getConnecttimeout(), headmsg,ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.sendURLGet(packagename, params, headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("httpclientpost")) {
-                    result = HttpClientHelper.httpClientPost(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg , ppt.getCerpath(),ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.httpClientPost(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpclientuploadfile")) {
-                    result = HttpClientHelper.httpClientUploadFile(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg , ppt.getCerpath(),ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.httpClientUploadFile(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpclientpostjson")) {
-                    result = HttpClientHelper.httpClientPostJson(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg , ppt.getCerpath(),ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.httpClientPostJson(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpurldelete")) {
-                    result = HttpClientHelper.sendHttpURLDel(packagename, params, ppt.getContentencoding().toLowerCase(), ppt.getConnecttimeout(), headmsg,ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.sendHttpURLDel(packagename, params, headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("httpclientputjson")) {
-                    result = HttpClientHelper.httpClientPutJson(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg , ppt.getCerpath(),ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.httpClientPutJson(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpclientput")) {
-                    result = HttpClientHelper.httpClientPut(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg , ppt.getCerpath(),ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.httpClientPut(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpclientget")) {
-                    result = HttpClientHelper.httpClientGet(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg, ppt.getCerpath(),ppt.getResponsehead(),ppt.getResponsecode());
+                    result = HttpClientHelper.httpClientGet(packagename, params, headmsg, ppt);
                 } else {
                     luckyclient.publicclass.LogUtil.APP.error("您的HTTP操作方法异常，检测到的操作方法是：" + functionname);
                     result = "调用异常，请查看错误日志！";
                 }
             } else if (steptype == 3) {
-                String templateidstr = action.substring(1, action.indexOf("】"));
-                String templatenamestr = action.substring(action.indexOf("】") + 1);
+                String templateidstr = extend.substring(1, extend.indexOf("】"));
+                String templatenamestr = extend.substring(extend.indexOf("】") + 1);
                 luckyclient.publicclass.LogUtil.APP.info("即将使用模板【" + templatenamestr + "】，ID:【" + templateidstr + "】 发送SOCKET请求！");
 
                 String httpppt = HttpRequest.loadJSON("/projectprotocolTemplate/cgetPTemplateById.do?templateid=" + templateidstr);
@@ -456,8 +461,10 @@ public class InvokeMethod {
     		args[0]="python";
             if(packagename.endsWith(File.separator)){
             	args[1]=packagename+functionname;
+            	//args[1]="E:\\PycharmProjects\\untitled\\venv\\testaaa.py";
             }else{
             	args[1]=packagename+File.separator+functionname;
+            	//args[1]="E:\\PycharmProjects\\untitled\\venv\\testaaa.py";
             }
             luckyclient.publicclass.LogUtil.APP.info("调用Python脚本路径:"+args[1]);
     		for(int i=0;i < params;i++){

@@ -124,8 +124,7 @@ public class GetServerAPI {
 		params += "&loglevel=" + loglevel;
 		params += "&detail=" + detail;
 
-		String logid = HttpRequest.sendPost("/projectCasesteps/cPostDebugLog.do", params);
-		System.out.println("已经成功写入临时日志库，ID：" + logid);
+		HttpRequest.sendPost("/projectCasesteps/cPostDebugLog.do", params);
 	}
 
 	/**
