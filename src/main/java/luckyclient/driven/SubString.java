@@ -325,7 +325,7 @@ public class SubString {
 			try {
 				// JSONArray jsonarr = JSONArray.parseArray(json);
 				// 直接使用fastjson的接口实现有序解析
-				JSONArray jsonarr = JSONArray.parseObject(json.getBytes(), JSONArray.class, Feature.OrderedField);
+				JSONArray jsonarr = JSONArray.parseObject(json.getBytes("UTF-8"), JSONArray.class, Feature.OrderedField);
 				for (int i = 0; i < jsonarr.size(); i++) {
 					JSONObject jsonStr = jsonarr.getJSONObject(i);
 					parseJsonString(jsonStr.toJSONString(), key, index);
