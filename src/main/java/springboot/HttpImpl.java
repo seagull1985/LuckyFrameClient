@@ -27,7 +27,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+
+import springboot.model.RunTaskEntity;
 
 /**
  * =================================================================
@@ -62,12 +65,11 @@ public class HttpImpl {
 			e.printStackTrace();
 		}
 		JSONObject jsonObject = JSONObject.parseObject(sb.toString());
-		String projectname = jsonObject.getString("projectname");
-		String taskid = jsonObject.getString("taskid");
-		String loadpath = jsonObject.getString("loadpath");
-		luckyclient.publicclass.LogUtil.APP.info("启动任务模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
+		RunTaskEntity runTaskEntity = JSON.toJavaObject(jsonObject,RunTaskEntity.class);
+		
+		luckyclient.publicclass.LogUtil.APP.info("启动任务模式测试程序...调度名称：【"+runTaskEntity.getSchedulingName()+"】  任务ID："+runTaskEntity.getTaskId());
 		try{
-			File file =new File(System.getProperty("user.dir")+loadpath); 	   
+			File file =new File(System.getProperty("user.dir")+runTaskEntity.getLoadPath()); 	   
 			if  (!file .isDirectory())      
 			{       
 				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
@@ -75,8 +77,8 @@ public class HttpImpl {
 			}
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sbf=new StringBuffer();
-			sbf.append(taskid).append(" ");
-			sbf.append(loadpath);
+			sbf.append(runTaskEntity.getTaskId()).append(" ");
+			sbf.append(runTaskEntity.getLoadPath());
 			if(os.startsWith("win")){
 				run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
 			}else{
@@ -216,9 +218,9 @@ public class HttpImpl {
 		}
 		JSONObject jsonObject = JSONObject.parseObject(sbd.toString());
 		String sign = jsonObject.getString("sign");
-		String executor = jsonObject.getString("executor");
+		String userIdStr = jsonObject.getString("userIdStr");
 		String loadpath = jsonObject.getString("loadpath");
-		luckyclient.publicclass.LogUtil.APP.info("Web端调试用例："+sign+" 发起人："+executor);
+		luckyclient.publicclass.LogUtil.APP.info("Web端调试用例："+sign+" 发起人："+userIdStr);
 		try{
 			File file =new File(System.getProperty("user.dir")+loadpath); 	   
 			if  (!file .isDirectory())      
@@ -229,7 +231,7 @@ public class HttpImpl {
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sb=new StringBuffer();
 			sb.append(sign).append(" ");
-			sb.append(executor).append(" ");
+			sb.append(userIdStr).append(" ");
 			sb.append(loadpath);
 			if(os.startsWith("win")){
 				run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));			
@@ -377,7 +379,9 @@ public class HttpImpl {
 	 */
 	@GetMapping("/getclientstatus")
 	private String getClientStatus(HttpServletRequest req) throws RemoteException{
-		return "success";
+		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
+		String verison=properties.getProperty("client.verison");
+		return "{status:\"success\",version:\""+verison+"\"}";
 	}
 	
 	public static boolean checkhostnet() {

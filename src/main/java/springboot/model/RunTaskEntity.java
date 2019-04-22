@@ -9,37 +9,35 @@ import java.io.Serializable;
  * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
  * 注意对象必须继承Serializable
- * @author： seagull
- * @date 2017年12月1日 上午9:29:40
- * 
+ * @author seagull
  */
-
 public class RunTaskEntity implements Serializable {
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
-	private String projectname;
-    private String taskid;
-    private String loadpath;
+	/*调度任务名称*/
+	private String schedulingName;
+	/*任务执行ID*/
+    private String taskId;
+    /*驱动加载路径*/
+    private String loadPath;
     
-	public String getLoadpath() {
-		return loadpath;
+	public String getSchedulingName() {
+		return schedulingName;
 	}
-	public void setLoadpath(String loadpath) {
-		this.loadpath = loadpath;
+	public void setSchedulingName(String schedulingName) {
+		this.schedulingName = schedulingName;
 	}
-	public String getProjectname() {
-		return projectname;
+	public String getTaskId() {
+		return taskId;
 	}
-	public void setProjectname(String projectname) {
-		this.projectname = projectname;
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
 	}
-	public String getTaskid() {
-		return taskid;
+	public String getLoadPath() {
+		return loadPath;
 	}
-	public void setTaskid(String taskid) {
-		this.taskid = taskid;
+	public void setLoadPath(String loadPath) {
+		this.loadPath = loadPath;
 	}
 
 }

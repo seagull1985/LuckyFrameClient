@@ -9,11 +9,10 @@ import luckyclient.caserun.exappium.androidex.AndroidOneCaseExecute;
 import luckyclient.caserun.exappium.iosex.IosOneCaseExecute;
 import luckyclient.caserun.exinterface.TestCaseExecution;
 import luckyclient.caserun.exinterface.TestControl;
-import luckyclient.caserun.exinterface.testlink.TestLinkCaseExecution;
 import luckyclient.caserun.exwebdriver.ex.WebOneCaseExecute;
-import luckyclient.caserun.exwebdriver.extestlink.WebOneCaseExecuteTestLink;
-import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.TestTaskexcute;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.entity.TaskExecute;
+import luckyclient.serverapi.entity.TaskScheduling;
 
 /**
  * =================================================================
@@ -34,37 +33,26 @@ public class OneCaseExecute extends TestControl {
 		String taskid = args[0];
 		String testCaseExternalId = args[1];
 		int version = Integer.parseInt(args[2]);
-		TestTaskexcute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
-		if (task.getTestJob().getExtype() == 0) {
-			if (task.getTestJob().getProjecttype() == 1) {
-				// testlink接口测试
-				TestLinkCaseExecution.oneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId,
-						version, String.valueOf(task.getId()));
-			} else if (task.getTestJob().getProjecttype() == 0) {
+		TaskExecute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
+		TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid));
+		if (taskScheduling.getTaskType() == 0) {
 				// 接口测试
-				TestCaseExecution.oneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId, version,
-						String.valueOf(task.getId()));
-			}
+				TestCaseExecution.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), testCaseExternalId, version,
+						String.valueOf(task.getTaskId()));
 
-		} else if (task.getTestJob().getExtype() == 1) {
-			if (task.getTestJob().getProjecttype() == 1) {
-				// UI测试
-				WebOneCaseExecuteTestLink.oneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId,
-						version, String.valueOf(task.getId()));
-			} else if (task.getTestJob().getProjecttype() == 0) {
-				WebOneCaseExecute.oneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId, version,
-						String.valueOf(task.getId()));
-			}
+		} else if (taskScheduling.getTaskType() == 1) {
+				WebOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), testCaseExternalId, version,
+						String.valueOf(task.getTaskId()));
 
-		} else if (task.getTestJob().getExtype() == 2) {
+		} else if (taskScheduling.getTaskType() == 2) {
 			Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
 
 			if ("Android".equals(properties.getProperty("platformName"))) {
-				AndroidOneCaseExecute.oneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId,
-						version, String.valueOf(task.getId()));
+				AndroidOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), testCaseExternalId,
+						version, String.valueOf(task.getTaskId()));
 			} else if ("IOS".equals(properties.getProperty("platformName"))) {
-				IosOneCaseExecute.oneCaseExecuteForTast(task.getTestJob().getPlanproj(), testCaseExternalId, version,
-						String.valueOf(task.getId()));
+				IosOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), testCaseExternalId, version,
+						String.valueOf(task.getTaskId()));
 			}
 
 		}

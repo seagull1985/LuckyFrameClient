@@ -9,10 +9,10 @@ import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.WebDriverInitialization;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.planapi.entity.PublicCaseParams;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.entity.ProjectCase;
+import luckyclient.serverapi.entity.ProjectCaseParams;
+import luckyclient.serverapi.entity.ProjectCaseSteps;
 
 /**
  * =================================================================
@@ -43,12 +43,12 @@ public class WebOneCaseExecute{
 		//删除旧的日志
 		LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    
 		ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectid()));
+		List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
 		luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【"+testCaseExternalId+"】......");
 		try {
-			List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcase.getId());
+			List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
-			luckyclient.publicclass.LogUtil.APP.info("当前用例：【"+testcase.getSign()+"】执行完成......进入下一条");
+			luckyclient.publicclass.LogUtil.APP.info("当前用例：【"+testcase.getCaseSign()+"】执行完成......进入下一条");
 		} catch (InterruptedException e) {
 			luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
 			e.printStackTrace();

@@ -1,6 +1,8 @@
 package luckyclient.dblog;
 
 import luckyclient.publicclass.DBOperation;
+import luckyclient.serverapi.api.PostServerAPI;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -22,95 +24,39 @@ public class LogOperation {
 	static int exetype = DbLink.exetype;
 
 	/**
-	 * 插入用例执行状态 casestatus pass:0 fail:1 lock:2 unexecute:4
+	 * 插入用例执行状态 0通过 1失败 2锁定 3执行中 4未执行
 	 */
-	public void addCaseDetail(String taskid, String caseno, String caseversion, String casename, Integer casestatus) {
+	public void insertTaskCaseExecute(String taskIdStr, Integer projectId,Integer caseId,  String caseSign,String caseName, Integer caseStatus) {
 		if (0 == exetype) {
-			int taskidtoint = Integer.parseInt(taskid);
-			casename = casename.replace("'", "''");
-			// 设置日期格式
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String sql = "Insert into test_casedetail(TASKID,CASENO,CASEVERSION,CASETIME,"
-					+ "CASENAME,CASESTATUS) Values (" + taskidtoint + ",'" + caseno + "','" + caseversion + "',"
-					+ "str_to_date('" + df.format(new Date()) + "','%Y-%m-%d %T'),'" + casename + "','" + casestatus
-					+ "')";
-			try {
-				dbt.executeSql(sql);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				luckyclient.publicclass.LogUtil.APP.error("执行插入用例执行记录SQL出现异常，请确认数据库链接是否正常！", e);
-				e.printStackTrace();
-			}
+			Integer taskId=Integer.valueOf(taskIdStr);
+			PostServerAPI.clientPostInsertTaskCaseExecute(taskId, projectId, caseId, caseSign, caseName, caseStatus);
 		}
 	}
 
 	/**
-	 * 更新用例执行状态 casestatus pass:0 fail:1 lock:2 unexecute:4
+	 * 更新用例执行状态 0通过 1失败 2锁定 3执行中 4未执行
 	 */
-	public void updateCaseDetail(String taskid, String caseno, Integer casestatus) {
+	public void updateTaskCaseExecuteStatus(String taskIdStr, Integer caseId, Integer caseStatus) {
 		if (0 == exetype) {
-			int taskidtoint = Integer.parseInt(taskid);
-			// 设置日期格式
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String sql = "update test_casedetail set casestatus = '" + casestatus + "',CASETIME = str_to_date('"
-					+ df.format(new Date()) + "','%Y-%m-%d %T')" + " where taskid = " + taskidtoint + " and caseno = '"
-					+ caseno + "'";
-			try {
-				dbt.executeSql(sql);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				luckyclient.publicclass.LogUtil.APP.error("执行更新用例执行状态SQL出现异常，请确认数据库链接是否正常！", e);
-				e.printStackTrace();
-			}
+			Integer taskId=Integer.valueOf(taskIdStr);
+			PostServerAPI.clientUpdateTaskCaseExecuteStatus(taskId, caseId, caseStatus);
 		}
 	}
 
 	/**
 	 * 插入用例执行日志
 	 */
-	public void caseLogDetail(String taskid, String caseno, String detail, String loggrade, String step,
+	public void insertTaskCaseLog(String taskIdStr, Integer caseId, String logDetail, String logGrade, String logStep,
 			String imgname) {
 		if (0 == exetype) {
-			if (detail.indexOf("'") > -1) {
-				detail = detail.replaceAll("'", "''");
+			if (logDetail.length()>5000) {
+				 luckyclient.publicclass.LogUtil.APP.info("日志明细超过5000字符，无法进入数据库存储，进行日志明细打印...");
+				 luckyclient.publicclass.LogUtil.APP.info("第"+logStep+"步，日志级别"+logGrade+",日志明细【"+logGrade+"】...");
+				 logDetail="日志明细超过5000字符无法存入数据库，已在LOG4J日志中打印，请前往查看...";
 			}
-			int taskidtoint = Integer.parseInt(taskid);
-			String sqlresult = null;
-			try {
-				sqlresult = dbt.executeQuery("select id from test_casedetail where taskid = " + taskidtoint
-						+ " and caseno = '" + caseno + "' order by id desc");
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				luckyclient.publicclass.LogUtil.APP.error("执行查询用例执行ID SQL出现异常，请确认数据库链接是否正常！", e1);
-				e1.printStackTrace();
-			}
-
-			if (!"".equals(sqlresult) && null != sqlresult) {
-				// 取其中最近一条数据做为CASEID
-				int caseid = Integer.parseInt(sqlresult.substring(0, sqlresult.indexOf("%")));
-				// 设置日期格式
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				if (detail.length()>5000) {
-					 luckyclient.publicclass.LogUtil.APP.info("日志明细超过5000字符，无法进入数据库存储，进行日志明细打印...");
-					 luckyclient.publicclass.LogUtil.APP.info("用例【"+caseno+"】第"+step+"步，日志级别"+loggrade+",日志明细【"+detail+"】...");
-					 detail="日志明细超过5000字符无法存入数据库，已在LOG4J日志中打印，请前往查看...";
-				}
-				String sql = "Insert into test_logdetail(LOGTIME,TASKID,CASEID,DETAIL,LOGGRADE,STEP,IMGNAME)  "
-						+ "Values (str_to_date('" + df.format(new Date()) + "','%Y-%m-%d %T')," + taskidtoint + ","
-						+ caseid + ",'" + detail + "','" + loggrade + "','" + step + "','" + imgname + "')";
-				try {
-					String re = dbt.executeSql(sql);
-					if (re.indexOf("成功") < 0) {
-						throw new Exception("更新用例：" + caseno + "步骤" + step + "日志到数据库中出现异常！！！");
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					luckyclient.publicclass.LogUtil.APP.error("执行插入用例执行日志SQL出现异常，请确认数据库链接是否正常！", e);
-					e.printStackTrace();
-				}
-
-			}
-
+			
+			Integer taskId=Integer.valueOf(taskIdStr);
+			PostServerAPI.clientPostInsertTaskCaseLog(taskId, caseId, logDetail, logGrade, logStep, imgname);
 		}
 	}
 

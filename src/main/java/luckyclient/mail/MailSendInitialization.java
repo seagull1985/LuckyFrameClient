@@ -1,9 +1,9 @@
 package luckyclient.mail;
 
-import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.entity.TestJobs;
-
 import java.util.Properties;
+
+import luckyclient.dblog.LogOperation;
+import luckyclient.serverapi.entity.TaskScheduling;
 
 /**
  * =================================================================
@@ -17,13 +17,13 @@ import java.util.Properties;
  */
 public class MailSendInitialization {
 
-    public static void sendMailInitialization(String subject, String content, String taskid, TestJobs testJob, int[] taskCount) {
+    public static void sendMailInitialization(String subject, String content, String taskid, TaskScheduling taskScheduling, int[] taskCount) {
         boolean isSend = false;
         if (null == taskCount) {
             isSend = true;
         } else {
-            if (taskCount.length == 5 && null != testJob) {
-                Integer sendCondition = testJob.getSendCondition();
+            if (taskCount.length == 5 && null != taskScheduling) {
+                Integer sendCondition = taskScheduling.getEmailSendCondition();
                 // 用例全部成功了发送, casecount != casesuc
                 if (null!=sendCondition&&1 == sendCondition) {
                     if (taskCount[0] == taskCount[1]) {

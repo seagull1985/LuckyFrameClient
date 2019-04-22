@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import luckyclient.planapi.entity.ProjectProtocolTemplate;
 import luckyclient.publicclass.remoterinterface.HttpClientHelper;
+import luckyclient.serverapi.entity.ProjectProtocolTemplate;
 
 /**
  * =================================================================
@@ -51,8 +51,8 @@ public class HtmlMail {
 
                 String pushurl = properties.getProperty("task.push.url");
                 ProjectProtocolTemplate ppt=new ProjectProtocolTemplate();
-                ppt.setContentencoding("utf-8");
-                ppt.setConnecttimeout(60);
+                ppt.setEncoding("utf-8");
+                ppt.setTimeout(60);
                 HttpClientHelper.httpClientPostJson(pushurl, pushparameters, headmsg,ppt);
             }
         } catch (Exception e) {

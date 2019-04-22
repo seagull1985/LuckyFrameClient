@@ -11,10 +11,10 @@ import luckyclient.caserun.publicdispose.ActionManageForSteps;
 import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.planapi.entity.PublicCaseParams;
 import luckyclient.publicclass.InvokeMethod;
+import luckyclient.serverapi.entity.ProjectCase;
+import luckyclient.serverapi.entity.ProjectCaseParams;
+import luckyclient.serverapi.entity.ProjectCaseSteps;
 
 /**
  * =================================================================
@@ -34,16 +34,20 @@ public class ThreadForExecuteCase extends Thread {
     private static final String FUZZY_MATCHING_SIGN = "%=";
     private static final String REGULAR_MATCHING_SIGN = "~=";
 
-    private String caseid;
-    private ProjectCase testcaseob;
+    private Integer caseId;
+    private String caseSign;
+    private ProjectCase testcase;
     private String taskid;
-    private List<ProjectCasesteps> steps;
-    private List<PublicCaseParams> pcplist;
+    private Integer projectId;
+    private List<ProjectCaseSteps> steps;
+    private List<ProjectCaseParams> pcplist;
     private LogOperation caselog;
 
-    public ThreadForExecuteCase(ProjectCase projectcase, List<ProjectCasesteps> steps, String taskid, List<PublicCaseParams> pcplist, LogOperation caselog) {
-        this.caseid = projectcase.getSign();
-        this.testcaseob = projectcase;
+    public ThreadForExecuteCase(ProjectCase projectcase, List<ProjectCaseSteps> steps, String taskid, List<ProjectCaseParams> pcplist, LogOperation caselog) {
+        this.caseId = projectcase.getCaseId();
+        this.testcase = projectcase;
+        this.projectId = projectcase.getProjectId();
+        this.caseSign = projectcase.getCaseSign();
         this.taskid = taskid;
         this.steps = steps;
         this.pcplist = pcplist;
@@ -54,8 +58,8 @@ public class ThreadForExecuteCase extends Thread {
     public void run() {
         Map<String, String> variable = new HashMap<>(0);
         // 把公共参数加入到MAP中
-        for (PublicCaseParams pcp : pcplist) {
-            variable.put(pcp.getParamsname(), pcp.getParamsvalue());
+        for (ProjectCaseParams pcp : pcplist) {
+            variable.put(pcp.getParamsName(), pcp.getParamsValue());
         }
         // 加入全局变量
         variable.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
@@ -68,10 +72,10 @@ public class ThreadForExecuteCase extends Thread {
         int k = 0;
         // 进入循环，解析单个用例所有步骤
         // 插入开始执行的用例
-        caselog.addCaseDetail(taskid, caseid, "1", testcaseob.getName(), 4);
+        caselog.insertTaskCaseExecute(taskid, projectId, caseId, caseSign, testcase.getCaseName(), 4);
         for (int i = 0; i < steps.size(); i++) {
             // 解析单个步骤中的脚本
-            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcaseob, steps.get(i), taskid, caselog);
+            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog);
             try {
                 packagename = casescript.get("PackageName");
                 packagename = ChangString.changparams(packagename, variable, "包路径");
@@ -79,8 +83,8 @@ public class ThreadForExecuteCase extends Thread {
                 functionname = ChangString.changparams(functionname, variable, "方法名");
             } catch (Exception e) {
                 k = 0;
-                luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + "解析包名或是方法名失败，请检查！");
-                caselog.caseLogDetail(taskid, caseid, "解析包名或是方法名失败，请检查！", "error", String.valueOf(i + 1), "");
+                luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getCaseSign() + "解析包名或是方法名失败，请检查！");
+                caselog.insertTaskCaseLog(taskid, caseId, "解析包名或是方法名失败，请检查！", "error", String.valueOf(i + 1), "");
                 e.printStackTrace();
                 break; // 某一步骤失败后，此条用例置为失败退出
             }
@@ -103,8 +107,8 @@ public class ThreadForExecuteCase extends Thread {
                     }
                     String parameterValues = casescript.get("FunctionParams" + (j + 1));
                     parameterValues = ChangString.changparams(parameterValues, variable, "用例参数");
-                    luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues);
-                    caselog.caseLogDetail(taskid, caseid, "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues, "info", String.valueOf(i + 1), "");
+                    luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getCaseSign() + "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues);
+                    caselog.insertTaskCaseLog(taskid, caseId, "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues, "info", String.valueOf(i + 1), "");
                     getParameterValues[j] = parameterValues;
                 }
             } else {
@@ -112,41 +116,41 @@ public class ThreadForExecuteCase extends Thread {
             }
             // 调用动态方法，执行测试用例
             try {
-                luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "开始调用方法：" + functionname + " .....");
-                caselog.caseLogDetail(taskid, caseid, "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1), "");
+                luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getCaseSign() + "开始调用方法：" + functionname + " .....");
+                caselog.insertTaskCaseLog(taskid, caseId, "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1), "");
 
-                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getSteptype(), steps.get(i).getExtend());
+                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getStepType(), steps.get(i).getExtend());
                 testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 if (null != expectedresults && !expectedresults.isEmpty()) {
                     luckyclient.publicclass.LogUtil.APP.info("expectedResults=【" + expectedresults + "】");
                     // 赋值传参
                     if (expectedresults.length() > ASSIGNMENT_SIGN.length() && expectedresults.startsWith(ASSIGNMENT_SIGN)) {
                         variable.put(expectedresults.substring(ASSIGNMENT_SIGN.length()), testnote);
-                        luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】");
-                        caselog.caseLogDetail(taskid, caseid, "将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(i + 1), "");
+                        luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + (i + 1) + "步，将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】");
+                        caselog.insertTaskCaseLog(taskid, caseId, "将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(i + 1), "");
                     }
                     // 赋值全局变量
                     else if (expectedresults.length() > ASSIGNMENT_GLOBALSIGN.length() && expectedresults.startsWith(ASSIGNMENT_GLOBALSIGN)) {
                         variable.put(expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()), testnote);
                         ParamsManageForSteps.GLOBAL_VARIABLE.put(expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()), testnote);
-                        luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，将测试结果【" + testnote + "】赋值给全局变量【" + expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】");
-                        caselog.caseLogDetail(taskid, caseid, "将测试结果【" + testnote + "】赋值给全局变量【" + expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】", "info", String.valueOf(i + 1), "");
+                        luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + (i + 1) + "步，将测试结果【" + testnote + "】赋值给全局变量【" + expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】");
+                        caselog.insertTaskCaseLog(taskid, caseId, "将测试结果【" + testnote + "】赋值给全局变量【" + expectedresults.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】", "info", String.valueOf(i + 1), "");
                     }
                     // 模糊匹配
                     else if (expectedresults.length() > FUZZY_MATCHING_SIGN.length() && expectedresults.startsWith(FUZZY_MATCHING_SIGN)) {
                         if (testnote.contains(expectedresults.substring(FUZZY_MATCHING_SIGN.length()))) {
-                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，模糊匹配预期结果成功！执行结果：" + testnote);
-                            caselog.caseLogDetail(taskid, caseid, "模糊匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(i + 1), "");
+                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + (i + 1) + "步，模糊匹配预期结果成功！执行结果：" + testnote);
+                            caselog.insertTaskCaseLog(taskid, caseId, "模糊匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(i + 1), "");
                         } else {
                             setcaseresult = 1;
-                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，模糊匹配预期结果失败！预期结果：" + expectedresults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote);
-                            caselog.caseLogDetail(taskid, caseid, "第" + (i + 1) + "步，模糊匹配预期结果失败！预期结果：" + expectedresults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote, "error", String.valueOf(i + 1), "");
+                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getCaseSign() + " 第" + (i + 1) + "步，模糊匹配预期结果失败！预期结果：" + expectedresults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote);
+                            caselog.insertTaskCaseLog(taskid, caseId, "第" + (i + 1) + "步，模糊匹配预期结果失败！预期结果：" + expectedresults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote, "error", String.valueOf(i + 1), "");
                             testnote = "用例第" + (i + 1) + "步，模糊匹配预期结果失败！";
-                            if (testcaseob.getFailcontinue() == 0) {
-                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                            if (testcase.getFailcontinue() == 0) {
+                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
                                 break;
                             } else {
-                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
                             }
                         }
                     }
@@ -155,52 +159,52 @@ public class ThreadForExecuteCase extends Thread {
                         Pattern pattern = Pattern.compile(expectedresults.substring(REGULAR_MATCHING_SIGN.length()));
                         Matcher matcher = pattern.matcher(testnote);
                         if (matcher.find()) {
-                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，正则匹配预期结果成功！执行结果：" + testnote);
-                            caselog.caseLogDetail(taskid, caseid, "正则匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(i + 1), "");
+                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + (i + 1) + "步，正则匹配预期结果成功！执行结果：" + testnote);
+                            caselog.insertTaskCaseLog(taskid, caseId, "正则匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(i + 1), "");
                         } else {
                             setcaseresult = 1;
-                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，正则匹配预期结果失败！预期结果：" + expectedresults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote);
-                            caselog.caseLogDetail(taskid, caseid, "第" + (i + 1) + "步，正则匹配预期结果失败！预期结果：" + expectedresults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote, "error", String.valueOf(i + 1), "");
+                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getCaseSign() + " 第" + (i + 1) + "步，正则匹配预期结果失败！预期结果：" + expectedresults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote);
+                            caselog.insertTaskCaseLog(taskid, caseId, "第" + (i + 1) + "步，正则匹配预期结果失败！预期结果：" + expectedresults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote, "error", String.valueOf(i + 1), "");
                             testnote = "用例第" + (i + 1) + "步，正则匹配预期结果失败！";
-                            if (testcaseob.getFailcontinue() == 0) {
-                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                            if (testcase.getFailcontinue() == 0) {
+                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
                                 break;
                             } else {
-                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
                             }
                         }
                     }
                     // 完全相等
                     else {
                         if (expectedresults.equals(testnote)) {
-                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，精确匹配预期结果成功！执行结果：" + testnote);
-                            caselog.caseLogDetail(taskid, caseid, "精确匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(i + 1), "");
+                            luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + (i + 1) + "步，精确匹配预期结果成功！执行结果：" + testnote);
+                            caselog.insertTaskCaseLog(taskid, caseId, "精确匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(i + 1), "");
                         } else {
                             setcaseresult = 1;
-                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcaseob.getSign() + " 第" + (i + 1) + "步，精确匹配预期结果失败！预期结果：" + expectedresults + "，测试结果：" + testnote);
-                            caselog.caseLogDetail(taskid, caseid, "第" + (i + 1) + "步，精确匹配预期结果失败！预期结果：" + expectedresults + "，测试结果：" + testnote, "error", String.valueOf(i + 1), "");
+                            luckyclient.publicclass.LogUtil.APP.error("用例：" + testcase.getCaseSign() + " 第" + (i + 1) + "步，精确匹配预期结果失败！预期结果：" + expectedresults + "，测试结果：" + testnote);
+                            caselog.insertTaskCaseLog(taskid, caseId, "第" + (i + 1) + "步，精确匹配预期结果失败！预期结果：" + expectedresults + "，测试结果：" + testnote, "error", String.valueOf(i + 1), "");
                             testnote = "用例第" + (i + 1) + "步，精确匹配预期结果失败！";
-                            if (testcaseob.getFailcontinue() == 0) {
-                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                            if (testcase.getFailcontinue() == 0) {
+                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
                                 break;
                             } else {
-                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                                luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
                             }
                         }
                     }
                 }
             } catch (Exception e) {
-                luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcaseob.getSign() + "调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！");
-                caselog.caseLogDetail(taskid, caseid, "调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！", "error", String.valueOf(i + 1), "");
+                luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcase.getCaseSign() + "调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！");
+                caselog.insertTaskCaseLog(taskid, caseId, "调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！", "error", String.valueOf(i + 1), "");
                 luckyclient.publicclass.LogUtil.ERROR.error(e, e);
                 testnote = "CallCase调用出错！调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！";
                 setcaseresult = 1;
                 e.printStackTrace();
-                if (testcaseob.getFailcontinue() == 0) {
-                    luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                if (testcase.getFailcontinue() == 0) {
+                    luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
                     break;
                 } else {
-                    luckyclient.publicclass.LogUtil.APP.error("用例【"+testcaseob.getSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                    luckyclient.publicclass.LogUtil.APP.error("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
                 }
             }
         }
@@ -208,30 +212,30 @@ public class ThreadForExecuteCase extends Thread {
         try {
             // 成功跟失败的用例走此流程
             if (!testnote.contains("CallCase调用出错！") && !testnote.contains("解析出错啦！")) {
-                caselog.updateCaseDetail(taskid, caseid, setcaseresult);
+                caselog.updateTaskCaseExecuteStatus(taskid, caseId, setcaseresult);
             } else {
                 // 解析用例或是调用方法出错，全部把用例置为锁定
-                luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcaseob.getSign() + "设置执行结果为锁定，请参考错误日志查找锁定用例的原因.....");
-                caselog.caseLogDetail(taskid, caseid, "设置执行结果为锁定，请参考错误日志查找锁定用例的原因.....","error", "SETCASERESULT...", "");
+                luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcase.getCaseSign() + "设置执行结果为锁定，请参考错误日志查找锁定用例的原因.....");
+                caselog.insertTaskCaseLog(taskid, caseId, "设置执行结果为锁定，请参考错误日志查找锁定用例的原因.....","error", "SETCASERESULT...", "");
                 setcaseresult = 2;
-                caselog.updateCaseDetail(taskid, caseid, setcaseresult);
+                caselog.updateTaskCaseExecuteStatus(taskid, caseId, setcaseresult);
             }
             if (0 == setcaseresult) {
-                luckyclient.publicclass.LogUtil.APP.info("用例：" + testcaseob.getSign() + "执行结果成功......");
-                caselog.caseLogDetail(taskid, caseid, "用例步骤执行全部成功......", "info", "ending", "");
-                luckyclient.publicclass.LogUtil.APP.info("*********用例【" + testcaseob.getSign() + "】执行完成,测试结果：成功*********");
+                luckyclient.publicclass.LogUtil.APP.info("用例：" + testcase.getCaseSign() + "执行结果成功......");
+                caselog.insertTaskCaseLog(taskid, caseId, "用例步骤执行全部成功......", "info", "ending", "");
+                luckyclient.publicclass.LogUtil.APP.info("*********用例【" + testcase.getCaseSign() + "】执行完成,测试结果：成功*********");
             } else if (1 == setcaseresult) {
-                luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcaseob.getSign() + "执行结果失败......");
-                caselog.caseLogDetail(taskid, caseid, "用例执行结果失败......", "error", "ending", "");
-                luckyclient.publicclass.LogUtil.APP.info("*********用例【" + testcaseob.getSign() + "】执行完成,测试结果：失败*********");
+                luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcase.getCaseSign() + "执行结果失败......");
+                caselog.insertTaskCaseLog(taskid, caseId, "用例执行结果失败......", "error", "ending", "");
+                luckyclient.publicclass.LogUtil.APP.info("*********用例【" + testcase.getCaseSign() + "】执行完成,测试结果：失败*********");
             } else {
-                luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcaseob.getSign() + "执行结果锁定......");
-                caselog.caseLogDetail(taskid, caseid, "用例执行结果锁定......", "error", "ending", "");
-                luckyclient.publicclass.LogUtil.APP.info("*********用例【" + testcaseob.getSign() + "】执行完成,测试结果：锁定*********");
+                luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcase.getCaseSign() + "执行结果锁定......");
+                caselog.insertTaskCaseLog(taskid, caseId, "用例执行结果锁定......", "error", "ending", "");
+                luckyclient.publicclass.LogUtil.APP.info("*********用例【" + testcase.getCaseSign() + "】执行完成,测试结果：锁定*********");
             }
         } catch (Exception e) {
-            luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcaseob.getSign() + "设置执行结果过程出错......");
-            caselog.caseLogDetail(taskid, caseid, "设置执行结果过程出错......", "error", "ending", "");
+            luckyclient.publicclass.LogUtil.ERROR.error("用例：" + testcase.getCaseSign() + "设置执行结果过程出错......");
+            caselog.insertTaskCaseLog(taskid, caseId, "设置执行结果过程出错......", "error", "ending", "");
             luckyclient.publicclass.LogUtil.ERROR.error(e, e);
             e.printStackTrace();
         } finally {

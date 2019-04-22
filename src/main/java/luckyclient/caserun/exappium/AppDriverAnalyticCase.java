@@ -6,8 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
+import luckyclient.serverapi.entity.ProjectCase;
+import luckyclient.serverapi.entity.ProjectCaseSteps;
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
@@ -33,14 +33,14 @@ public class AppDriverAnalyticCase {
 	 * @author Seagull
 	 * @date 2019年1月17日
 	 */
-	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid,LogOperation caselog){
+	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCaseSteps step,String taskid,LogOperation caselog){
 		Map<String,String> params = new HashMap<String,String>(0);
 
 		String resultstr = null;
 		try {
-		if(null!=step.getPath()&&step.getPath().indexOf("=")>-1){
-			String property = step.getPath().substring(0, step.getPath().indexOf("="));
-			String propertyValue = step.getPath().substring(step.getPath().indexOf("=")+1, step.getPath().length());
+		if(null!=step.getStepPath()&&step.getStepPath().indexOf("=")>-1){
+			String property = step.getStepPath().substring(0, step.getStepPath().indexOf("="));
+			String propertyValue = step.getStepPath().substring(step.getStepPath().indexOf("=")+1, step.getStepPath().length());
 			//set属性
 			params.put("property", property.trim().toLowerCase());   
 			//set属性值
@@ -48,14 +48,14 @@ public class AppDriverAnalyticCase {
 			luckyclient.publicclass.LogUtil.APP.info("对象属性解析结果：property:"+property.trim()+";  property_value:"+propertyValue.trim());		
 		}
 		//set操作方法
-		params.put("operation", step.getOperation().toLowerCase());   
-		if(null!=step.getParameters()&&!"".equals(step.getParameters())){
+		params.put("operation", step.getStepOperation().toLowerCase());   
+		if(null!=step.getStepParameters()&&!"".equals(step.getStepParameters())){
 			 //set属性值
-			params.put("operation_value", step.getParameters());  
+			params.put("operation_value", step.getStepParameters());  
 		}
-		luckyclient.publicclass.LogUtil.APP.info("对象操作解析结果：operation:"+step.getOperation().toLowerCase()+";  operation_value:"+step.getParameters());
+		luckyclient.publicclass.LogUtil.APP.info("对象操作解析结果：operation:"+step.getStepOperation().toLowerCase()+";  operation_value:"+step.getStepParameters());
 		 //获取预期结果字符串
-		resultstr = step.getExpectedresult();  
+		resultstr = step.getExpectedResult();  
 
 		//set预期结果
 		if(null==resultstr||"".equals(resultstr)){
@@ -72,17 +72,17 @@ public class AppDriverAnalyticCase {
 			luckyclient.publicclass.LogUtil.APP.info("预期结果解析：ExpectedResults:"+expectedResults);
 		}
 		
-		luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！");
+		luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！");
 		if(null!=caselog){
-		  caselog.caseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepnum()),"");
+		  caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepSerialNumber()),"");
 		}
 		}catch(Exception e) {
-			luckyclient.publicclass.LogUtil.ERROR.error("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本出错！");
+			luckyclient.publicclass.LogUtil.ERROR.error("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！");
 			if(null!=caselog){
-			  caselog.caseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepnum()),"");
+			  caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepSerialNumber()),"");
 			}
 			luckyclient.publicclass.LogUtil.ERROR.error(e,e);
-			params.put("exception","用例编号："+projectcase.getSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
+			params.put("exception","用例编号："+projectcase.getCaseSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
 			return params;
      }
 		return params;

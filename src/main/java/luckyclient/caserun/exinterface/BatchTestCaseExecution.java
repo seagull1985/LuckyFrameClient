@@ -1,13 +1,12 @@
 package luckyclient.caserun.exinterface;
 
-import luckyclient.caserun.exinterface.TestControl;
-import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.TestTaskexcute;
-
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import luckyclient.dblog.LogOperation;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.entity.TaskExecute;
 
 /**
  * =================================================================
@@ -29,8 +28,7 @@ public class BatchTestCaseExecution {
 	 */
 	
 	public static void batchCaseExecuteForTast(String projectname,String taskid,String batchcase) throws Exception{
-		TestTaskexcute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
-		int threadcount = task.getTestJob().getThreadCount();
+		int threadcount = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid)).getExThreadCount();
 		ThreadPoolExecutor	threadExecute	= new ThreadPoolExecutor(threadcount, 30, 3, TimeUnit.SECONDS,
 	            new ArrayBlockingQueue<Runnable>(1000),
 	            new ThreadPoolExecutor.CallerRunsPolicy());

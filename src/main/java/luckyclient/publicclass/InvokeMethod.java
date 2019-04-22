@@ -14,10 +14,10 @@ import com.alibaba.fastjson.JSONObject;
 
 import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.caserun.publicdispose.ParamsManageForSteps;
-import luckyclient.planapi.entity.ProjectProtocolTemplate;
-import luckyclient.planapi.entity.ProjectTemplateParams;
 import luckyclient.publicclass.remoterinterface.HttpClientHelper;
 import luckyclient.publicclass.remoterinterface.HttpRequest;
+import luckyclient.serverapi.entity.ProjectProtocolTemplate;
+import luckyclient.serverapi.entity.ProjectTemplateParams;
 
 /**
  * =================================================================
@@ -100,8 +100,8 @@ public class InvokeMethod {
 
                 //处理头域
                 Map<String, String> headmsg = new HashMap<String, String>(0);
-                if (null != ppt.getHeadmsg() && !ppt.getHeadmsg().equals("") && ppt.getHeadmsg().indexOf("=") > 0) {
-                    String headmsgtemp = ppt.getHeadmsg().replace("\\;", "!!!fhzh");
+                if (null != ppt.getHeadMsg() && !ppt.getHeadMsg().equals("") && ppt.getHeadMsg().indexOf("=") > 0) {
+                    String headmsgtemp = ppt.getHeadMsg().replace("\\;", "!!!fhzh");
                     String[] temp = headmsgtemp.split(";", -1);
                     for (int i = 0; i < temp.length; i++) {
                         if (null != temp[i] && !temp[i].equals("") && temp[i].indexOf("=") > 0) {
@@ -132,8 +132,8 @@ public class InvokeMethod {
                             int replaceflag=0;
                             for (int i = 0; i < paramslist.size(); i++) {
                                 ProjectTemplateParams ptp = paramslist.get(i);
-                                ptp.setParam(ParamsManageForSteps.paramsManage(ptp.getParam()));
-                                if("_forTextJson".equals(ptp.getParamname())){
+                                ptp.setParamValue(ParamsManageForSteps.paramsManage(ptp.getParamValue()));
+                                if("_forTextJson".equals(ptp.getParamName())){
                             		//分析参数替换序号
                             		int index = 1;
                             		if (key.contains("[") && key.endsWith("]")) {
@@ -144,27 +144,27 @@ public class InvokeMethod {
                             			luckyclient.publicclass.LogUtil.APP.info("准备替换JSON对象中的参数值，未检测到指定参数名序号，默认替换第1个参数...");                       			
                             		}
                             		
-                                	if(ptp.getParam().contains("\""+key+"\":")){
-                                		Map<String,String> map=ChangString.changjson(ptp.getParam(), key, value,index);
+                                	if(ptp.getParamValue().contains("\""+key+"\":")){
+                                		Map<String,String> map=ChangString.changjson(ptp.getParamValue(), key, value,index);
                                 		if("true".equals(map.get("boolean"))){
-                                            ptp.setParam(map.get("json"));
+                                            ptp.setParamValue(map.get("json"));
                                             paramslist.set(i, ptp);
                                             replaceflag=1;
                                             luckyclient.publicclass.LogUtil.APP.info("替换参数"+key+"完成...");
                                             break;
                                 		}
-                                	}else if(ptp.getParam().contains(key)){
-                                		ptp.setParam(ptp.getParam().replace(key, value));
+                                	}else if(ptp.getParamValue().contains(key)){
+                                		ptp.setParamValue(ptp.getParamValue().replace(key, value));
                                 		paramslist.set(i, ptp);
                                         replaceflag=1;
-                                        luckyclient.publicclass.LogUtil.APP.info("检查当前文本不属于JSON,在字符串【"+ptp.getParam()+"】中直接把【"+key+"】替换成【"+value+"】...");
+                                        luckyclient.publicclass.LogUtil.APP.info("检查当前文本不属于JSON,在字符串【"+ptp.getParamValue()+"】中直接把【"+key+"】替换成【"+value+"】...");
                                         break;
                                 	}else{
                                 		luckyclient.publicclass.LogUtil.APP.error("请检查您的纯文本模板是否是正常的JSON格式或是文本中是否存在需替换的关键字。");
                                 	}
                                 }else{
-                                    if (ptp.getParamname().equals(key)) {
-                                        ptp.setParam(value);
+                                    if (ptp.getParamName().equals(key)) {
+                                        ptp.setParamValue(value);
                                         paramslist.set(i, ptp);
                                         replaceflag=1;
                                         luckyclient.publicclass.LogUtil.APP.info("把模板中参数【"+key+"】的值设置成【"+value+"】");
@@ -187,34 +187,34 @@ public class InvokeMethod {
                 Map<String, Object> params = new HashMap<String, Object>(0);
                 for (ProjectTemplateParams ptp : paramslist) {
                     //处理参数对象
-                    if (ptp.getParamtype() == 1) {
-                        String tempparam = ptp.getParam().replace("&quot;", "\"");
+                    if (ptp.getParamType() == 1) {
+                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         JSONObject json = JSONObject.parseObject(tempparam);
-                        params.put(ptp.getParamname().replace("&quot;", "\""), json);
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  JSONObject类型参数值:【" + json.toString() + "】");
-                    } else if (ptp.getParamtype() == 2) {
-                        String tempparam = ptp.getParam().replace("&quot;", "\"");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), json);
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONObject类型参数值:【" + json.toString() + "】");
+                    } else if (ptp.getParamType() == 2) {
+                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         JSONArray jarr = JSONArray.parseArray(tempparam);
-                        params.put(ptp.getParamname().replace("&quot;", "\""), jarr);
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
-                    } else if (ptp.getParamtype() == 3) {
-                        String tempparam = ptp.getParam().replace("&quot;", "\"");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), jarr);
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
+                    } else if (ptp.getParamType() == 3) {
+                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         File file = new File(tempparam);
-                        params.put(ptp.getParamname().replace("&quot;", "\""), file);
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
-                    } else if (ptp.getParamtype() == 4) {
-                        String tempparam = ptp.getParam().replace("&quot;", "\"");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), file);
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
+                    } else if (ptp.getParamType() == 4) {
+                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         Double dp = Double.valueOf(tempparam);
-                        params.put(ptp.getParamname().replace("&quot;", "\""), dp);
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  数字类型参数值:【" + tempparam + "】");
-                    } else if (ptp.getParamtype() == 5) {
-                        String tempparam = ptp.getParam().replace("&quot;", "\"");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), dp);
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  数字类型参数值:【" + tempparam + "】");
+                    } else if (ptp.getParamType() == 5) {
+                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         Boolean bn = Boolean.valueOf(tempparam);
-                        params.put(ptp.getParamname().replace("&quot;", "\""), bn);
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  Boolean类型参数值:【" + bn + "】");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), bn);
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  Boolean类型参数值:【" + bn + "】");
                     } else {
-                        params.put(ptp.getParamname().replace("&quot;", "\""), ptp.getParam().replace("&quot;", "\""));
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  String类型参数值:【" + ptp.getParam().replace("&quot;", "\"") + "】");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), ptp.getParamValue().replace("&quot;", "\""));
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  String类型参数值:【" + ptp.getParamValue().replace("&quot;", "\"") + "】");
                     }
                 }
 
@@ -266,8 +266,8 @@ public class InvokeMethod {
                 
                 //处理头域
                 Map<String, String> headmsg = new HashMap<String, String>(0);
-                if (null != ppt.getHeadmsg() && !ppt.getHeadmsg().equals("") && ppt.getHeadmsg().indexOf("=") > 0) {
-                    String headmsgtemp = ppt.getHeadmsg().replace("\\;", "!!!fhzh");
+                if (null != ppt.getHeadMsg() && !ppt.getHeadMsg().equals("") && ppt.getHeadMsg().indexOf("=") > 0) {
+                    String headmsgtemp = ppt.getHeadMsg().replace("\\;", "!!!fhzh");
                     String[] temp = headmsgtemp.split(";", -1);
                     for (int i = 0; i < temp.length; i++) {
                         if (null != temp[i] && !temp[i].equals("") && temp[i].indexOf("=") > 0) {
@@ -296,8 +296,8 @@ public class InvokeMethod {
                             int replaceflag=0;
                             for (int i = 0; i < paramslist.size(); i++) {
                                 ProjectTemplateParams ptp = paramslist.get(i);
-                                if("_forTextJson".equals(ptp.getParamname())){
-                                	if(ptp.getParam().indexOf("\""+key+"\":")>=0){
+                                if("_forTextJson".equals(ptp.getParamName())){
+                                	if(ptp.getParamValue().indexOf("\""+key+"\":")>=0){
                                  		//分析参数替换序号
                                 		int index = 1;
                                 		if (key.indexOf("[") >= 0 && key.endsWith("]")) {
@@ -308,26 +308,26 @@ public class InvokeMethod {
                                 			luckyclient.publicclass.LogUtil.APP.info("准备替换JSON对象中的参数值，替换指定第" + index + "个参数...");
                                 		}
                                 		
-                                		Map<String,String> map=ChangString.changjson(ptp.getParam(), key, value,index);
+                                		Map<String,String> map=ChangString.changjson(ptp.getParamValue(), key, value,index);
                                 		if("true".equals(map.get("boolean"))){
-                                            ptp.setParam(map.get("json"));
+                                            ptp.setParamValue(map.get("json"));
                                             paramslist.set(i, ptp);
                                             replaceflag=1;
                                             luckyclient.publicclass.LogUtil.APP.info("替换参数"+key+"完成...");
                                             break;
                                 		}
-                                	}else if(ptp.getParam().indexOf(key)>=0){
-                                		ptp.setParam(ptp.getParam().replace(key, value));
+                                	}else if(ptp.getParamValue().indexOf(key)>=0){
+                                		ptp.setParamValue(ptp.getParamValue().replace(key, value));
                                 		paramslist.set(i, ptp);
                                         replaceflag=1;
-                                        luckyclient.publicclass.LogUtil.APP.info("检查当前文本不属于JSON,在字符串【"+ptp.getParam()+"】中直接把【"+key+"】替换成【"+value+"】...");
+                                        luckyclient.publicclass.LogUtil.APP.info("检查当前文本不属于JSON,在字符串【"+ptp.getParamValue()+"】中直接把【"+key+"】替换成【"+value+"】...");
                                         break;
                                 	}else{
                                 		luckyclient.publicclass.LogUtil.APP.error("请检查您的纯文本模板是否是正常的JSON格式或是文本中是否存在需替换的关键字。");
                                 	}
                                 }else{
-                                    if (ptp.getParamname().equals(key)) {
-                                        ptp.setParam(value);
+                                    if (ptp.getParamName().equals(key)) {
+                                        ptp.setParamValue(value);
                                         paramslist.set(i, ptp);
                                         replaceflag=1;
                                         luckyclient.publicclass.LogUtil.APP.info("把模板中参数【"+key+"】的值设置成【"+value+"】");
@@ -350,42 +350,42 @@ public class InvokeMethod {
                 Map<String, Object> params = new HashMap<String, Object>(0);
                 for (ProjectTemplateParams ptp : paramslist) {
                     //处理参数对象
-                    if (ptp.getParamtype() == 1) {
-                        String tempparam = ptp.getParam().replace("&quot;", "\"");
+                    if (ptp.getParamType() == 1) {
+                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         JSONObject json = JSONObject.parseObject(tempparam);
-                        params.put(ptp.getParamname().replace("&quot;", "\""), json);
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  JSONObject类型参数值:【" + json.toString() + "】");
-                    } else if (ptp.getParamtype() == 2) {
-                        String tempparam = ptp.getParam().replace("&quot;", "\"");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), json);
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONObject类型参数值:【" + json.toString() + "】");
+                    } else if (ptp.getParamType() == 2) {
+                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         JSONArray jarr = JSONArray.parseArray(tempparam);
-                        params.put(ptp.getParamname().replace("&quot;", "\""), jarr);
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
-                    } else if (ptp.getParamtype() == 3) {
-                        String tempparam = ptp.getParam().replace("&quot;", "\"");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), jarr);
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
+                    } else if (ptp.getParamType() == 3) {
+                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         File file = new File(tempparam);
-                        params.put(ptp.getParamname().replace("&quot;", "\""), file);
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
-                    } else if (ptp.getParamtype() == 4) {
-                        String tempparam = ptp.getParam().replace("&quot;", "\"");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), file);
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
+                    } else if (ptp.getParamType() == 4) {
+                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         Double dp = Double.valueOf(tempparam);
-                        params.put(ptp.getParamname().replace("&quot;", "\""), dp);
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  数字类型参数值:【" + tempparam + "】");
-                    } else if (ptp.getParamtype() == 5) {
-                        String tempparam = ptp.getParam().replace("&quot;", "\"");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), dp);
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  数字类型参数值:【" + tempparam + "】");
+                    } else if (ptp.getParamType() == 5) {
+                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         Boolean bn = Boolean.valueOf(tempparam);
-                        params.put(ptp.getParamname().replace("&quot;", "\""), bn);
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  Boolean类型参数值:【" + bn + "】");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), bn);
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  Boolean类型参数值:【" + bn + "】");
                     } else {
-                        params.put(ptp.getParamname().replace("&quot;", "\""), ptp.getParam().replace("&quot;", "\""));
-                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamname() + "】  String类型参数值:【" + ptp.getParam().replace("&quot;", "\"") + "】");
+                        params.put(ptp.getParamName().replace("&quot;", "\""), ptp.getParamValue().replace("&quot;", "\""));
+                        luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  String类型参数值:【" + ptp.getParamValue().replace("&quot;", "\"") + "】");
                     }
                 }
 
 
                 if (functionname.toLowerCase().equals("socketpost")) {
-                    result = HttpClientHelper.sendSocketPost(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg);
+                    result = HttpClientHelper.sendSocketPost(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
                 } else if (functionname.toLowerCase().equals("socketget")) {
-                    result = HttpClientHelper.sendSocketGet(packagename, params, ppt.getContentencoding().toLowerCase(), headmsg);
+                    result = HttpClientHelper.sendSocketGet(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
                 } else {
                     luckyclient.publicclass.LogUtil.APP.error("您的SOCKET操作方法异常，检测到的操作方法是：" + functionname);
                     result = "调用异常，请查看错误日志！";

@@ -7,8 +7,9 @@ import org.apache.log4j.PropertyConfigurator;
 import luckyclient.caserun.exappium.AppTestControl;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.WebTestControl;
-import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.TestTaskexcute;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.entity.TaskExecute;
+import luckyclient.serverapi.entity.TaskScheduling;
 
 /**
  * =================================================================
@@ -27,16 +28,16 @@ public class RunAutomationTest extends TestControl {
 		try {
 			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
 			String taskid = args[0];
-			TestTaskexcute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
-
-			if (task.getTestJob().getExtype() == 0) {
+			TaskExecute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
+			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid));
+			if (taskScheduling.getTaskType() == 0) {
 				// Ω”ø⁄≤‚ ‘
-				TestControl.taskExecutionPlan(taskid, task);
-			} else if (task.getTestJob().getExtype() == 1) {
+				TestControl.taskExecutionPlan(task);
+			} else if (taskScheduling.getTaskType() == 1) {
 				// UI≤‚ ‘
-				WebTestControl.taskExecutionPlan(taskid, task);
-			} else if (task.getTestJob().getExtype() == 2) {
-				AppTestControl.taskExecutionPlan(taskid, task);
+				WebTestControl.taskExecutionPlan(task);
+			} else if (taskScheduling.getTaskType() == 2) {
+				AppTestControl.taskExecutionPlan(task);
 			}
 	 		System.exit(0);
 		} catch (Exception e) {

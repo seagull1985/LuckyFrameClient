@@ -56,7 +56,7 @@ import org.apache.http.ssl.SSLContexts;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import luckyclient.planapi.entity.ProjectProtocolTemplate;
+import luckyclient.serverapi.entity.ProjectProtocolTemplate;
 
 /**
  * =================================================================
@@ -80,10 +80,10 @@ public class HttpClientHelper {
 	 * @return
 	 */
 	public static String sendHttpURLPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
-		String charset=ppt.getContentencoding().toLowerCase();
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -205,11 +205,11 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendURLPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
-		String charset=ppt.getContentencoding().toLowerCase();
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+	public static String sendURLPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {		
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
@@ -328,9 +328,9 @@ public class HttpClientHelper {
 	public static String sendGetAndSaveFile(String urlParam, Map<String, Object> params, String fileSavePath, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
 		// 构建请求参数
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
@@ -438,10 +438,10 @@ public class HttpClientHelper {
 	 * @return
 	 */
 	public static String sendHttpURLGet(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
-		String charset=ppt.getContentencoding().toLowerCase();
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
@@ -537,10 +537,10 @@ public class HttpClientHelper {
 	 * @return
 	 */
 	public static String sendURLGet(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
-		String charset=ppt.getContentencoding().toLowerCase();
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
@@ -638,11 +638,11 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 */
 	public static String httpClientPostJson(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -735,11 +735,11 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 */
 	public static String httpClientPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
@@ -834,11 +834,11 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 */
 	public static String httpClientUploadFile(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -941,11 +941,11 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 */
 	public static String httpClientGet(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");	
@@ -1336,10 +1336,10 @@ public class HttpClientHelper {
 	 * @return
 	 */
 	public static String sendHttpURLDel(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
-		String charset=ppt.getContentencoding().toLowerCase();
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
@@ -1461,11 +1461,11 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static String httpClientPutJson(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws KeyManagementException, NoSuchAlgorithmException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
@@ -1559,11 +1559,11 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static String httpClientPut(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws KeyManagementException, NoSuchAlgorithmException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");

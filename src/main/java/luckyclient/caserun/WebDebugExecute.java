@@ -23,9 +23,9 @@ public class WebDebugExecute extends TestControl{
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
- 		String sign = args[0];
- 		String executor = args[1];
- 		WebTestCaseDebug.oneCaseDebug(sign,executor);
+ 		String caseIdStr = args[0];
+ 		String userIdStr = args[1];
+ 		WebTestCaseDebug.oneCaseDebug(caseIdStr, userIdStr);
  		System.exit(0);
 	}
 }

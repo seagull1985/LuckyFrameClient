@@ -7,10 +7,10 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.planapi.entity.PublicCaseParams;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.entity.ProjectCase;
+import luckyclient.serverapi.entity.ProjectCaseParams;
+import luckyclient.serverapi.entity.ProjectCaseSteps;
 
 /**
  * =================================================================
@@ -31,13 +31,13 @@ public class AndroidCaseLocalDebug {
 
 		try {
 			ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-			List<PublicCaseParams> pcplist = GetServerAPI
-					.cgetParamsByProjectid(String.valueOf(testcase.getProjectid()));
+			List<ProjectCaseParams> pcplist = GetServerAPI
+					.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
 			luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【" + testCaseExternalId + "】......");
-			List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcase.getId());
+			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			AndroidCaseExecution.caseExcution(testcase, steps, "888888", androiddriver, caselog, pcplist);
 
-			luckyclient.publicclass.LogUtil.APP.info("当前用例：【" + testcase.getSign() + "】执行完成......进入下一条");
+			luckyclient.publicclass.LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
 		} catch (Exception e) {
 			luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
 			e.printStackTrace();
@@ -45,10 +45,12 @@ public class AndroidCaseLocalDebug {
 	}
 
 	/**
-	 * @param 项目名
-	 * @param 用例编号
-	 * @param 用例版本号
-	 *            用于在testlink上配置好用例参数后，做多条用例串行调试
+	 * 用于做多条用例串行调试
+	 * @param androiddriver
+	 * @param projectname
+	 * @param addtestcase
+	 * @author Seagull
+	 * @date 2019年4月18日
 	 */
 	public static void moreCaseDebug(AndroidDriver<AndroidElement> androiddriver, String projectname,
 			List<String> addtestcase) {

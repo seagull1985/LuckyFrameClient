@@ -10,11 +10,11 @@ import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.WebDriverInitialization;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.planapi.entity.PublicCaseParams;
-import luckyclient.planapi.entity.TestTaskexcute;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.entity.ProjectCase;
+import luckyclient.serverapi.entity.ProjectCaseParams;
+import luckyclient.serverapi.entity.ProjectCaseSteps;
+import luckyclient.serverapi.entity.TaskExecute;
 
 /**
  * =================================================================
@@ -42,8 +42,8 @@ public class WebBatchExecute{
 			e1.printStackTrace();
 		}
 		LogOperation caselog = new LogOperation();
-		TestTaskexcute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
-		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(task.getTestJob().getProjectid().toString());
+		TaskExecute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
+		List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(task.getProjectId().toString());
 		 //执行全部非成功状态用例
 		if(batchcase.indexOf("ALLFAIL")>-1){   
 			String casemore = caselog.unSucCaseUpdate(taskid);
@@ -52,7 +52,7 @@ public class WebBatchExecute{
   			   String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
 			   //int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()-1));
 			   ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-			   List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcase.getId());
+			   List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			   //删除旧的日志
 			   LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    
 			   try {
@@ -69,7 +69,7 @@ public class WebBatchExecute{
 				String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
 				//int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()));
 				ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-				List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcase.getId());
+				List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 				//删除旧的日志
 				LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);
 				try {
