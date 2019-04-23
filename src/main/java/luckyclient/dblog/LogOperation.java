@@ -1,12 +1,15 @@
 package luckyclient.dblog;
 
-import luckyclient.publicclass.DBOperation;
-import luckyclient.serverapi.api.PostServerAPI;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
+
+import luckyclient.publicclass.DBOperation;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.PostServerAPI;
+import luckyclient.serverapi.entity.TaskExecute;
+import luckyclient.serverapi.entity.TaskScheduling;
 
 /**
  * =================================================================
@@ -62,139 +65,66 @@ public class LogOperation {
 
 	/**
 	 * 更新本次任务的执行统计情况
+	 * 状态 0未执行 1执行中 2执行完成 3执行失败 4唤起客户端失败
 	 */
-	public static int[] updateTastdetail(String taskid, int casecount) {
+	public static int[] updateTaskExecuteData(String taskIdStr, int caseCount) {
 		int[] taskcount = null;
 		if (0 == exetype) {
-			try {
-				int id = Integer.parseInt(taskid);
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Integer taskId = Integer.parseInt(taskIdStr);
+			String str = PostServerAPI.clientUpdateTaskExecuteData(taskId, caseCount,2);
+			JSONObject jsonObject = JSONObject.parseObject(str);
 
-				String casesucsql = dbt.executeQuery(
-						"select count(*) from test_casedetail where taskid = " + id + " and casestatus = 0");
-				String casefailsql = dbt.executeQuery(
-						"select count(*) from test_casedetail where taskid = " + id + " and casestatus = 1");
-				String caselocksql = dbt.executeQuery(
-						"select count(*) from test_casedetail where taskid = " + id + " and casestatus = 2");
-				String casenoexesql = dbt.executeQuery(
-						"select count(*) from test_casedetail where taskid = " + id + " and casestatus = 4");
+			// 返回本次任务执行情况
+			taskcount = new int[5];
+			taskcount[0] = jsonObject.getInteger("caseCount");
+			taskcount[1] = jsonObject.getInteger("caseSuc");
+			taskcount[2] = jsonObject.getInteger("caseFail");
+			taskcount[3] = jsonObject.getInteger("caseLock");
+			taskcount[4] = jsonObject.getInteger("caseNoExec");
 
-				int casesuc = Integer.parseInt(casesucsql.substring(0, casesucsql.indexOf("%")));
-				int casefail = Integer.parseInt(casefailsql.substring(0, casefailsql.indexOf("%")));
-				int caselock = Integer.parseInt(caselocksql.substring(0, caselocksql.indexOf("%")));
-				int casenoexec = Integer.parseInt(casenoexesql.substring(0, casenoexesql.indexOf("%")));
-
-				if (casecount == 0) {
-					casecount = casesuc + casefail + caselock + casenoexec;
-				}
-				// 返回本次任务执行情况
-				taskcount = new int[5];
-				taskcount[0] = casecount;
-				taskcount[1] = casesuc;
-				taskcount[2] = casefail;
-				taskcount[3] = caselock;
-				taskcount[4] = casenoexec;
-
-				String sql = "update test_taskexcute set casetotal_count = " + casecount + ",casesucc_count = "
-						+ casesuc + ",casefail_count = " + casefail + ",caselock_count = " + caselock
-						+ ",casenoexec_count = " + casenoexec + ",finishtime =  str_to_date('" + df.format(new Date())
-						+ "','%Y-%m-%d %T'), " + "taskStatus  = 2 where id = " + id;
-				dbt.executeSql(sql);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				luckyclient.publicclass.LogUtil.APP.error("执行更新本次任务执行统计情况SQL出现异常，请确认数据库链接是否正常！", e);
-				e.printStackTrace();
-			}
 		}
 		return taskcount;
 	}
 
 	/**
 	 * 更新本次任务的执行状态
+	 * 状态 0未执行 1执行中 2执行完成 3执行失败 4唤起客户端失败
 	 */
-	public static void updateTastStatus(String taskid, int casecount) {
+	public static void updateTaskExecuteStatus(String taskIdStr, int caseCount) {
 		if (0 == exetype) {
-			try {
-				int id = Integer.parseInt(taskid);
-				String sql = "update test_taskexcute set casetotal_count= " + casecount + ",taskStatus  = 1 where id = "
-						+ id;
-
-				dbt.executeSql(sql);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				luckyclient.publicclass.LogUtil.APP.error("执行更新本次任务的执行状态SQL出现异常，请确认数据库链接是否正常！", e);
-				e.printStackTrace();
-			}
+			Integer taskId = Integer.parseInt(taskIdStr);
+			PostServerAPI.clientUpdateTaskExecuteData(taskId, caseCount,1);
 		}
 	}
 
 	/**
 	 * 删除单次任务指定的用例日志明细
 	 */
-	public static void deleteCaseLogDetail(String caseno, String taskid) {
-		int inttaskid = Integer.parseInt(taskid);
-		String casesidsql;
-		try {
-			casesidsql = dbt.executeQuery(
-					"select id from test_casedetail t where caseno = '" + caseno + "' and taskid = " + inttaskid);
-			int casesid = Integer.parseInt(casesidsql.substring(0, casesidsql.lastIndexOf("%")));
-			// 删除原来的日志
-			dbt.executeSql("delete from test_logdetail where caseid = " + casesid + " and taskid = " + inttaskid);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行删除单次任务指定的用例日志明细SQL出现异常，请确认数据库链接是否正常！", e);
-			e.printStackTrace();
-		}
+	public static void deleteTaskCaseLog(Integer caseId, String taskIdStr) {
+		Integer taskId = Integer.parseInt(taskIdStr);
+		PostServerAPI.clientDeleteTaskCaseLog(taskId, caseId);
 	}
 
 	/**
-	 * 删除单次任务指定的用例明细
+	 * 取出指定任务ID中的不属于成功状态的用例ID
 	 */
-	public static void deleteCaseDetail(String caseno, String taskid) {
-		int inttaskid = Integer.parseInt(taskid);
-		try {
-			// 删除原来的用例
-			dbt.executeSql("delete from test_casedetail where caseno = '" + caseno + "' and taskid = " + inttaskid);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行删除单次任务指定的用例明细SQL出现异常，请确认数据库链接是否正常！", e);
-			e.printStackTrace();
-		}
+	public List<Integer> getCaseListForUnSucByTaskId(String taskIdStr) {
+		int taskId = Integer.parseInt(taskIdStr);
+		return GetServerAPI.clientGetCaseListForUnSucByTaskId(taskId);
 	}
 
 	/**
-	 * 取出指定任务ID中的不属于成功状态的用例编写以及版本号
-	 */
-	public String unSucCaseUpdate(String taskid) {
-		int inttaskid = Integer.parseInt(taskid);
-		String casesidsql = null;
-		try {
-			casesidsql = dbt.executeQuery("select caseno,caseversion from test_casedetail t where t.taskid = "
-					+ inttaskid + " and t.casestatus <> 0");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行取出指定任务ID中的不属于成功状态的用例编写以及版本号SQL出现异常，请确认数据库链接是否正常！", e);
-			e.printStackTrace();
-		}
-		return casesidsql;
-	}
-
-	/**
-	 * 取出指定任务ID中所属的调度是否要发送邮件状态及收件人地址 isSendMail varchar(1) default(0); --0 不发送 1
+	 * 取出指定任务ID中所属的调度是否要发送邮件状态及收件人地址 发送邮件通知时的具体逻辑, -1-不通知 0-全部，1-成功，2-失败
 	 * 发送 eMailer varchar(100) ; --收件人
 	 */
 
-	public static String[] getEmailAddress(String taskid) {
-		int inttaskid = Integer.parseInt(taskid);
-		String casesidsql = null;
+	public static String[] getEmailAddress(String taskIdStr) {
+		Integer taskId = Integer.parseInt(taskIdStr);
 		String[] address = null;
 		try {
-			casesidsql = dbt.executeQuery(
-					"select t.issendmail,t.emailer from test_jobs t where id in (select jobid from test_taskexcute t where t.id = "
-							+ inttaskid + ")");
-			String status = casesidsql.substring(0, casesidsql.indexOf("%"));
-			if ("1".equals(status)) {
-				String temp = casesidsql.substring(casesidsql.indexOf("%") + 1, casesidsql.length() - 1);
+			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(taskId);
+			if (taskScheduling.getEmailSendCondition()!=-1) {
+				String temp = taskScheduling.getEmailAddress();
 				// 清除最后一个;
 				if (temp.indexOf(";") > -1 && temp.substring(temp.length() - 1, temp.length()).indexOf(";") > -1) {
 					temp = temp.substring(0, temp.length() - 1);
@@ -210,7 +140,6 @@ public class LogOperation {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行取出指定任务ID中所属的调度是否要发送邮件状态及收件人地址SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return address;
 		}
@@ -218,23 +147,17 @@ public class LogOperation {
 	}
 
 	/**
-	 * 取出指定任务ID中所属的调度是否要自动构建以及构建的项目名称 isBuilding varchar(1) default(0); --0
-	 * 不自动构建 1 自动构建 BuildName varchar(100) ; --构建项目名称
+	 * 取出指定任务ID中所属的调度是否要自动构建以及构建的项目名称 为空时不构建
 	 */
-	public static String[] getBuildName(String taskid) {
-		int inttaskid = Integer.parseInt(taskid);
-		String casesidsql = null;
+	public static String[] getBuildName(String taskIdStr) {
+		Integer taskId = Integer.parseInt(taskIdStr);
 		String[] buildname = null;
 		try {
-			casesidsql = dbt.executeQuery(
-					"select t.isbuilding,t.buildname from test_jobs t where id in (select jobid from test_taskexcute t where t.id = "
-							+ inttaskid + ")");
-			if (null == casesidsql || "".equals(casesidsql)) {
+			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(taskId);
+			if (null == taskScheduling.getBuildingLink() || "".equals(taskScheduling.getBuildingLink())) {
 				return buildname;
-			}
-			String status = casesidsql.substring(0, casesidsql.indexOf("%"));
-			if ("1".equals(status)) {
-				String temp = casesidsql.substring(casesidsql.indexOf("%") + 1, casesidsql.length() - 1);
+			}else{
+				String temp = taskScheduling.getBuildingLink();
 				// 清除最后一个;
 				if (temp.indexOf(";") > -1 && temp.substring(temp.length() - 1, temp.length()).indexOf(";") > -1) {
 					temp = temp.substring(0, temp.length() - 1);
@@ -250,7 +173,6 @@ public class LogOperation {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行取出指定任务ID中所属的调度是否要自动构建以及构建的项目名称SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return buildname;
 		}
@@ -258,26 +180,21 @@ public class LogOperation {
 	}
 
 	/**
-	 * 取出指定任务ID中所属的调度是否要自动重启TOMCAT isrestart varchar(1) default(0); --0 不自动重启 1
+	 * 取出指定任务ID中所属的调度是否要自动重启TOMCAT
 	 * 自动重启 restartcomm varchar(200) ; -- 格式：服务器IP;服务器用户名;服务器密码;ssh端口;Shell命令;
 	 * 例：192.168.222.22;pospsettle;pospsettle;22;cd
 	 * /home/pospsettle/tomcat-7.0-7080/bin&&./restart.sh;
 	 */
 
-	public static String[] getrestartcomm(String taskid) {
-		int inttaskid = Integer.parseInt(taskid);
-		String casesidsql = null;
+	public static String[] getRestartComm(String taskIdStr) {
+		Integer taskId = Integer.parseInt(taskIdStr);
 		String[] command = null;
 		try {
-			casesidsql = dbt.executeQuery(
-					"select t.isrestart,t.restartcomm from test_jobs t where id in (select jobid from test_taskexcute t where t.id = "
-							+ inttaskid + ")");
-			if (null == casesidsql || "".equals(casesidsql)) {
+			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(taskId);
+			if (null == taskScheduling.getRemoteShell() || "".equals(taskScheduling.getRemoteShell())) {
 				return command;
-			}
-			String status = casesidsql.substring(0, casesidsql.indexOf("%"));
-			if ("1".equals(status)) {
-				String temp = casesidsql.substring(casesidsql.indexOf("%") + 1, casesidsql.length() - 1);
+			}else{
+				String temp = taskScheduling.getRemoteShell();
 				// 清除最后一个;
 				if (temp.indexOf(";") > -1 && temp.substring(temp.length() - 1, temp.length()).indexOf(";") > -1) {
 					temp = temp.substring(0, temp.length() - 1);
@@ -293,7 +210,6 @@ public class LogOperation {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行取出指定任务ID中所属的调度是否要自动重启TOMCAT SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return command;
 		}
@@ -302,41 +218,16 @@ public class LogOperation {
 	}
 
 	/**
-	 * 获取测试计划名称
-	 */
-	public static String getTestPlanName(String taskid) {
-		int inttaskid = Integer.parseInt(taskid);
-		String testplanname = "NULL";
-		try {
-			String sql = dbt.executeQuery(
-					"select t.testlinkname from test_jobs t where id in (select jobid from test_taskexcute t where t.id = "
-							+ inttaskid + ")");
-			testplanname = sql.substring(0, sql.lastIndexOf("%"));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行获取测试计划名称SQL出现异常，请确认数据库链接是否正常！", e);
-			e.printStackTrace();
-			return testplanname;
-		}
-		return testplanname;
-	}
-
-	/**
 	 * 获取任务测试时长
 	 */
-	public static String getTestTime(String taskid) {
-		int inttaskid = Integer.parseInt(taskid);
+	public static String getTestTime(String taskIdStr) {
+		Integer taskId = Integer.parseInt(taskIdStr);
 		String desTime = "计算测试时长出错！";
 		try {
-			String sql = dbt.executeQuery(
-					"select date_format(t.createtime,'%Y-%m-%d %T'),date_format(t.finishtime,'%Y-%m-%d %T') from test_taskexcute t where t.id= "
-							+ inttaskid);
-			String starttime = sql.substring(0, sql.indexOf("%"));
-			String finishtime = sql.substring(sql.indexOf("%") + 1, sql.length() - 1);
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date start = df.parse(starttime);
-            if (StringUtils.isNotBlank(finishtime) && !StringUtils.equalsIgnoreCase(finishtime, "null")) {
-                Date finish = df.parse(finishtime);
+			TaskExecute taskExecute = GetServerAPI.cgetTaskbyid(taskId);
+			Date start = taskExecute.getCreateTime();
+            if (null!= taskExecute.getFinishTime()) {
+                Date finish = taskExecute.getFinishTime();
                 long l = finish.getTime() - start.getTime();
                 long day = l / (24 * 60 * 60 * 1000);
                 long hour = (l / (60 * 60 * 1000) - day * 24);
@@ -347,7 +238,6 @@ public class LogOperation {
             }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行获取任务测试时长SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
 			return desTime;
 		}
@@ -355,88 +245,20 @@ public class LogOperation {
 	}
 
 	/**
-	 * 查询web执行，浏览器类型
+	 * 查询web执行，浏览器类型  UI自动化浏览器类型 0 IE 1 火狐 2 谷歌 3 Edge
 	 */
-	public static int querydrivertype(String taskid) {
-		int taskidtoint = Integer.parseInt(taskid);
-		int drivertype = 0;
+	public static int querydrivertype(String taskIdStr) {
+		Integer taskId = Integer.parseInt(taskIdStr);
+		Integer driverType = 0;
 		try {
-			String sqlresult = dbt.executeQuery(
-					"select browsertype from test_jobs where id = (select jobid from test_taskexcute where id = "
-							+ taskidtoint + ")");
-			drivertype = Integer.parseInt(sqlresult.substring(0, sqlresult.lastIndexOf("%")));
+			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(taskId);
+			driverType = taskScheduling.getBrowserType();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行查询web执行浏览器类型SQL出现异常，请确认数据库链接是否正常！", e);
 			e.printStackTrace();
-			return drivertype;
+			return driverType;
 		}
-		return drivertype;
-	}
-
-	/**
-	 * 查询任务中用例步骤日志执行实际结果
-	 */
-	public static String getLogDetailTestResult(int taskid, String caseno, int casestatus) {
-		String sqlresult = "";
-		try {
-			sqlresult = dbt.executeQuery(
-					"select detail from test_logdetail where logid=(select MIN(logid) from test_logdetail "
-							+ "where loggrade='error' and taskid=" + taskid
-							+ " and caseid=(select id from test_casedetail where taskid=" + taskid + " and caseno='"
-							+ caseno + "' and casestatus='" + casestatus + "'))");
-			if (sqlresult.indexOf("测试结果：") <= 0 || sqlresult.indexOf("%") <= 0) {
-				return sqlresult;
-			}
-			sqlresult = sqlresult.substring(sqlresult.indexOf("测试结果：") + 5, sqlresult.lastIndexOf("%"));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行查询任务中用例步骤日志执行实际结果SQL出现异常，请确认数据库链接是否正常！", e);
-			e.printStackTrace();
-			return sqlresult;
-		}
-		return sqlresult;
-	}
-
-	/**
-	 * 根据任务名称查询任务ID
-	 */
-	public static int getTaskExcuteTaskid(String taskname) {
-		String sqlresult = "";
-		try {
-			sqlresult = dbt.executeQuery("select id from test_taskexcute t where t.taskid='" + taskname + "'");
-			sqlresult = sqlresult.substring(0, sqlresult.lastIndexOf("%"));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行根据任务名称查询任务ID SQL出现异常，请确认数据库链接是否正常！", e);
-			e.printStackTrace();
-			return Integer.parseInt(sqlresult);
-		}
-		return Integer.parseInt(sqlresult);
-	}
-
-	/**
-	 * 查询任务中用例步骤日志预期结果 2017-09-16
-	 */
-	public static String getLogDetailExpectResult(int taskid, String caseno, int casestatus) {
-		String sqlresult = "";
-		try {
-			sqlresult = dbt.executeQuery(
-					"select detail from test_logdetail where logid=(select MIN(logid) from test_logdetail "
-							+ "where loggrade='error' and taskid=" + taskid
-							+ " and caseid=(select id from test_casedetail where taskid=" + taskid + " and caseno='"
-							+ caseno + "' and casestatus='" + casestatus + "'))");
-			if (sqlresult.indexOf("预期结果：") <= 0 || sqlresult.indexOf("%") <= 0) {
-				return sqlresult;
-			}
-			sqlresult = sqlresult.substring(sqlresult.indexOf("预期结果：") + 5, sqlresult.lastIndexOf("测试结果：") - 1);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			luckyclient.publicclass.LogUtil.APP.error("执行查询任务中用例步骤日志预期结果 SQL出现异常，请确认数据库链接是否正常！", e);
-			e.printStackTrace();
-			return sqlresult;
-		}
-		return sqlresult;
+		return driverType;
 	}
 
 	public static void main(String[] args) throws Exception {

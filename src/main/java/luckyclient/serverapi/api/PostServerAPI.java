@@ -111,6 +111,30 @@ public class PostServerAPI {
 		HttpRequest.httpClientPostJson(prefix+"/clientPostTaskCaseLog", JSONObject.toJSONString(taskCaseLog));
 	}
 	
+	/**
+	 * 更新任务执行数据
+	 * @param taskId
+	 * @param casecount
+	 * @author Seagull
+	 * @date 2019年4月22日
+	 */
+	public static String clientUpdateTaskExecuteData(Integer taskId, Integer caseCount, Integer taskStatus){
+		String str = "{\"taskId\":"+taskId+",\"caseCount\":"+caseCount+",\"taskStatus\":"+taskStatus+"}";
+		return HttpRequest.httpClientPostJson(prefix+"/clientUpdateTaskExecuteData", JSONObject.toJSONString(str));
+	}
+	
+	/**
+	 * 更新任务执行数据
+	 * @param taskId
+	 * @param casecount
+	 * @author Seagull
+	 * @date 2019年4月22日
+	 */
+	public static String clientDeleteTaskCaseLog(Integer taskId, Integer caseId){
+		String str = "{\"taskId\":"+taskId+",\"caseId\":"+caseId+"}";
+		return HttpRequest.httpClientPostJson(prefix+"/clientDeleteTaskCaseLog", JSONObject.toJSONString(str));
+	}
+	
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		cPostDebugLog(3, 1, "info", "js a查%颗蜡&配电脑明显==人fdsa人",0);
 	}

@@ -10,7 +10,6 @@ import br.eti.kinoshita.testlinkjavaapi.util.TestLinkAPIException;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
 import luckyclient.caserun.publicdispose.ChangString;
-import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.remoterinterface.HttpRequest;
 import luckyclient.serverapi.api.GetServerAPI;
@@ -224,22 +223,6 @@ public class ApiTestCaseDebug {
 				continue;
 			}
 		}
-	}
-
-	/**
-	 * 获取指定任务名称以及用例号报错日志中的执行预期结果 casestatus说明 pass:0 fail:1 lock:2 unexcute:4
-	 */
-	public static String getLogDetailExpectresult(String taskname, String caseno, int casestatus) {
-		int taskid = LogOperation.getTaskExcuteTaskid(taskname);
-		return LogOperation.getLogDetailExpectResult(taskid, caseno, casestatus);
-	}
-
-	/**
-	 * 获取指定任务名称以及用例号报错日志中的执行测试结果 casestatus说明 pass:0 fail:1 lock:2 unexcute:4
-	 */
-	public static String getLogDetailRunresult(String taskname, String caseno, int casestatus) {
-		int taskid = LogOperation.getTaskExcuteTaskid(taskname);
-		return LogOperation.getLogDetailTestResult(taskid, caseno, casestatus);
 	}
 
 	/**

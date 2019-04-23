@@ -46,15 +46,12 @@ public class WebBatchExecute{
 		List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(task.getProjectId().toString());
 		 //执行全部非成功状态用例
 		if(batchcase.indexOf("ALLFAIL")>-1){   
-			String casemore = caselog.unSucCaseUpdate(taskid);
-			String[] temp=casemore.split("\\#",-1);
-			for(int i=0;i<temp.length;i++){
-  			   String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
-			   //int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()-1));
-			   ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+			List<Integer> caseIdList = caselog.getCaseListForUnSucByTaskId(taskid);
+			for(int i=0;i<caseIdList.size();i++){
+			   ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseIdList.get(i));
 			   List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			   //删除旧的日志
-			   LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    
+			   LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);    
 			   try {
 				WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
 			} catch (InterruptedException e) {
@@ -71,7 +68,7 @@ public class WebBatchExecute{
 				ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 				List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 				//删除旧的日志
-				LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);
+				LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
 					WebCaseExecution.caseExcution(testcase, steps,taskid,wd,caselog,pcplist);
 				} catch (InterruptedException e) {
@@ -81,7 +78,7 @@ public class WebBatchExecute{
 				}
 			}
 		}
-		LogOperation.updateTastdetail(taskid, 0);
+		LogOperation.updateTaskExecuteData(taskid, 0);
         //关闭浏览器
         wd.quit();
 	}

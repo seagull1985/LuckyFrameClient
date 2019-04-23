@@ -110,20 +110,20 @@ public class GetServerAPI {
 	 * @return
 	 */
 	public static List<ProjectCaseParams> cgetParamsByProjectid(String projectid) {
-		String result = HttpRequest.loadJSON(prefix+"/cgetParamsByProjectid.do?projectId="+projectid);
+		String result = HttpRequest.loadJSON(prefix+"/clientUpdateTaskExecuteData.do?projectId="+projectid);
 		List<ProjectCaseParams> paramsList = JSONObject.parseArray(result, ProjectCaseParams.class);
 		return paramsList;
 	}
-
+	
 	/**
-	 * 供其他系统远程调用调度任务，启动执行
-	 * @param jobid
+	 * 通过计划ID获取测试用例对象集
+	 * @param planid
 	 * @return
-	 * @throws UnsupportedEncodingException
 	 */
-	public static String cRunJobForId(String jobid) throws UnsupportedEncodingException {
-		String result = HttpRequest.loadJSON("/testJobs/runJobForInterface.do?jobid=" + jobid);
-		return new String(result.getBytes("GBK"), "UTF-8");
+	public static List<Integer> clientGetCaseListForUnSucByTaskId(Integer taskId) {
+		String result = HttpRequest.loadJSON(prefix+"/clientGetCaseListForUnSucByTaskId.do?taskId=" + taskId);		
+        List<Integer> caseIdList = JSONObject.parseArray(result, Integer.class);
+		return caseIdList;
 	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException {

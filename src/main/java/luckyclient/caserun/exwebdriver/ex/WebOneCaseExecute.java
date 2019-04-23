@@ -40,9 +40,10 @@ public class WebOneCaseExecute{
 			e1.printStackTrace();
 		}
 		LogOperation caselog = new LogOperation();
-		//删除旧的日志
-		LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    
 		ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+		//删除旧的日志
+		LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);    
+
 		List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
 		luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【"+testCaseExternalId+"】......");
 		try {
@@ -53,7 +54,7 @@ public class WebOneCaseExecute{
 			luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
 			e.printStackTrace();
 		}
-		LogOperation.updateTastdetail(taskid, 0);
+		LogOperation.updateTaskExecuteData(taskid, 0);
         //关闭浏览器
         wd.quit();
 	}

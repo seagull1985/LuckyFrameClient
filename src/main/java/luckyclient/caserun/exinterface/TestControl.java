@@ -108,7 +108,7 @@ public class TestControl {
 						new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
-				LogOperation.updateTastStatus(taskid, cases.size());
+				LogOperation.updateTaskExecuteStatus(taskid, cases.size());
 				int casepriority = 0;
 				for (int j = 0; j < cases.size(); j++) {
 					ProjectCase projectcase = cases.get(j);
@@ -146,7 +146,7 @@ public class TestControl {
 					}
 					Thread.sleep(6000);
 				}
-				tastcount = LogOperation.updateTastdetail(taskid, cases.size());
+				tastcount = LogOperation.updateTaskExecuteData(taskid, cases.size());
 
 				String testtime = LogOperation.getTestTime(taskid);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),

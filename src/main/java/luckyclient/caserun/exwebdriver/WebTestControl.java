@@ -114,7 +114,7 @@ public class WebTestControl {
 
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
 				luckyclient.publicclass.LogUtil.APP.info("当前计划中读取到用例共 " + cases.size() + " 个");
-				LogOperation.updateTastStatus(taskid, cases.size());
+				LogOperation.updateTaskExecuteStatus(taskid, cases.size());
 
 				for (ProjectCase testcase : cases) {
 					List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
@@ -133,7 +133,7 @@ public class WebTestControl {
 					}
 					luckyclient.publicclass.LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
 				}
-				tastcount = LogOperation.updateTastdetail(taskid, cases.size());
+				tastcount = LogOperation.updateTaskExecuteData(taskid, cases.size());
 
 				String testtime = LogOperation.getTestTime(taskid);
 				luckyclient.publicclass.LogUtil.APP.info("当前项目【" + projectname + "】测试计划中的用例已经全部执行完成...");

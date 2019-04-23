@@ -143,7 +143,7 @@ public class AppTestControl {
 				LogOperation caselog = new LogOperation();
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
 				luckyclient.publicclass.LogUtil.APP.info("当前计划中读取到用例共 " + cases.size() + " 个");
-				LogOperation.updateTastStatus(taskId, cases.size());
+				LogOperation.updateTaskExecuteStatus(taskId, cases.size());
 
 				for (ProjectCase testcase : cases) {
 					List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
@@ -166,7 +166,7 @@ public class AppTestControl {
 					}
 					luckyclient.publicclass.LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
 				}
-				tastcount = LogOperation.updateTastdetail(taskId, cases.size());
+				tastcount = LogOperation.updateTaskExecuteData(taskId, cases.size());
 				String testtime = LogOperation.getTestTime(taskId);
 				luckyclient.publicclass.LogUtil.APP.info("当前项目【" + projectname + "】测试计划中的用例已经全部执行完成...");
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),

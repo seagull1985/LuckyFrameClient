@@ -53,7 +53,7 @@ public class TestCaseExecution {
      * @param version            用例版本号
      *                           用于单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
      */
-    public static void oneCaseExecuteForTast(String projectname, String testCaseExternalId, int version, String taskid) {
+    public static void oneCaseExecuteForTask(String projectname, String testCaseExternalId, String taskid) {
         TestControl.TASKID = taskid;
         DbLink.exetype = 0;
         // 初始化写用例结果以及日志模块
@@ -65,9 +65,10 @@ public class TestCaseExecution {
         Object[] getParameterValues = null;
         String testnote = "初始化测试结果";
         int k = 0;
-        // 删除旧的日志
-        LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);
         ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+        // 删除旧的日志
+        LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
+
         List<ProjectCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
         // 把公共参数加入到MAP中
         for (ProjectCaseParams pcp : pcplist) {
@@ -178,7 +179,7 @@ public class TestCaseExecution {
             luckyclient.publicclass.LogUtil.APP.error("用例 " + testCaseExternalId + "在执行过程中失败，请检查日志！");
             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "在执行过程中失败，请检查日志！", "error", "EXECUTECASESUC...", "");
         }
-        LogOperation.updateTastdetail(taskid, 0);
+        LogOperation.updateTaskExecuteData(taskid, 0);
     }
 
     /**

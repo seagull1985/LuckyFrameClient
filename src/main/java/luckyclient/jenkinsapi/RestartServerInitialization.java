@@ -15,11 +15,10 @@ import luckyclient.dblog.LogOperation;
  */
 public class RestartServerInitialization {
 
-	@SuppressWarnings("finally")
 	public static String restartServerRun(String tastid){
 		String result = "Status:true"+" 重启命令执行成功！";
 		try{
-			String[] command = LogOperation.getrestartcomm(tastid);
+			String[] command = LogOperation.getRestartComm(tastid);
 			if(command!=null){
 				luckyclient.publicclass.LogUtil.APP.info("准备重启指定的TOMCAT！请稍等。。。参数个数："+command.length);
 				if(command.length==5){

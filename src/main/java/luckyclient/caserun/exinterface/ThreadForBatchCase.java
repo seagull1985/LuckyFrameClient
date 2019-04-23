@@ -15,19 +15,17 @@ public class ThreadForBatchCase extends Thread{
 	
 	private String projectname;
 	private String testCaseExternalId;
-	private int version;
-	private String tastid;
+	private String taskid;
 	
-	public ThreadForBatchCase(String projectname,String testCaseExternalId,int version,String tastid){
+	public ThreadForBatchCase(String projectname,String testCaseExternalId,String taskid){
 		this.projectname = projectname;
 		this.testCaseExternalId = testCaseExternalId;
-		this.version = version;
-		this.tastid = tastid;
+		this.taskid = taskid;
 	}
 	
 	@Override
 	public void run(){		
-		 TestCaseExecution.oneCaseExecuteForTast(projectname, testCaseExternalId, version, tastid);
+		 TestCaseExecution.oneCaseExecuteForTask(projectname, testCaseExternalId, taskid);
 		 TestControl.THREAD_COUNT--;        //多线程计数--，用于检测线程是否全部执行完
 	}
 	

@@ -2,6 +2,7 @@ package luckyclient.publicclass;
 
 import java.io.File;
 import java.util.Enumeration;
+import java.util.jar.JarFile;
 
 /**
  * =================================================================
@@ -42,7 +43,7 @@ public class JarClassFind {
 			} else {
 				if (filelist[i].endsWith("jar")) {
 					try {
-						java.util.jar.JarFile jarfile = new java.util.jar.JarFile(path + filelist[i]);
+						JarFile jarfile = new java.util.jar.JarFile(path + filelist[i]);
 						for (Enumeration e = jarfile.entries(); e.hasMoreElements();) {
 							String name = e.nextElement().toString();
 							if (name.equals(classname) || name.indexOf(classname) > -1) {
