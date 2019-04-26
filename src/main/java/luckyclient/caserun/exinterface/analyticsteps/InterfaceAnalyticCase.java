@@ -161,6 +161,9 @@ public class InterfaceAnalyticCase{
      */
     private static String replaceSpi(String str,int flag){
     	String replacestr="&brvbar_rep;";
+    	if(null==str){
+    		str = "";
+    	}
     	String result=str;
     	if(str.contains("\\\\|")&&flag==0){
     		result=str.replace("\\\\|", replacestr);

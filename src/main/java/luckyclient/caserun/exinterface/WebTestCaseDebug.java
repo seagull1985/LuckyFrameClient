@@ -175,9 +175,7 @@ public class WebTestCaseDebug {
         }
         variable.clear();               //清空传参MAP
         //如果调用方法过程中未出错，进入设置测试结果流程
-        if (!testnote.contains("CallCase调用出错！") && !testnote.contains("解析出错啦！")) {
-            PostServerAPI.cPostDebugLog(userId, caseId, "INFOover", "用例 " + sign + "解析成功，并成功调用用例中方法，请继续查看执行结果！",1);
-        } else {
+        if (testnote.contains("CallCase调用出错！") && testnote.contains("解析出错啦！")) {
             PostServerAPI.cPostDebugLog(userId, caseId, "ERRORover", "用例 " + sign + "解析或是调用步骤中的方法出错！",1);
         }
         if (0 == setcaseresult) {

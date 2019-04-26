@@ -61,11 +61,9 @@ public class WebBatchExecute{
 			 }
 			}			
 		}else{                                           //批量执行用例
-			String[] temp=batchcase.split("\\#",-1);
+			String[] temp=batchcase.split("\\#");
 			for(int i=0;i<temp.length;i++){
-				String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
-				//int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()));
-				ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+				ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(Integer.valueOf(temp[i]));
 				List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 				//删除旧的日志
 				LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);

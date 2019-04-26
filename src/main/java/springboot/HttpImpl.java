@@ -10,8 +10,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.Properties;
 
@@ -27,10 +25,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import luckyclient.publicclass.remoterinterface.HttpRequest;
+import springboot.model.RunBatchCaseEntity;
 import springboot.model.RunTaskEntity;
+import springboot.model.WebDebugCaseEntity;
 
 /**
  * =================================================================
@@ -52,8 +52,8 @@ public class HttpImpl {
 	 * @return
 	 * @throws RemoteException
 	 */
-	@PostMapping("/runtask")
-	private String runtask(HttpServletRequest req) throws RemoteException {
+	@PostMapping("/runTask")
+	private String runTask(HttpServletRequest req) throws RemoteException {
 		StringBuilder sb = new StringBuilder();
 		try (BufferedReader reader = req.getReader();) {
 			char[] buff = new char[1024];
@@ -64,8 +64,8 @@ public class HttpImpl {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		JSONObject jsonObject = JSONObject.parseObject(sb.toString());
-		RunTaskEntity runTaskEntity = JSON.toJavaObject(jsonObject,RunTaskEntity.class);
+		
+		RunTaskEntity runTaskEntity = JSONObject.parseObject(sb.toString(), RunTaskEntity.class);
 		
 		luckyclient.publicclass.LogUtil.APP.info("启动任务模式测试程序...调度名称：【"+runTaskEntity.getSchedulingName()+"】  任务ID："+runTaskEntity.getTaskId());
 		try{
@@ -101,6 +101,7 @@ public class HttpImpl {
 	 * @throws RemoteException
 	 */
 	@PostMapping("/runcase")
+	@Deprecated
 	private String runcase(HttpServletRequest req) throws RemoteException {
 		StringBuilder sbd = new StringBuilder();
 		try (BufferedReader reader = req.getReader();) {
@@ -153,8 +154,8 @@ public class HttpImpl {
 	 * @return
 	 * @throws RemoteException
 	 */
-	@PostMapping("/runbatchcase")
-	private String runbatchcase(HttpServletRequest req) throws RemoteException {
+	@PostMapping("/runBatchCase")
+	private String runBatchCase(HttpServletRequest req) throws RemoteException {
 		StringBuilder sbd = new StringBuilder();
 		try (BufferedReader reader = req.getReader();) {
 			char[] buff = new char[1024];
@@ -165,11 +166,12 @@ public class HttpImpl {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		JSONObject jsonObject = JSONObject.parseObject(sbd.toString());
-		String projectname = jsonObject.getString("projectname");
-		String taskid = jsonObject.getString("taskid");
-		String loadpath = jsonObject.getString("loadpath");
-		String batchcase = jsonObject.getString("batchcase");
+		RunBatchCaseEntity runBatchCaseEntity = JSONObject.parseObject(sbd.toString(), RunBatchCaseEntity.class);
+		
+		String projectname = runBatchCaseEntity.getProjectname();
+		String taskid = runBatchCaseEntity.getTaskid();
+		String loadpath = runBatchCaseEntity.getLoadpath();
+		String batchcase = runBatchCaseEntity.getBatchcase();
 		luckyclient.publicclass.LogUtil.APP.info("启动批量用例模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
 		luckyclient.publicclass.LogUtil.APP.info("批量测试用例："+batchcase);
 		try{
@@ -216,13 +218,10 @@ public class HttpImpl {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		JSONObject jsonObject = JSONObject.parseObject(sbd.toString());
-		String sign = jsonObject.getString("sign");
-		String userIdStr = jsonObject.getString("userIdStr");
-		String loadpath = jsonObject.getString("loadpath");
-		luckyclient.publicclass.LogUtil.APP.info("Web端调试用例："+sign+" 发起人："+userIdStr);
+		WebDebugCaseEntity webDebugCaseEntity = JSONObject.parseObject(sbd.toString(), WebDebugCaseEntity.class);
+		luckyclient.publicclass.LogUtil.APP.info("Web端调试用例ID："+webDebugCaseEntity.getCaseId()+" 发起人ID："+webDebugCaseEntity.getUserId());
 		try{
-			File file =new File(System.getProperty("user.dir")+loadpath); 	   
+			File file =new File(System.getProperty("user.dir")+webDebugCaseEntity.getLoadpath()); 	   
 			if  (!file .isDirectory())      
 			{    
 				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
@@ -230,9 +229,9 @@ public class HttpImpl {
 			}
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sb=new StringBuffer();
-			sb.append(sign).append(" ");
-			sb.append(userIdStr).append(" ");
-			sb.append(loadpath);
+			sb.append(webDebugCaseEntity.getCaseId()).append(" ");
+			sb.append(webDebugCaseEntity.getUserId()).append(" ");
+			sb.append(webDebugCaseEntity.getLoadpath());
 			if(os.startsWith("win")){
 				run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));			
 			}else{
@@ -253,8 +252,8 @@ public class HttpImpl {
 	 * @return
 	 * @throws RemoteException
 	 */
-	@GetMapping("/getlogdetail")
-	private String getlogdetail(HttpServletRequest req) throws RemoteException{
+	@GetMapping("/getLogdDetail")
+	private String getLogdDetail(HttpServletRequest req) throws RemoteException{
 		String fileName=req.getParameter("filename");
 		String ctxPath = System.getProperty("user.dir")+File.separator+"log";
 		String downLoadPath = ctxPath +File.separator+ fileName;
@@ -296,8 +295,8 @@ public class HttpImpl {
 	 * @return
 	 * @throws RemoteException
 	 */
-	@GetMapping("/getlogimg")
-	private byte[] getlogimg(HttpServletRequest req,HttpServletResponse res) throws RemoteException{
+	@GetMapping("/getLogImg")
+	private byte[] getLogImg(HttpServletRequest req,HttpServletResponse res) throws RemoteException{
 		String imgName=req.getParameter("imgName");
 		String ctxPath = System.getProperty("user.dir")+File.separator+"log"+File.separator+"ScreenShot";
 		String downLoadPath = ctxPath+File.separator+imgName;
@@ -381,40 +380,35 @@ public class HttpImpl {
 	private String getClientStatus(HttpServletRequest req) throws RemoteException{
 		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
 		String verison=properties.getProperty("client.verison");
-		return "{status:\"success\",version:\""+verison+"\"}";
+		return "{\"status\":\"success\",\"version\":\""+verison+"\"}";
 	}
 	
 	public static boolean checkhostnet() {
 		luckyclient.publicclass.LogUtil.APP.info("检查客户端配置中,请稍后......");
 		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
-		String dbip=properties.getProperty("mysql.db.ip");
-		int dbport=Integer.valueOf(properties.getProperty("mysql.db.port"));
+		String version=properties.getProperty("client.verison");
 		String webip=properties.getProperty("server.web.ip");
 		int webport=Integer.valueOf(properties.getProperty("server.web.port"));
-        Socket dbsocket = new Socket();
-        Socket websocket = new Socket();
         try {
-        	dbsocket.connect(new InetSocketAddress(dbip, dbport));
-        	luckyclient.publicclass.LogUtil.APP.info("客户端访问数据库配置："+dbip+":"+dbport+"   检测通过......");
-        	websocket.connect(new InetSocketAddress(webip, webport));
-        	luckyclient.publicclass.LogUtil.APP.info("客户端访问Web端配置："+webip+":"+webport+"   检测通过......");
-        } catch (IOException e) {
+        	String result = HttpRequest.loadJSON(webip+"/openGetApi/clientGetServerVersion.do");
+        	if(version.equals(result)){
+            	luckyclient.publicclass.LogUtil.APP.info("客户端访问Web端配置："+webip+":"+webport+"   检测通过......");
+        	}else{
+        		luckyclient.publicclass.LogUtil.APP.error("客户端版本："+version);
+        		luckyclient.publicclass.LogUtil.APP.error("服务端版本："+result);
+        		luckyclient.publicclass.LogUtil.APP.error("客户端与服务端版本不一致，有可能会导致未知问题，请检查...");
+        	}
+
+        } catch (Exception e) {
         	luckyclient.publicclass.LogUtil.APP.error("客户端配置检测异常，请确认您项目根目录下的客户端配置文件(sys_config.properties)是否已经正确配置。",e);
             return false;
-        } finally {
-            try {
-            	dbsocket.close();
-            	websocket.close();
-            } catch (IOException e) {
-            	luckyclient.publicclass.LogUtil.APP.error("关闭Socket链接异常......",e);
-            }
         }
         return true;
     }
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		checkhostnet();
 	}
 
 }

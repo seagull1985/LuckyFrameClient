@@ -29,7 +29,7 @@ import luckyclient.serverapi.entity.ProjectCaseSteps;
  */
 public class AndroidOneCaseExecute {
 
-	public static void oneCaseExecuteForTast(String projectname, String testCaseExternalId, int version, String taskid)
+	public static void oneCaseExecuteForTast(String projectname, Integer caseId, int version, String taskid)
 			throws IOException, InterruptedException {
 		// 记录日志到数据库
 		DbLink.exetype = 0;
@@ -52,10 +52,10 @@ public class AndroidOneCaseExecute {
 		}
 		LogOperation caselog = new LogOperation();
 		// 删除旧的日志
-		ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+		ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseId);
 		LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 		List<ProjectCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
-		luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【" + testCaseExternalId + "】......");
+		luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【" + testcase.getCaseSign() + "】......");
 		try {
 			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			AndroidCaseExecution.caseExcution(testcase, steps, taskid, ad, caselog, pcplist);

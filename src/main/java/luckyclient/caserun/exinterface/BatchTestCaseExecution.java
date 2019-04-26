@@ -41,14 +41,13 @@ public class BatchTestCaseExecution {
 			for(int i=0;i<caseIdList.size();i++){
 			   ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseIdList.get(i));
 			   TestControl.THREAD_COUNT++;   //多线程计数++，用于检测线程是否全部执行完
-			   threadExecute.execute(new ThreadForBatchCase(projectname,testcase.getCaseSign(),taskid));
+			   threadExecute.execute(new ThreadForBatchCase(projectname,testcase.getCaseId(),taskid));
 			}			
 		}else{                                           //批量执行用例
-			String[] temp=batchcase.split("\\#",-1);
-			for(int i=0;i<temp.length-1;i++){
-				String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
+			String[] temp=batchcase.split("\\#");
+			for(int i=0;i<temp.length;i++){
 				TestControl.THREAD_COUNT++;   //多线程计数++，用于检测线程是否全部执行完
-				threadExecute.execute(new ThreadForBatchCase(projectname,testCaseExternalId,taskid));
+				threadExecute.execute(new ThreadForBatchCase(projectname,Integer.valueOf(temp[i]),taskid));
 			}
 		}
 		//多线程计数，用于检测线程是否全部执行完

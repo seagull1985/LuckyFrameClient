@@ -9,6 +9,8 @@ import luckyclient.publicclass.remoterinterface.HttpRequest;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
+import luckyclient.serverapi.entity.ProjectProtocolTemplate;
+import luckyclient.serverapi.entity.ProjectTemplateParams;
 import luckyclient.serverapi.entity.TaskExecute;
 import luckyclient.serverapi.entity.TaskScheduling;
 
@@ -54,7 +56,7 @@ public class GetServerAPI {
 	 * @param caseid
 	 * @return
 	 */
-	public static List<ProjectCaseSteps> getStepsbycaseid(int caseid) {
+	public static List<ProjectCaseSteps> getStepsbycaseid(Integer caseid) {
 		String result = HttpRequest.loadJSON(prefix+"/clientGetStepListByCaseId.do?caseId=" + caseid);
 		List<ProjectCaseSteps> stepsList = JSONObject.parseArray(result, ProjectCaseSteps.class);
 		return stepsList;
@@ -110,7 +112,7 @@ public class GetServerAPI {
 	 * @return
 	 */
 	public static List<ProjectCaseParams> cgetParamsByProjectid(String projectid) {
-		String result = HttpRequest.loadJSON(prefix+"/clientUpdateTaskExecuteData.do?projectId="+projectid);
+		String result = HttpRequest.loadJSON(prefix+"/clientGetParamsByProjectId.do?projectId="+projectid);
 		List<ProjectCaseParams> paramsList = JSONObject.parseArray(result, ProjectCaseParams.class);
 		return paramsList;
 	}
@@ -124,6 +126,32 @@ public class GetServerAPI {
 		String result = HttpRequest.loadJSON(prefix+"/clientGetCaseListForUnSucByTaskId.do?taskId=" + taskId);		
         List<Integer> caseIdList = JSONObject.parseArray(result, Integer.class);
 		return caseIdList;
+	}
+	
+	/**
+	 * 通过templateId获取实体
+	 * @param templateId
+	 * @return
+	 * @author Seagull
+	 * @date 2019年4月24日
+	 */
+	public static ProjectProtocolTemplate clientGetProjectProtocolTemplateByTemplateId(Integer templateId) {
+		String result = HttpRequest.loadJSON(prefix+"/clientGetProjectProtocolTemplateByTemplateId.do?templateId=" + templateId);
+		ProjectProtocolTemplate projectProtocolTemplate = JSONObject.parseObject(result, ProjectProtocolTemplate.class);
+		return projectProtocolTemplate;
+	}
+	
+	/**
+	 * 通过模板ID获取参数列表
+	 * @param templateId
+	 * @return
+	 * @author Seagull
+	 * @date 2019年4月24日
+	 */
+	public static List<ProjectTemplateParams> clientGetProjectTemplateParamsListByTemplateId(Integer templateId) {
+		String result = HttpRequest.loadJSON(prefix+"/clientGetProjectTemplateParamsListByTemplateId.do?templateId=" + templateId);
+		List<ProjectTemplateParams> projectTemplateParamsList = JSONObject.parseArray(result, ProjectTemplateParams.class);
+		return projectTemplateParamsList;
 	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException {

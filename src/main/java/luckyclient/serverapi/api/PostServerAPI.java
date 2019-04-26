@@ -3,6 +3,7 @@ package luckyclient.serverapi.api;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import luckyclient.publicclass.remoterinterface.HttpRequest;
@@ -120,7 +121,8 @@ public class PostServerAPI {
 	 */
 	public static String clientUpdateTaskExecuteData(Integer taskId, Integer caseCount, Integer taskStatus){
 		String str = "{\"taskId\":"+taskId+",\"caseCount\":"+caseCount+",\"taskStatus\":"+taskStatus+"}";
-		return HttpRequest.httpClientPostJson(prefix+"/clientUpdateTaskExecuteData", JSONObject.toJSONString(str));
+		JSONObject jsonObject = JSON.parseObject(str);
+		return HttpRequest.httpClientPostJson(prefix+"/clientUpdateTaskExecuteData", jsonObject.toJSONString());
 	}
 	
 	/**
@@ -132,11 +134,12 @@ public class PostServerAPI {
 	 */
 	public static String clientDeleteTaskCaseLog(Integer taskId, Integer caseId){
 		String str = "{\"taskId\":"+taskId+",\"caseId\":"+caseId+"}";
-		return HttpRequest.httpClientPostJson(prefix+"/clientDeleteTaskCaseLog", JSONObject.toJSONString(str));
+		JSONObject jsonObject = JSON.parseObject(str);
+		return HttpRequest.httpClientPostJson(prefix+"/clientDeleteTaskCaseLog", jsonObject.toJSONString());
 	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		cPostDebugLog(3, 1, "info", "js a查%颗蜡&配电脑明显==人fdsa人",0);
+
 	}
 
 }

@@ -27,7 +27,7 @@ import luckyclient.serverapi.entity.ProjectCaseSteps;
  */
 public class WebOneCaseExecute{
 	
-	public static void oneCaseExecuteForTast(String projectname,String testCaseExternalId,int version,String taskid){
+	public static void oneCaseExecuteForTast(String projectname,Integer caseId,int version,String taskid){
 		//记录日志到数据库
 		DbLink.exetype = 0;   
 		TestControl.TASKID = taskid;
@@ -40,12 +40,12 @@ public class WebOneCaseExecute{
 			e1.printStackTrace();
 		}
 		LogOperation caselog = new LogOperation();
-		ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+		ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseId);
 		//删除旧的日志
 		LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);    
 
 		List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
-		luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【"+testCaseExternalId+"】......");
+		luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【"+testcase.getCaseSign()+"】......");
 		try {
 			List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);

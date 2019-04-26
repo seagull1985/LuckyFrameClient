@@ -5,25 +5,21 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 
-import luckyclient.publicclass.DBOperation;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.api.PostServerAPI;
 import luckyclient.serverapi.entity.TaskExecute;
 import luckyclient.serverapi.entity.TaskScheduling;
 
 /**
+ * 
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
- * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改 有任何疑问欢迎联系作者讨论。 QQ:1573584944 seagull1985
+ * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改 有任何疑问欢迎联系作者讨论。 QQ:1573584944 Seagull
  * =================================================================
- * 
- * @ClassName: LogOperation
- * @Description: 日志写入数据库 @author： seagull
- * @date 2015年4月15日 上午9:29:40
- * 
+ * @author Seagull
+ * @date 2019年4月23日
  */
 public class LogOperation {
-	public static DBOperation dbt = DbLink.dbLogLink();
 	static int exetype = DbLink.exetype;
 
 	/**
@@ -263,7 +259,7 @@ public class LogOperation {
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-
+		deleteTaskCaseLog(7, "46");
 	}
 
 }

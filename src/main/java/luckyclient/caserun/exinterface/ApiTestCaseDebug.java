@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import br.eti.kinoshita.testlinkjavaapi.util.TestLinkAPIException;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
 import luckyclient.caserun.publicdispose.ChangString;
@@ -239,9 +238,9 @@ public class ApiTestCaseDebug {
 			params += "&stepnum=" + steps;
 			params += "&expectedresults=" + expectedResults;
 			results = HttpRequest.sendPost("/projectCasesteps/cUpdateStepExpectedResults.do", params);
-		} catch (TestLinkAPIException te) {
-			te.printStackTrace(System.err);
-			results = te.getMessage().toString();
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			results = e.getMessage().toString();
 			return results;
 		}
 		return results;

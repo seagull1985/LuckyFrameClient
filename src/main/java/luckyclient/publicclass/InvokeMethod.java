@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.publicclass.remoterinterface.HttpClientHelper;
-import luckyclient.publicclass.remoterinterface.HttpRequest;
+import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.ProjectProtocolTemplate;
 import luckyclient.serverapi.entity.ProjectTemplateParams;
 
@@ -45,7 +44,7 @@ public class InvokeMethod {
     public static String callCase(String packagename, String functionname, Object[] getParameterValues, int steptype, String extend) {
         String result = "调用异常，请查看错误日志！";
         try {
-            if (steptype == 0) {                
+            if (steptype == 2) {                
                 if(functionname.toLowerCase().endsWith(".py")){
                 	//调用Python脚本
                 	luckyclient.publicclass.LogUtil.APP.info("准备开始调用Python脚本......");
@@ -76,7 +75,7 @@ public class InvokeMethod {
                         result = str.toString();
                     }
                 }
-            } else if (steptype == 2) {
+            } else if (steptype == 0) {
             	if(null==extend||"".equals(extend)||!extend.contains("】")){
             		result = "您当前步骤是HTTP请求，请确认是否没有配置对应的HTTP协议模板...";
             		luckyclient.publicclass.LogUtil.APP.error("您当前步骤是HTTP请求，请确认是否没有配置对应的HTTP协议模板...");
@@ -86,17 +85,13 @@ public class InvokeMethod {
                 String templatenamestr = extend.substring(extend.indexOf("】") + 1);
                 luckyclient.publicclass.LogUtil.APP.info("即将使用模板【" + templatenamestr + "】，ID:【" + templateidstr + "】发送HTTP请求！");
 
-                String httpppt = HttpRequest.loadJSON("/projectprotocolTemplate/cgetPTemplateById.do?templateid=" + templateidstr);
-                ProjectProtocolTemplate ppt = JSONObject.parseObject(httpppt,ProjectProtocolTemplate.class);
+                ProjectProtocolTemplate ppt = GetServerAPI.clientGetProjectProtocolTemplateByTemplateId(Integer.valueOf(templateidstr));
                 if (null == ppt) {
                     luckyclient.publicclass.LogUtil.APP.error("协议模板为空，请检查用例使用的协议模板是否已经删除！");
                     return "协议模板为空，请确认用例使用的模板是否已经删除！";
                 }
 
-                String httpptp = HttpRequest.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
-                JSONObject jsonptpObject = JSONObject.parseObject(httpptp);
-                List<ProjectTemplateParams> paramslist = new ArrayList<ProjectTemplateParams>();
-                paramslist = JSONObject.parseArray(jsonptpObject.getString("params"), ProjectTemplateParams.class);  
+                List<ProjectTemplateParams> paramslist = GetServerAPI.clientGetProjectTemplateParamsListByTemplateId(Integer.valueOf(templateidstr));
 
                 //处理头域
                 Map<String, String> headmsg = new HashMap<String, String>(0);
@@ -186,29 +181,30 @@ public class InvokeMethod {
                 //处理参数
                 Map<String, Object> params = new HashMap<String, Object>(0);
                 for (ProjectTemplateParams ptp : paramslist) {
+                	String tempparam = "";
+                	if(null!=ptp.getParamValue()){
+                		tempparam =  ptp.getParamValue().replace("&quot;", "\"");
+                	}else{
+                		break;
+                	}
                     //处理参数对象
                     if (ptp.getParamType() == 1) {
-                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         JSONObject json = JSONObject.parseObject(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), json);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONObject类型参数值:【" + json.toString() + "】");
                     } else if (ptp.getParamType() == 2) {
-                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         JSONArray jarr = JSONArray.parseArray(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), jarr);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
                     } else if (ptp.getParamType() == 3) {
-                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         File file = new File(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), file);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
                     } else if (ptp.getParamType() == 4) {
-                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         Double dp = Double.valueOf(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), dp);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  数字类型参数值:【" + tempparam + "】");
                     } else if (ptp.getParamType() == 5) {
-                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         Boolean bn = Boolean.valueOf(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), bn);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  Boolean类型参数值:【" + bn + "】");
@@ -247,22 +243,18 @@ public class InvokeMethod {
                     luckyclient.publicclass.LogUtil.APP.error("您的HTTP操作方法异常，检测到的操作方法是：" + functionname);
                     result = "调用异常，请查看错误日志！";
                 }
-            } else if (steptype == 3) {
+            } else if (steptype == 4) {
                 String templateidstr = extend.substring(1, extend.indexOf("】"));
                 String templatenamestr = extend.substring(extend.indexOf("】") + 1);
                 luckyclient.publicclass.LogUtil.APP.info("即将使用模板【" + templatenamestr + "】，ID:【" + templateidstr + "】 发送SOCKET请求！");
 
-                String httpppt = HttpRequest.loadJSON("/projectprotocolTemplate/cgetPTemplateById.do?templateid=" + templateidstr);
-                ProjectProtocolTemplate ppt = JSONObject.parseObject(httpppt,ProjectProtocolTemplate.class);
+                ProjectProtocolTemplate ppt = GetServerAPI.clientGetProjectProtocolTemplateByTemplateId(Integer.valueOf(templateidstr));
                 if (null == ppt) {
                     luckyclient.publicclass.LogUtil.APP.error("协议模板为空，请检查用例使用的协议模板是否已经删除！");
                     return "协议模板为空，请确认用例使用的模板是否已经删除！";
                 }
                 
-                String httpptp = HttpRequest.loadJSON("/projectTemplateParams/cgetParamsByTemplate.do?templateid=" + templateidstr);
-                JSONObject jsonptpObject = JSONObject.parseObject(httpptp);
-                List<ProjectTemplateParams> paramslist = new ArrayList<ProjectTemplateParams>();
-                paramslist = JSONObject.parseArray(jsonptpObject.getString("params"), ProjectTemplateParams.class);  
+                List<ProjectTemplateParams> paramslist = GetServerAPI.clientGetProjectTemplateParamsListByTemplateId(Integer.valueOf(templateidstr));
                 
                 //处理头域
                 Map<String, String> headmsg = new HashMap<String, String>(0);
@@ -349,29 +341,28 @@ public class InvokeMethod {
                 //处理参数
                 Map<String, Object> params = new HashMap<String, Object>(0);
                 for (ProjectTemplateParams ptp : paramslist) {
+                	String tempparam = "";
+                	if(null!=ptp.getParamValue()){
+                		tempparam =  ptp.getParamValue().replace("&quot;", "\"");
+                	}
                     //处理参数对象
                     if (ptp.getParamType() == 1) {
-                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         JSONObject json = JSONObject.parseObject(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), json);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONObject类型参数值:【" + json.toString() + "】");
                     } else if (ptp.getParamType() == 2) {
-                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         JSONArray jarr = JSONArray.parseArray(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), jarr);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
                     } else if (ptp.getParamType() == 3) {
-                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         File file = new File(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), file);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
                     } else if (ptp.getParamType() == 4) {
-                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         Double dp = Double.valueOf(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), dp);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  数字类型参数值:【" + tempparam + "】");
                     } else if (ptp.getParamType() == 5) {
-                        String tempparam = ptp.getParamValue().replace("&quot;", "\"");
                         Boolean bn = Boolean.valueOf(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), bn);
                         luckyclient.publicclass.LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  Boolean类型参数值:【" + bn + "】");

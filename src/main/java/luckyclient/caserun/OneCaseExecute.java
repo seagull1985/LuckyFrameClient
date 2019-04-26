@@ -30,27 +30,27 @@ public class OneCaseExecute extends TestControl {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		PropertyConfigurator.configure(System.getProperty("user.dir")+ File.separator +"log4j.conf");
-		String taskid = args[0];
-		String testCaseExternalId = args[1];
+		String taskId = args[0];
+		String caseId = args[1];
 		int version = Integer.parseInt(args[2]);
-		TaskExecute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
-		TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid));
+		TaskExecute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskId));
+		TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskId));
 		if (taskScheduling.getTaskType() == 0) {
 				// ½Ó¿Ú²âÊÔ
-				TestCaseExecution.oneCaseExecuteForTask(taskScheduling.getProject().getProjectName(), testCaseExternalId, String.valueOf(task.getTaskId()));
+				TestCaseExecution.oneCaseExecuteForTask(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), String.valueOf(task.getTaskId()));
 
 		} else if (taskScheduling.getTaskType() == 1) {
-				WebOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), testCaseExternalId, version,
+				WebOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), version,
 						String.valueOf(task.getTaskId()));
 
 		} else if (taskScheduling.getTaskType() == 2) {
 			Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
 
 			if ("Android".equals(properties.getProperty("platformName"))) {
-				AndroidOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), testCaseExternalId,
+				AndroidOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId),
 						version, String.valueOf(task.getTaskId()));
 			} else if ("IOS".equals(properties.getProperty("platformName"))) {
-				IosOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), testCaseExternalId, version,
+				IosOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), version,
 						String.valueOf(task.getTaskId()));
 			}
 

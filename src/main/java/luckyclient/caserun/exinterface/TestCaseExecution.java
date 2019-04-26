@@ -53,7 +53,7 @@ public class TestCaseExecution {
      * @param version            用例版本号
      *                           用于单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
      */
-    public static void oneCaseExecuteForTask(String projectname, String testCaseExternalId, String taskid) {
+    public static void oneCaseExecuteForTask(String projectname, Integer caseId, String taskid) {
         TestControl.TASKID = taskid;
         DbLink.exetype = 0;
         // 初始化写用例结果以及日志模块
@@ -65,7 +65,7 @@ public class TestCaseExecution {
         Object[] getParameterValues = null;
         String testnote = "初始化测试结果";
         int k = 0;
-        ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
+        ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseId);
         // 删除旧的日志
         LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 
@@ -163,20 +163,20 @@ public class TestCaseExecution {
         VARIABLE.clear(); // 清空传参MAP
         // 如果调用方法过程中未出错，进入设置测试结果流程
         if (!testnote.contains("CallCase调用出错！") && !testnote.contains("解析出错啦！")) {
-            luckyclient.publicclass.LogUtil.APP.info("用例 " + testCaseExternalId + "解析成功，并成功调用用例中方法，请继续查看执行结果！");
+            luckyclient.publicclass.LogUtil.APP.info("用例 " + testcase.getCaseSign() + "解析成功，并成功调用用例中方法，请继续查看执行结果！");
             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "解析成功，并成功调用用例中方法，请继续查看执行结果！", "info", "SETCASERESULT...", "");
             caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), setcaseresult);
         } else {
             setcaseresult = 1;
-            luckyclient.publicclass.LogUtil.APP.error("用例 " + testCaseExternalId + "解析或是调用步骤中的方法出错！");
+            luckyclient.publicclass.LogUtil.APP.error("用例 " + testcase.getCaseSign() + "解析或是调用步骤中的方法出错！");
             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "解析或是调用步骤中的方法出错！", "error", "SETCASERESULT...", "");
             caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), 2);
         }
         if (0 == setcaseresult) {
-            luckyclient.publicclass.LogUtil.APP.info("用例 " + testCaseExternalId + "步骤全部执行成功！");
+            luckyclient.publicclass.LogUtil.APP.info("用例 " + testcase.getCaseSign() + "步骤全部执行成功！");
             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "步骤全部执行成功！", "info", "EXECUTECASESUC...", "");
         } else {
-            luckyclient.publicclass.LogUtil.APP.error("用例 " + testCaseExternalId + "在执行过程中失败，请检查日志！");
+            luckyclient.publicclass.LogUtil.APP.error("用例 " + testcase.getCaseSign() + "在执行过程中失败，请检查日志！");
             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "在执行过程中失败，请检查日志！", "error", "EXECUTECASESUC...", "");
         }
         LogOperation.updateTaskExecuteData(taskid, 0);
