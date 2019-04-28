@@ -206,8 +206,8 @@ public class HttpImpl {
 	 * @return
 	 * @throws RemoteException
 	 */
-	@PostMapping("/webdebugcase")
-	private String webdebugcase(HttpServletRequest req) throws RemoteException {
+	@PostMapping("/webDebugCase")
+	private String webDebugCase(HttpServletRequest req) throws RemoteException {
 		StringBuilder sbd = new StringBuilder();
 		try (BufferedReader reader = req.getReader();) {
 			char[] buff = new char[1024];
@@ -321,8 +321,8 @@ public class HttpImpl {
         return b;
 	}
 	
-	@PostMapping("/uploadjar")
-	private String uploadjar(HttpServletRequest req,HttpServletResponse res, HttpSession session,@RequestParam("jarfile") MultipartFile jarfile) throws IOException, ServletException{
+	@PostMapping("/uploadJar")
+	private String uploadJar(HttpServletRequest req,HttpServletResponse res, HttpSession session,@RequestParam("jarfile") MultipartFile jarfile) throws IOException, ServletException{
 		if (!jarfile.isEmpty()){
             if (!FilenameUtils.getExtension(jarfile.getOriginalFilename())
                     .equalsIgnoreCase("jar")) {
@@ -376,14 +376,14 @@ public class HttpImpl {
 	 * @return
 	 * @throws RemoteException
 	 */
-	@GetMapping("/getclientstatus")
+	@GetMapping("/getClientStatus")
 	private String getClientStatus(HttpServletRequest req) throws RemoteException{
 		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
 		String verison=properties.getProperty("client.verison");
 		return "{\"status\":\"success\",\"version\":\""+verison+"\"}";
 	}
 	
-	public static boolean checkhostnet() {
+	public static boolean checkHostNet() {
 		luckyclient.publicclass.LogUtil.APP.info("检查客户端配置中,请稍后......");
 		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
 		String version=properties.getProperty("client.verison");
@@ -408,7 +408,6 @@ public class HttpImpl {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		checkhostnet();
 	}
 
 }

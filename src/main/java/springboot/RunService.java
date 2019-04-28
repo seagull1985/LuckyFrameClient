@@ -30,7 +30,7 @@ public class RunService {
         } catch (UnknownHostException e) {
         	luckyclient.publicclass.LogUtil.APP.error("获取服务IP出现异常......", e);
         }
-		HttpImpl.checkhostnet();
+		HttpImpl.checkHostNet();
 	}
 
 }

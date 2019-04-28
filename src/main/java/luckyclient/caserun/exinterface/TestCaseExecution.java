@@ -332,7 +332,8 @@ public class TestCaseExecution {
      * @throws InterruptedException
      * 提供给Web用例中，runcase的时候使用
      */
-    protected static String oneCaseExecuteForUICase(String testCaseExternalId, String taskid, LogOperation caselog, Object driver) throws InterruptedException {
+    @SuppressWarnings("unchecked")
+	protected static String oneCaseExecuteForUICase(String testCaseExternalId, String taskid, LogOperation caselog, Object driver) throws InterruptedException {
         String expectedresults = null;
         Integer setresult = 1;
         String testnote = "初始化测试结果";
