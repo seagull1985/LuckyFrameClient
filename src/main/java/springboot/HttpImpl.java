@@ -25,9 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import luckyclient.publicclass.remoterinterface.HttpRequest;
+import luckyclient.serverapi.entity.monitor.Server;
 import springboot.model.RunBatchCaseEntity;
 import springboot.model.RunTaskEntity;
 import springboot.model.WebDebugCaseEntity;
@@ -382,6 +384,21 @@ public class HttpImpl {
 		String verison=properties.getProperty("client.verison");
 		return "{\"status\":\"success\",\"version\":\""+verison+"\"}";
 	}
+
+	/**
+	 * 获取客户端资源监控情况
+	 * @param req
+	 * @return
+	 * @author Seagull
+	 * @throws Exception 
+	 * @date 2019年5月5日
+	 */
+	@GetMapping("/getClientMonitorData")
+	private String getClientMonitorData(HttpServletRequest req) throws Exception{
+        Server server = new Server();
+        server.copyTo();
+        return JSON.toJSONString(server);
+	}
 	
 	public static boolean checkHostNet() {
 		luckyclient.publicclass.LogUtil.APP.info("检查客户端配置中,请稍后......");
@@ -406,7 +423,7 @@ public class HttpImpl {
         return true;
     }
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 	}
 
