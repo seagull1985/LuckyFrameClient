@@ -400,14 +400,20 @@ public class HttpImpl {
         return JSON.toJSONString(server);
 	}
 	
+	/**
+	 * 检查客户端中的配置
+	 * @return
+	 * @author Seagull
+	 * @date 2019年5月6日
+	 */
 	public static boolean checkHostNet() {
 		luckyclient.publicclass.LogUtil.APP.info("检查客户端配置中,请稍后......");
 		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
 		String version=properties.getProperty("client.verison");
 		String webip=properties.getProperty("server.web.ip");
-		int webport=Integer.valueOf(properties.getProperty("server.web.port"));
+		Integer webport=Integer.valueOf(properties.getProperty("server.web.port"));
         try {
-        	String result = HttpRequest.loadJSON(webip+"/openGetApi/clientGetServerVersion.do");
+        	String result = HttpRequest.loadJSON("/openGetApi/clientGetServerVersion.do");
         	if(version.equals(result)){
             	luckyclient.publicclass.LogUtil.APP.info("客户端访问Web端配置："+webip+":"+webport+"   检测通过......");
         	}else{
@@ -425,6 +431,7 @@ public class HttpImpl {
 	
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
+		checkHostNet();
 	}
 
 }
