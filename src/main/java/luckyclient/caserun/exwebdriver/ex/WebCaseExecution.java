@@ -40,7 +40,8 @@ public class WebCaseExecution extends TestCaseExecution {
     private static String imagname = "";
 
     public static void caseExcution(ProjectCase testcase, List<ProjectCaseSteps> steps, String taskid, WebDriver wd, LogOperation caselog, List<ProjectCaseParams> pcplist) throws InterruptedException {
-        // 把公共参数加入到MAP中
+    	caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), 3);
+    	// 把公共参数加入到MAP中
         for (ProjectCaseParams pcp : pcplist) {
             variable.put(pcp.getParamsName(), pcp.getParamsValue());
         }

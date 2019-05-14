@@ -39,6 +39,7 @@ public class IosCaseExecution extends TestCaseExecution{
 
 	public static void caseExcution(ProjectCase testcase, List<ProjectCaseSteps> steps,String taskid, IOSDriver<IOSElement> appium,LogOperation caselog,List<ProjectCaseParams> pcplist)
 			throws InterruptedException, IOException {
+		caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), 3);
 		// 把公共参数加入到MAP中
 		for (ProjectCaseParams pcp : pcplist) {
 			variable.put(pcp.getParamsName(), pcp.getParamsValue());

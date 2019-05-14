@@ -72,7 +72,7 @@ public class ThreadForExecuteCase extends Thread {
         int k = 0;
         // 进入循环，解析单个用例所有步骤
         // 插入开始执行的用例
-        caselog.insertTaskCaseExecute(taskid, projectId, caseId, caseSign, testcase.getCaseName(), 4);
+        caselog.insertTaskCaseExecute(taskid, projectId, caseId, caseSign, testcase.getCaseName(), 3);
         for (int i = 0; i < steps.size(); i++) {
             // 解析单个步骤中的脚本
             Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog);

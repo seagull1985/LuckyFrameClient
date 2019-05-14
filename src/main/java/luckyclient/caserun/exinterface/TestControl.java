@@ -136,6 +136,7 @@ public class TestControl {
 					casepriority = projectcase.getPriority();
 					THREAD_COUNT++; // 多线程计数++，用于检测线程是否全部执行完
 					threadExecute.execute(new ThreadForExecuteCase(projectcase, steps, taskid, pcplist, caselog));
+					luckyclient.publicclass.LogUtil.APP.info("threadExecute测试：" + projectcase.getCaseSign());
 				}
 				// 多线程计数，用于检测线程是否全部执行完
 				int i = 0;
