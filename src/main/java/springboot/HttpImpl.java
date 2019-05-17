@@ -66,26 +66,34 @@ public class HttpImpl {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		luckyclient.publicclass.LogUtil.APP.info("开始转换RunTaskEntity执行任务实体...");
 		RunTaskEntity runTaskEntity = JSONObject.parseObject(sb.toString(), RunTaskEntity.class);
-		
-		luckyclient.publicclass.LogUtil.APP.info("启动任务模式测试程序...调度名称：【"+runTaskEntity.getSchedulingName()+"】  任务ID："+runTaskEntity.getTaskId());
+		luckyclient.publicclass.LogUtil.APP.info("TaskId:"+runTaskEntity.getTaskId()
+		+" SchedulingName:"+runTaskEntity.getSchedulingName()+" LoadPath:"+runTaskEntity.getLoadPath());
 		try{
-			File file =new File(System.getProperty("user.dir")+runTaskEntity.getLoadPath()); 	   
+			luckyclient.publicclass.LogUtil.APP.info("开始获取客户端驱动路径...");
+			File file =new File(System.getProperty("user.dir")+runTaskEntity.getLoadPath()); 
+			luckyclient.publicclass.LogUtil.APP.info("客户端驱动路径："+file.getAbsolutePath());
 			if  (!file .isDirectory())      
 			{       
 				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
+			luckyclient.publicclass.LogUtil.APP.info("初始化Runtime...");
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sbf=new StringBuffer();
 			sbf.append(runTaskEntity.getTaskId()).append(" ");
 			sbf.append(runTaskEntity.getLoadPath());
+			luckyclient.publicclass.LogUtil.APP.info("启动任务模式测试程序...调度名称：【"+runTaskEntity.getSchedulingName()+"】  任务ID："+runTaskEntity.getTaskId());
 			if(os.startsWith("win")){
-				run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
+				luckyclient.publicclass.LogUtil.APP.info("开始调起windows命令行窗口...");
+				run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));
+				luckyclient.publicclass.LogUtil.APP.info("调起windows命令行窗口完成...");
 			}else{
+				luckyclient.publicclass.LogUtil.APP.info("开始调起Linux命令脚本...");
 				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task.sh"+ " " +sbf.toString());
 		        ps.waitFor();
+				luckyclient.publicclass.LogUtil.APP.info("调起Linux命令脚本完成...");
 			}			
 		} catch (Exception e) {		
 			e.printStackTrace();
@@ -168,31 +176,39 @@ public class HttpImpl {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		luckyclient.publicclass.LogUtil.APP.info("开始转换RunBatchCaseEntity批量执行用例实体...");
 		RunBatchCaseEntity runBatchCaseEntity = JSONObject.parseObject(sbd.toString(), RunBatchCaseEntity.class);
 		
-		String projectname = runBatchCaseEntity.getProjectname();
-		String taskid = runBatchCaseEntity.getTaskid();
-		String loadpath = runBatchCaseEntity.getLoadpath();
-		String batchcase = runBatchCaseEntity.getBatchcase();
-		luckyclient.publicclass.LogUtil.APP.info("启动批量用例模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
-		luckyclient.publicclass.LogUtil.APP.info("批量测试用例："+batchcase);
+		String projectName = runBatchCaseEntity.getProjectname();
+		String taskId = runBatchCaseEntity.getTaskid();
+		String loadPath = runBatchCaseEntity.getLoadpath();
+		String batchCase = runBatchCaseEntity.getBatchcase();
+		luckyclient.publicclass.LogUtil.APP.info("批量测试用例："+batchCase);
 		try{
-			File file =new File(System.getProperty("user.dir")+loadpath); 	   
+			luckyclient.publicclass.LogUtil.APP.info("开始获取客户端驱动路径...");
+			File file =new File(System.getProperty("user.dir")+loadPath);
+			luckyclient.publicclass.LogUtil.APP.info("客户端驱动路径："+file.getAbsolutePath());
 			if  (!file .isDirectory())      
 			{    
 				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
+			luckyclient.publicclass.LogUtil.APP.info("初始化Runtime...");
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sb=new StringBuffer();
-			sb.append(taskid).append(" ");
-			sb.append(batchcase).append(" ");
-			sb.append(loadpath);
+			sb.append(taskId).append(" ");
+			sb.append(batchCase).append(" ");
+			sb.append(loadPath);
+			luckyclient.publicclass.LogUtil.APP.info("启动批量用例模式测试程序...测试项目："+projectName+"  任务ID："+taskId);
 			if(os.startsWith("win")){
+				luckyclient.publicclass.LogUtil.APP.info("开始调起windows命令行窗口...");
 				run.exec("cmd.exe /k start " + "task_batch.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
+				luckyclient.publicclass.LogUtil.APP.info("调起windows命令行窗口完成...");
 			}else{
+				luckyclient.publicclass.LogUtil.APP.info("开始调起Linux命令脚本...");
 				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task_batch.sh"+ " " +sb.toString());
 		        ps.waitFor();
+		        luckyclient.publicclass.LogUtil.APP.info("调起Linux命令脚本完成...");
 			}		
 		} catch (Exception e) {		
 			e.printStackTrace();
