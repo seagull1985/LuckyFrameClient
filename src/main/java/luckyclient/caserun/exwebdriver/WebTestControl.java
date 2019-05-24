@@ -16,6 +16,7 @@ import luckyclient.jenkinsapi.BuildingInitialization;
 import luckyclient.jenkinsapi.RestartServerInitialization;
 import luckyclient.mail.HtmlMail;
 import luckyclient.mail.MailSendInitialization;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
@@ -59,7 +60,7 @@ public class WebTestControl {
 		if (testCases.size() != 0) {
 			pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
 		}
-		luckyclient.publicclass.LogUtil.APP.info("当前计划中读取到用例共 " + testCases.size() + " 个");
+		LogUtil.APP.info("当前计划中读取到用例共 " + testCases.size() + " 个");
 		int i = 0;
 		for (ProjectCase testcase : testCases) {
 			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
@@ -67,17 +68,17 @@ public class WebTestControl {
 				continue;
 			}
 			i++;
-			luckyclient.publicclass.LogUtil.APP.info("开始执行第" + i + "条用例：【" + testcase.getCaseSign() + "】......");
+			LogUtil.APP.info("开始执行第" + i + "条用例：【" + testcase.getCaseSign() + "】......");
 			try {
 				WebCaseExecution.caseExcution(testcase, steps, taskid, wd, caselog, pcplist);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+				LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				e.printStackTrace();
 			}
-			luckyclient.publicclass.LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
+			LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
 		}
-		luckyclient.publicclass.LogUtil.APP.info("当前项目测试计划中的用例已经全部执行完成...");
+		LogUtil.APP.info("当前项目测试计划中的用例已经全部执行完成...");
 		// 关闭浏览器
 		wd.quit();
 	}
@@ -104,16 +105,16 @@ public class WebTestControl {
 				try {
 					wd = WebDriverInitialization.setWebDriverForTask(drivertype);
 				} catch (WebDriverException e1) {
-					luckyclient.publicclass.LogUtil.APP.error("初始化WebDriver出错 WebDriverException！", e1);
+					LogUtil.APP.error("初始化WebDriver出错 WebDriverException！", e1);
 					e1.printStackTrace();
 				} catch (IOException e2) {
-					luckyclient.publicclass.LogUtil.APP.error("初始化WebDriver出错 IOException！", e2);
+					LogUtil.APP.error("初始化WebDriver出错 IOException！", e2);
 					e2.printStackTrace();
 				}
 				LogOperation caselog = new LogOperation();
 
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
-				luckyclient.publicclass.LogUtil.APP.info("当前计划中读取到用例共 " + cases.size() + " 个");
+				LogUtil.APP.info("当前计划中读取到用例共 " + cases.size() + " 个");
 				LogOperation.updateTaskExecuteStatus(taskid, cases.size());
 
 				for (ProjectCase testcase : cases) {
@@ -121,34 +122,34 @@ public class WebTestControl {
 					if (steps.size() == 0) {
 						continue;
 					}
-					luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【" + testcase.getCaseSign() + "】......");
+					LogUtil.APP.info("开始执行用例：【" + testcase.getCaseSign() + "】......");
 					try {
 						// 插入开始执行的用例
 						caselog.insertTaskCaseExecute(taskid, taskScheduling.getProjectId(),testcase.getCaseId(),testcase.getCaseSign(), testcase.getCaseName(), 4);
 						WebCaseExecution.caseExcution(testcase, steps, taskid, wd, caselog, pcplist);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
-						luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+						LogUtil.APP.error("用户执行过程中抛出异常！", e);
 						e.printStackTrace();
 					}
-					luckyclient.publicclass.LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
+					LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
 				}
 				tastcount = LogOperation.updateTaskExecuteData(taskid, cases.size());
 
 				String testtime = LogOperation.getTestTime(taskid);
-				luckyclient.publicclass.LogUtil.APP.info("当前项目【" + projectname + "】测试计划中的用例已经全部执行完成...");
+				LogUtil.APP.info("当前项目【" + projectname + "】测试计划中的用例已经全部执行完成...");
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
 						HtmlMail.htmlContentFormat(tastcount, taskid, buildstatus, restartstatus, testtime, jobname),
 						taskid, taskScheduling, tastcount);
 				// 关闭浏览器
 				wd.quit();
 			} else {
-				luckyclient.publicclass.LogUtil.APP.error("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
+				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
 				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskid,
 						taskScheduling, tastcount);
 			}
 		} else {
-			luckyclient.publicclass.LogUtil.APP.error("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
+			LogUtil.APP.warn("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
 			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid,
 					taskScheduling, tastcount);
 		}

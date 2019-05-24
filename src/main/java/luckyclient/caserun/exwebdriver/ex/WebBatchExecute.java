@@ -10,6 +10,7 @@ import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.WebDriverInitialization;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
@@ -56,7 +57,7 @@ public class WebBatchExecute{
 				WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+				LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				e.printStackTrace();
 			 }
 			}			
@@ -71,7 +72,7 @@ public class WebBatchExecute{
 					WebCaseExecution.caseExcution(testcase, steps,taskid,wd,caselog,pcplist);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 					e.printStackTrace();
 				}
 			}

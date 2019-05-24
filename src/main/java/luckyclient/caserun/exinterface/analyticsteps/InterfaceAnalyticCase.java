@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import luckyclient.dblog.LogOperation;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
 /**
@@ -58,16 +59,15 @@ public class InterfaceAnalyticCase{
 		}else{
 			params.put("ExpectedResults", subComment(resultstr));
 		}
-		luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！");
+		LogUtil.APP.info("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！");
 		if(null!=caselog){
 			caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepSerialNumber()),"");
 		}
 		}catch(Exception e) {
-			luckyclient.publicclass.LogUtil.ERROR.error("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！");
 			if(null!=caselog){
 			caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepSerialNumber()),"");
 			}
-			luckyclient.publicclass.LogUtil.ERROR.error(e,e);
+			LogUtil.APP.error("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！",e);
 			params.put("exception","用例编号："+projectcase.getCaseSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
 			return params;
      }

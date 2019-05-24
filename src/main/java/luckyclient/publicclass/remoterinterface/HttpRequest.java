@@ -20,6 +20,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import luckyclient.publicclass.LogUtil;
+import luckyclient.publicclass.SysConfig;
+
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
@@ -32,7 +35,7 @@ import org.apache.http.impl.client.HttpClients;
  * 
  */
 public class HttpRequest {
-	final static Properties PROPERTIES = luckyclient.publicclass.SysConfig.getConfiguration();
+	final static Properties PROPERTIES = SysConfig.getConfiguration();
 	private final static String WEB_URL = "http://" + PROPERTIES.getProperty("server.web.ip") + ":"
 			+ PROPERTIES.getProperty("server.web.port");
 
@@ -59,14 +62,14 @@ public class HttpRequest {
 				resultBuffer.append(temp);
 			}
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}

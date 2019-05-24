@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import luckyclient.publicclass.SysConfig;
 import luckyclient.publicclass.remoterinterface.HttpRequest;
 import luckyclient.serverapi.entity.monitor.Server;
 import springboot.model.RunBatchCaseEntity;
@@ -45,7 +48,7 @@ import springboot.model.WebDebugCaseEntity;
  */
 @RestController
 public class HttpImpl {
-
+	private static final Logger log = LoggerFactory.getLogger(HttpImpl.class);
 	private static final String os=System.getProperty("os.name").toLowerCase();
 	/**
 	 * 运行自动化任务
@@ -66,38 +69,37 @@ public class HttpImpl {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		luckyclient.publicclass.LogUtil.APP.info("开始转换RunTaskEntity执行任务实体...");
+		log.info("开始转换RunTaskEntity执行任务实体...");
 		RunTaskEntity runTaskEntity = JSONObject.parseObject(sb.toString(), RunTaskEntity.class);
-		luckyclient.publicclass.LogUtil.APP.info("TaskId:"+runTaskEntity.getTaskId()
+		log.info("TaskId:"+runTaskEntity.getTaskId()
 		+" SchedulingName:"+runTaskEntity.getSchedulingName()+" LoadPath:"+runTaskEntity.getLoadPath());
 		try{
-			luckyclient.publicclass.LogUtil.APP.info("开始获取客户端驱动路径...");
+			log.info("开始获取客户端驱动路径...");
 			File file =new File(System.getProperty("user.dir")+runTaskEntity.getLoadPath()); 
-			luckyclient.publicclass.LogUtil.APP.info("客户端驱动路径："+file.getAbsolutePath());
+			log.info("客户端驱动路径："+file.getAbsolutePath());
 			if  (!file .isDirectory())      
 			{       
-				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				log.warn("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
-			luckyclient.publicclass.LogUtil.APP.info("初始化Runtime...");
+			log.info("初始化Runtime...");
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sbf=new StringBuffer();
 			sbf.append(runTaskEntity.getTaskId()).append(" ");
 			sbf.append(runTaskEntity.getLoadPath());
-			luckyclient.publicclass.LogUtil.APP.info("启动任务模式测试程序...调度名称：【"+runTaskEntity.getSchedulingName()+"】  任务ID："+runTaskEntity.getTaskId());
+			log.info("启动任务模式测试程序...调度名称：【"+runTaskEntity.getSchedulingName()+"】  任务ID："+runTaskEntity.getTaskId());
 			if(os.startsWith("win")){
-				luckyclient.publicclass.LogUtil.APP.info("开始调起windows命令行窗口...");
+				log.info("开始调起windows命令行窗口...");
 				run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));
-				luckyclient.publicclass.LogUtil.APP.info("调起windows命令行窗口完成...");
+				log.info("调起windows命令行窗口完成...");
 			}else{
-				luckyclient.publicclass.LogUtil.APP.info("开始调起Linux命令脚本...");
+				log.info("开始调起Linux命令脚本...");
 				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task.sh"+ " " +sbf.toString());
 		        ps.waitFor();
-				luckyclient.publicclass.LogUtil.APP.info("调起Linux命令脚本完成...");
+				log.info("调起Linux命令脚本完成...");
 			}			
-		} catch (Exception e) {		
-			e.printStackTrace();
-			luckyclient.publicclass.LogUtil.APP.error("启动任务模式测试程序异常！！！",e);
+		} catch (Exception e) {
+			log.error("启动任务模式测试程序异常！！！",e);
 			return "启动任务模式测试程序异常！！！";
 		}
 		return "启动任务模式测试程序正常";
@@ -129,13 +131,13 @@ public class HttpImpl {
 		String loadpath = jsonObject.getString("loadpath");
 		String testCaseExternalId = jsonObject.getString("testCaseExternalId");
 		String version = jsonObject.getString("version");
-		luckyclient.publicclass.LogUtil.APP.info("启动单用例模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
-		luckyclient.publicclass.LogUtil.APP.info("测试用例编号："+testCaseExternalId+"  用例版本："+version);
+		log.info("启动单用例模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
+		log.info("测试用例编号："+testCaseExternalId+"  用例版本："+version);
 		try{
 			File file =new File(System.getProperty("user.dir")+loadpath); 	   
 			if  (!file .isDirectory())      
 			{   
-				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				log.warn("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
@@ -152,7 +154,7 @@ public class HttpImpl {
 			}	
 		} catch (Exception e) {		
 			e.printStackTrace();
-			luckyclient.publicclass.LogUtil.APP.error("启动单用例模式测试程序异常！！！",e);
+			log.error("启动单用例模式测试程序异常！！！",e);
 			return "启动单用例模式测试程序异常！！！";
 		} 
 		return "启动单用例模式测试程序正常";
@@ -176,43 +178,43 @@ public class HttpImpl {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		luckyclient.publicclass.LogUtil.APP.info("开始转换RunBatchCaseEntity批量执行用例实体...");
+		log.info("开始转换RunBatchCaseEntity批量执行用例实体...");
 		RunBatchCaseEntity runBatchCaseEntity = JSONObject.parseObject(sbd.toString(), RunBatchCaseEntity.class);
 		
 		String projectName = runBatchCaseEntity.getProjectname();
 		String taskId = runBatchCaseEntity.getTaskid();
 		String loadPath = runBatchCaseEntity.getLoadpath();
 		String batchCase = runBatchCaseEntity.getBatchcase();
-		luckyclient.publicclass.LogUtil.APP.info("批量测试用例："+batchCase);
+		log.info("批量测试用例："+batchCase);
 		try{
-			luckyclient.publicclass.LogUtil.APP.info("开始获取客户端驱动路径...");
+			log.info("开始获取客户端驱动路径...");
 			File file =new File(System.getProperty("user.dir")+loadPath);
-			luckyclient.publicclass.LogUtil.APP.info("客户端驱动路径："+file.getAbsolutePath());
+			log.info("客户端驱动路径："+file.getAbsolutePath());
 			if  (!file .isDirectory())      
 			{    
-				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				log.warn("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
-			luckyclient.publicclass.LogUtil.APP.info("初始化Runtime...");
+			log.info("初始化Runtime...");
 			Runtime run = Runtime.getRuntime();
 			StringBuffer sb=new StringBuffer();
 			sb.append(taskId).append(" ");
 			sb.append(batchCase).append(" ");
 			sb.append(loadPath);
-			luckyclient.publicclass.LogUtil.APP.info("启动批量用例模式测试程序...测试项目："+projectName+"  任务ID："+taskId);
+			log.info("启动批量用例模式测试程序...测试项目："+projectName+"  任务ID："+taskId);
 			if(os.startsWith("win")){
-				luckyclient.publicclass.LogUtil.APP.info("开始调起windows命令行窗口...");
+				log.info("开始调起windows命令行窗口...");
 				run.exec("cmd.exe /k start " + "task_batch.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
-				luckyclient.publicclass.LogUtil.APP.info("调起windows命令行窗口完成...");
+				log.info("调起windows命令行窗口完成...");
 			}else{
-				luckyclient.publicclass.LogUtil.APP.info("开始调起Linux命令脚本...");
+				log.info("开始调起Linux命令脚本...");
 				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task_batch.sh"+ " " +sb.toString());
 		        ps.waitFor();
-		        luckyclient.publicclass.LogUtil.APP.info("调起Linux命令脚本完成...");
+		        log.info("调起Linux命令脚本完成...");
 			}		
 		} catch (Exception e) {		
 			e.printStackTrace();
-			luckyclient.publicclass.LogUtil.APP.error("启动批量用例模式测试程序异常！！！",e);
+			log.error("启动批量用例模式测试程序异常！！！",e);
 			return "启动批量用例模式测试程序异常！！！";
 		} 
 		return "启动批量用例模式测试程序正常";
@@ -237,12 +239,12 @@ public class HttpImpl {
 			e.printStackTrace();
 		}
 		WebDebugCaseEntity webDebugCaseEntity = JSONObject.parseObject(sbd.toString(), WebDebugCaseEntity.class);
-		luckyclient.publicclass.LogUtil.APP.info("Web端调试用例ID："+webDebugCaseEntity.getCaseId()+" 发起人ID："+webDebugCaseEntity.getUserId());
+		log.info("Web端调试用例ID："+webDebugCaseEntity.getCaseId()+" 发起人ID："+webDebugCaseEntity.getUserId());
 		try{
 			File file =new File(System.getProperty("user.dir")+webDebugCaseEntity.getLoadpath()); 	   
 			if  (!file .isDirectory())      
 			{    
-				luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				log.warn("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
@@ -258,7 +260,7 @@ public class HttpImpl {
 			}	
 		} catch (Exception e) {		
 			e.printStackTrace();
-			luckyclient.publicclass.LogUtil.APP.error("启动Web调试模式测试程序异常！！！",e);
+			log.error("启动Web调试模式测试程序异常！！！",e);
 			return "启动Web调试模式测试程序异常！！！";
 		} 
 		return "启动Web调试模式测试程序正常";
@@ -286,7 +288,7 @@ public class HttpImpl {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			luckyclient.publicclass.LogUtil.APP.error("读取日志路径错误，请检查客户端日志路径是否存在!downLoadPath: "+downLoadPath,e);
+			log.error("读取日志路径错误，请检查客户端日志路径是否存在!downLoadPath: "+downLoadPath,e);
 			return "读取日志路径错误，请检查客户端日志路径是否存在!downLoadPath: "+downLoadPath;
 		}
 		BufferedReader bos = new BufferedReader(isr);
@@ -297,11 +299,11 @@ public class HttpImpl {
 				sb.append(str).append("##n##");
 			}
 			bos.close();
-			luckyclient.publicclass.LogUtil.APP.info("服务端读取本地日志成功!");
+			log.info("服务端读取本地日志成功!");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			luckyclient.publicclass.LogUtil.APP.error("客户端转BufferedReader失败！请检查原因！",e);
+			log.error("客户端转BufferedReader失败！请检查原因！",e);
 			return "客户端转BufferedReader失败！请检查原因！";
 		}
 		return sb.toString();
@@ -325,11 +327,11 @@ public class HttpImpl {
             BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
             is.read(b);
             is.close();
-        	luckyclient.publicclass.LogUtil.APP.info("服务端获取本地图片："+downLoadPath);
+        	log.info("服务端获取本地图片："+downLoadPath);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            luckyclient.publicclass.LogUtil.APP.error("此文件不存在，请检查："+downLoadPath,e);
+            log.error("此文件不存在，请检查："+downLoadPath,e);
             return b;
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -344,11 +346,11 @@ public class HttpImpl {
 		if (!jarfile.isEmpty()){
             if (!FilenameUtils.getExtension(jarfile.getOriginalFilename())
                     .equalsIgnoreCase("jar")) {
-            	luckyclient.publicclass.LogUtil.APP.error("文件格式后续不是.jar，上传失败");
+            	log.warn("文件格式后续不是.jar，上传失败");
                 return "文件格式后续不是.jar，上传失败";
             }
 		}else{
-			luckyclient.publicclass.LogUtil.APP.error("上传文件为空，请检查！");
+			log.warn("上传文件为空，请检查！");
             return "上传文件为空，请检查！";
 		}
 
@@ -357,7 +359,7 @@ public class HttpImpl {
 		String path = System.getProperty("user.dir")+loadpath;
 		if  (!new File(path) .isDirectory())      
 		{    
-			luckyclient.publicclass.LogUtil.APP.error("客户端测试驱动桩路径不存在，请检查【"+path+"】");
+			log.warn("客户端测试驱动桩路径不存在，请检查【"+path+"】");
 			return "客户端测试驱动桩路径不存在，请检查【"+path+"】";
 		}	
 		String pathName = path +File.separator+ name;
@@ -373,17 +375,17 @@ public class HttpImpl {
             os.write(jarfileByte);
             os.flush();
             os.close();
-            luckyclient.publicclass.LogUtil.APP.info("上传JAR包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!");
+            log.info("上传JAR包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!");
             return "上传JAR包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!";
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            luckyclient.publicclass.LogUtil.APP.error("客户端未找到正确路径或文件，上传失败！文件路径名称："+pathName,e);
+            log.error("客户端未找到正确路径或文件，上传失败！文件路径名称："+pathName,e);
             return "客户端未找到正确路径或文件，上传失败！文件路径名称："+pathName;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            luckyclient.publicclass.LogUtil.APP.error("客户端IOExceptiona或是未找到驱动路径！文件路径名称："+pathName,e);
+            log.error("客户端IOExceptiona或是未找到驱动路径！文件路径名称："+pathName,e);
             return "客户端IOExceptiona或是未找到驱动路径！文件路径名称："+pathName;
         }
 	}
@@ -396,7 +398,7 @@ public class HttpImpl {
 	 */
 	@GetMapping("/getClientStatus")
 	private String getClientStatus(HttpServletRequest req) throws RemoteException{
-		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
+		Properties properties = SysConfig.getConfiguration();
 		String verison=properties.getProperty("client.verison");
 		return "{\"status\":\"success\",\"version\":\""+verison+"\"}";
 	}
@@ -423,31 +425,26 @@ public class HttpImpl {
 	 * @date 2019年5月6日
 	 */
 	public static boolean checkHostNet() {
-		luckyclient.publicclass.LogUtil.APP.info("检查客户端配置中,请稍后......");
-		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
+		log.info("检查客户端配置中,请稍后......");
+		Properties properties = SysConfig.getConfiguration();
 		String version=properties.getProperty("client.verison");
 		String webip=properties.getProperty("server.web.ip");
 		Integer webport=Integer.valueOf(properties.getProperty("server.web.port"));
         try {
         	String result = HttpRequest.loadJSON("/openGetApi/clientGetServerVersion.do");
         	if(version.equals(result)){
-            	luckyclient.publicclass.LogUtil.APP.info("客户端访问Web端配置："+webip+":"+webport+"   检测通过......");
+            	log.info("客户端访问Web端配置："+webip+":"+webport+"   检测通过......");
         	}else{
-        		luckyclient.publicclass.LogUtil.APP.error("客户端版本："+version);
-        		luckyclient.publicclass.LogUtil.APP.error("服务端版本："+result);
-        		luckyclient.publicclass.LogUtil.APP.error("客户端与服务端版本不一致，有可能会导致未知问题，请检查...");
+        		log.warn("客户端版本："+version);
+        		log.warn("服务端版本："+result);
+        		log.warn("客户端与服务端版本不一致，有可能会导致未知问题，请检查...");
         	}
 
         } catch (Exception e) {
-        	luckyclient.publicclass.LogUtil.APP.error("客户端配置检测异常，请确认您项目根目录下的客户端配置文件(sys_config.properties)是否已经正确配置。",e);
+        	log.error("客户端配置检测异常，请确认您项目根目录下的客户端配置文件(sys_config.properties)是否已经正确配置。",e);
             return false;
         }
         return true;
     }
-	
-	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
-		checkHostNet();
-	}
 
 }

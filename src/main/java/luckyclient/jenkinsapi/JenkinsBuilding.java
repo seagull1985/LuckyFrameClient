@@ -7,6 +7,8 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
+import luckyclient.publicclass.LogUtil;
+
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
@@ -46,7 +48,7 @@ public class JenkinsBuilding {
             Map<String, List<String>> map = connection.getHeaderFields();
             // 遍历所有的响应头字段
             for (String key : map.keySet()) {
-                luckyclient.publicclass.LogUtil.APP.info(key + "--->" + map.get(key));
+                LogUtil.APP.info(key + "--->" + map.get(key));
             }
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(
@@ -56,7 +58,7 @@ public class JenkinsBuilding {
                 result += line;
             }
         } catch (Exception e) {
-            luckyclient.publicclass.LogUtil.APP.error("发送构建请求(GET)时出现异常！", e);
+            LogUtil.APP.error("发送构建请求(GET)时出现异常！", e);
             e.printStackTrace();
         }
         // 使用finally块来关闭输入流
@@ -102,7 +104,7 @@ public class JenkinsBuilding {
             Map<String, List<String>> map = connection.getHeaderFields();
             // 遍历所有的响应头字段
             for (String key : map.keySet()) {
-                luckyclient.publicclass.LogUtil.APP.info(key + "--->" + map.get(key));
+                LogUtil.APP.info(key + "--->" + map.get(key));
             }
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(
@@ -112,7 +114,7 @@ public class JenkinsBuilding {
                 result += line;
             }
         } catch (Exception e) {
-            luckyclient.publicclass.LogUtil.APP.error("发送构建请求(GET)时出现异常！", e);
+            LogUtil.APP.error("发送构建请求(GET)时出现异常！", e);
             e.printStackTrace();
         }
         // 使用finally块来关闭输入流

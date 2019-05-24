@@ -1,6 +1,7 @@
 package luckyclient.caserun.publicdispose;
 
 import luckyclient.driven.SubString;
+import luckyclient.publicclass.LogUtil;
 
 /**
  * 动作关键字处理
@@ -21,10 +22,10 @@ public class ActionManageForSteps {
 	 * @return
 	 */
 	public static String actionManage(String stepsaction,String testresult){
-		luckyclient.publicclass.LogUtil.APP.info("测试结果是：" + testresult);
-		luckyclient.publicclass.LogUtil.APP.info("现在进入到Action(动作)处理......ACTION值："+stepsaction);
+		LogUtil.APP.info("测试结果是：" + testresult);
+		LogUtil.APP.info("现在进入到Action(动作)处理......ACTION值："+stepsaction);
 		if(null==stepsaction||"".equals(stepsaction.trim())){
-			luckyclient.publicclass.LogUtil.APP.info("Action(动作)无需处理......");
+			LogUtil.APP.info("Action(动作)无需处理......");
 			return testresult;
 		}
 		stepsaction=stepsaction.toLowerCase().trim();
@@ -52,7 +53,7 @@ public class ActionManageForSteps {
 		                // 获取步骤间等待时间
 		                int time=Integer.parseInt(actionorder.substring(0, actionorder.lastIndexOf("#wait")));
 		                if (time > 0) {
-		                	    luckyclient.publicclass.LogUtil.APP.info("Action(Wait):线程等待"+time+"秒...");
+		                	    LogUtil.APP.info("Action(Wait):线程等待"+time+"秒...");
 		    					Thread.sleep(time * 1000);
 		                }
 		    			} catch (InterruptedException e) {
@@ -60,7 +61,7 @@ public class ActionManageForSteps {
 		    				e.printStackTrace();
 		    			}
 				}else{
-					luckyclient.publicclass.LogUtil.APP.error("使用等待关键字的参数不是整数，直接跳过此动作，请检查！");
+					LogUtil.APP.warn("使用等待关键字的参数不是整数，直接跳过此动作，请检查！");
 				}
 			}else if(actionorder.endsWith("#getjv")){
 				String actionparams=actionorder.substring(0, actionorder.lastIndexOf("#getjv"));
@@ -74,7 +75,7 @@ public class ActionManageForSteps {
 					key=actionparams;
 					testresult=SubString.getJsonValue(testresult, key, index);
 				}
-				luckyclient.publicclass.LogUtil.APP.info("Action(getJV):获取JSON字符串指定Key的值是："+testresult);
+				LogUtil.APP.info("Action(getJV):获取JSON字符串指定Key的值是："+testresult);
 			}else if(actionorder.endsWith("#subcentrestr")){
 				String actionparams=actionorder.substring(0, actionorder.lastIndexOf("#subcentrestr"));
 				String startstr="";
@@ -83,10 +84,10 @@ public class ActionManageForSteps {
 					startstr=actionparams.substring(actionparams.indexOf("[")+1, actionparams.indexOf("]"));
 					endstr=actionparams.substring(actionparams.lastIndexOf("[")+1, actionparams.lastIndexOf("]"));
 					testresult=SubString.subCentreStr(testresult, startstr, endstr);
-					luckyclient.publicclass.LogUtil.APP.info("Action(subCentreStr):截取测试结果指定开始及结束位置字符串："+testresult);
+					LogUtil.APP.info("Action(subCentreStr):截取测试结果指定开始及结束位置字符串："+testresult);
 				}else{
 					testresult="步骤动作：subCentreStr 必须是[\"开始字符\"][\"结束字符\"]#subCentreStr 格式，请检查您的步骤动作关键字:"+actionorder;
-					luckyclient.publicclass.LogUtil.APP.error("步骤动作：subCentreStr 必须是[\"开始字符\"][\"结束字符\"]#subCentreStr 格式，请检查您的步骤动作关键字:"+actionorder);
+					LogUtil.APP.warn("步骤动作：subCentreStr 必须是[\"开始字符\"][\"结束字符\"]#subCentreStr 格式，请检查您的步骤动作关键字:"+actionorder);
 				}
 			}else if(actionorder.endsWith("#subcentrenum")){
 				String actionparams=actionorder.substring(0, actionorder.lastIndexOf("#subcentrenum"));
@@ -96,10 +97,10 @@ public class ActionManageForSteps {
 					startnum=actionparams.substring(actionparams.indexOf("[")+1, actionparams.indexOf("]"));
 					endnum=actionparams.substring(actionparams.lastIndexOf("[")+1, actionparams.lastIndexOf("]"));
 					testresult=SubString.subCentreNum(testresult, startnum, endnum);
-					luckyclient.publicclass.LogUtil.APP.info("Action(subCentreNum):截取测试结果指定开始及结束位置字符串："+testresult);
+					LogUtil.APP.info("Action(subCentreNum):截取测试结果指定开始及结束位置字符串："+testresult);
 				}else{
 					testresult="步骤动作：subCentreNum 必须是[\"开始字符\"][\"结束字符\"]#subCentreNum 格式，请检查您的步骤动作关键字:"+actionorder;
-					luckyclient.publicclass.LogUtil.APP.error("步骤动作：subCentreNum 必须是[\"开始位置(整数)\"][\"结束位置(整数)\"]#subCentreNum 格式，请检查您的步骤动作关键字:"+actionorder);
+					LogUtil.APP.warn("步骤动作：subCentreNum 必须是[\"开始位置(整数)\"][\"结束位置(整数)\"]#subCentreNum 格式，请检查您的步骤动作关键字:"+actionorder);
 				}
 			}else if(actionorder.endsWith("#substrrgex")){
 				String actionparams=actionorder.substring(0, actionorder.lastIndexOf("#substrrgex"));
@@ -113,15 +114,15 @@ public class ActionManageForSteps {
 					key=actionparams;
 					testresult=SubString.subStrRgex(testresult, key, index);
 				}
-				luckyclient.publicclass.LogUtil.APP.info("Action(subStrRgex):获取JSON字符串指定Key的值是："+testresult);
+				LogUtil.APP.info("Action(subStrRgex):获取JSON字符串指定Key的值是："+testresult);
 			}else{
 				testresult="未检索到对应动作关键字，直接跳过此动作，请检查关键字："+actionorder;
-				luckyclient.publicclass.LogUtil.APP.error("未检索到对应动作关键字，直接跳过此动作，请检查关键字："+actionorder);
+				LogUtil.APP.warn("未检索到对应动作关键字，直接跳过此动作，请检查关键字："+actionorder);
 			}
 	        return testresult;
 		}catch(Exception e){
 			testresult="处理步骤动作事件过程中出现异常，直接返回测试结果："+actionorder;
-			luckyclient.publicclass.LogUtil.APP.error("处理步骤动作事件过程中出现异常，直接返回测试结果："+actionorder);
+			LogUtil.APP.error("处理步骤动作事件过程中出现异常，直接返回测试结果："+actionorder);
 			return testresult;
 		}
 	}

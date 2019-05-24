@@ -1,9 +1,11 @@
 package luckyclient.mail;
 
-import com.sun.mail.util.MailSSLSocketFactory;
-
 import java.security.GeneralSecurityException;
 import java.util.Properties;
+
+import com.sun.mail.util.MailSSLSocketFactory;
+
+import luckyclient.publicclass.LogUtil;
 
 /**
  * =================================================================
@@ -76,7 +78,7 @@ public class MailSenderInfo {
                 p.put("mail.smtp.ssl.socketFactory", sf);
             }
         } catch (GeneralSecurityException e) {
-            luckyclient.publicclass.LogUtil.APP.error("获得邮件会话属性失败或异常: " + e.getMessage());
+            LogUtil.APP.error("获得邮件会话属性失败或异常: " + e.getMessage());
             return null;
         }
         return p;

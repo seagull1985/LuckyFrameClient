@@ -3,6 +3,8 @@ package luckyclient.mail;
 import java.util.Properties;
 
 import luckyclient.dblog.LogOperation;
+import luckyclient.publicclass.LogUtil;
+import luckyclient.publicclass.SysConfig;
 import luckyclient.serverapi.entity.TaskScheduling;
 
 /**
@@ -43,13 +45,13 @@ public class MailSendInitialization {
             }
         }
         if (!isSend) {
-            luckyclient.publicclass.LogUtil.APP.info("当前任务不需要发送邮件通知!");
+            LogUtil.APP.info("当前任务不需要发送邮件通知!");
             return;
         }
         String[] addresses = LogOperation.getEmailAddress(taskid);
-        Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
+        Properties properties = SysConfig.getConfiguration();
         if (addresses != null) {
-            luckyclient.publicclass.LogUtil.APP.info("准备将测试结果发送邮件通知！请稍等。。。。");
+            LogUtil.APP.info("准备将测试结果发送邮件通知！请稍等。。。。");
             //这个类主要是设置邮件
             MailSenderInfo mailInfo = new MailSenderInfo();
             //这个类主要来发送邮件
@@ -75,12 +77,12 @@ public class MailSendInitialization {
             }
             String addressesmail = stringBuilder.toString();
             if (sms.sendHtmlMail(mailInfo)) {
-                luckyclient.publicclass.LogUtil.APP.info("给" + addressesmail + "的测试结果通知邮件发送完成！");
+                LogUtil.APP.info("给" + addressesmail + "的测试结果通知邮件发送完成！");
             } else {
-                luckyclient.publicclass.LogUtil.APP.error("给" + addressesmail + "的测试结果通知邮件发送失败！");
+                LogUtil.APP.warn("给" + addressesmail + "的测试结果通知邮件发送失败！");
             }
         } else {
-            luckyclient.publicclass.LogUtil.APP.info("当前任务不需要发送邮件通知！");
+            LogUtil.APP.info("当前任务不需要发送邮件通知！");
         }
     }
 

@@ -1,5 +1,10 @@
 package luckyclient.caserun.exappium;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
@@ -13,13 +18,14 @@ import luckyclient.jenkinsapi.BuildingInitialization;
 import luckyclient.jenkinsapi.RestartServerInitialization;
 import luckyclient.mail.HtmlMail;
 import luckyclient.mail.MailSendInitialization;
+import luckyclient.publicclass.AppiumConfig;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
-import luckyclient.serverapi.entity.*;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import luckyclient.serverapi.entity.ProjectCase;
+import luckyclient.serverapi.entity.ProjectCaseParams;
+import luckyclient.serverapi.entity.ProjectCaseSteps;
+import luckyclient.serverapi.entity.TaskExecute;
+import luckyclient.serverapi.entity.TaskScheduling;
 
 /**
  * =================================================================
@@ -46,7 +52,7 @@ public class AppTestControl {
 		String taskid = "888888";
 		AndroidDriver<AndroidElement> androiddriver = null;
 		IOSDriver<IOSElement> iosdriver = null;
-		Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+		Properties properties = AppiumConfig.getConfiguration();
 		try {
 			if ("Android".equals(properties.getProperty("platformName"))) {
 				androiddriver = AppiumInitialization.setAndroidAppium(properties);
@@ -64,7 +70,7 @@ public class AppTestControl {
 		if (testCases.size() != 0) {
 			pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
 		}
-		luckyclient.publicclass.LogUtil.APP.info("当前计划中读取到用例共 " + testCases.size() + " 个");
+		LogUtil.APP.info("当前计划中读取到用例共 " + testCases.size() + " 个");
 		int i = 0;
 		for (ProjectCase testcase : testCases) {
 			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
@@ -72,7 +78,7 @@ public class AppTestControl {
 				continue;
 			}
 			i++;
-			luckyclient.publicclass.LogUtil.APP.info("开始执行第" + i + "条用例：【" + testcase.getCaseSign() + "】......");
+			LogUtil.APP.info("开始执行第" + i + "条用例：【" + testcase.getCaseSign() + "】......");
 			try {
 				if ("Android".equals(properties.getProperty("platformName"))) {
 					AndroidCaseExecution.caseExcution(testcase, steps, taskid, androiddriver, caselog, pcplist);
@@ -81,15 +87,15 @@ public class AppTestControl {
 				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
-				e.printStackTrace();
+				LogUtil.APP.error("用户执行过程中抛出InterruptedException异常！", e);
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LogUtil.APP.error("用户执行过程中抛出IOException异常！", e);
 			}
-			luckyclient.publicclass.LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
+			LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
 		}
-		luckyclient.publicclass.LogUtil.APP.info("当前项目测试计划中的用例已经全部执行完成...");
+		LogUtil.APP.info("当前项目测试计划中的用例已经全部执行完成...");
 		// 关闭APP以及appium会话
 		if ("Android".equals(properties.getProperty("platformName"))) {
 			androiddriver.closeApp();
@@ -105,7 +111,7 @@ public class AppTestControl {
 		TestControl.TASKID = taskId;
 		AndroidDriver<AndroidElement> androiddriver = null;
 		IOSDriver<IOSElement> iosdriver = null;
-		Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+		Properties properties = AppiumConfig.getConfiguration();
 		AppiumService as=null;
 		//根据配置自动启动Appiume服务
 		if(Boolean.valueOf(properties.getProperty("autoRunAppiumService"))){
@@ -128,21 +134,20 @@ public class AppTestControl {
 				try {
 					if ("Android".equals(properties.getProperty("platformName"))) {
 						androiddriver = AppiumInitialization.setAndroidAppium(properties);
-						luckyclient.publicclass.LogUtil.APP.info("完成AndroidDriver初始化动作...APPIUM Server【http://"
+						LogUtil.APP.info("完成AndroidDriver初始化动作...APPIUM Server【http://"
 								+ properties.getProperty("appiumsever") + "/wd/hub】");
 					} else if ("IOS".equals(properties.getProperty("platformName"))) {
 						iosdriver = AppiumInitialization.setIosAppium(properties);
-						luckyclient.publicclass.LogUtil.APP.info("完成IOSDriver初始化动作...APPIUM Server【http://"
+						LogUtil.APP.info("完成IOSDriver初始化动作...APPIUM Server【http://"
 								+ properties.getProperty("appiumsever") + "/wd/hub】");
 					}
 				} catch (Exception e) {
-					luckyclient.publicclass.LogUtil.APP.error("初始化AppiumDriver出错 ！APPIUM Server【http://"
+					LogUtil.APP.error("初始化AppiumDriver出错 ！APPIUM Server【http://"
 							+ properties.getProperty("appiumsever") + "/wd/hub】", e);
-					e.printStackTrace();
 				}
 				LogOperation caselog = new LogOperation();
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
-				luckyclient.publicclass.LogUtil.APP.info("当前计划中读取到用例共 " + cases.size() + " 个");
+				LogUtil.APP.info("当前计划中读取到用例共 " + cases.size() + " 个");
 				LogOperation.updateTaskExecuteStatus(taskId, cases.size());
 
 				for (ProjectCase testcase : cases) {
@@ -150,7 +155,7 @@ public class AppTestControl {
 					if (steps.size() == 0) {
 						continue;
 					}
-					luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【" + testcase.getCaseSign() + "】......");
+					LogUtil.APP.info("开始执行用例：【" + testcase.getCaseSign() + "】......");
 					try {
 						//插入开始执行的用例
 						caselog.insertTaskCaseExecute(taskId, taskScheduling.getProjectId(),testcase.getCaseId(),testcase.getCaseSign(), testcase.getCaseName(), 4);
@@ -161,14 +166,13 @@ public class AppTestControl {
 						}
 					} catch (InterruptedException | IOException e) {
 						// TODO Auto-generated catch block
-						luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
-						e.printStackTrace();
+						LogUtil.APP.error("用户执行过程中抛出异常！", e);
 					}
-					luckyclient.publicclass.LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
+					LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
 				}
 				tastcount = LogOperation.updateTaskExecuteData(taskId, cases.size());
 				String testtime = LogOperation.getTestTime(taskId);
-				luckyclient.publicclass.LogUtil.APP.info("当前项目【" + projectname + "】测试计划中的用例已经全部执行完成...");
+				LogUtil.APP.info("当前项目【" + projectname + "】测试计划中的用例已经全部执行完成...");
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
 						HtmlMail.htmlContentFormat(tastcount, taskId, buildstatus, restartstatus, testtime, jobname),
 						taskId, taskScheduling, tastcount);
@@ -179,11 +183,11 @@ public class AppTestControl {
 					iosdriver.closeApp();
 				}
 			} else {
-				luckyclient.publicclass.LogUtil.APP.error("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
+				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
 				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskId, taskScheduling, tastcount);
 			}
 		} else {
-			luckyclient.publicclass.LogUtil.APP.error("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
+			LogUtil.APP.warn("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
 			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskId, taskScheduling, tastcount);
 		}
 		//关闭Appium服务的线程

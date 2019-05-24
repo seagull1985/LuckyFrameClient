@@ -12,6 +12,8 @@ import luckyclient.caserun.exappium.AppiumService;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
+import luckyclient.publicclass.AppiumConfig;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
@@ -22,10 +24,8 @@ import luckyclient.serverapi.entity.TaskExecute;
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
  * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改 有任何疑问欢迎联系作者讨论。 QQ:1573584944 seagull1985
- * =================================================================
- * 
- * @author： seagull
- * 
+ * ================================================================= 
+ * @author： seagull 
  * @date 2018年2月2日
  * 
  */
@@ -38,7 +38,7 @@ public class IosBatchExecute {
 		IOSDriver<IOSElement> iosd = null;
 		AppiumService as=null;
 		try {
-			Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+			Properties properties = AppiumConfig.getConfiguration();
 			//根据配置自动启动Appiume服务
 			if(Boolean.valueOf(properties.getProperty("autoRunAppiumService"))){
 				as =new AppiumService();
@@ -67,7 +67,7 @@ public class IosBatchExecute {
 					IosCaseExecution.caseExcution(testcase, steps, taskid, iosd, caselog, pcplist);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 					e.printStackTrace();
 				}
 			}
@@ -82,7 +82,7 @@ public class IosBatchExecute {
 					IosCaseExecution.caseExcution(testcase, steps, taskid, iosd, caselog, pcplist);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 					e.printStackTrace();
 				}
 			}

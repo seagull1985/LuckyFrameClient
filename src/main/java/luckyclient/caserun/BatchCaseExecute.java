@@ -10,6 +10,7 @@ import luckyclient.caserun.exappium.iosex.IosBatchExecute;
 import luckyclient.caserun.exinterface.BatchTestCaseExecution;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.ex.WebBatchExecute;
+import luckyclient.publicclass.AppiumConfig;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.TaskExecute;
 import luckyclient.serverapi.entity.TaskScheduling;
@@ -44,7 +45,7 @@ public class BatchCaseExecute extends TestControl {
 							String.valueOf(task.getTaskId()), batchcase);
 
 			} else if (taskScheduling.getTaskType() == 2) {
-				Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+				Properties properties = AppiumConfig.getConfiguration();
 
 				if ("Android".equals(properties.getProperty("platformName"))) {
 					AndroidBatchExecute.batchCaseExecuteForTast(taskScheduling.getProject().getProjectName(),

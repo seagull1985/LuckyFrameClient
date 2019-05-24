@@ -12,6 +12,8 @@ import luckyclient.caserun.exappium.AppiumService;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
+import luckyclient.publicclass.AppiumConfig;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
@@ -38,7 +40,7 @@ public class AndroidBatchExecute {
 		AndroidDriver<AndroidElement> ad = null;
 		AppiumService as=null;
 		try {
-			Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+			Properties properties = AppiumConfig.getConfiguration();
 			//根据配置自动启动Appiume服务
 			if(Boolean.valueOf(properties.getProperty("autoRunAppiumService"))){
 				as =new AppiumService();
@@ -67,7 +69,7 @@ public class AndroidBatchExecute {
 					AndroidCaseExecution.caseExcution(testcase, steps, taskid, ad, caselog, pcplist);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 					e.printStackTrace();
 				}
 			}
@@ -82,7 +84,7 @@ public class AndroidBatchExecute {
 					AndroidCaseExecution.caseExcution(testcase, steps, taskid, ad, caselog, pcplist);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 					e.printStackTrace();
 				}
 			}

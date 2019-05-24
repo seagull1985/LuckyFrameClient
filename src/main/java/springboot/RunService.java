@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -20,15 +22,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class RunService {
 
+	private static final Logger log = LoggerFactory.getLogger(RunService.class);
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator +"bootlog4j.conf");
 		SpringApplication.run(RunService.class, args);
         try {
         	String host = InetAddress.getLocalHost().getHostAddress();
-    		luckyclient.publicclass.LogUtil.APP.info("启动客户端监听,请稍后......监听IP："+host);
+        	log.info("启动客户端监听,请稍后......监听IP："+host);
         } catch (UnknownHostException e) {
-        	luckyclient.publicclass.LogUtil.APP.error("获取服务IP出现异常......", e);
+        	log.error("获取服务IP出现异常......", e);
         }
 		HttpImpl.checkHostNet();
 	}

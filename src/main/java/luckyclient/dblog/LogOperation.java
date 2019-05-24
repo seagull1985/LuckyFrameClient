@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.api.PostServerAPI;
 import luckyclient.serverapi.entity.TaskExecute;
@@ -49,8 +50,8 @@ public class LogOperation {
 			String imgname) {
 		if (0 == exetype) {
 			if (logDetail.length()>5000) {
-				 luckyclient.publicclass.LogUtil.APP.info("日志明细超过5000字符，无法进入数据库存储，进行日志明细打印...");
-				 luckyclient.publicclass.LogUtil.APP.info("第"+logStep+"步，日志级别"+logGrade+",日志明细【"+logGrade+"】...");
+				 LogUtil.APP.info("日志明细超过5000字符，无法进入数据库存储，进行日志明细打印...");
+				 LogUtil.APP.info("第"+logStep+"步，日志级别"+logGrade+",日志明细【"+logGrade+"】...");
 				 logDetail="日志明细超过5000字符无法存入数据库，已在LOG4J日志中打印，请前往查看...";
 			}
 			

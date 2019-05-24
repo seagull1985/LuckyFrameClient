@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import luckyclient.dblog.LogOperation;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
 /**
@@ -45,7 +46,7 @@ public class WebDriverAnalyticCase {
 			params.put("property", property.trim().toLowerCase());   
 			//set属性值
 			params.put("property_value", propertyValue.trim());  
-			luckyclient.publicclass.LogUtil.APP.info("对象属性解析结果：property:"+property.trim()+";  property_value:"+propertyValue.trim());		
+			LogUtil.APP.info("对象属性解析结果：property:"+property.trim()+";  property_value:"+propertyValue.trim());		
 		}
 		//set操作方法
 		params.put("operation", step.getStepOperation().toLowerCase());   
@@ -53,7 +54,7 @@ public class WebDriverAnalyticCase {
 			 //set属性值
 			params.put("operation_value", step.getStepParameters());  
 		}
-		luckyclient.publicclass.LogUtil.APP.info("对象操作解析结果：operation:"+step.getStepOperation().toLowerCase()+";  operation_value:"+step.getStepParameters());
+		LogUtil.APP.info("对象操作解析结果：operation:"+step.getStepOperation().toLowerCase()+";  operation_value:"+step.getStepParameters());
 		 //获取预期结果字符串
 		resultstr = step.getExpectedResult();  
 
@@ -70,19 +71,18 @@ public class WebDriverAnalyticCase {
 				params.put("checkproperty_value", expectedResults.substring(expectedResults.indexOf("=")+1, expectedResults.lastIndexOf(")")));
 			}			
 			params.put("ExpectedResults", expectedResults);
-			luckyclient.publicclass.LogUtil.APP.info("预期结果解析：ExpectedResults:"+expectedResults);
+			LogUtil.APP.info("预期结果解析：ExpectedResults:"+expectedResults);
 		}
 		
-		luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！");
+		LogUtil.APP.info("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！");
 		if(null!=caselog){
 		  caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepSerialNumber()),"");
 		}
 		}catch(Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！");
+			LogUtil.APP.error("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！",e);
 			if(null!=caselog){
 			  caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepSerialNumber()),"");
 			}
-			luckyclient.publicclass.LogUtil.APP.error(e,e);
 			params.put("exception","用例编号："+projectcase.getCaseSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
 			return params;
      }

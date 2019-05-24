@@ -8,6 +8,7 @@ import java.util.Properties;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import luckyclient.publicclass.SysConfig;
 
 /**
  * 基于Freemarker模板技术的邮件模板服务
@@ -15,7 +16,7 @@ import freemarker.template.Template;
  * @author Administrator
  */
 public class FreemarkerEmailTemplate {
-    Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
+    Properties properties = SysConfig.getConfiguration();
     /**
      * 邮件模板的存放位置
      */

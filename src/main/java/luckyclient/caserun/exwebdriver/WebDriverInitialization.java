@@ -13,6 +13,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
+import luckyclient.publicclass.LogUtil;
+
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
@@ -38,13 +40,13 @@ public class WebDriverInitialization{
 		File directory = new File("");
 		String drivenpath=directory.getCanonicalPath()+File.separator+"BrowserDriven"+File.separator;
 		WebDriver webDriver = null;
-		luckyclient.publicclass.LogUtil.APP.info("准备初始化WebDriver对象...检查到当前操作系统是："+os);
+		LogUtil.APP.info("准备初始化WebDriver对象...检查到当前操作系统是："+os);
 		if(drivertype==0){
 			if(os.startsWith("win")){
 				System.setProperty("webdriver.ie.driver",drivenpath+"IEDriverServer.exe");
 				webDriver = new InternetExplorerDriver();
 			}else{
-				luckyclient.publicclass.LogUtil.APP.error("当前操作系统无法进行IE浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
+				LogUtil.APP.warn("当前操作系统无法进行IE浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
 			}		
 		}else if(drivertype==1){
 			FirefoxOptions options = new FirefoxOptions();
@@ -54,7 +56,7 @@ public class WebDriverInitialization{
 				options.addArguments("start-maximized");
 				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver_mac");
 			}else{
-				luckyclient.publicclass.LogUtil.APP.info("检测到当前系统环境是Linux,默认使用headless方式运行Firefox浏览器的Web UI自动化...");
+				LogUtil.APP.info("检测到当前系统环境是Linux,默认使用headless方式运行Firefox浏览器的Web UI自动化...");
 				//无界面参数
 				options.setHeadless(true);
 				//禁用沙盒
@@ -71,7 +73,7 @@ public class WebDriverInitialization{
 				options.addArguments("start-maximized");
 				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver_mac");
 			}else{
-				luckyclient.publicclass.LogUtil.APP.info("检测到当前系统环境是Linux,默认使用headless方式运行Chrome浏览器的Web UI自动化...");
+				LogUtil.APP.info("检测到当前系统环境是Linux,默认使用headless方式运行Chrome浏览器的Web UI自动化...");
 				//无界面参数
 				options.setHeadless(true);
 				//禁用沙盒
@@ -85,11 +87,10 @@ public class WebDriverInitialization{
 				System.setProperty("webdriver.edge.driver",drivenpath+"MicrosoftWebDriver.exe");
 				webDriver = new EdgeDriver();
 			}else{
-				luckyclient.publicclass.LogUtil.APP.error("当前操作系统无法进行Edge浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
+				LogUtil.APP.warn("当前操作系统无法进行Edge浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
 			}
 		}else{
-			luckyclient.publicclass.LogUtil.APP.error("浏览器类型标识："+drivertype);
-			luckyclient.publicclass.LogUtil.APP.error("获取到的浏览器类型标识未定义，默认IE浏览器进行执行....");
+			LogUtil.APP.warn("浏览器类型标识："+drivertype+"，获取到的浏览器类型标识未定义，默认IE浏览器进行执行....");
 			System.setProperty("webdriver.ie.driver",drivenpath+"IEDriverServer.exe");
 			webDriver = new InternetExplorerDriver();
 		}

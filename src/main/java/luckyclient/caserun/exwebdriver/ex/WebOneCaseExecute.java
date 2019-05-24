@@ -9,6 +9,7 @@ import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.WebDriverInitialization;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
@@ -36,7 +37,7 @@ public class WebOneCaseExecute{
 		try {
 			wd = WebDriverInitialization.setWebDriverForTask(drivertype);
 		} catch (IOException e1) {
-			luckyclient.publicclass.LogUtil.APP.error("初始化WebDriver出错！", e1);
+			LogUtil.APP.error("初始化WebDriver出错！", e1);
 			e1.printStackTrace();
 		}
 		LogOperation caselog = new LogOperation();
@@ -45,13 +46,13 @@ public class WebOneCaseExecute{
 		LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);    
 
 		List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
-		luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【"+testcase.getCaseSign()+"】......");
+		LogUtil.APP.info("开始执行用例：【"+testcase.getCaseSign()+"】......");
 		try {
 			List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
-			luckyclient.publicclass.LogUtil.APP.info("当前用例：【"+testcase.getCaseSign()+"】执行完成......进入下一条");
+			LogUtil.APP.info("当前用例：【"+testcase.getCaseSign()+"】执行完成......进入下一条");
 		} catch (InterruptedException e) {
-			luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+			LogUtil.APP.error("用户执行过程中抛出异常！", e);
 			e.printStackTrace();
 		}
 		LogOperation.updateTaskExecuteData(taskid, 0);

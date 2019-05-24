@@ -10,6 +10,7 @@ import luckyclient.caserun.exappium.iosex.IosOneCaseExecute;
 import luckyclient.caserun.exinterface.TestCaseExecution;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.ex.WebOneCaseExecute;
+import luckyclient.publicclass.AppiumConfig;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.TaskExecute;
 import luckyclient.serverapi.entity.TaskScheduling;
@@ -44,7 +45,7 @@ public class OneCaseExecute extends TestControl {
 						String.valueOf(task.getTaskId()));
 
 		} else if (taskScheduling.getTaskType() == 2) {
-			Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+			Properties properties = AppiumConfig.getConfiguration();
 
 			if ("Android".equals(properties.getProperty("platformName"))) {
 				AndroidOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId),
