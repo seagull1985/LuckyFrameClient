@@ -46,7 +46,7 @@ public class AppDriverAnalyticCase {
 			params.put("property", property.trim().toLowerCase());   
 			//set属性值
 			params.put("property_value", propertyValue.trim());  
-			LogUtil.APP.info("对象属性解析结果：property:"+property.trim()+";  property_value:"+propertyValue.trim());		
+			LogUtil.APP.info("对象属性解析结果：property:{};  property_value:{}",property.trim(),propertyValue.trim());		
 		}
 		//set操作方法
 		params.put("operation", step.getStepOperation().toLowerCase());   
@@ -54,7 +54,7 @@ public class AppDriverAnalyticCase {
 			 //set属性值
 			params.put("operation_value", step.getStepParameters());  
 		}
-		LogUtil.APP.info("对象操作解析结果：operation:"+step.getStepOperation().toLowerCase()+";  operation_value:"+step.getStepParameters());
+		LogUtil.APP.info("对象操作解析结果：operation:{};  operation_value:{}",step.getStepOperation().toLowerCase(),step.getStepParameters());
 		 //获取预期结果字符串
 		resultstr = step.getExpectedResult();  
 
@@ -70,10 +70,10 @@ public class AppDriverAnalyticCase {
 				params.put("checkproperty_value", expectedResults.substring(expectedResults.indexOf("=")+1, expectedResults.lastIndexOf(")")));
 			}			
 			params.put("ExpectedResults", expectedResults);
-			LogUtil.APP.info("预期结果解析：ExpectedResults:"+expectedResults);
+			LogUtil.APP.info("预期结果解析：ExpectedResults:{}",expectedResults);
 		}
 		
-		LogUtil.APP.info("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！");
+		LogUtil.APP.info("用例编号：{} 步骤编号：{} 解析自动化用例步骤脚本完成！",projectcase.getCaseSign(),step.getStepSerialNumber());
 		if(null!=caselog){
 		  caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepSerialNumber()),"");
 		}
@@ -81,7 +81,7 @@ public class AppDriverAnalyticCase {
 			if(null!=caselog){
 			  caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepSerialNumber()),"");
 			}
-			LogUtil.APP.error("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！",e);
+			LogUtil.APP.error("用例编号：{} 步骤编号：{} 解析自动化用例步骤脚本出错！",projectcase.getCaseSign(),step.getStepSerialNumber(),e);
 			params.put("exception","用例编号："+projectcase.getCaseSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
 			return params;
      }

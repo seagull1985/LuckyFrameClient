@@ -62,7 +62,7 @@ public class AppTestControl {
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.APP.error("控制台模式初始化Appium Driver异常！", e);
 		}
 		LogOperation caselog = new LogOperation();
 		List<ProjectCase> testCases = GetServerAPI.getCasesbyplanname(planname);
@@ -70,7 +70,7 @@ public class AppTestControl {
 		if (testCases.size() != 0) {
 			pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
 		}
-		LogUtil.APP.info("当前计划中读取到用例共 " + testCases.size() + " 个");
+		LogUtil.APP.info("当前计划中读取到用例共{}个",testCases.size());
 		int i = 0;
 		for (ProjectCase testcase : testCases) {
 			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
@@ -78,7 +78,7 @@ public class AppTestControl {
 				continue;
 			}
 			i++;
-			LogUtil.APP.info("开始执行第" + i + "条用例：【" + testcase.getCaseSign() + "】......");
+			LogUtil.APP.info("开始执行计划中的第{}条用例：【{}】......",i,testcase.getCaseSign());
 			try {
 				if ("Android".equals(properties.getProperty("platformName"))) {
 					AndroidCaseExecution.caseExcution(testcase, steps, taskid, androiddriver, caselog, pcplist);
@@ -93,7 +93,7 @@ public class AppTestControl {
 				// TODO Auto-generated catch block
 				LogUtil.APP.error("用户执行过程中抛出IOException异常！", e);
 			}
-			LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
+			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		}
 		LogUtil.APP.info("当前项目测试计划中的用例已经全部执行完成...");
 		// 关闭APP以及appium会话
@@ -134,20 +134,17 @@ public class AppTestControl {
 				try {
 					if ("Android".equals(properties.getProperty("platformName"))) {
 						androiddriver = AppiumInitialization.setAndroidAppium(properties);
-						LogUtil.APP.info("完成AndroidDriver初始化动作...APPIUM Server【http://"
-								+ properties.getProperty("appiumsever") + "/wd/hub】");
+						LogUtil.APP.info("完成AndroidDriver初始化动作...APPIUM Server【http://{}/wd/hub】",properties.getProperty("appiumsever"));
 					} else if ("IOS".equals(properties.getProperty("platformName"))) {
 						iosdriver = AppiumInitialization.setIosAppium(properties);
-						LogUtil.APP.info("完成IOSDriver初始化动作...APPIUM Server【http://"
-								+ properties.getProperty("appiumsever") + "/wd/hub】");
+						LogUtil.APP.info("完成IOSDriver初始化动作...APPIUM Server【http://{}/wd/hub】",properties.getProperty("appiumsever"));
 					}
 				} catch (Exception e) {
-					LogUtil.APP.error("初始化AppiumDriver出错 ！APPIUM Server【http://"
-							+ properties.getProperty("appiumsever") + "/wd/hub】", e);
+					LogUtil.APP.error("初始化AppiumDriver出错 ！APPIUM Server【http://{}/wd/hub】",properties.getProperty("appiumsever"), e);
 				}
 				LogOperation caselog = new LogOperation();
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
-				LogUtil.APP.info("当前计划中读取到用例共 " + cases.size() + " 个");
+				LogUtil.APP.info("当前计划中读取到用例共{}个",cases.size());
 				LogOperation.updateTaskExecuteStatus(taskId, cases.size());
 
 				for (ProjectCase testcase : cases) {
@@ -155,7 +152,7 @@ public class AppTestControl {
 					if (steps.size() == 0) {
 						continue;
 					}
-					LogUtil.APP.info("开始执行用例：【" + testcase.getCaseSign() + "】......");
+					LogUtil.APP.info("开始执行用例：【{}】......",testcase.getCaseSign());
 					try {
 						//插入开始执行的用例
 						caselog.insertTaskCaseExecute(taskId, taskScheduling.getProjectId(),testcase.getCaseId(),testcase.getCaseSign(), testcase.getCaseName(), 4);
@@ -168,11 +165,11 @@ public class AppTestControl {
 						// TODO Auto-generated catch block
 						LogUtil.APP.error("用户执行过程中抛出异常！", e);
 					}
-					LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
+					LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 				}
 				tastcount = LogOperation.updateTaskExecuteData(taskId, cases.size());
 				String testtime = LogOperation.getTestTime(taskId);
-				LogUtil.APP.info("当前项目【" + projectname + "】测试计划中的用例已经全部执行完成...");
+				LogUtil.APP.info("当前项目【{]】测试计划中的用例已经全部执行完成...",projectname);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
 						HtmlMail.htmlContentFormat(tastcount, taskId, buildstatus, restartstatus, testtime, jobname),
 						taskId, taskScheduling, tastcount);

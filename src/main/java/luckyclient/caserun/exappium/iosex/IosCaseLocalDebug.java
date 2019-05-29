@@ -34,14 +34,13 @@ public class IosCaseLocalDebug {
 			ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 			List<ProjectCaseParams> pcplist = GetServerAPI
 					.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
-			LogUtil.APP.info("开始执行用例：【" + testCaseExternalId + "】......");
+			LogUtil.APP.info("开始执行用例：【{}】......",testCaseExternalId);
 			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			IosCaseExecution.caseExcution(testcase, steps, "888888", iosdriver, caselog, pcplist);
 
-			LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
+			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (Exception e) {
 			LogUtil.APP.error("用户执行过程中抛出异常！", e);
-			e.printStackTrace();
 		}
 	}
 
@@ -57,9 +56,10 @@ public class IosCaseLocalDebug {
 		for(String testCaseExternalId:addtestcase) {
 			try {
 				LogUtil.APP
-						.info("开始调用方法，项目名：" + projectname + "，用例编号：" + testCaseExternalId);
+						.info("开始调用方法，项目名：{}，用例编号：{}",projectname,testCaseExternalId);
 				oneCasedebug(iosdriver, testCaseExternalId);
 			} catch (Exception e) {
+				LogUtil.APP.error("多用例调试过程中抛出异常！", e);
 				continue;
 			}
 		}

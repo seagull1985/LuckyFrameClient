@@ -49,15 +49,15 @@ public class AndroidBaseAppium {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LogUtil.APP.error("安卓手机滑动休眠出现异常",e);
 			}
 			File imageFile = ((TakesScreenshot) (new Augmenter().augment(appium))).getScreenshotAs(OutputType.FILE);
 			File screenFile = new File(pngpath);
 			FileUtils.copyFile(imageFile, screenFile);
 			imageFile.deleteOnExit();
-			LogUtil.APP.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【" + pngpath + "】");
+			LogUtil.APP.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【{}】",pngpath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LogUtil.APP.error("安卓手机报错截图异常",e);
 		}
 	}
 
@@ -90,10 +90,9 @@ public class AndroidBaseAppium {
 			swipeObject.put("endY", eY);
 			swipeObject.put("duration", duration);
 			js.executeScript("mobile: swipe", swipeObject);
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			ex.printStackTrace();
-			throw ex;
+			LogUtil.APP.error("安卓手机滑动出现异常",e);
 		} finally {
 			// 释放变量
 		}
@@ -124,10 +123,9 @@ public class AndroidBaseAppium {
 			// logger.info("滑动11111111");
 			Runtime.getRuntime()
 					.exec("adb -s " + "Android" + " shell input swipe " + sX2 + " " + sY2 + " " + eX2 + " " + eY2);
-		} catch (Exception ex) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			ex.printStackTrace();
-			throw ex;
+			LogUtil.APP.error("安卓手机调用 ADB直接滑动出现异常",e);
 		} finally {
 			// 释放变量
 		}

@@ -47,9 +47,9 @@ public class IosBatchExecute {
 			}
 			
 			iosd = AppiumInitialization.setIosAppium(properties);
-		} catch (MalformedURLException e1) {
+		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			LogUtil.APP.error("根据配置自动启动Appiume服务中抛出异常！", e);
 		}
 		LogOperation caselog = new LogOperation();
 		TaskExecute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
@@ -68,7 +68,6 @@ public class IosBatchExecute {
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
-					e.printStackTrace();
 				}
 			}
 		} else { // 批量执行用例
@@ -83,7 +82,6 @@ public class IosBatchExecute {
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
-					e.printStackTrace();
 				}
 			}
 		}

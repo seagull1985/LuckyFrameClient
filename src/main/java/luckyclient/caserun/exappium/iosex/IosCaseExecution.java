@@ -81,10 +81,10 @@ public class IosCaseExecution extends TestCaseExecution{
             if (0 != stepresult) {
             	setcaseresult = stepresult;
                 if (testcase.getFailcontinue() == 0) {
-                    LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】第【"+step.getStepSerialNumber()+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                    LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......",testcase.getCaseSign(),step.getStepSerialNumber());
                     break;
                 } else {
-                    LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】第【"+step.getStepSerialNumber()+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                    LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......",testcase.getCaseSign(),step.getStepSerialNumber());
                 }
             }
 
@@ -93,10 +93,10 @@ public class IosCaseExecution extends TestCaseExecution{
 		variable.clear();
 		caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), setcaseresult);
 		if(setcaseresult==0){
-			LogUtil.APP.info("用例【"+testcase.getCaseSign()+"】全部步骤执行结果成功...");
+			LogUtil.APP.info("用例【{}】全部步骤执行结果成功...",testcase.getCaseSign());
 	        caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "用例全部步骤执行结果成功","info", "ending","");
 		}else{
-			LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】步骤执行过程中失败或是锁定...请查看具体原因！"+casenote);
+			LogUtil.APP.warn("用例【{}】步骤执行过程中失败或是锁定...请查看具体原因！{}",testcase.getCaseSign(),casenote);
 	        caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "用例执行过程中失败或是锁定"+casenote,"error", "ending","");
 		}
 		//LogOperation.UpdateTastdetail(taskid, 0);
@@ -124,8 +124,7 @@ public class IosCaseExecution extends TestCaseExecution{
 			LogUtil.APP.info("二次解析用例过程完成，等待进行对象操作......");
 			caselog.insertTaskCaseLog(taskid, caseId, "对象操作:"+operation+"; 操作值:"+operationValue,"info", String.valueOf(stepno),"");
 		} catch (Exception e) {
-			e.printStackTrace();
-			LogUtil.APP.error("二次解析用例过程抛出异常！---"+e.getMessage());
+			LogUtil.APP.error("二次解析用例过程抛出异常！",e);
 			return "步骤执行失败：解析用例失败!";
 		}
 
@@ -171,7 +170,7 @@ public class IosCaseExecution extends TestCaseExecution{
 				result =  "步骤执行失败：元素操作过程失败！";
 			}
 		} catch (Exception e) {
-			LogUtil.APP.error("元素定位过程或是操作过程失败或异常！"+e.getMessage());
+			LogUtil.APP.error("元素定位过程或是操作过程失败或异常！",e);
 			return "步骤执行失败：元素定位过程或是操作过程失败或异常！" + e.getMessage();
 		}
 		caselog.insertTaskCaseLog(taskid, caseId, result,"info", String.valueOf(stepno),"");
@@ -229,7 +228,7 @@ public class IosCaseExecution extends TestCaseExecution{
 			return ae;
 
 		} catch (Exception e) {
-			LogUtil.APP.error("当前对象定位失败："+e.getMessage());
+			LogUtil.APP.error("当前对象定位失败!",e);
 			return null;
 		}
 		
@@ -244,19 +243,19 @@ public class IosCaseExecution extends TestCaseExecution{
         if (null != result && !result.contains("步骤执行失败：")) {
             // 有预期结果
             if (null != expect && !expect.isEmpty()) {
-                LogUtil.APP.info("期望结果为【" + expect + "】");
+                LogUtil.APP.info("期望结果为【{}】",expect);
 
                 // 赋值传参模式
                 if (expect.length() > ASSIGNMENT_SIGN.length() && expect.startsWith(ASSIGNMENT_SIGN)) {
                     variable.put(expect.substring(ASSIGNMENT_SIGN.length()), result);
-                    LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，将测试结果【" + result + "】赋值给变量【" + expect.substring(ASSIGNMENT_SIGN.length()) + "】");
+                    LogUtil.APP.info("用例：{} 第{}步，将测试结果【{}】赋值给变量【{}】",testcase.getCaseSign(),step.getStepSerialNumber(),result,expect.substring(ASSIGNMENT_SIGN.length()));
                     caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "将测试结果【" + result + "】赋值给变量【" + expect.substring(ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(step.getStepSerialNumber()), "");
                 }
                 // 赋值全局变量
                 else if (expect.length() > ASSIGNMENT_GLOBALSIGN.length() && expect.startsWith(ASSIGNMENT_GLOBALSIGN)) {
                 	variable.put(expect.substring(ASSIGNMENT_GLOBALSIGN.length()), result);
                 	ParamsManageForSteps.GLOBAL_VARIABLE.put(expect.substring(ASSIGNMENT_GLOBALSIGN.length()), result);
-                    LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，将测试结果【" + result + "】赋值给全局变量【" + expect.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】");
+                    LogUtil.APP.info("用例：{} 第{}步，将测试结果【{}】赋值给全局变量【{}】",testcase.getCaseSign(),step.getStepSerialNumber(),result,expect.substring(ASSIGNMENT_GLOBALSIGN.length()));
                     caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "将测试结果【" + result + "】赋值给全局变量【" + expect.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】", "info", String.valueOf(step.getStepSerialNumber()), "");
                 }
                 // 移动端 UI检查模式
@@ -266,13 +265,13 @@ public class IosCaseExecution extends TestCaseExecution{
 
                     IOSElement ae = isElementExist(appium, checkproperty, checkPropertyValue);
                     if (null != ae) {
-                        LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，在当前页面中找到预期结果中对象。当前步骤执行成功！");
+                        LogUtil.APP.info("用例：{} 第{}步，在当前页面中找到预期结果中对象。当前步骤执行成功！",testcase.getCaseSign(),step.getStepSerialNumber());
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "在当前页面中找到预期结果中对象。当前步骤执行成功！", "info", String.valueOf(step.getStepSerialNumber()), "");
                     } else {
                         casenote = "第" + step.getStepSerialNumber() + "步，没有在当前页面中找到预期结果中对象。执行失败！";
                         setresult = 1;
                         IosBaseAppium.screenShot(appium, imagname);
-                        LogUtil.APP.warn("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，没有在当前页面中找到预期结果中对象。当前步骤执行失败！");
+                        LogUtil.APP.warn("用例：{} 第{}步，没有在当前页面中找到预期结果中对象。当前步骤执行失败！",testcase.getCaseSign(),step.getStepSerialNumber());
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "在当前页面中没有找到预期结果中对象。当前步骤执行失败！" + "checkproperty【" + checkproperty + "】  checkproperty_value【" + checkPropertyValue + "】", "error", String.valueOf(step.getStepSerialNumber()), imagname);
                     }
                 }
@@ -281,13 +280,13 @@ public class IosCaseExecution extends TestCaseExecution{
                     // 模糊匹配预期结果模式
                     if (expect.length() > FUZZY_MATCHING_SIGN.length() && expect.startsWith(FUZZY_MATCHING_SIGN)) {
                         if (result.contains(expect.substring(FUZZY_MATCHING_SIGN.length()))) {
-                            LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，模糊匹配预期结果成功！执行结果：" + result);
+                        	LogUtil.APP.info("用例：{} 第{}步，模糊匹配预期结果成功！执行结果：{}",testcase.getCaseSign(),step.getStepSerialNumber(),result);
                             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "模糊匹配预期结果成功！执行结果：" + result, "info", String.valueOf(step.getStepSerialNumber()), "");
                         } else {
                             casenote = "第" + step.getStepSerialNumber() + "步，模糊匹配预期结果失败！";
                             setresult = 1;
                             IosBaseAppium.screenShot(appium, imagname);
-                            LogUtil.APP.warn("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，模糊匹配预期结果失败！预期结果：" + expect.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + result);
+                            LogUtil.APP.warn("用例：{} 第{}步，模糊匹配预期结果失败！预期结果：{}，测试结果：{}",testcase.getCaseSign(),step.getStepSerialNumber(),expect.substring(FUZZY_MATCHING_SIGN.length()),result);
                             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "模糊匹配预期结果失败！预期结果：" + expect.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + result, "error", String.valueOf(step.getStepSerialNumber()), imagname);
                         }
                     }
@@ -296,26 +295,26 @@ public class IosCaseExecution extends TestCaseExecution{
                         Pattern pattern = Pattern.compile(expect.substring(REGULAR_MATCHING_SIGN.length()));
                         Matcher matcher = pattern.matcher(result);
                         if (matcher.find()) {
-                            LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，正则匹配预期结果成功！执行结果：" + result);
+                        	LogUtil.APP.info("用例：{} 第{}步，正则匹配预期结果成功！执行结果：{}",testcase.getCaseSign(),step.getStepSerialNumber(),result);
                             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "正则匹配预期结果成功！", "info", String.valueOf(step.getStepSerialNumber()), "");
                         } else {
                             casenote = "第" + step.getStepSerialNumber() + "步，正则匹配预期结果失败！";
                             setresult = 1;
                             IosBaseAppium.screenShot(appium, imagname);
-                            LogUtil.APP.warn("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，正则匹配预期结果失败！预期结果：" + expect.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + result);
+                            LogUtil.APP.warn("用例：{} 第{}步，正则匹配预期结果失败！预期结果：{}，测试结果：{}",testcase.getCaseSign(),step.getStepSerialNumber(),expect.substring(REGULAR_MATCHING_SIGN.length()),result);
                             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "正则匹配预期结果失败！预期结果：" + expect.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + result, "error", String.valueOf(step.getStepSerialNumber()), imagname);
                         }
                     }
                     // 精确匹配预期结果模式
                     else {
                         if (expect.equals(result)) {
-                            LogUtil.APP.info("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，精确匹配预期结果成功！执行结果：" + result);
+                        	LogUtil.APP.info("用例：{} 第{}步，精确匹配预期结果成功！执行结果：{}",testcase.getCaseSign(),step.getStepSerialNumber(),result);
                             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "精确匹配预期结果成功！", "info", String.valueOf(step.getStepSerialNumber()), "");
                         } else {
                             casenote = "第" + step.getStepSerialNumber() + "步，精确匹配预期结果失败！";
                             setresult = 1;
                             IosBaseAppium.screenShot(appium, imagname);
-                            LogUtil.APP.warn("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，精确匹配预期结果失败！预期结果是：【"+expect+"】  执行结果：【"+ result+"】");
+                            LogUtil.APP.warn("用例：{} 第{}步，精确匹配预期结果失败！预期结果是：【{}】  执行结果：【{}】",testcase.getCaseSign(),step.getStepSerialNumber(),expect,result);
                             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "精确匹配预期结果失败！预期结果是：【"+expect+"】  执行结果：【"+ result+"】", "error", String.valueOf(step.getStepSerialNumber()), imagname);
                         }
                     }
@@ -325,7 +324,7 @@ public class IosCaseExecution extends TestCaseExecution{
             casenote = (null != result) ? result : "";
             setresult = 2;
             IosBaseAppium.screenShot(appium, imagname);
-            LogUtil.APP.warn("用例：" + testcase.getCaseSign() + " 第" + step.getStepSerialNumber() + "步，执行结果：" + casenote);
+            LogUtil.APP.warn("用例：{} 第{}步，执行结果：{}",testcase.getCaseSign(),step.getStepSerialNumber(),casenote);
             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "当前步骤在执行过程中解析|定位元素|操作对象失败！" + casenote, "error", String.valueOf(step.getStepSerialNumber()), imagname);
         }
         

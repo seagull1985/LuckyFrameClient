@@ -40,19 +40,19 @@ public class IosEncapsulateOperation {
 		case "selectbyvisibletext":
 			select.selectByVisibleText(operationValue);
 			LogUtil.APP
-					.info("下拉框对象通过VisibleText属性选择...【VisibleText属性值:" + operationValue + "】");
+					.info("下拉框对象通过VisibleText属性选择...【VisibleText属性值:{}】",operationValue);
 			break;
 		case "selectbyvalue":
 			select.selectByValue(operationValue);
-			LogUtil.APP.info("下拉框对象通过Value属性选择...【Value属性值:" + operationValue + "】");
+			LogUtil.APP.info("下拉框对象通过Value属性选择...【Value属性值:{}】",operationValue);
 			break;
 		case "selectbyindex":
 			select.selectByIndex(Integer.valueOf(operationValue));
-			LogUtil.APP.info("下拉框对象通过Index属性选择...【Index属性值:" + operationValue + "】");
+			LogUtil.APP.info("下拉框对象通过Index属性选择...【Index属性值:{}】",operationValue);
 			break;
 		case "isselect":
 			result = "获取到的值是【" + ie.isSelected() + "】";
-			LogUtil.APP.info("判断对象是否已经被选择...【结果值:" + ie.isSelected() + "】");
+			LogUtil.APP.info("判断对象是否已经被选择...【结果值:{}】",ie.isSelected());
 			break;
 		default:
 			break;
@@ -66,21 +66,21 @@ public class IosEncapsulateOperation {
 		switch (operation) {
 		case "gettext":
 			result = "获取到的值是【" + ie.getText() + "】";
-			LogUtil.APP.info("getText获取对象text属性...【text属性值:" + result + "】");
+			LogUtil.APP.info("getText获取对象text属性...【text属性值:{}】",result);
 			break; // 获取输入框内容
 		case "gettagname":
 			result = "获取到的值是【" + ie.getTagName() + "】";
-			LogUtil.APP.info("getTagName获取对象tagname属性...【tagname属性值:" + result + "】");
+			LogUtil.APP.info("getTagName获取对象tagname属性...【tagname属性值:{}】",result);
 			break;
 		case "getattribute":
 			result = "获取到的值是【" + ie.getAttribute(value) + "】";
 			LogUtil.APP
-					.info("getAttribute获取对象【" + value + "】属性...【" + value + "属性值:" + result + "】");
+					.info("getAttribute获取对象【{}】属性...【{}属性值:{}】",value,value,result);
 			break;
 		case "getcssvalue":
 			result = "获取到的值是【" + ie.getCssValue(value) + "】";
 			LogUtil.APP
-					.info("getCssValue获取对象【" + value + "】属性...【" + value + "属性值:" + result + "】");
+					.info("getCssValue获取对象【{}】属性...【{}属性值:{}】",value,value,result);
 			break;
 		default:
 			break;
@@ -98,34 +98,33 @@ public class IosEncapsulateOperation {
 			ie.click();
 			result = "click点击对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
 			LogUtil.APP
-					.info("click点击对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】");
+					.info("click点击对象...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
 			break;
 		case "sendkeys":
 			ie.sendKeys(operationValue);
 			result = "sendKeys对象输入...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 操作值:" + operationValue
 					+ "】";
-			LogUtil.APP.info("sendkeys对象输入...【对象定位属性:" + property + "; 定位属性值:" + propertyValue
-					+ "; 操作值:" + operationValue + "】");
+			LogUtil.APP.info("sendkeys对象输入...【对象定位属性:{}; 定位属性值:{}; 操作值:{}】",property,propertyValue,operationValue);
 			break;
 		case "clear":
 			ie.clear();
 			result = "clear清空输入框...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
 			LogUtil.APP
-					.info("clear清空输入框...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】");
+					.info("clear清空输入框...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
 			break; // 清空输入框
 		case "isenabled":
 			result = "获取到的值是【" + ie.isEnabled() + "】";
-			LogUtil.APP.info("当前对象判断是否可用布尔值为【" + ie.isEnabled() + "】");
+			LogUtil.APP.info("当前对象判断是否可用布尔值为【{}】",ie.isEnabled());
 			break;
 		case "isdisplayed":
 			result = "获取到的值是【" + ie.isDisplayed() + "】";
-			LogUtil.APP.info("当前对象判断是否可见布尔值为【" + ie.isDisplayed() + "】");
+			LogUtil.APP.info("当前对象判断是否可见布尔值为【{}】",ie.isDisplayed());
 			break;
 		case "exjsob":
 			JavascriptExecutor jse = (JavascriptExecutor) appium;
 			jse.executeScript(operationValue, ie);
 			result = "执行JS...【" + operationValue + "】";
-			LogUtil.APP.info("执行JS...【" + operationValue + "】");
+			LogUtil.APP.info("执行JS...【{}】",operationValue);
 			break;
 		case "longpresselement":
 			LongPressOptions lpoptions = new LongPressOptions();
@@ -138,7 +137,7 @@ public class IosEncapsulateOperation {
 			action.longPress(lpoptions).release().perform();
 			result = "longpresselement在屏幕指定元素上按住" + operationValue + "秒...【对象定位属性:" + property + "; 定位属性值:"
 					+ propertyValue + "】";
-			LogUtil.APP.info(result);
+			LogUtil.APP.info("longpresselement在屏幕指定元素上按住{}秒...【对象定位属性:{}; 定位属性值:{}】",operationValue,property,propertyValue);
 			break;
 		default:
 			break;
@@ -160,7 +159,7 @@ public class IosEncapsulateOperation {
 			break;
 		case "alertgettext":
 			result = "获取到的值是【" + alert.getText() + "】";
-			LogUtil.APP.info("弹出框对象通过getText获取对象text属性...【Text属性值:" + alert.getText() + "】");
+			LogUtil.APP.info("弹出框对象通过getText获取对象text属性...【Text属性值:{}】",alert.getText());
 			break;
 		default:
 			break;
@@ -188,19 +187,19 @@ public class IosEncapsulateOperation {
 				}
 				handlenum++;
 			}
-			LogUtil.APP.info("getContext获取窗口句柄..." + result);
+			LogUtil.APP.info("getContext获取窗口句柄...{}",result);
 			break;
 		case "exjs":
 			JavascriptExecutor jse = (JavascriptExecutor) appium;
 			jse.executeScript(operationValue);
 			result = "执行JS...【" + operationValue + "】";
-			LogUtil.APP.info("执行JS...【" + operationValue + "】");
+			LogUtil.APP.info("执行JS...【{}】",operationValue);
 			break;
 		// 隐藏手机键盘
 		case "hideKeyboard":
 			appium.hideKeyboard();
 			result = "隐藏手机键盘...【hideKeyboard】";
-			LogUtil.APP.info(result);
+			LogUtil.APP.info("隐藏手机键盘...【hideKeyboard】");
 			break;
 		case "gotocontext":
 			Set<String> ctNames = appium.getContextHandles();
@@ -214,19 +213,19 @@ public class IosEncapsulateOperation {
 			}
 			if (flag == 1) {
 				result = "切换context至【" + operationValue + "】";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("切换context至【{}】",operationValue);
 			} else {
 				result = "切换context失败，未找到contextName值为【" + operationValue + "】的对象";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("切换context失败，未找到contextName值为【{}】的对象",operationValue);
 			}
 			break;
 		case "getcontext":
 			result = "获取到的值是【" + appium.getContext() + "】";
-			LogUtil.APP.info("获取页面Context...【" + appium.getContext() + "】");
+			LogUtil.APP.info("获取页面Context...【{}】",appium.getContext());
 			break;
 		case "gettitle":
 			result = "获取到的值是【" + appium.getTitle() + "】";
-			LogUtil.APP.info("获取页面gettitle...【" + appium.getTitle() + "】");
+			LogUtil.APP.info("获取页面gettitle...【{}】",appium.getTitle());
 			break;
 		case "swipeup":
 			String[] tempup = operationValue.split("\\|", -1);
@@ -236,14 +235,14 @@ public class IosEncapsulateOperation {
 					int num = Integer.valueOf(tempup[1]);
 					IosBaseAppium.swipePageUp(appium, second, num);
 					result = "swipeup页面向上滑动参数...秒|次数【" + second + "|" + num + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("swipeup页面向上滑动参数...秒|次数【{}|{}】",second,num);
 				} else {
 					result = "swipeup页面向上滑动参数判断次数出现异常【" + tempup[1] + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("swipeup页面向上滑动参数判断次数出现异常【{}】",tempup[1]);
 				}
 			} else {
 				result = "swipeup页面向上滑动参数判断时间出现异常【" + tempup[0] + "】";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("swipeup页面向上滑动参数判断时间出现异常【{}】",tempup[0]);
 			}
 			break;
 		case "swipedown":
@@ -254,14 +253,14 @@ public class IosEncapsulateOperation {
 					int num = Integer.valueOf(tempdown[1]);
 					IosBaseAppium.swipePageDown(appium, second, num);
 					result = "swipedown页面向下滑动参数...秒|次数【" + second + "|" + num + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("swipedown页面向下滑动参数...秒|次数【{}|{}】",second,num);
 				} else {
 					result = "swipedown页面向下滑动参数判断次数出现异常【" + tempdown[1] + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("swipedown页面向下滑动参数判断次数出现异常【{}】",tempdown[1]);
 				}
 			} else {
 				result = "swipedown页面向下滑动参数判断时间出现异常【" + tempdown[0] + "】";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("swipedown页面向下滑动参数判断时间出现异常【{}】",tempdown[0]);
 			}
 			break;
 		case "swipleft":
@@ -272,14 +271,14 @@ public class IosEncapsulateOperation {
 					int num = Integer.valueOf(templeft[1]);
 					IosBaseAppium.swipePageLeft(appium, second, num);
 					result = "swipleft页面向左滑动参数...秒|次数【" + second + "|" + num + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("swipleft页面向左滑动参数...秒|次数【{}|{}】",second,num);
 				} else {
 					result = "swipleft页面向左滑动参数判断次数出现异常【" + templeft[1] + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("swipleft页面向左滑动参数判断次数出现异常【{}】",templeft[1]);
 				}
 			} else {
 				result = "swipleft页面向左滑动参数判断时间出现异常【" + templeft[0] + "】";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("swipleft页面向左滑动参数判断时间出现异常【{}】",templeft[0]);
 			}
 			break;
 		case "swipright":
@@ -290,14 +289,14 @@ public class IosEncapsulateOperation {
 					int num = Integer.valueOf(tempright[1]);
 					IosBaseAppium.swipePageRight(appium, second, num);
 					result = "swipright页面向右滑动参数...秒|次数【" + second + "|" + num + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("swipright页面向右滑动参数...秒|次数【{}|{}】",second,num);
 				} else {
 					result = "swipright页面向右滑动参数判断次数出现异常【" + tempright[1] + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("swipright页面向右滑动参数判断次数出现异常【{}】",tempright[1]);
 				}
 			} else {
 				result = "swipright页面向右滑动参数判断时间出现异常【" + tempright[0] + "】";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("swipright页面向右滑动参数判断时间出现异常【{}】",tempright[0]);
 			}
 			break;
 		case "longpressxy":
@@ -315,19 +314,19 @@ public class IosEncapsulateOperation {
 						action.longPress(lpoptions).release().perform();
 						result = "longpressxy在屏幕指定XY坐标上按住" + longpressxy[2] + "秒...X|Y【" + longpressx + "|" + longpressy
 								+ "】";
-						LogUtil.APP.info(result);
+						LogUtil.APP.info("longpressxy在屏幕指定XY坐标上按住{}秒...X|Y【{}|{}】",longpressxy[2],longpressx,longpressy);
 					} else {
 						action.longPress(PointOption.point(longpressx, longpressy)).release().perform();
 						result = "longpressxy在屏幕指定XY坐标上长按...X|Y【" + longpressx + "|" + longpressy + "】";
-						LogUtil.APP.info(result);
+						LogUtil.APP.info("longpressxy在屏幕指定XY坐标上长按...X|Y【{}|{}】",longpressx,longpressy);
 					}
 				} else {
 					result = "longpressxy参数指定的Y坐标处理出现异常【" + longpressxy[1] + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("longpressxy参数指定的Y坐标处理出现异常【{}】",longpressxy[1]);
 				}
 			} else {
 				result = "longpressxy参数指定的X坐标处理出现异常【" + longpressxy[0] + "】";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("longpressxy参数指定的X坐标处理出现异常【{}】",longpressxy[0]);
 			}
 			break;
 		case "pressxy":
@@ -338,14 +337,14 @@ public class IosEncapsulateOperation {
 					int pressy = Integer.valueOf(pressxy[1]);
 					action.press(PointOption.point(pressx, pressy)).release().perform();
 					result = "pressxy在屏幕指定XY坐标上点击...X|Y【" + pressx + "|" + pressy + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("pressxy在屏幕指定XY坐标上点击...X|Y【{}|{}】",pressx,pressy);
 				} else {
 					result = "pressxy参数指定的Y坐标处理出现异常【" + pressxy[1] + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("pressxy参数指定的Y坐标处理出现异常【{}】",pressxy[1]);
 				}
 			} else {
 				result = "pressxy参数指定的X坐标处理出现异常【" + pressxy[0] + "】";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("pressxy参数指定的X坐标处理出现异常【{}】",pressxy[0]);
 			}
 			break;
 		case "tapxy":
@@ -356,14 +355,14 @@ public class IosEncapsulateOperation {
 					int tapy = Integer.valueOf(tapxy[1]);
 					action.tap(PointOption.point(tapx, tapy)).release().perform();
 					result = "tapxy在屏幕指定XY坐标上轻击...X|Y【" + tapx + "|" + tapy + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("tapxy在屏幕指定XY坐标上轻击...X|Y【{}|{}】",tapx,tapy);
 				} else {
 					result = "tapxy参数指定的Y坐标处理出现异常【" + tapxy[1] + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("tapxy参数指定的Y坐标处理出现异常【{}】",tapxy[1]);
 				}
 			} else {
 				result = "tapxy参数指定的X坐标处理出现异常【" + tapxy[0] + "】";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("tapxy参数指定的X坐标处理出现异常【{}】",tapxy[0]);
 			}
 			break;
 		case "jspressxy":
@@ -375,19 +374,19 @@ public class IosEncapsulateOperation {
 					if (null != jspressxy[2] && ChangString.isNumeric(jspressxy[2])) {
 						IosBaseAppium.clickScreenForJs(appium, jspressx, jspressy, Integer.valueOf(jspressxy[2]));
 						result = "jspressxy在屏幕指定XY坐标上按" + jspressxy[2] + "秒...X|Y【" + jspressx + "|" + jspressy + "】";
-						LogUtil.APP.info(result);
+						LogUtil.APP.info("jspressxy在屏幕指定XY坐标上按{}秒...X|Y【{}|{}】",jspressxy[2],jspressx,jspressy);
 					} else {
 						IosBaseAppium.clickScreenForJs(appium, jspressx, jspressy, 2);
 						result = "jspressxy在屏幕指定XY坐标上按2秒(持续时间判断异常，使用默认2秒时间)...X|Y【" + jspressx + "|" + jspressy + "】";
-						LogUtil.APP.info(result);
+						LogUtil.APP.info("jspressxy在屏幕指定XY坐标上按2秒(持续时间判断异常，使用默认2秒时间)...X|Y【{}|{}】",jspressx,jspressy);
 					}
 				} else {
 					result = "jspressxy参数指定的Y坐标处理出现异常【" + jspressxy[1] + "】";
-					LogUtil.APP.info(result);
+					LogUtil.APP.info("jspressxy参数指定的Y坐标处理出现异常【{}】",jspressxy[1]);
 				}
 			} else {
 				result = "jspressxy参数指定的X坐标处理出现异常【" + jspressxy[0] + "】";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("jspressxy参数指定的X坐标处理出现异常【{}】",jspressxy[0]);
 			}
 			break;
 		case "moveto":
@@ -406,34 +405,32 @@ public class IosEncapsulateOperation {
 							action.press(PointOption.point(startx, starty))
 									.waitAction(WaitOptions.waitOptions(Duration.ofNanos(1500)))
 									.moveTo(PointOption.point(endx, endy));
-							LogUtil.APP.info("从开始坐标【" + startxy[0] + "," + startxy[1]
-									+ "】拖动至坐标【" + endxy[0] + "," + endxy[1] + "】");
+							LogUtil.APP.info("从开始坐标【{},{}】拖动至坐标【{},{}】",startxy[0],startxy[1],endxy[0],endxy[1]);
 						} else {
 							if (movexyi == 1) {
 								action.press(PointOption.point(startx, starty))
 										.waitAction(WaitOptions.waitOptions(Duration.ofNanos(1500)))
 										.moveTo(PointOption.point(endx - startx, endy - starty));
-								LogUtil.APP.info("从开始坐标【" + startxy[0] + "," + startxy[1]
-										+ "】拖动至坐标【" + endxy[0] + "," + endxy[1] + "】");
+								LogUtil.APP.info("从开始坐标【{},{}】拖动至坐标【{},{}】",startxy[0],startxy[1],endxy[0],endxy[1]);
 							} else {
 								action.waitAction(WaitOptions.waitOptions(Duration.ofNanos(1500)))
 										.moveTo(PointOption.point(endx - startx, endy - starty));
 								LogUtil.APP
-										.info("第" + movexyi + "次拖动至坐标【" + endxy[0] + "," + endxy[1] + "】");
+										.info("第{}次拖动至坐标【{},{}】",movexyi,endxy[0],endxy[1]);
 							}
 							startx = endx;
 							starty = endy;
 						}
 					} else {
-						LogUtil.APP.warn("判断结束坐标位置出现异常，结束坐标参数【" + movexy[movexyi] + "】");
+						LogUtil.APP.warn("判断结束坐标位置出现异常，结束坐标参数【{}】",movexy[movexyi]);
 					}
 				}
 				action.release().perform();
 				result = "moveto全部拖动释放并完成发送...开始位置【" + startxy[0] + "," + startxy[1] + "】";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("moveto全部拖动释放并完成发送...开始位置【{},{}】",startxy[0],startxy[1]);
 			} else {
 				result = "moveto参数指定的起始坐标处理出现异常【" + movexy[0] + "】,请检查！";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("moveto参数指定的起始坐标处理出现异常【{}】,请检查！",movexy[0]);
 			}
 			break;
 		case "timeout":
@@ -443,7 +440,7 @@ public class IosEncapsulateOperation {
 				// 设置元素出现最大时长30秒
 				appium.manage().timeouts().implicitlyWait(Integer.valueOf(operationValue), TimeUnit.SECONDS);
 				result = "设置全局页面加载&元素出现最大等待时间【" + operationValue + "】秒...";
-				LogUtil.APP.info(result);
+				LogUtil.APP.info("设置全局页面加载&元素出现最大等待时间【{}】秒...",operationValue);
 			} else {
 				result = "【等待时间转换出错，请检查参数】";
 				LogUtil.APP.info(result + "原因是因为判断你的等待时间不是数字...");
@@ -454,7 +451,7 @@ public class IosEncapsulateOperation {
 			String imagname = "FunctionScreenShot_" + timeformat.format(new Date());
 			IosBaseAppium.screenShot(appium, imagname);
 			result = "截图名称【" + imagname + "】...";
-			LogUtil.APP.info("使用方法主动截取当前屏幕..." + result);
+			LogUtil.APP.info("使用方法主动截取当前屏幕...{}",result);
 			break;
 		default:
 			break;

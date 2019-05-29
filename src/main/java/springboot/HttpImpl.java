@@ -71,15 +71,14 @@ public class HttpImpl {
 		}
 		log.info("开始转换RunTaskEntity执行任务实体...");
 		RunTaskEntity runTaskEntity = JSONObject.parseObject(sb.toString(), RunTaskEntity.class);
-		log.info("TaskId:"+runTaskEntity.getTaskId()
-		+" SchedulingName:"+runTaskEntity.getSchedulingName()+" LoadPath:"+runTaskEntity.getLoadPath());
+		log.info("TaskId:{},SchedulingName:{},LoadPath:{}",runTaskEntity.getTaskId(),runTaskEntity.getSchedulingName(),runTaskEntity.getLoadPath());
 		try{
 			log.info("开始获取客户端驱动路径...");
 			File file =new File(System.getProperty("user.dir")+runTaskEntity.getLoadPath()); 
-			log.info("客户端驱动路径："+file.getAbsolutePath());
+			log.info("客户端驱动路径:{}",file.getAbsolutePath());
 			if  (!file .isDirectory())      
 			{       
-				log.warn("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				log.warn("客户端测试驱动桩路径不存在，请检查【{}】",file.getPath());
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			log.info("初始化Runtime...");
@@ -87,7 +86,7 @@ public class HttpImpl {
 			StringBuffer sbf=new StringBuffer();
 			sbf.append(runTaskEntity.getTaskId()).append(" ");
 			sbf.append(runTaskEntity.getLoadPath());
-			log.info("启动任务模式测试程序...调度名称：【"+runTaskEntity.getSchedulingName()+"】  任务ID："+runTaskEntity.getTaskId());
+			log.info("启动任务模式测试程序...调度名称:【{}】  任务ID:【{}】",runTaskEntity.getSchedulingName(),runTaskEntity.getTaskId());
 			if(os.startsWith("win")){
 				log.info("开始调起windows命令行窗口...");
 				run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));
@@ -103,61 +102,6 @@ public class HttpImpl {
 			return "启动任务模式测试程序异常！！！";
 		}
 		return "启动任务模式测试程序正常";
-	}
-	
-	/**
-	 * 运行单个用例
-	 * @param req
-	 * @param res
-	 * @return
-	 * @throws RemoteException
-	 */
-	@PostMapping("/runcase")
-	@Deprecated
-	private String runcase(HttpServletRequest req) throws RemoteException {
-		StringBuilder sbd = new StringBuilder();
-		try (BufferedReader reader = req.getReader();) {
-			char[] buff = new char[1024];
-			int len;
-			while ((len = reader.read(buff)) != -1) {
-				sbd.append(buff, 0, len);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		JSONObject jsonObject = JSONObject.parseObject(sbd.toString());
-		String projectname = jsonObject.getString("projectname");
-		String taskid = jsonObject.getString("taskid");
-		String loadpath = jsonObject.getString("loadpath");
-		String testCaseExternalId = jsonObject.getString("testCaseExternalId");
-		String version = jsonObject.getString("version");
-		log.info("启动单用例模式测试程序...测试项目："+projectname+"  任务ID："+taskid);
-		log.info("测试用例编号："+testCaseExternalId+"  用例版本："+version);
-		try{
-			File file =new File(System.getProperty("user.dir")+loadpath); 	   
-			if  (!file .isDirectory())      
-			{   
-				log.warn("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
-				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
-			}
-			Runtime run = Runtime.getRuntime();
-			StringBuffer sb=new StringBuffer();
-			sb.append(taskid).append(" ");
-			sb.append(testCaseExternalId).append(" ");
-			sb.append(version).append(" ");
-			sb.append(loadpath);
-			if(os.startsWith("win")){
-				run.exec("cmd.exe /k start " + "task_onecase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
-			}else{
-				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task_onecase.sh"+ " " +sb.toString());
-		        ps.waitFor();
-			}	
-		} catch (Exception e) {		
-			e.printStackTrace();
-			log.error("启动单用例模式测试程序异常！！！",e);
-			return "启动单用例模式测试程序异常！！！";
-		} 
-		return "启动单用例模式测试程序正常";
 	}
 	
 	/**
@@ -185,14 +129,14 @@ public class HttpImpl {
 		String taskId = runBatchCaseEntity.getTaskid();
 		String loadPath = runBatchCaseEntity.getLoadpath();
 		String batchCase = runBatchCaseEntity.getBatchcase();
-		log.info("批量测试用例："+batchCase);
+		log.info("批量测试用例:{}",batchCase);
 		try{
 			log.info("开始获取客户端驱动路径...");
 			File file =new File(System.getProperty("user.dir")+loadPath);
-			log.info("客户端驱动路径："+file.getAbsolutePath());
+			log.info("客户端驱动路径:{}",file.getAbsolutePath());
 			if  (!file .isDirectory())      
 			{    
-				log.warn("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				log.warn("客户端测试驱动桩路径不存在，请检查【{}】",file.getPath());
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			log.info("初始化Runtime...");
@@ -201,7 +145,7 @@ public class HttpImpl {
 			sb.append(taskId).append(" ");
 			sb.append(batchCase).append(" ");
 			sb.append(loadPath);
-			log.info("启动批量用例模式测试程序...测试项目："+projectName+"  任务ID："+taskId);
+			log.info("启动批量用例模式测试程序...测试项目:{}  任务ID:{}",projectName,taskId);
 			if(os.startsWith("win")){
 				log.info("开始调起windows命令行窗口...");
 				run.exec("cmd.exe /k start " + "task_batch.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
@@ -239,12 +183,12 @@ public class HttpImpl {
 			e.printStackTrace();
 		}
 		WebDebugCaseEntity webDebugCaseEntity = JSONObject.parseObject(sbd.toString(), WebDebugCaseEntity.class);
-		log.info("Web端调试用例ID："+webDebugCaseEntity.getCaseId()+" 发起人ID："+webDebugCaseEntity.getUserId());
+		log.info("Web端调试用例ID:{} 发起人ID:{}",webDebugCaseEntity.getCaseId(),webDebugCaseEntity.getUserId());
 		try{
 			File file =new File(System.getProperty("user.dir")+webDebugCaseEntity.getLoadpath()); 	   
 			if  (!file .isDirectory())      
 			{    
-				log.warn("客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】");
+				log.warn("客户端测试驱动桩路径不存在，请检查【{}】",file.getPath());
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
@@ -327,15 +271,13 @@ public class HttpImpl {
             BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
             is.read(b);
             is.close();
-        	log.info("服务端获取本地图片："+downLoadPath);
+        	log.info("服务端获取本地图片:{}",downLoadPath);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-            log.error("此文件不存在，请检查："+downLoadPath,e);
+            log.error("此文件不存在，请检查:{}",downLoadPath,e);
             return b;
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
             return b;
         }     
         return b;
@@ -359,7 +301,7 @@ public class HttpImpl {
 		String path = System.getProperty("user.dir")+loadpath;
 		if  (!new File(path) .isDirectory())      
 		{    
-			log.warn("客户端测试驱动桩路径不存在，请检查【"+path+"】");
+			log.warn("客户端测试驱动桩路径不存在，请检查【{}】",path);
 			return "客户端测试驱动桩路径不存在，请检查【"+path+"】";
 		}	
 		String pathName = path +File.separator+ name;
@@ -375,17 +317,15 @@ public class HttpImpl {
             os.write(jarfileByte);
             os.flush();
             os.close();
-            log.info("上传JAR包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!");
+            log.info("上传JAR包【{}】到客户端驱动目录【{}】成功!",name,file.getAbsolutePath());
             return "上传JAR包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!";
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-            log.error("客户端未找到正确路径或文件，上传失败！文件路径名称："+pathName,e);
+            log.error("客户端未找到正确路径或文件，上传失败！文件路径名称:{}",pathName,e);
             return "客户端未找到正确路径或文件，上传失败！文件路径名称："+pathName;
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-            log.error("客户端IOExceptiona或是未找到驱动路径！文件路径名称："+pathName,e);
+            log.error("客户端IOExceptiona或是未找到驱动路径！文件路径名称:{}",pathName,e);
             return "客户端IOExceptiona或是未找到驱动路径！文件路径名称："+pathName;
         }
 	}
@@ -433,11 +373,9 @@ public class HttpImpl {
         try {
         	String result = HttpRequest.loadJSON("/openGetApi/clientGetServerVersion.do");
         	if(version.equals(result)){
-            	log.info("客户端访问Web端配置："+webip+":"+webport+"   检测通过......");
+            	log.info("客户端访问Web端配置: {}:{} 检测通过......",webip,webport);
         	}else{
-        		log.warn("客户端版本："+version);
-        		log.warn("服务端版本："+result);
-        		log.warn("客户端与服务端版本不一致，有可能会导致未知问题，请检查...");
+        		log.warn("客户端版本:{} 服务端版本:{} 客户端与服务端版本不一致，有可能会导致未知问题，请检查...",version,result);
         	}
 
         } catch (Exception e) {

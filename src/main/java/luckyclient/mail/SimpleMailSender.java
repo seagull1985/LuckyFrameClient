@@ -65,7 +65,7 @@ public class SimpleMailSender {
             Transport.send(mailMessage);
             return true;
         } catch (MessagingException ex) {
-            ex.printStackTrace();
+        	LogUtil.APP.error("ÓÊ¼ş·¢ËÍÒì³£", ex);
         }
         return false;
     }

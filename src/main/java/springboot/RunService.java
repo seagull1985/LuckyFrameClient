@@ -29,7 +29,7 @@ public class RunService {
 		SpringApplication.run(RunService.class, args);
         try {
         	String host = InetAddress.getLocalHost().getHostAddress();
-        	log.info("启动客户端监听,请稍后......监听IP："+host);
+        	log.info("启动客户端监听,请稍后......监听IP:{}",host);
         } catch (UnknownHostException e) {
         	log.error("获取服务IP出现异常......", e);
         }

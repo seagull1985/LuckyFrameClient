@@ -28,7 +28,7 @@ public class AppiumService extends Thread{
 	        if (service == null || !service.isRunning()){
 	        	LogUtil.APP.warn("自动启动Appium服务失败，请检查！");
 	        }else{
-	        	LogUtil.APP.info("自动启动Appium服务成功，监听IP:"+ip.split(":")[0].trim()+" 监听端口:"+ip.split(":")[1].trim());
+	        	LogUtil.APP.info("自动启动Appium服务成功，监听IP:{} 监听端口:{}",ip.split(":")[0].trim(),ip.split(":")[1].trim());
 	        }
 		}catch(Exception e){
 			LogUtil.APP.error("自动启动Appium服务抛出异常，请检查！",e);

@@ -48,7 +48,6 @@ public class IosOneCaseExecute {
 			iosd = AppiumInitialization.setIosAppium(properties);
 		} catch (IOException e1) {
 			LogUtil.APP.error("初始化IOSDriver出错！", e1);
-			e1.printStackTrace();
 		}
 		LogOperation caselog = new LogOperation();
 		ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseId);
@@ -56,14 +55,13 @@ public class IosOneCaseExecute {
 		LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 
 		List<ProjectCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
-		LogUtil.APP.info("开始执行用例：【" + testcase.getCaseSign() + "】......");
+		LogUtil.APP.info("开始执行用例：【{}】......",testcase.getCaseSign());
 		try {
 			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			IosCaseExecution.caseExcution(testcase, steps, taskid, iosd, caselog, pcplist);
-			LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
+			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (InterruptedException e) {
 			LogUtil.APP.error("用户执行过程中抛出异常！", e);
-			e.printStackTrace();
 		}
 		LogOperation.updateTaskExecuteData(taskid, 0);
 		iosd.closeApp();

@@ -120,7 +120,7 @@ public class LogOperation {
 		String[] address = null;
 		try {
 			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(taskId);
-			if (taskScheduling.getEmailSendCondition()!=-1) {
+			if (!taskScheduling.getEmailSendCondition().equals(-1)) {
 				String temp = taskScheduling.getEmailAddress();
 				// 清除最后一个;
 				if (temp.indexOf(";") > -1 && temp.substring(temp.length() - 1, temp.length()).indexOf(";") > -1) {
@@ -260,7 +260,6 @@ public class LogOperation {
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		deleteTaskCaseLog(7, "46");
 	}
 
 }
