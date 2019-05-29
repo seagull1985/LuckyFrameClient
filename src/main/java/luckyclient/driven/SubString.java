@@ -184,9 +184,9 @@ public class SubString {
 			Pattern pattern = Pattern.compile(rgex);// Æ¥ÅäµÄÄ£Ê½
 			Matcher m = pattern.matcher(str);
 			while (m.find()) {
-				int i = 1;
-				list.add(m.group(i));
-				i++;
+//				int i = 1;
+				list.add(m.group());
+//				i++;
 			}
 
 			String getstr = "";
