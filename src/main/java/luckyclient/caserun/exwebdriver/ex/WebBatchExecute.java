@@ -10,11 +10,12 @@ import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.WebDriverInitialization;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.planapi.entity.PublicCaseParams;
-import luckyclient.planapi.entity.TestTaskexcute;
+import luckyclient.publicclass.LogUtil;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.entity.ProjectCase;
+import luckyclient.serverapi.entity.ProjectCaseParams;
+import luckyclient.serverapi.entity.ProjectCaseSteps;
+import luckyclient.serverapi.entity.TaskExecute;
 
 /**
  * =================================================================
@@ -42,46 +43,41 @@ public class WebBatchExecute{
 			e1.printStackTrace();
 		}
 		LogOperation caselog = new LogOperation();
-		TestTaskexcute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
-		List<PublicCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(task.getTestJob().getProjectid().toString());
+		TaskExecute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
+		List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(task.getProjectId().toString());
 		 //执行全部非成功状态用例
 		if(batchcase.indexOf("ALLFAIL")>-1){   
-			String casemore = caselog.unSucCaseUpdate(taskid);
-			String[] temp=casemore.split("\\#",-1);
-			for(int i=0;i<temp.length;i++){
-  			   String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
-			   //int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()-1));
-			   ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-			   List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcase.getId());
+			List<Integer> caseIdList = caselog.getCaseListForUnSucByTaskId(taskid);
+			for(int i=0;i<caseIdList.size();i++){
+			   ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseIdList.get(i));
+			   List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			   //删除旧的日志
-			   LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);    
+			   LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);    
 			   try {
 				WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+				LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				e.printStackTrace();
 			 }
 			}			
 		}else{                                           //批量执行用例
-			String[] temp=batchcase.split("\\#",-1);
+			String[] temp=batchcase.split("\\#");
 			for(int i=0;i<temp.length;i++){
-				String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
-				//int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()));
-				ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-				List<ProjectCasesteps> steps=GetServerAPI.getStepsbycaseid(testcase.getId());
+				ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(Integer.valueOf(temp[i]));
+				List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 				//删除旧的日志
-				LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);
+				LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
 					WebCaseExecution.caseExcution(testcase, steps,taskid,wd,caselog,pcplist);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 					e.printStackTrace();
 				}
 			}
 		}
-		LogOperation.updateTastdetail(taskid, 0);
+		LogOperation.updateTaskExecuteData(taskid, 0);
         //关闭浏览器
         wd.quit();
 	}

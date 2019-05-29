@@ -14,20 +14,18 @@ package luckyclient.caserun.exinterface;
 public class ThreadForBatchCase extends Thread{
 	
 	private String projectname;
-	private String testCaseExternalId;
-	private int version;
-	private String tastid;
+	private Integer caseId;
+	private String taskid;
 	
-	public ThreadForBatchCase(String projectname,String testCaseExternalId,int version,String tastid){
+	public ThreadForBatchCase(String projectname,Integer caseId,String taskid){
 		this.projectname = projectname;
-		this.testCaseExternalId = testCaseExternalId;
-		this.version = version;
-		this.tastid = tastid;
+		this.caseId = caseId;
+		this.taskid = taskid;
 	}
 	
 	@Override
 	public void run(){		
-		 TestCaseExecution.oneCaseExecuteForTast(projectname, testCaseExternalId, version, tastid);
+		 TestCaseExecution.oneCaseExecuteForTask(projectname, caseId, taskid);
 		 TestControl.THREAD_COUNT--;        //多线程计数--，用于检测线程是否全部执行完
 	}
 	

@@ -15,6 +15,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import luckyclient.publicclass.LogUtil;
+
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
@@ -119,7 +121,7 @@ public class SimpleMailSender {
             return true;
         } catch (MessagingException ex) {
             ex.printStackTrace();
-            luckyclient.publicclass.LogUtil.APP.error(ex);
+            LogUtil.APP.error("邮件发送异常", ex);
         }
         return false;
     }

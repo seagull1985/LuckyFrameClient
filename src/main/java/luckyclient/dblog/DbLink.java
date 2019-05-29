@@ -3,6 +3,7 @@ package luckyclient.dblog;
 import java.util.Properties;
 
 import luckyclient.publicclass.DBOperation;
+import luckyclient.publicclass.SysConfig;
 
 /**
  * =================================================================
@@ -30,7 +31,7 @@ public class DbLink {
 	 * 
 	 */
 	public  static DBOperation dbLogLink(){
-		Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
+		Properties properties = SysConfig.getConfiguration();
 		String urlBase = "jdbc:mysql://"+properties.getProperty("mysql.db.ip")+":"+properties.getProperty("mysql.db.port")
 		+"/"+properties.getProperty("mysql.db.dbname")+"?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false";
 		String userNameBase = properties.getProperty("mysql.db.username");

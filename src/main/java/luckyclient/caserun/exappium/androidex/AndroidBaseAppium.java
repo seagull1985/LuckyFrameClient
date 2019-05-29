@@ -16,6 +16,7 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidTouchAction;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
+import luckyclient.publicclass.LogUtil;
 
 /**
  * =================================================================
@@ -32,15 +33,17 @@ public class AndroidBaseAppium {
 
 	/**
 	 * 安卓手机报错截图
+	 * 
 	 * @param appium
 	 * @param imagname
 	 * @throws IOException
 	 */
-	public static void screenShot(AndroidDriver<AndroidElement> appium, String imagname){
+	public static void screenShot(AndroidDriver<AndroidElement> appium, String imagname) {
 		imagname = imagname + ".png";
 		String relativelyPath = System.getProperty("user.dir");
-		String pngpath=relativelyPath +File.separator+ "log"+File.separator+"ScreenShot" +File.separator+ imagname;
-		
+		String pngpath = relativelyPath + File.separator + "log" + File.separator + "ScreenShot" + File.separator
+				+ imagname;
+
 		try {
 			try {
 				Thread.sleep(3000);
@@ -52,13 +55,12 @@ public class AndroidBaseAppium {
 			File screenFile = new File(pngpath);
 			FileUtils.copyFile(imageFile, screenFile);
 			imageFile.deleteOnExit();
-			luckyclient.publicclass.LogUtil.APP
-			.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【" + pngpath + "】");
+			LogUtil.APP.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【" + pngpath + "】");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * @param args
 	 * @throws IOException
@@ -72,10 +74,10 @@ public class AndroidBaseAppium {
 
 	/**
 	 * @param args
-	 *            js webview 支持4.1～4.4
+	 * js webview 支持4.1～4.4
 	 */
-	public static void webViewSwipe(AndroidDriver<AndroidElement> appium, Double sX, Double sY, Double eX, Double eY, Double duration)
-			throws Exception {
+	public static void webViewSwipe(AndroidDriver<AndroidElement> appium, Double sX, Double sY, Double eX, Double eY,
+			Double duration) throws Exception {
 		JavascriptExecutor js;
 		HashMap<String, Double> swipeObject;
 		try {
@@ -100,9 +102,10 @@ public class AndroidBaseAppium {
 
 	/**
 	 * @param args
-	 *            调用 ADB直接滑动 支持4.1～4.4
+	 * 调用 ADB直接滑动 支持4.1～4.4
 	 */
-	public static void adbSwipe(AndroidDriver<AndroidElement> appium, Double sX, Double sY, Double eX, Double eY) throws Exception {
+	public static void adbSwipe(AndroidDriver<AndroidElement> appium, Double sX, Double sY, Double eX, Double eY)
+			throws Exception {
 		int xLine;
 		int yLine;
 		int sX2;
@@ -143,12 +146,15 @@ public class AndroidBaseAppium {
 		tapObject.put("duration", duration);
 		js.executeScript("mobile: tap", tapObject);
 	}
-	
+
 	/**
 	 * 拖住页面按屏幕比例向上滑动(手指向下，页面向上)
+	 * 
 	 * @param driver
-	 * @param second 持续时间
-	 * @param num 滚动次数
+	 * @param second
+	 *            持续时间
+	 * @param num
+	 *            滚动次数
 	 */
 	public static void swipePageUp(AndroidDriver<AndroidElement> driver, Double second, int num) {
 		int nanos = (int) (second * 1000);
@@ -156,7 +162,7 @@ public class AndroidBaseAppium {
 		int width = driver.manage().window().getSize().width;
 		int height = driver.manage().window().getSize().height;
 		AndroidTouchAction action = new AndroidTouchAction(driver);
-		
+
 		for (int i = 0; i <= num; i++) {
 			action.press(PointOption.point(width / 2, height / 4)).waitAction(WaitOptions.waitOptions(duration))
 					.moveTo(PointOption.point(width / 2, height / 2)).release().perform();
@@ -165,11 +171,12 @@ public class AndroidBaseAppium {
 
 	/**
 	 * 拖住页面按屏幕比例向下滑动(手指向上，页面向下)
+	 * 
 	 * @param driver
 	 * @param second
 	 * @param num
 	 */
-	public static void swipePageDown(AndroidDriver<AndroidElement> driver,Double second,int num){
+	public static void swipePageDown(AndroidDriver<AndroidElement> driver, Double second, int num) {
 		int nanos = (int) (second * 1000);
 		Duration duration = Duration.ofNanos(nanos);
 		int width = driver.manage().window().getSize().width;
@@ -183,6 +190,7 @@ public class AndroidBaseAppium {
 
 	/**
 	 * 拖住页面按屏幕比例向左滑动(手指向左，页面向左滚动)
+	 * 
 	 * @param driver
 	 * @param second
 	 * @param num
@@ -201,6 +209,7 @@ public class AndroidBaseAppium {
 
 	/**
 	 * 拖住页面按屏幕比例向右滑动(手指向右，页面向右)
+	 * 
 	 * @param driver
 	 * @param second
 	 * @param num
@@ -216,5 +225,5 @@ public class AndroidBaseAppium {
 					.moveTo(PointOption.point(width - 10, height / 2)).release().perform();
 		}
 	}
-     
+
 }

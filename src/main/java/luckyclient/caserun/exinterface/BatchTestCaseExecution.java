@@ -1,13 +1,13 @@
 package luckyclient.caserun.exinterface;
 
-import luckyclient.caserun.exinterface.TestControl;
-import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.TestTaskexcute;
-
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import luckyclient.dblog.LogOperation;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.entity.ProjectCase;
 
 /**
  * =================================================================
@@ -29,8 +29,7 @@ public class BatchTestCaseExecution {
 	 */
 	
 	public static void batchCaseExecuteForTast(String projectname,String taskid,String batchcase) throws Exception{
-		TestTaskexcute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
-		int threadcount = task.getTestJob().getThreadCount();
+		int threadcount = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid)).getExThreadCount();
 		ThreadPoolExecutor	threadExecute	= new ThreadPoolExecutor(threadcount, 30, 3, TimeUnit.SECONDS,
 	            new ArrayBlockingQueue<Runnable>(1000),
 	            new ThreadPoolExecutor.CallerRunsPolicy());
@@ -38,21 +37,17 @@ public class BatchTestCaseExecution {
 		if(batchcase.indexOf("ALLFAIL")>-1){ 
 			//初始化写用例结果以及日志模块 
 			LogOperation caselog = new LogOperation();        
-			String casemore = caselog.unSucCaseUpdate(taskid);
-			String[] temp=casemore.split("\\#",-1);
-			for(int i=0;i<temp.length;i++){
-  			   String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
-			   int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()-1));
+			List<Integer> caseIdList = caselog.getCaseListForUnSucByTaskId(taskid);
+			for(int i=0;i<caseIdList.size();i++){
+			   ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseIdList.get(i));
 			   TestControl.THREAD_COUNT++;   //多线程计数++，用于检测线程是否全部执行完
-			   threadExecute.execute(new ThreadForBatchCase(projectname,testCaseExternalId,version,taskid));
+			   threadExecute.execute(new ThreadForBatchCase(projectname,testcase.getCaseId(),taskid));
 			}			
 		}else{                                           //批量执行用例
-			String[] temp=batchcase.split("\\#",-1);
-			for(int i=0;i<temp.length-1;i++){
-				String testCaseExternalId = temp[i].substring(0, temp[i].indexOf("%"));
-				int version = Integer.parseInt(temp[i].substring(temp[i].indexOf("%")+1,temp[i].length()));
+			String[] temp=batchcase.split("\\#");
+			for(int i=0;i<temp.length;i++){
 				TestControl.THREAD_COUNT++;   //多线程计数++，用于检测线程是否全部执行完
-				threadExecute.execute(new ThreadForBatchCase(projectname,testCaseExternalId,version,taskid));
+				threadExecute.execute(new ThreadForBatchCase(projectname,Integer.valueOf(temp[i]),taskid));
 			}
 		}
 		//多线程计数，用于检测线程是否全部执行完

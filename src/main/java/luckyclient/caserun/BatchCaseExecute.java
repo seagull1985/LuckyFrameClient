@@ -9,11 +9,11 @@ import luckyclient.caserun.exappium.androidex.AndroidBatchExecute;
 import luckyclient.caserun.exappium.iosex.IosBatchExecute;
 import luckyclient.caserun.exinterface.BatchTestCaseExecution;
 import luckyclient.caserun.exinterface.TestControl;
-import luckyclient.caserun.exinterface.testlink.BatchTestLinkCaseExecution;
 import luckyclient.caserun.exwebdriver.ex.WebBatchExecute;
-import luckyclient.caserun.exwebdriver.extestlink.WebBatchExecuteTestLink;
-import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.TestTaskexcute;
+import luckyclient.publicclass.AppiumConfig;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.entity.TaskExecute;
+import luckyclient.serverapi.entity.TaskScheduling;
 
 /**
  * =================================================================
@@ -34,36 +34,25 @@ public class BatchCaseExecute extends TestControl {
 			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
 			String taskid = args[0];
 			String batchcase = args[1];
-			TestTaskexcute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
-			if (task.getTestJob().getExtype() == 0) {
-				if (task.getTestJob().getProjecttype() == 1) {
-					// Ω”ø⁄≤‚ ‘
-					BatchTestLinkCaseExecution.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
-							String.valueOf(task.getId()), batchcase);
-				} else if (task.getTestJob().getProjecttype() == 0) {
-					BatchTestCaseExecution.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
-							String.valueOf(task.getId()), batchcase);
-				}
-			} else if (task.getTestJob().getExtype() == 1) {
-				if (task.getTestJob().getProjecttype() == 1) {
+			TaskExecute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
+			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid));
+			if (taskScheduling.getTaskType() == 0) {
+					BatchTestCaseExecution.batchCaseExecuteForTast(taskScheduling.getProject().getProjectName(),
+							String.valueOf(task.getTaskId()), batchcase);
+			} else if (taskScheduling.getTaskType() == 1) {
 					// UI≤‚ ‘
-					WebBatchExecuteTestLink.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
-							String.valueOf(task.getId()), batchcase);
-				} else if (task.getTestJob().getProjecttype() == 0) {
-					// UI≤‚ ‘
-					WebBatchExecute.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
-							String.valueOf(task.getId()), batchcase);
-				}
+					WebBatchExecute.batchCaseExecuteForTast(taskScheduling.getProject().getProjectName(),
+							String.valueOf(task.getTaskId()), batchcase);
 
-			} else if (task.getTestJob().getExtype() == 2) {
-				Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+			} else if (taskScheduling.getTaskType() == 2) {
+				Properties properties = AppiumConfig.getConfiguration();
 
 				if ("Android".equals(properties.getProperty("platformName"))) {
-					AndroidBatchExecute.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
-							String.valueOf(task.getId()), batchcase);
+					AndroidBatchExecute.batchCaseExecuteForTast(taskScheduling.getProject().getProjectName(),
+							String.valueOf(task.getTaskId()), batchcase);
 				} else if ("IOS".equals(properties.getProperty("platformName"))) {
-					IosBatchExecute.batchCaseExecuteForTast(task.getTestJob().getPlanproj(),
-							String.valueOf(task.getId()), batchcase);
+					IosBatchExecute.batchCaseExecuteForTast(taskScheduling.getProject().getProjectName(),
+							String.valueOf(task.getTaskId()), batchcase);
 				}
 
 			}

@@ -3,8 +3,8 @@ package luckyclient.publicclass;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 系统日志记录
@@ -14,20 +14,12 @@ import org.apache.commons.logging.LogFactory;
 public class LogUtil {
 	
 	/**
-	 * 记录系统运行日志，监控系统运行情况
+	 * 主要使用三种日志级别，info,warn,error
+	 * info 记录客户端系统日志，监控客户端运行情况
+	 * warn 记录客户端业务上的告警日志
+	 * error 记录客户端在执行过程中抛出的异常以及严重错误
 	 */
-    public static final  Log APP = LogFactory.getLog("app");
-    
-    /**
-     * 记录业务日志，监控业务执行情况
-     */
-    public static final  Log MSG = LogFactory.getLog("msg");
-    
-    /**
-     * 记录系统错误，监控程序是否出错
-     */
-    public static final  Log ERROR = LogFactory.getLog("error");
-    
+    public static final Logger APP = LoggerFactory.getLogger("info");  
    
     public static StringBuffer getFieldValue(Object bean){
     	StringBuffer sb = new StringBuffer();
@@ -58,7 +50,7 @@ public class LogUtil {
 	    	}
     	}
     	catch(Exception ex){
-    		LogUtil.ERROR.error(ex,ex);
+    		LogUtil.APP.error("日志异常",ex);
     	}
     	return sb;
     }    

@@ -11,10 +11,12 @@ import luckyclient.caserun.exappium.AppiumService;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.api.GetServerAPI;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
-import luckyclient.planapi.entity.PublicCaseParams;
+import luckyclient.publicclass.AppiumConfig;
+import luckyclient.publicclass.LogUtil;
+import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.entity.ProjectCase;
+import luckyclient.serverapi.entity.ProjectCaseParams;
+import luckyclient.serverapi.entity.ProjectCaseSteps;
 
 /**
  * =================================================================
@@ -29,7 +31,7 @@ import luckyclient.planapi.entity.PublicCaseParams;
  */
 public class AndroidOneCaseExecute {
 
-	public static void oneCaseExecuteForTast(String projectname, String testCaseExternalId, int version, String taskid)
+	public static void oneCaseExecuteForTast(String projectname, Integer caseId, int version, String taskid)
 			throws IOException, InterruptedException {
 		// 记录日志到数据库
 		DbLink.exetype = 0;
@@ -37,7 +39,7 @@ public class AndroidOneCaseExecute {
 		AndroidDriver<AndroidElement> ad = null;
 		AppiumService as=null;
 		try {
-			Properties properties = luckyclient.publicclass.AppiumConfig.getConfiguration();
+			Properties properties = AppiumConfig.getConfiguration();
 			//根据配置自动启动Appiume服务
 			if(Boolean.valueOf(properties.getProperty("autoRunAppiumService"))){
 				as =new AppiumService();
@@ -47,24 +49,24 @@ public class AndroidOneCaseExecute {
 			
 			ad = AppiumInitialization.setAndroidAppium(properties);
 		} catch (IOException e1) {
-			luckyclient.publicclass.LogUtil.APP.error("初始化AndroidDriver出错！", e1);
+			LogUtil.APP.error("初始化AndroidDriver出错！", e1);
 			e1.printStackTrace();
 		}
 		LogOperation caselog = new LogOperation();
 		// 删除旧的日志
-		LogOperation.deleteCaseLogDetail(testCaseExternalId, taskid);
-		ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-		List<PublicCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectid()));
-		luckyclient.publicclass.LogUtil.APP.info("开始执行用例：【" + testCaseExternalId + "】......");
+		ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseId);
+		LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
+		List<ProjectCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+		LogUtil.APP.info("开始执行用例：【" + testcase.getCaseSign() + "】......");
 		try {
-			List<ProjectCasesteps> steps = GetServerAPI.getStepsbycaseid(testcase.getId());
+			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			AndroidCaseExecution.caseExcution(testcase, steps, taskid, ad, caselog, pcplist);
-			luckyclient.publicclass.LogUtil.APP.info("当前用例：【" + testcase.getSign() + "】执行完成......进入下一条");
+			LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
 		} catch (InterruptedException e) {
-			luckyclient.publicclass.LogUtil.APP.error("用户执行过程中抛出异常！", e);
+			LogUtil.APP.error("用户执行过程中抛出异常！", e);
 			e.printStackTrace();
 		}
-		LogOperation.updateTastdetail(taskid, 0);
+		LogOperation.updateTaskExecuteData(taskid, 0);
 		ad.closeApp();
 		//关闭Appium服务的线程
 		if(as!=null){

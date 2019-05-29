@@ -6,8 +6,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import luckyclient.dblog.LogOperation;
-import luckyclient.planapi.entity.ProjectCase;
-import luckyclient.planapi.entity.ProjectCasesteps;
+import luckyclient.publicclass.LogUtil;
+import luckyclient.serverapi.entity.ProjectCase;
+import luckyclient.serverapi.entity.ProjectCaseSteps;
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
@@ -29,17 +30,17 @@ public class InterfaceAnalyticCase{
 	 * @param caselog
 	 * @return
 	 */
-	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCasesteps step,String taskid,LogOperation caselog){
+	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCaseSteps step,String taskid,LogOperation caselog){
 		Map<String,String> params = new HashMap<String,String>(0);
 
 		try {
-	    String packagenage = step.getPath();
-	    String functionname = step.getOperation();
-	    String resultstr = step.getExpectedresult();
+	    String packagenage = step.getStepPath();
+	    String functionname = step.getStepOperation();
+	    String resultstr = step.getExpectedResult();
 		params.put("Action", step.getAction());
 	    params.put("PackageName", packagenage.trim()); 
 		params.put("FunctionName", functionname.trim());
-		String stepParams = replaceSpi(step.getParameters(),0);
+		String stepParams = replaceSpi(step.getStepParameters(),0);
 		String[] temp=stepParams.split("\\|",-1);
 		for(int i=0;i<temp.length;i++){
             if("".equals(temp[i])){
@@ -58,17 +59,16 @@ public class InterfaceAnalyticCase{
 		}else{
 			params.put("ExpectedResults", subComment(resultstr));
 		}
-		luckyclient.publicclass.LogUtil.APP.info("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！");
+		LogUtil.APP.info("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！");
 		if(null!=caselog){
-			caselog.caseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepnum()),"");
+			caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepSerialNumber()),"");
 		}
 		}catch(Exception e) {
-			luckyclient.publicclass.LogUtil.ERROR.error("用例编号："+projectcase.getSign()+" 步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本出错！");
 			if(null!=caselog){
-			caselog.caseLogDetail(taskid, projectcase.getSign(),"步骤编号："+step.getStepnum()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepnum()),"");
+			caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepSerialNumber()),"");
 			}
-			luckyclient.publicclass.LogUtil.ERROR.error(e,e);
-			params.put("exception","用例编号："+projectcase.getSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
+			LogUtil.APP.error("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！",e);
+			params.put("exception","用例编号："+projectcase.getCaseSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
 			return params;
      }
  	 return params;
@@ -161,6 +161,9 @@ public class InterfaceAnalyticCase{
      */
     private static String replaceSpi(String str,int flag){
     	String replacestr="&brvbar_rep;";
+    	if(null==str){
+    		str = "";
+    	}
     	String result=str;
     	if(str.contains("\\\\|")&&flag==0){
     		result=str.replace("\\\\|", replacestr);

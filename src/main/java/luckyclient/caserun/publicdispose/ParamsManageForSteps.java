@@ -8,6 +8,8 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import luckyclient.publicclass.LogUtil;
+
 /**
  * 对内置参数进行处理
  * =================================================================
@@ -53,15 +55,15 @@ public class ParamsManageForSteps {
 				Random random = new Random();
 				String replacement = String.valueOf(random.nextInt(endnum - startnum + 1) + startnum);
 				params = m.replaceFirst(replacement);
-				luckyclient.publicclass.LogUtil.APP.info("Params(" + matcherstr + "):替换成随机数后，字符串：" + params);
+				LogUtil.APP.info("Params(" + matcherstr + "):替换成随机数后，字符串：" + params);
 				m = pattern.matcher(params);
 			}
 			return params;
 		} catch (IllegalArgumentException iae) {
-			luckyclient.publicclass.LogUtil.APP.error("处理随机数字参数过程中出现异常，请检查数字区间是否正常！");
+			LogUtil.APP.error("处理随机数字参数过程中出现异常，请检查数字区间是否正常！");
 			return params;
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error("处理随机数字参数过程中出现异常，请检查你的格式是否正确！");
+			LogUtil.APP.error("处理随机数字参数过程中出现异常，请检查你的格式是否正确！");
 			return params;
 		}
 	}
@@ -90,18 +92,18 @@ public class ParamsManageForSteps {
 						matcherstr=df.format(new Date());
 					}
 				} catch (IllegalArgumentException iae) {
-					luckyclient.publicclass.LogUtil.APP.error("处理随机数字参数过程中出现异常，请检查你的格式是否正确！");
+					LogUtil.APP.error("处理随机数字参数过程中出现异常，请检查你的格式是否正确！");
 					df = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
 					matcherstr=df.format(new Date());
 				} finally {					
 					params = m.replaceFirst(matcherstr);
-					luckyclient.publicclass.LogUtil.APP.info("Params(" + matcherstr + "):替换成随机数后，字符串：" + params);
+					LogUtil.APP.info("Params(" + matcherstr + "):替换成随机数后，字符串：" + params);
 					m = pattern.matcher(params);
 				}
 			}
 			return params;
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error("处理随机数字参数过程中出现异常，请检查你的格式是否正确！");
+			LogUtil.APP.error("处理随机数字参数过程中出现异常，请检查你的格式是否正确！");
 			return params;
 		}
 	}

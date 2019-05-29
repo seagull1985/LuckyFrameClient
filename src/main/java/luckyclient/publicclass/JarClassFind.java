@@ -2,6 +2,8 @@ package luckyclient.publicclass;
 
 import java.io.File;
 import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * =================================================================
@@ -42,8 +44,8 @@ public class JarClassFind {
 			} else {
 				if (filelist[i].endsWith("jar")) {
 					try {
-						java.util.jar.JarFile jarfile = new java.util.jar.JarFile(path + filelist[i]);
-						for (Enumeration e = jarfile.entries(); e.hasMoreElements();) {
+						JarFile jarfile = new java.util.jar.JarFile(path + filelist[i]);						
+						for (Enumeration<JarEntry> e = jarfile.entries(); e.hasMoreElements();) {
 							String name = e.nextElement().toString();
 							if (name.equals(classname) || name.indexOf(classname) > -1) {
 								count++;
@@ -51,7 +53,9 @@ public class JarClassFind {
 								System.out.println("【"+path + filelist[i]+"】查找到第"+count+"个JAR包存在指定类！");
 							}
 						}
-					} catch (Exception eee) {
+						jarfile.close();
+					} catch (Exception e) {
+						
 					}
 				}
 			}

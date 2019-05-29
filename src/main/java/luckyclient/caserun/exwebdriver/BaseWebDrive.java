@@ -9,6 +9,8 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
 
+import luckyclient.publicclass.LogUtil;
+
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
@@ -38,11 +40,11 @@ public class BaseWebDrive {
 		try {
 			FileUtils.copyFile(scrFile, new File(pngpath));
 		} catch (IOException e) {
-			luckyclient.publicclass.LogUtil.APP.error("截图操作失败，抛出异常请查看日志...", e);
+			LogUtil.APP.error("截图操作失败，抛出异常请查看日志...", e);
 			e.printStackTrace();
 		}
 		scrFile.deleteOnExit();
-		luckyclient.publicclass.LogUtil.APP
+		LogUtil.APP
 				.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【" + pngpath + "】");
 		return result;
 	}

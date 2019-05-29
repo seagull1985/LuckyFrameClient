@@ -24,7 +24,7 @@ a {
 	<table width="620" border="0" align="center" cellpadding="0" cellspacing="0">
         <tr>
           <td height="92" style="background-color:rgba(51,204,255,0.6);">
-		  <a href="http://www.luckyframe.cn" title="LuckyFrame" target="_blank"><img src="http://${webip}:${webport}/pic/maillogo.png" alt="LuckyFrame" width="300" height="92" border="0" /></a></td>
+		  <a href="http://www.luckyframe.cn" title="LuckyFrame" target="_blank"><img src="http://${webip}:${webport}/img/maillogo.png" alt="LuckyFrame" width="300" height="92" border="0" /></a></td>
         </tr>
         <tr>
           <td height="1" colspan="2"><hr style="border-bottom:5px solid #f1f1f1; display:block;" /></td>
@@ -44,12 +44,9 @@ a {
             <p><b>用例执行失败： </b> 【<font color='#FF0000'>${casefail}</font>】</p>
             <p><b>用例有可能由于脚本原因未成功解析被锁定：</b> 【<font color='#AE57A4'>${caselock}</font>】</p>
             <p><b>用例由于长时间未收到接口Response未执行完成：</b> 【<font color='#FFAD86'>${caseunex}</font>】</p>
-			<br>
-			<p><b>具体详情请点击：  </b><a href='http://${webip}:${webport}/caseDetail/load.do?taskId=${taskid}' target='任务查询'>查询本次自动化任务执行结果明细</a></p>
-			<p><b>查看全部项目请点击：  </b><a href='http://${webip}:${webport}/autoTestChar/chart.do'>查看全部项目执行情况</a></p>
               <p>&nbsp;</p>
               <p> 此为自动化平台LuckyFrame的系统邮件，请勿回复</p>
-              <p> 请及时前往平台查看您的任务执行的更多细节</p>
+              <p> 请及时前往<a href='http://${webip}:${webport}'>LuckyFrame平台</a>查看您的任务执行的更多细节</p>
               <p> 
             </div>
 			</td>

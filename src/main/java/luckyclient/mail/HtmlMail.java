@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import luckyclient.planapi.entity.ProjectProtocolTemplate;
+import luckyclient.publicclass.LogUtil;
+import luckyclient.publicclass.SysConfig;
 import luckyclient.publicclass.remoterinterface.HttpClientHelper;
+import luckyclient.serverapi.entity.ProjectProtocolTemplate;
 
 /**
  * =================================================================
@@ -34,9 +36,9 @@ public class HtmlMail {
         parameters.put("jobname", jobname);
         try {
             Map<String, String> headmsg = new HashMap<>(0);
-            Properties properties = luckyclient.publicclass.SysConfig.getConfiguration();
+            Properties properties = SysConfig.getConfiguration();
             if ("true".equals(properties.getProperty("task.push.switch").toLowerCase())) {
-                luckyclient.publicclass.LogUtil.APP.info("开始向第三方平台推送任务执行情况....");
+                LogUtil.APP.info("开始向第三方平台推送任务执行情况....");
                 Map<String, Object> pushparameters = new HashMap<>(0);
                 pushparameters.put("buildstatus", buildstatus);
                 pushparameters.put("restartstatus", restartstatus);
@@ -51,12 +53,12 @@ public class HtmlMail {
 
                 String pushurl = properties.getProperty("task.push.url");
                 ProjectProtocolTemplate ppt=new ProjectProtocolTemplate();
-                ppt.setContentencoding("utf-8");
-                ppt.setConnecttimeout(60);
+                ppt.setEncoding("utf-8");
+                ppt.setTimeout(60);
                 HttpClientHelper.httpClientPostJson(pushurl, pushparameters, headmsg,ppt);
             }
         } catch (Exception e) {
-            luckyclient.publicclass.LogUtil.APP.error("向第三方平台推送任务执行情况出现异常，请检查！", e);
+            LogUtil.APP.error("向第三方平台推送任务执行情况出现异常，请检查！", e);
             e.printStackTrace();
             return fet.getText("task-body", parameters);
         }

@@ -56,7 +56,8 @@ import org.apache.http.ssl.SSLContexts;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import luckyclient.planapi.entity.ProjectProtocolTemplate;
+import luckyclient.publicclass.LogUtil;
+import luckyclient.serverapi.entity.ProjectProtocolTemplate;
 
 /**
  * =================================================================
@@ -80,18 +81,18 @@ public class HttpClientHelper {
 	 * @return
 	 */
 	public static String sendHttpURLPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
-		String charset=ppt.getContentencoding().toLowerCase();
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendHttpURLPost请求(必须为key-value)...");
+				LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendHttpURLPost请求(必须为key-value)...");
 				return "协议模板是纯文本，无法使用sendHttpURLPost请求(必须为key-value)...";
 			}else{
 				for (Entry<String, Object> e : params.entrySet()) {
@@ -99,7 +100,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(e.getValue());
 					sbParams.append("&");
-					luckyclient.publicclass.LogUtil.APP.info("设置HTTPURLPost参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
+					LogUtil.APP.info("设置HTTPURLPost参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
 				}
 			}
 		}
@@ -120,11 +121,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPURLPost头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换HTTPURLPost头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -160,14 +161,14 @@ public class HttpClientHelper {
 				resultBuffer.append("Content-Length=0");
 			}
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -181,7 +182,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -205,19 +206,19 @@ public class HttpClientHelper {
 	 * @param headmsg
 	 * @return
 	 */
-	public static String sendURLPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
-		String charset=ppt.getContentencoding().toLowerCase();
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+	public static String sendURLPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {		
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendURLPost请求(必须为key-value)...");
+				LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendURLPost请求(必须为key-value)...");
 				return "协议模板是纯文本，无法使用sendURLPost请求(必须为key-value)...";
 			}else{
 				for (Entry<String, Object> e : params.entrySet()) {
@@ -225,7 +226,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(e.getValue());
 					sbParams.append("&");
-					luckyclient.publicclass.LogUtil.APP.info("设置URLPost参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
+					LogUtil.APP.info("设置URLPost参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
 				}
 			}
 		}
@@ -245,11 +246,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换URLPost头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换URLPost头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -292,14 +293,14 @@ public class HttpClientHelper {
 					resultBuffer.append("Content-Length=0");
 			}
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					osw = null;
 					throw new RuntimeException(e);
 				}
@@ -308,7 +309,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -327,22 +328,22 @@ public class HttpClientHelper {
 	 */
 	public static String sendGetAndSaveFile(String urlParam, Map<String, Object> params, String fileSavePath, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
 		// 构建请求参数
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendGetAndSaveFile请求(必须为key-value)...");
+				LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendGetAndSaveFile请求(必须为key-value)...");
 			}else{
 				for (Entry<String, Object> entry : params.entrySet()) {
 					sbParams.append(entry.getKey());
 					sbParams.append("=");
 					sbParams.append(entry.getValue());
 					sbParams.append("&");
-					luckyclient.publicclass.LogUtil.APP.info("设置HTTPSaveFile参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置HTTPSaveFile参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 				}
 			}
 		}
@@ -362,11 +363,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPSaveFile头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换HTTPSaveFile头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -394,14 +395,14 @@ public class HttpClientHelper {
 			os.flush();
 			return resultBuffer.toString()+"下载文件成功，请前往客户端路径:" + fileSavePath + " 查看附件。";
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (os != null) {
 				try {
 					os.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					os = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -415,7 +416,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -438,18 +439,18 @@ public class HttpClientHelper {
 	 * @return
 	 */
 	public static String sendHttpURLGet(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
-		String charset=ppt.getContentencoding().toLowerCase();
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendHttpURLGet请求(必须为key-value)...");
+				LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendHttpURLGet请求(必须为key-value)...");
 				return "协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendHttpURLGet请求(必须为key-value)...";
 			}else{
 				for (Entry<String, Object> entry : params.entrySet()) {
@@ -457,7 +458,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(entry.getValue());
 					sbParams.append("&");
-					luckyclient.publicclass.LogUtil.APP.info("设置HTTPURLGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置HTTPURLGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 				}
 			}
 		}
@@ -476,11 +477,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPURLGet头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换HTTPURLGet头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -506,14 +507,14 @@ public class HttpClientHelper {
 				resultBuffer.append("读取服务器响应数据异常!响应码："+con.getResponseCode());
 			}
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -537,18 +538,18 @@ public class HttpClientHelper {
 	 * @return
 	 */
 	public static String sendURLGet(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
-		String charset=ppt.getContentencoding().toLowerCase();
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendURLGet请求(必须为key-value)...");
+				LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendURLGet请求(必须为key-value)...");
 				return "协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendURLGet请求(必须为key-value)...";
 			}else{
 				for (Entry<String, Object> entry : params.entrySet()) {
@@ -556,7 +557,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(entry.getValue());
 					sbParams.append("&");
-					luckyclient.publicclass.LogUtil.APP.info("设置URLGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置URLGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 				}
 			}
 
@@ -579,11 +580,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换URLGet头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换URLGet头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -610,14 +611,14 @@ public class HttpClientHelper {
 				resultBuffer.append("读取服务器响应数据异常!");
 			}
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -638,14 +639,14 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 */
 	public static String httpClientPostJson(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
 	    httpPost.setHeader("Content-Type", "application/json");
@@ -658,11 +659,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPPostJson头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换HTTPPostJson头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpPost.setHeader(key, value);
 	    	}else{
 	    		httpPost.setHeader(key, value);
@@ -673,12 +674,12 @@ public class HttpClientHelper {
 		try {
 		if(params.size()>0){
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.info("参数类型：TEXT,设置HTTPPostJson参数信息...【"+params.get("_forTextJson").toString()+"】");
+				LogUtil.APP.info("参数类型：TEXT,设置HTTPPostJson参数信息...【"+params.get("_forTextJson").toString()+"】");
 				StringEntity entity = new StringEntity(params.get("_forTextJson").toString(),charset);
 				httpPost.setEntity(entity);
 			}else{
 			    String jsonString = JSON.toJSONString(params);
-				luckyclient.publicclass.LogUtil.APP.info("参数类型：FORM,设置HTTPPostJson参数信息...【"+jsonString+"】");
+				LogUtil.APP.info("参数类型：FORM,设置HTTPPostJson参数信息...【"+jsonString+"】");
 				StringEntity entity = new StringEntity(jsonString,charset);
 				httpPost.setEntity(entity);
 			}
@@ -707,14 +708,14 @@ public class HttpClientHelper {
 			}	
 		}
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -735,15 +736,15 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 */
 	public static String httpClientPost(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		HttpPost httpPost = new HttpPost(urlParam);
 	    RequestConfig requestConfig = RequestConfig.custom()  
 	            .setConnectTimeout(timeout)
@@ -754,11 +755,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPClientPost头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换HTTPClientPost头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpPost.setHeader(key, value);
 	    	}else{
 	    		httpPost.setHeader(key, value);
@@ -769,14 +770,14 @@ public class HttpClientHelper {
 		try {
 			if(params.size()>0){
 				if(1==params.size()&&params.containsKey("_forTextJson")){
-					luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientPost请求(必须为key-value)...");
+					LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientPost请求(必须为key-value)...");
 					return "协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientPost请求(必须为key-value)...";
 				}else{
 					//拼接参数
 				    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
 				    for (Map.Entry<String, Object> m :params.entrySet())  { 
 			            nvps.add(new BasicNameValuePair(m.getKey(), m.getValue().toString()));
-			            luckyclient.publicclass.LogUtil.APP.info("设置HTTPClientPost参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
+			            LogUtil.APP.info("设置HTTPClientPost参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
 			        }
 				    httpPost.setEntity(new UrlEncodedFormEntity(nvps,charset));
 				}
@@ -805,14 +806,14 @@ public class HttpClientHelper {
 				resultBuffer.append("读取服务器响应数据异常，响应码："+response.getStatusLine().getStatusCode());
 			}
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -834,14 +835,14 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 */
 	public static String httpClientUploadFile(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
 	    RequestConfig requestConfig = RequestConfig.custom()  
@@ -853,11 +854,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换httpClientUploadFile头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换httpClientUploadFile头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpPost.setHeader(key, value);
 	    	}else{
 	    		httpPost.setHeader(key, value);
@@ -868,7 +869,7 @@ public class HttpClientHelper {
 		try {
 			if(params.size()>0){
 				if(1==params.size()&&params.containsKey("_forTextJson")){
-					luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientUploadFile请求(必须为key-value)...");
+					LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientUploadFile请求(必须为key-value)...");
 					return "协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientUploadFile请求(必须为key-value)...";
 				}else{
 					//拼接参数
@@ -879,10 +880,10 @@ public class HttpClientHelper {
 				    for (Map.Entry<String, Object> m :params.entrySet())  {
 				    	if (m.getValue() instanceof File) {
 				    		entityBuilder.addBinaryBody(m.getKey(), (File)m.getValue());
-				    		luckyclient.publicclass.LogUtil.APP.info("设置httpClientUploadFile 上传文件参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
+				    		LogUtil.APP.info("设置httpClientUploadFile 上传文件参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
 				    	}else{
 				    		entityBuilder.addTextBody(m.getKey(), m.getValue().toString());
-				    		luckyclient.publicclass.LogUtil.APP.info("设置httpClientUploadFile参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
+				    		LogUtil.APP.info("设置httpClientUploadFile参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
 				    	}
 			        }
 				    HttpEntity reqEntity =entityBuilder.build();
@@ -913,14 +914,14 @@ public class HttpClientHelper {
 				resultBuffer.append("读取服务器响应数据异常，响应码："+response.getStatusLine().getStatusCode());
 			}
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -941,21 +942,21 @@ public class HttpClientHelper {
 	 * @throws KeyManagementException
 	 */
 	public static String httpClientGet(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");	
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");	
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		BufferedReader br = null;
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientGet请求(必须为key-value)...");
+				LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientGet请求(必须为key-value)...");
 				return "协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientGet请求(必须为key-value)...";
 			}else{
 				for (Entry<String, Object> entry : params.entrySet()) {
@@ -964,11 +965,11 @@ public class HttpClientHelper {
 					try {
 						sbParams.append(URLEncoder.encode(String.valueOf(entry.getValue()), charset));
 					} catch (UnsupportedEncodingException e) {
-						luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+						LogUtil.APP.error(e.getMessage(), e);
 						throw new RuntimeException(e);
 					}
 					sbParams.append("&");
-					luckyclient.publicclass.LogUtil.APP.info("设置HTTPClientGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置HTTPClientGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 				}
 			}
 			
@@ -986,11 +987,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTPClientGet头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换HTTPClientGet头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpGet.setHeader(key, value);
 	    	}else{
 	    		httpGet.setHeader(key, value);
@@ -1018,14 +1019,14 @@ public class HttpClientHelper {
 				resultBuffer.append(temp);
 			}
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -1045,12 +1046,12 @@ public class HttpClientHelper {
 	public static String sendSocketPost(String urlParam, Map<String, Object> params, String charset,
 			Map<String, String> headmsg) {
 		String result = "";
-		luckyclient.publicclass.LogUtil.APP.info("设置Socket请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置Socket请求地址:【"+urlParam+"】");
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendSocketPost请求(必须为key-value)...");
+				LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendSocketPost请求(必须为key-value)...");
 				return "协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendSocketPost请求(必须为key-value)...";
 			}else{
 				for (Entry<String, Object> entry : params.entrySet()) {
@@ -1058,7 +1059,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(entry.getValue());
 					sbParams.append("&");
-					luckyclient.publicclass.LogUtil.APP.info("设置SocketPost参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置SocketPost参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 				}
 			}
 		}
@@ -1083,11 +1084,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换Socket头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换Socket头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		sb.append(key+": "+value+" \r\n");
 		    	}else{
 		    		sb.append(key+": "+value+" \r\n");
@@ -1118,14 +1119,14 @@ public class HttpClientHelper {
 			// 读取出响应体数据（就是你要的数据）
 			result = readLine(is, contentLength, charset);
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1133,7 +1134,7 @@ public class HttpClientHelper {
 						try {
 							socket.close();
 						} catch (IOException e) {
-							luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+							LogUtil.APP.error(e.getMessage(), e);
 							socket = null;
 							throw new RuntimeException(e);
 						}
@@ -1144,7 +1145,7 @@ public class HttpClientHelper {
 				try {
 					is.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					is = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1153,7 +1154,7 @@ public class HttpClientHelper {
 							socket.close();
 						} catch (IOException e) {
 							socket = null;
-							luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+							LogUtil.APP.error(e.getMessage(), e);
 							throw new RuntimeException(e);
 						}
 					}
@@ -1173,12 +1174,12 @@ public class HttpClientHelper {
 	 */
 	public static String sendSocketGet(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
 		String result = "";
-		luckyclient.publicclass.LogUtil.APP.info("设置Socket请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置Socket请求地址:【"+urlParam+"】");
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendSocketGet请求(必须为key-value)...");
+				LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendSocketGet请求(必须为key-value)...");
 				return "协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendSocketGet请求(必须为key-value)...";
 			}else{
 				for (Entry<String, Object> entry : params.entrySet()) {
@@ -1186,7 +1187,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(entry.getValue());
 					sbParams.append("&");
-					luckyclient.publicclass.LogUtil.APP.info("设置SocketPost参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置SocketPost参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
 				}
 			}
 
@@ -1212,11 +1213,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换Socket头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换Socket头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		sb.append(key+": "+value+" \r\n");
 		    	}else{
 		    		sb.append(key+": "+value+" \r\n");
@@ -1247,14 +1248,14 @@ public class HttpClientHelper {
 			// 读取出响应体数据（就是你要的数据）
 			result = readLine(is, contentLength, charset);
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1262,7 +1263,7 @@ public class HttpClientHelper {
 						try {
 							socket.close();
 						} catch (IOException e) {
-							luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+							LogUtil.APP.error(e.getMessage(), e);
 							socket = null;
 							throw new RuntimeException(e);
 						}
@@ -1273,7 +1274,7 @@ public class HttpClientHelper {
 				try {
 					is.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					is = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1281,7 +1282,7 @@ public class HttpClientHelper {
 						try {
 							socket.close();
 						} catch (IOException e) {
-							luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+							LogUtil.APP.error(e.getMessage(), e);
 							socket = null;
 							throw new RuntimeException(e);
 						}
@@ -1336,18 +1337,18 @@ public class HttpClientHelper {
 	 * @return
 	 */
 	public static String sendHttpURLDel(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
-		String charset=ppt.getContentencoding().toLowerCase();
-		int timeout=ppt.getConnecttimeout();
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout();
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendHttpURLDel请求(必须为key-value)...");
+				LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendHttpURLDel请求(必须为key-value)...");
 				return "协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用sendHttpURLDel请求(必须为key-value)...";
 			}else{
 				for (Entry<String, Object> e : params.entrySet()) {
@@ -1355,7 +1356,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(e.getValue());
 					sbParams.append("&");
-					luckyclient.publicclass.LogUtil.APP.info("设置HttpURLDel参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
+					LogUtil.APP.info("设置HttpURLDel参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
 				}
 			}
 		}
@@ -1375,11 +1376,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 		    		con.setRequestProperty(key,value);
 		    	}else{
 		    		con.setRequestProperty(key,value);
@@ -1412,14 +1413,14 @@ public class HttpClientHelper {
 				}
 		    }
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1433,7 +1434,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1461,14 +1462,14 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static String httpClientPutJson(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws KeyManagementException, NoSuchAlgorithmException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
 	    httpput.setHeader("Content-Type", "application/json");
@@ -1481,11 +1482,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpput.setHeader(key,value);
 	    	}else{
 	    		httpput.setHeader(key,value);
@@ -1496,12 +1497,12 @@ public class HttpClientHelper {
 		try {
 		if(params.size()>0){
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				luckyclient.publicclass.LogUtil.APP.info("参数类型：TEXT,设置HTTPClientPutJson参数信息...【"+params.get("_forTextJson").toString()+"】");
+				LogUtil.APP.info("参数类型：TEXT,设置HTTPClientPutJson参数信息...【"+params.get("_forTextJson").toString()+"】");
 				StringEntity entity = new StringEntity(params.get("_forTextJson").toString(),charset);
 				httpput.setEntity(entity);
 			}else{
 			    String jsonString = JSON.toJSONString(params);
-				luckyclient.publicclass.LogUtil.APP.info("参数类型：FORM,设置HTTPClientPutJson参数信息...【"+jsonString+"】");
+				LogUtil.APP.info("参数类型：FORM,设置HTTPClientPutJson参数信息...【"+jsonString+"】");
 				StringEntity entity = new StringEntity(jsonString,charset);
 				httpput.setEntity(entity);
 			}
@@ -1531,14 +1532,14 @@ public class HttpClientHelper {
 				}
 	        }
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -1559,14 +1560,14 @@ public class HttpClientHelper {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public static String httpClientPut(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws KeyManagementException, NoSuchAlgorithmException {
-		String charset=ppt.getContentencoding().toLowerCase();
-		String cerpath=ppt.getCerpath();
-		int timeout=ppt.getConnecttimeout()*1000;
-		int responsehead=ppt.getResponsehead();
-		int responsecode=ppt.getResponsecode();
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		luckyclient.publicclass.LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
 	    RequestConfig requestConfig = RequestConfig.custom()  
@@ -1578,11 +1579,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	luckyclient.publicclass.LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		luckyclient.publicclass.LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
 	    		httpput.setHeader(key,value);
 	    	}else{
 	    		httpput.setHeader(key,value);
@@ -1593,14 +1594,14 @@ public class HttpClientHelper {
 		try {
 			if(params.size()>0){
 				if(1==params.size()&&params.containsKey("_forTextJson")){
-					luckyclient.publicclass.LogUtil.APP.error("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientPut请求(必须为key-value)...");
+					LogUtil.APP.warn("协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientPut请求(必须为key-value)...");
 					return "协议模板是纯文本模式(仅限httpClientPostJson以及httpClientPutJson请求)，无法使用httpClientPut请求(必须为key-value)...";
 				}else{
 					//拼接参数
 				    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
 				    for (Map.Entry<String, Object> m :params.entrySet())  { 
 			            nvps.add(new BasicNameValuePair(m.getKey(), m.getValue().toString()));
-			            luckyclient.publicclass.LogUtil.APP.info("开始设置HTTPClientPut参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
+			            LogUtil.APP.info("开始设置HTTPClientPut参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
 			        }
 				    httpput.setEntity(new UrlEncodedFormEntity(nvps,charset));
 				}
@@ -1630,14 +1631,14 @@ public class HttpClientHelper {
 				}
 	        }		
 		} catch (Exception e) {
-			luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error(e.getMessage(), e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error(e.getMessage(), e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -1656,12 +1657,12 @@ public class HttpClientHelper {
         SSLContext sslContext = null;
         FileInputStream instream = null;
         KeyStore trustStore = null;
-        luckyclient.publicclass.LogUtil.APP.info("证书路径："+keyStorePath+"  密钥："+keyStorepass);
+        LogUtil.APP.info("证书路径："+keyStorePath+"  密钥："+keyStorepass);
         try {
             trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            luckyclient.publicclass.LogUtil.APP.info("开始读取证书文件流...");
+            LogUtil.APP.info("开始读取证书文件流...");
             instream = new FileInputStream(new File(keyStorePath));
-            luckyclient.publicclass.LogUtil.APP.info("开始设置证书以及密钥...");
+            LogUtil.APP.info("开始设置证书以及密钥...");
             trustStore.load(instream, keyStorepass.toCharArray());
             // 相信自己的CA和所有自签名的证书
             sslContext = SSLContexts.custom().loadTrustMaterial(trustStore, new TrustSelfSignedStrategy()).build();
@@ -1673,12 +1674,12 @@ public class HttpClientHelper {
             sslContext = SSLContext.getInstance("SSL", "SunJSSE");
             sslContext.init(null, tms, new java.security.SecureRandom());
         } catch (Exception e) {
-        	luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+        	LogUtil.APP.error(e.getMessage(), e);
         } finally {
             try {
                 instream.close();
             } catch (IOException e) {
-            	luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+            	LogUtil.APP.error(e.getMessage(), e);
             }
         }
         return sslContext;
@@ -1701,12 +1702,12 @@ public class HttpClientHelper {
     		//采用绕过验证的方式处理https请求
     		SSLContext sslContext=null;
     		if(null==cerpath||"".equals(cerpath.trim())){
-    			luckyclient.publicclass.LogUtil.APP.info("开始构建HTTPS单向认证请求...");
+    			LogUtil.APP.info("开始构建HTTPS单向认证请求...");
     	        TrustManager[] trustManagers = {new MyX509TrustManager()};  
     	        sslContext = SSLContext.getInstance("TLS");
     	        sslContext.init(null, trustManagers, new SecureRandom());
     		}else{
-    			luckyclient.publicclass.LogUtil.APP.info("开始构建HTTPS双向认证请求...");
+    			LogUtil.APP.info("开始构建HTTPS双向认证请求...");
     			String strcerpath[]=cerpath.split(";",-1);
     			sslContext = sslContextKeyStore(strcerpath[0], strcerpath[1]);
     		}

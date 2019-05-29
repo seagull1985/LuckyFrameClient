@@ -1,6 +1,7 @@
 package luckyclient.jenkinsapi;
 
 import luckyclient.dblog.LogOperation;
+import luckyclient.publicclass.LogUtil;
 
 /**
  * =================================================================
@@ -24,7 +25,7 @@ public class BuildingInitialization {
 				String result = JenkinsBuilding.buildingResult(buildname[i]);
 				if(result.indexOf("alt=\"Failed\"")>-1){
 					buildresult = "项目"+buildname[i]+"构建失败，自动化测试退出！";
-					luckyclient.publicclass.LogUtil.APP.error("项目"+buildname[i]+"构建失败，自动化测试退出！");
+					LogUtil.APP.warn("项目"+buildname[i]+"构建失败，自动化测试退出！");
 					break;
 				}else if(result.indexOf("alt=\"Success\"")>-1){
 					k++;
@@ -33,7 +34,7 @@ public class BuildingInitialization {
 			if(buildresult.indexOf("Status:true")<=-1){
 				break;
 			}
-			luckyclient.publicclass.LogUtil.APP.info("正在检查构建中的项目(每6秒检查一次)。。。需要构建项目"+buildname.length+"个，目前成功"+k+"个");
+			LogUtil.APP.info("正在检查构建中的项目(每6秒检查一次)。。。需要构建项目"+buildname.length+"个，目前成功"+k+"个");
 			if(k==buildname.length){
 				break;
 			}			
@@ -48,7 +49,7 @@ public class BuildingInitialization {
 		String[] buildurl = LogOperation.getBuildName(tastid);
 		
 		if(buildurl!=null){
-			luckyclient.publicclass.LogUtil.APP.info("准备将配置的测试项目进行构建！请稍等。。。。");
+			LogUtil.APP.info("准备将配置的测试项目进行构建！请稍等。。。。");
 			for(int i=0;i<buildurl.length;i++){
 				JenkinsBuilding.sendBuilding(buildurl[i]);
 			}
@@ -56,11 +57,10 @@ public class BuildingInitialization {
 			Thread.sleep(10000);  
 			result = booleanBuildingOver(buildurl);
 		}else{
-			luckyclient.publicclass.LogUtil.APP.info("当前任务没有找到需要构建的项目！");
+			LogUtil.APP.info("当前任务没有找到需要构建的项目！");
 		}
 		}catch(Exception e){
-			luckyclient.publicclass.LogUtil.APP.error("项目构建过程中出现异常");
-			luckyclient.publicclass.LogUtil.APP.error(e);
+			LogUtil.APP.error("项目构建过程中出现异常",e);
 			result = "项目构建过程中出现异常";
 			return result;
 		}

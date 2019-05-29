@@ -6,6 +6,8 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
+import luckyclient.publicclass.LogUtil;
+
 /**
  * 远程执行shell脚本类
  * @author l
@@ -31,7 +33,7 @@ public class RmtShellExecutor {
 	    String result = "Status:true"+" 重启命令执行成功！";
 	    try { 
 	    JSch jsch = new JSch();
-	    luckyclient.publicclass.LogUtil.APP.info("进入到重启TOMCAT方法。。。");
+	    LogUtil.APP.info("进入到重启TOMCAT方法。。。");
 	    //设置密钥和密码
 	    if (privateKey != null && !"".equals(privateKey)) {
 	        if (passphrase != null && "".equals(passphrase)) {
@@ -45,18 +47,18 @@ public class RmtShellExecutor {
 	     
 	    if(port <=0){
 	        //连接服务器，采用默认端口
-	    	luckyclient.publicclass.LogUtil.APP.info("设置重启TOMCAT服务器IP及默认端口。。。");
+	    	LogUtil.APP.info("设置重启TOMCAT服务器IP及默认端口。。。");
 	        session = jsch.getSession(user, ip);
 	    }else{
 	        //采用指定的端口连接服务器
-	    	luckyclient.publicclass.LogUtil.APP.info("设置重启TOMCAT服务器IP及端口。。。");
+	    	LogUtil.APP.info("设置重启TOMCAT服务器IP及端口。。。");
 	        session = jsch.getSession(user, ip ,port);
-	        luckyclient.publicclass.LogUtil.APP.info("设置重启TOMCAT服务器IP及端口完成!");
+	        LogUtil.APP.info("设置重启TOMCAT服务器IP及端口完成!");
 	    }
 	 
 	    //如果服务器连接不上，则抛出异常
 	    if (session == null) {
-	    	luckyclient.publicclass.LogUtil.APP.error("重启TOMCAT过程中，链接服务器session is null");
+	    	LogUtil.APP.warn("重启TOMCAT过程中，链接服务器session is null");
 	    	result = "重启TOMCAT过程中，链接服务器session is null";
 	        throw new Exception("session is null");
 	    }     
@@ -76,7 +78,7 @@ public class RmtShellExecutor {
 	        OutputStream outstream = channel.getOutputStream();
 	         
 	        //发送需要执行的SHELL命令，需要用\n结尾，表示回车
-	        luckyclient.publicclass.LogUtil.APP.info("准备往重启TOMCAT服务器发送命令!");
+	        LogUtil.APP.info("准备往重启TOMCAT服务器发送命令!");
 	        String shellCommand = command+"  \n";
 	        outstream.write(shellCommand.getBytes());
 	        outstream.flush();
@@ -87,20 +89,20 @@ public class RmtShellExecutor {
 	            byte[] data = new byte[instream.available()];
 	            int nLen = instream.read(data);
 	            if (nLen < 0) {
-	            	luckyclient.publicclass.LogUtil.APP.error("重启TOMCAT过程中，获取命令执行结果出现异常！");
+	            	LogUtil.APP.warn("重启TOMCAT过程中，获取命令执行结果出现异常！");
 	            	result = "重启TOMCAT过程中，获取命令执行结果出现异常！";
 	                throw new Exception("network error.");
 	            }
 	             
 	            //转换输出结果并打印出来
 	            String temp = new String(data, 0, nLen,"iso8859-1");
-	            luckyclient.publicclass.LogUtil.APP.info("开始打印重启TOMCAT命令执行结果"+temp);
+	            LogUtil.APP.info("开始打印重启TOMCAT命令执行结果"+temp);
 	        }
 	        outstream.close();
 	        instream.close();
 	    } catch (Exception e) {
 	    	result = "重启TOMCAT过程中，出现异常！";
-	    	luckyclient.publicclass.LogUtil.APP.error(e.getMessage(), e);
+	    	LogUtil.APP.error(e.getMessage(), e);
 		    return result;
 	    } finally {
 	    	if(null!=session){
