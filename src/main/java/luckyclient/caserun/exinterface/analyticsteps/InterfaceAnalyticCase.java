@@ -59,7 +59,7 @@ public class InterfaceAnalyticCase{
 		}else{
 			params.put("ExpectedResults", subComment(resultstr));
 		}
-		LogUtil.APP.info("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！");
+		LogUtil.APP.info("用例编号:{} 步骤编号:{} 解析自动化用例步骤脚本完成！",projectcase.getCaseSign(),step.getStepSerialNumber());
 		if(null!=caselog){
 			caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepSerialNumber()),"");
 		}
@@ -67,7 +67,7 @@ public class InterfaceAnalyticCase{
 			if(null!=caselog){
 			caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepSerialNumber()),"");
 			}
-			LogUtil.APP.error("用例编号："+projectcase.getCaseSign()+" 步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！",e);
+			LogUtil.APP.error("用例编号：{} 步骤编号：{} 解析自动化用例步骤脚本出错！",projectcase.getCaseSign(),step.getStepSerialNumber(),e);
 			params.put("exception","用例编号："+projectcase.getCaseSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
 			return params;
      }

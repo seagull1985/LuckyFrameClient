@@ -68,8 +68,8 @@ public class WebTestCaseDebug {
                 functionname = ChangString.changparams(functionname, variable, "方法名");
             } catch (Exception e) {
                 k = 0;
+                LogUtil.APP.error("解析包名或是方法名出现异常！",e);
                 PostServerAPI.cPostDebugLog(userId, caseId, "ERROR", "解析包名或是方法名失败，请检查！",2);
-                e.printStackTrace();
                 break;        //某一步骤失败后，此条用例置为失败退出
             }
             //用例名称解析出现异常或是单个步骤参数解析异常
@@ -119,10 +119,10 @@ public class WebTestCaseDebug {
                             PostServerAPI.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，模糊匹配预期结果失败！预期结果：" + expectedresults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote,0);
                             testnote = "用例第" + (i + 1) + "步，模糊匹配预期结果失败！";
                             if (testcase.getFailcontinue() == 0) {
-                                LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                                LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......",testcase.getCaseSign(),(i+1));
                                 break;
                             } else {
-                                LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                                LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......",testcase.getCaseSign(),(i+1));
                             }
                         }
                     }
@@ -137,10 +137,10 @@ public class WebTestCaseDebug {
                             PostServerAPI.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，正则匹配预期结果失败！预期结果：" + expectedresults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote,0);
                             testnote = "用例第" + (i + 1) + "步，正则匹配预期结果失败！";
                             if (testcase.getFailcontinue() == 0) {
-                                LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                                LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......",testcase.getCaseSign(),(i+1));
                                 break;
                             } else {
-                                LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                                LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......",testcase.getCaseSign(),(i+1));
                             }
                         }
                     }
@@ -153,24 +153,24 @@ public class WebTestCaseDebug {
                             PostServerAPI.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，精确匹配预期结果失败！预期结果：" + expectedresults + "，测试结果：" + testnote,0);
                             testnote = "用例第" + (i + 1) + "步，精确匹配预期结果失败！";
                             if (testcase.getFailcontinue() == 0) {
-                                LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                                LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......",testcase.getCaseSign(),(i+1));
                                 break;
                             } else {
-                                LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                                LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......",testcase.getCaseSign(),(i+1));
                             }
                         }
                     }
                 }
             } catch (Exception e) {
                 setcaseresult = 1;
+                LogUtil.APP.error("用例执行出现异常！",e);
                 PostServerAPI.cPostDebugLog(userId, caseId, "ERROR", "调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！",0);
                 testnote = "CallCase调用出错！";
-                e.printStackTrace();
                 if (testcase.getFailcontinue() == 0) {
-                    LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......");
+                    LogUtil.APP.error("用例【{}】第【{}】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......",testcase.getCaseSign(),(i+1));
                     break;
                 } else {
-                    LogUtil.APP.warn("用例【"+testcase.getCaseSign()+"】第【"+(i + 1)+"】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......");
+                    LogUtil.APP.error("用例【{}】第【{}】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......",testcase.getCaseSign(),(i+1));
                 }
             }
         }

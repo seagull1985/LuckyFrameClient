@@ -60,7 +60,7 @@ public class TestControl {
 		for (ProjectCase testcase : testCases) {
 			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			if (steps.size() == 0) {
-				LogUtil.APP.warn("用例【" + testcase.getCaseSign() + "】没有找到步骤，直接跳过，请检查！");
+				LogUtil.APP.warn("用例【{}】没有找到步骤，直接跳过，请检查！",testcase.getCaseSign());
 				caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "在用例中没有找到步骤，请检查", "error", "1", "");
 				continue;
 			}
@@ -116,15 +116,13 @@ public class TestControl {
 					List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(projectcase.getCaseId());
 					if (steps.size() == 0) {
 						caselog.insertTaskCaseExecute(taskid, taskScheduling.getProjectId(),projectcase.getCaseId(),projectcase.getCaseSign(), projectcase.getCaseName(), 2);
-						LogUtil.APP.warn("用例【" + projectcase.getCaseSign() + "】没有找到步骤，直接跳过，请检查！");
+						LogUtil.APP.warn("用例【{}】没有找到步骤，直接跳过，请检查！",projectcase.getCaseSign());
 						caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(), "在用例中没有找到步骤，请检查", "error", "1", "");
 						continue;
 					}
 					// 多线程计数,如果用例设置了优先级，必须等优先级高的用例执行完成，才继续后面的用例
 					if (casepriority < projectcase.getPriority()) {
-						LogUtil.APP.info("用例编号：" + projectcase.getCaseSign() + "  casepriority："
-								+ casepriority + "   projectcase.getPriority()：" + projectcase.getPriority());
-						LogUtil.APP.info("THREAD_COUNT：" + THREAD_COUNT);
+						LogUtil.APP.info("用例编号:{} 上条用例优先级:{} 当前用例优先级:{}",projectcase.getCaseSign(),casepriority,projectcase.getPriority());
 						int i = 0;
 						while (THREAD_COUNT != 0) {
 							i++;
