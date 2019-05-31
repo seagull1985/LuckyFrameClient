@@ -1,5 +1,7 @@
 package luckyclient.caserun.publicdispose;
 
+import org.apache.commons.lang.StringUtils;
+
 import luckyclient.publicclass.LogUtil;
 
 /**
@@ -20,8 +22,8 @@ public class ActionManageForSteps {
 	 * @return
 	 */
 	public static String actionManage(String stepsaction,String testresult){
-		LogUtil.APP.info("测试结果是：" + testresult);
-		LogUtil.APP.info("现在进入到Action(动作)处理......ACTION值："+stepsaction);
+		LogUtil.APP.info("Action(动作)处理前，测试结果是：{}",testresult);
+		LogUtil.APP.info("现在进入到Action(动作)处理......ACTION值：{}",stepsaction);
 		if(null==stepsaction||"".equals(stepsaction.trim())){
 			LogUtil.APP.info("Action(动作)无需处理......");
 			return testresult;
@@ -45,18 +47,19 @@ public class ActionManageForSteps {
 	private static String actionExecute(String actionKeyWord,String testResult){
 		try{
 
-			String[] actionArr = actionKeyWord.split("#");
-			if(actionArr.length == 2){
-				ActionContext actionContext = new ActionContext(actionArr[1]);
-				testResult = actionContext.parse(actionKeyWord, testResult);
+			String keyWord = actionKeyWord.substring(actionKeyWord.lastIndexOf("#")+1, actionKeyWord.length());
+			String actionParams = actionKeyWord.substring(0, actionKeyWord.lastIndexOf("#"));
+			if(StringUtils.isNotEmpty(keyWord)&& keyWord.length()>0){
+				ActionContext actionContext = new ActionContext(keyWord.toLowerCase());
+				testResult = actionContext.parse(actionParams, testResult, actionKeyWord);
 			}else {
 				testResult="关键字语法书写有误，请检查关键字："+actionKeyWord;
-				LogUtil.APP.error("关键字语法书写有误，请检查关键字："+actionKeyWord);
+				LogUtil.APP.warn("关键字语法书写有误，请检查关键字：{}",actionKeyWord);
 			}
 			return testResult;
 		}catch(Exception e){
 			testResult="处理步骤动作事件过程中出现异常，直接返回测试结果："+actionKeyWord;
-			LogUtil.APP.error("处理步骤动作事件过程中出现异常，直接返回测试结果：" ,e);
+			LogUtil.APP.error("处理步骤动作事件过程中出现异常，直接返回测试结果！" ,e);
 			return testResult;
 		}
 	}

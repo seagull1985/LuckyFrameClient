@@ -7,5 +7,5 @@ package luckyclient.caserun.publicdispose.actionkeyword;
  */
 public interface ActionKeyWordParser {
 
-    String parse(String actionKeyWord, String testResult);
+    String parse(String actionParams, String testResult);
 }

@@ -8,7 +8,7 @@ import luckyclient.publicclass.LogUtil;
  * @author: sunshaoyan
  * @date: Created on 2019/4/13
  */
-@Action(name="subStrRgex")
+@Action(name="substrrgex")
 public class SubStrRegxActionParser implements ActionKeyWordParser {
 
 
@@ -18,16 +18,15 @@ public class SubStrRegxActionParser implements ActionKeyWordParser {
      * @param testResult 测试结果
      */
     @Override
-    public String parse(String actionKeyWord, String testResult) {
-        String actionparams=actionKeyWord.substring(0, actionKeyWord.lastIndexOf("#subStrRgex"));
+    public String parse(String actionParams, String testResult) {
         String key="";
         String index="1";
-        if(actionparams.endsWith("]")&&actionparams.contains("[")){
-            key=actionparams.substring(0,actionparams.lastIndexOf("["));
-            index=actionparams.substring(actionparams.lastIndexOf("[")+1, actionparams.lastIndexOf("]"));
+        if(actionParams.endsWith("]")&&actionParams.contains("[")){
+            key=actionParams.substring(0,actionParams.lastIndexOf("["));
+            index=actionParams.substring(actionParams.lastIndexOf("[")+1, actionParams.lastIndexOf("]"));
             testResult= SubString.subStrRgex(testResult, key, index);
         }else{
-            key=actionparams;
+            key=actionParams;
             testResult= SubString.subStrRgex(testResult, key, index);
         }
         LogUtil.APP.info("Action(subStrRgex):获取JSON字符串指定Key的值是："+testResult);

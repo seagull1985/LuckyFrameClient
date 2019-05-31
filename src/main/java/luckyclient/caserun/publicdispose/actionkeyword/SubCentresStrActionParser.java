@@ -8,7 +8,7 @@ import luckyclient.publicclass.LogUtil;
  * @author: sunshaoyan
  * @date: Created on 2019/4/13
  */
-@Action(name="subCentreStr")
+@Action(name="subcentrestr")
 public class SubCentresStrActionParser implements ActionKeyWordParser {
 
 
@@ -18,18 +18,17 @@ public class SubCentresStrActionParser implements ActionKeyWordParser {
      * @param testResult 测试结果
      */
     @Override
-    public String parse(String actionKeyWord, String testResult) {
-        String actionparams=actionKeyWord.substring(0, actionKeyWord.lastIndexOf("#subCentreStr"));
+    public String parse(String actionParams, String testResult) {
         String startstr="";
         String endstr="";
-        if(actionparams.startsWith("[")&&actionparams.endsWith("]")){
-            startstr=actionparams.substring(actionparams.indexOf("[")+1, actionparams.indexOf("]"));
-            endstr=actionparams.substring(actionparams.lastIndexOf("[")+1, actionparams.lastIndexOf("]"));
+        if(actionParams.startsWith("[")&&actionParams.endsWith("]")){
+            startstr=actionParams.substring(actionParams.indexOf("[")+1, actionParams.indexOf("]"));
+            endstr=actionParams.substring(actionParams.lastIndexOf("[")+1, actionParams.lastIndexOf("]"));
             testResult= SubString.subCentreStr(testResult, startstr, endstr);
             LogUtil.APP.info("Action(subCentreStr):截取测试结果指定开始及结束位置字符串："+testResult);
         }else{
-            testResult="步骤动作：subCentreStr 必须是[\"开始字符\"][\"结束字符\"]#subCentreStr 格式，请检查您的步骤动作关键字:"+actionKeyWord;
-            LogUtil.APP.error("步骤动作：subCentreStr 必须是[\"开始字符\"][\"结束字符\"]#subCentreStr 格式，请检查您的步骤动作关键字:"+actionKeyWord);
+            testResult="步骤动作：subCentreStr 必须是[\"开始字符\"][\"结束字符\"]#subCentreStr 格式，请检查您的步骤动作参数:"+actionParams;
+            LogUtil.APP.warn("步骤动作：subCentreStr 必须是[\"开始字符\"][\"结束字符\"]#subCentreStr 格式，请检查您的步骤动作参数:{}",actionParams);
         }
         return testResult;
     }

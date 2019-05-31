@@ -1,25 +1,23 @@
 package luckyclient.caserun.publicdispose;
 
-import luckyclient.caserun.publicdispose.actionkeyword.Action;
-import luckyclient.caserun.publicdispose.actionkeyword.ActionKeyWordParser;
-import luckyclient.publicclass.LogUtil;
-import org.reflections.Reflections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.reflections.Reflections;
+
+import luckyclient.caserun.publicdispose.actionkeyword.Action;
+import luckyclient.caserun.publicdispose.actionkeyword.ActionKeyWordParser;
+import luckyclient.publicclass.LogUtil;
 
 /**
  * 步骤动作容器，根据参数生成不同的动作关键字类型，执行相应的解析
  * @author: sunshaoyan@
  * @date: Created on 2019/4/13
  */
+@SuppressWarnings("rawtypes")
 public class ActionContext {
-
-    private static Logger logger = LoggerFactory.getLogger(ActionContext.class);
 
     private static Map<String, Class> allActions;
 
@@ -41,23 +39,23 @@ public class ActionContext {
     public ActionContext(String name){
 
         if (allActions.containsKey(name)) {
-            logger.info("Created Action name is {}", name);
+        	LogUtil.APP.info("Created Action name is {}", name);
             try {
                 action = (ActionKeyWordParser) allActions.get(name).newInstance();
             } catch (InstantiationException | IllegalAccessException ex) {
-                logger.error("Instantiate Action failed", ex);
+            	LogUtil.APP.error("Instantiate Action failed", ex);
             }
         } else {
-            logger.error("Specified Action name {} does not exist", name);
+        	LogUtil.APP.warn("Specified Action name {} does not exist", name);
         }
     }
 
-    public String parse(String actionKeyWord,String testResult) {
+    public String parse(String actionParams,String testResult,String actionKeyWord) {
         if(null != action){
-            testResult = action.parse(actionKeyWord, testResult);
+            testResult = action.parse(actionParams, testResult);
         }else {
             testResult="未检索到对应动作关键字，直接跳过此动作，请检查关键字："+actionKeyWord;
-            LogUtil.APP.error("未检索到对应动作关键字，直接跳过此动作，请检查关键字："+actionKeyWord);
+            LogUtil.APP.warn("未检索到对应动作关键字，直接跳过此动作，请检查关键字：{}",actionKeyWord);
         }
         return testResult;
     }

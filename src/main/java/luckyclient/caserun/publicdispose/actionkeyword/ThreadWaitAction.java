@@ -9,7 +9,7 @@ import luckyclient.publicclass.LogUtil;
  * @author: sunshaoyan
  * @date: Created on 2019/4/13
  */
-@Action(name="Wait")
+@Action(name="wait")
 public class ThreadWaitAction implements ActionKeyWordParser {
 
 
@@ -17,11 +17,11 @@ public class ThreadWaitAction implements ActionKeyWordParser {
      * @param actionorder 动作关键字
      */
     @Override
-    public String parse(String actionorder, String testResult) {
-        if(ChangString.isInteger(actionorder.substring(0, actionorder.lastIndexOf("#Wait")))){
+    public String parse(String actionParams, String testResult) {
+        if(ChangString.isInteger(actionParams)){
             try {
                 // 获取步骤间等待时间
-                int time=Integer.parseInt(actionorder.substring(0, actionorder.lastIndexOf("#Wait")));
+                int time=Integer.parseInt(actionParams);
                 if (time > 0) {
                     LogUtil.APP.info("Action(Wait):线程等待"+time+"秒...");
                     Thread.sleep(time * 1000);
