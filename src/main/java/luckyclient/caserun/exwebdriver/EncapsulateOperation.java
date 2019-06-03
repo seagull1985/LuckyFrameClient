@@ -52,21 +52,21 @@ public class EncapsulateOperation {
             case "selectbyvisibletext":
                 select.selectByVisibleText(operationValue);
                 result = "下拉框对象通过VisibleText属性选择...【VisibleText属性值:" + operationValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("下拉框对象通过VisibleText属性选择...【VisibleText属性值:{}】",operationValue);
                 break;
             case "selectbyvalue":
                 select.selectByValue(operationValue);
                 result = "下拉框对象通过Value属性选择...【Value属性值:" + operationValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("下拉框对象通过Value属性选择...【Value属性值:{}】",operationValue);
                 break;
             case "selectbyindex":
                 select.selectByIndex(Integer.valueOf(operationValue));
                 result = "下拉框对象通过Index属性选择...【Index属性值:" + operationValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("下拉框对象通过Index属性选择...【Index属性值:{}】",operationValue);
                 break;
             case "isselect":
                 result = "获取到的值是【" + we.isSelected() + "】";
-                LogUtil.APP.info("判断对象是否已经被选择...【结果值:" + we.isSelected() + "】");
+                LogUtil.APP.info("判断对象是否已经被选择...【结果值:{}】",we.isSelected());
                 break;
             default:
                 break;
@@ -80,23 +80,23 @@ public class EncapsulateOperation {
         switch (operation) {
             case "gettext":
                 result = "获取到的值是【" + we.getText() + "】";
-                LogUtil.APP.info("getText获取对象text属性...【text属性值:" + result + "】");
+                LogUtil.APP.info("getText获取对象text属性...【text属性值:{}】",result);
                 break; // 获取输入框内容
             case "gettagname":
                 result = "获取到的值是【" + we.getTagName() + "】";
-                LogUtil.APP.info("getTagName获取对象tagname属性...【tagname属性值:" + result + "】");
+                LogUtil.APP.info("getTagName获取对象tagname属性...【tagname属性值:{}】",result);
                 break;
             case "getattribute":
                 result = "获取到的值是【" + we.getAttribute(value) + "】";
-                LogUtil.APP.info("getAttribute获取对象【" + value + "】属性...【" + value + "属性值:" + result + "】");
+                LogUtil.APP.info("getAttribute获取对象【{}】属性...【{}属性值:{}】",value,value,result);
                 break;
             case "getcssvalue":
                 result = "获取到的值是【" + we.getCssValue(value) + "】";
-                LogUtil.APP.info("getCssValue获取对象【" + value + "】属性...【" + value + "属性值:" + result + "】");
+                LogUtil.APP.info("getCssValue获取对象【{}】属性...【{}属性值:{}】",value,value,result);
                 break;
             case "getcaptcha":
                 result = "获取到的值是【" + Ocr.getCAPTCHA(wd, we) + "】";
-                LogUtil.APP.info("getcaptcha获取验证码...【验证码值:" + result + "】");
+                LogUtil.APP.info("getcaptcha获取验证码...【验证码值:{}】",result);
                 break;
             default:
                 break;
@@ -113,41 +113,41 @@ public class EncapsulateOperation {
             case "mouselkclick":
                 action.click(we).perform();
                 result = "mouselkclick鼠标左键点击对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("mouselkclick鼠标左键点击对象...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
                 break;
             case "mouserkclick":
                 action.contextClick(we).perform();
                 result = "mouserkclick鼠标右键点击对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("mouserkclick鼠标右键点击对象...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
                 break;
             case "mousedclick":
                 action.doubleClick(we).perform();
                 result = "mousedclick鼠标双击对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("mousedclick鼠标双击对象...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
                 break;
             case "mouseclickhold":
                 action.clickAndHold(we).perform();
                 result = "mouseclickhold鼠标点击对象后不释放...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("mouseclickhold鼠标点击对象后不释放...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
                 break;
             case "mousedrag":
                 int[] location = getLocationFromParam(operationValue, ",");
 //                String[] temp = operationValue.split(",", -1);
                 action.dragAndDropBy(we, location[0], location[1]).perform();
                 result = "mousedrag鼠标移动至对象相对坐标...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 相对坐标(x,y):" + location[0] + "," + location[1] + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("mousedrag鼠标移动至对象相对坐标...【对象定位属性:{}; 定位属性值:{}; 相对坐标(x,y):{},{}】",property,propertyValue,location[0],location[1]);
                 break;
             case "mouseto":
                 int[] location1 = getLocationFromParam(operationValue, ",");
 //                String[] temp1 = operationValue.split(",", -1);
                 action.moveToElement(we, location1[0], location1[1]).perform();
                 result = "mouseto鼠标移动至对象相对坐标...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 相对坐标(x,y):" + location1[0] + "," + location1[1] + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("mouseto鼠标移动至对象相对坐标...【对象定位属性:{}; 定位属性值:{}; 相对坐标(x,y):{},{}】",property,propertyValue,location1[0],location1[1]);
                 break;
             case "mouserelease":
                 action.release(we).perform();
                 result = "mouserelease鼠标释放...";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("mouserelease鼠标释放...");
                 break;
             default:
                 break;
@@ -186,7 +186,7 @@ public class EncapsulateOperation {
 //                String[] temp1 = operationValue.split(",", -1);
                 action.moveByOffset(location[0], location[1]).perform();
                 result = "mouseto鼠标移动至对象相对坐标...坐标x：" + location[0] + " 坐标y：" + location[1];
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("mouseto鼠标移动至对象相对坐标...坐标x:{} 坐标y:{}",location[0],location[1]);
                 break;
             case "mouserelease":
                 action.release().perform();
@@ -237,30 +237,30 @@ public class EncapsulateOperation {
             case "click":
                 we.click();
                 result = "click点击对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("click点击对象...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
                 break;
             case "sendkeys":
                 we.sendKeys(operationValue);
                 result = "sendKeys对象输入...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 操作值:" + operationValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("sendKeys对象输入...【对象定位属性:{}; 定位属性值:{}; 操作值:{}】",property,propertyValue,operationValue);
                 break;
             case "clear":
                 we.clear();
                 result = "clear清空输入框...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("clear清空输入框...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
                 break; // 清空输入框
             case "gotoframe":
                 wd.switchTo().frame(we);
                 result = "gotoframe切换Frame...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("gotoframe切换Frame...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
                 break;
             case "isenabled":
-                result = "获取到的值是【" + we.isEnabled() + "】";
-                LogUtil.APP.info(result);
+                result = "获取到的值是【"+we.isEnabled()+"】";
+                LogUtil.APP.info("获取到的值是【{}】",we.isEnabled());
                 break;
             case "isdisplayed":
                 result = "获取到的值是【" + we.isDisplayed() + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("获取到的值是【{}】",we.isDisplayed());
                 break;
             case "exjsob":
                 JavascriptExecutor jse = (JavascriptExecutor) wd;
@@ -269,23 +269,23 @@ public class EncapsulateOperation {
                     String tmp = obj.toString();
                     result = (100 < tmp.length()) ? tmp.substring(0, 100) + "..." : tmp;
                     result = "获取到的值是【" + result + "】";
-                    LogUtil.APP.info("执行JS...【" + operationValue + "】，返回的结果为：" + result);
+                    LogUtil.APP.info("执行JS...【{}】，返回的结果为:{}",operationValue,result);
                 } else {
                     result = "执行JS...【" + operationValue + "】";
-                    LogUtil.APP.info(result);
+                    LogUtil.APP.info("执行JS...【{}】",operationValue);
                 }
                 break;
             case "scrollto":
                 Point location = we.getLocation();
                 ((JavascriptExecutor) wd).executeScript("window.scrollTo(" + location.getX() + ", " + location.getY() + ")");
-                result = "滚动到目标对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 对象坐标(x,y):" + location.getX() + "," + location.getY() + "】";;
-                LogUtil.APP.info(result);
+                result = "滚动到目标对象...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 对象坐标(x,y):" + location.getX() + "," + location.getY() + "】";
+                LogUtil.APP.info("滚动到目标对象...【对象定位属性:{}; 定位属性值:{}; 对象坐标(x,y):{},{}】",property,propertyValue,location.getX(),location.getY());
                 break;
             case "scrollintoview":
                 // 此方法可以用执行js命令来代替
                 ((JavascriptExecutor) wd).executeScript("arguments[0].scrollIntoView(" + operationValue + ")", we);
                 result = "将目标对象滚动到可视...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("将目标对象滚动到可视...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
                 break;
             default:
                 break;
@@ -309,7 +309,7 @@ public class EncapsulateOperation {
                 break;
             case "alertgettext":
                 result = "获取到的值是【" + alert.getText() + "】";
-                LogUtil.APP.info("弹出框对象通过getText获取对象text属性...【Text属性值:" + alert.getText() + "】");
+                LogUtil.APP.info("弹出框对象通过getText获取对象text属性...【Text属性值:{}】",alert.getText());
                 break;
             default:
                 break;
@@ -324,14 +324,14 @@ public class EncapsulateOperation {
             case "open":
                 wd.get(operationValue);
                 result = "Open页面...【" + operationValue + "】";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("Open页面...【{}】",operationValue);
                 break;
             case "addcookie":
                 List<Cookie> cookies = buildCookie(operationValue);
                 if (null != cookies && cookies.size() > 0) {
                     for (Cookie cookie : cookies) {
                         wd.manage().addCookie(cookie);
-                        LogUtil.APP.info("添加Cookie:【"+cookie+"】成功！");
+                        LogUtil.APP.info("添加Cookie:【{}】成功！",cookie);
                     }
                 }
                 result = "添加cookie...【" + operationValue + "】";
@@ -343,10 +343,10 @@ public class EncapsulateOperation {
                     String tmp = obj.toString();
                     result = (100 < tmp.length()) ? tmp.substring(0, 100) + "..." : tmp;
                     result = "获取到的值是【" + result + "】";
-                    LogUtil.APP.info("执行JS...【" + operationValue + "】，返回的结果为：" + result);
+                    LogUtil.APP.info("执行JS...【{}】，返回的结果为:{}",operationValue,result);
                 } else {
                     result = "执行JS...【" + operationValue + "】";
-                    LogUtil.APP.info(result+"，执行JS返回null或没有返回");
+                    LogUtil.APP.info("{}，执行JS返回null或没有返回",result);
                 }
                 break;
             case "gotodefaultcontent":
@@ -361,7 +361,7 @@ public class EncapsulateOperation {
                 break;
             case "gettitle":
                 result = "获取到的值是【" + wd.getTitle() + "】";
-                LogUtil.APP.info("获取页面Title...【" + wd.getTitle() + "】");
+                LogUtil.APP.info("获取页面Title...【{}】",wd.getTitle());
                 break;
             case "getwindowhandle":
                 result = getTargetWindowHandle(wd, operationValue);
@@ -380,11 +380,10 @@ public class EncapsulateOperation {
                     // 设置元素出现最大时长30秒
                     wd.manage().timeouts().implicitlyWait(Integer.valueOf(operationValue), TimeUnit.SECONDS);
                     result = "当前任务操作等待【" + operationValue + "】秒...";
-                    LogUtil.APP.info(result);
+                    LogUtil.APP.info("当前任务操作等待【{}】秒...",operationValue);
                     break;
                 } catch (NumberFormatException e) {
-                    LogUtil.APP.error("等待时间转换出错！");
-                    e.printStackTrace();
+                    LogUtil.APP.error("等待时间转换出现异常！",e);
                     result = "【等待时间转换出错，请检查参数】";
                     break;
                 }
@@ -419,16 +418,15 @@ public class EncapsulateOperation {
                 //String expire = jsonObject.getString("expire");
                 if (!StringUtils.isBlank(name) && !StringUtils.isBlank(val)) {
                     Cookie cookie = new Cookie(name, val, domain, path, null);
-                	LogUtil.APP.info("解析Cookie成功：【"+cookie+"】");
+                	LogUtil.APP.info("解析Cookie成功：【{}】",cookie);
                     result.add(cookie);
                 }else{
-                    LogUtil.APP.warn("cookie:" + jsonObject + "错误,name或是val为空！");
+                    LogUtil.APP.warn("cookie:{} 错误,name或是val为空！",jsonObject);
                 }
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
-            LogUtil.APP.error("格式化Cookie对象出错，请检查您的格式是否正确！【"+operationValue+"】");
+            LogUtil.APP.error("格式化Cookie对象出错，请检查您的格式是否正确！【{}】",operationValue,e);
             return null;
         }
     }
@@ -466,7 +464,7 @@ public class EncapsulateOperation {
             result = "获取窗口句柄值失败，WebDriver为空";
         }
         if (result.contains("获取窗口句柄值失败")) LogUtil.APP.warn(result);
-        else LogUtil.APP.info("获取窗口句柄值成功，目标窗口句柄值为【" + result + "】");
+        else LogUtil.APP.info("获取窗口句柄值成功，目标窗口句柄值为【{}】",result);
         return result;
     }
 
@@ -501,6 +499,7 @@ public class EncapsulateOperation {
                 else result = "获取到的值是【" + windowHandles.get(index - 1) + "】";
             }
         } catch (IndexOutOfBoundsException e) {
+        	LogUtil.APP.error("获取窗口句柄值出现异常，需要获取窗口句柄值的下标【{}】越界",index,e);
             result = "获取窗口句柄值失败，需要获取窗口句柄值的下标【" + index + "】越界";
         }
         return result;
@@ -558,23 +557,18 @@ public class EncapsulateOperation {
         try {
             if (null == Wait(driver).until(windowToBeAvailableAndSwitchToIt(target))) {
                 result = "切换窗口句柄失败，未找到句柄值为【" + target + "】的对象";
-                LogUtil.APP.warn(result);
+                LogUtil.APP.warn("切换窗口句柄失败，未找到句柄值为【{}】的对象",target);
             } else {
                 result = "切换窗口句柄成功，找到句柄值为【" + target + "】的对象";
-                LogUtil.APP.info(result);
+                LogUtil.APP.info("切换窗口句柄成功，找到句柄值为【{}】的对象",target);
             }
             return result;
         } catch (TimeoutException e) {
             result = "切换窗口句柄失败，等待超时，未找到句柄值为【" + target + "】的对象";
-            LogUtil.APP.error(result);
+            LogUtil.APP.error("切换窗口句柄失败，等待超时，未找到句柄值为【{}】的对象",target,e);
             return result;
         }
     }
-
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
-    }
-
+    
 }
 

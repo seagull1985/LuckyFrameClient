@@ -6,6 +6,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exinterface.WebTestCaseDebug;
+import luckyclient.publicclass.LogUtil;
 
 /**
  * =================================================================
@@ -22,10 +23,16 @@ public class WebDebugExecute extends TestControl{
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
- 		String caseIdStr = args[0];
- 		String userIdStr = args[1];
- 		WebTestCaseDebug.oneCaseDebug(caseIdStr, userIdStr);
- 		System.exit(0);
+		try {
+			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
+	 		String caseIdStr = args[0];
+	 		String userIdStr = args[1];
+	 		WebTestCaseDebug.oneCaseDebug(caseIdStr, userIdStr);
+		} catch (Exception e) {
+			// TODO: handle exception
+			LogUtil.APP.error("启动用例调试主函数出现异常，请检查！",e);
+		} finally{
+			System.exit(0);
+		}
 	}
 }

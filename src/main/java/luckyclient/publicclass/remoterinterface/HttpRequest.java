@@ -62,14 +62,14 @@ public class HttpRequest {
 				resultBuffer.append(temp);
 			}
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("loadJSON发送请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("loadJSON发送请求后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -116,8 +116,7 @@ public class HttpRequest {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println("发送 POST 请求出现异常！"+e);
-            e.printStackTrace();
+        	LogUtil.APP.error("向指定URL发送POST方法的请求出现异常，请检查！", e);
         }
         //使用finally块来关闭输出流、输入流
         finally{
@@ -130,7 +129,7 @@ public class HttpRequest {
                 }
             }
             catch(IOException ex){
-                ex.printStackTrace();
+            	LogUtil.APP.error("向指定URL发送POST方法的请求后关闭流出现异常，请检查！", ex);
             }
         }
         return result;
@@ -175,6 +174,7 @@ public class HttpRequest {
 			}	
 		}
 		} catch (Exception e) {
+			LogUtil.APP.error("使用HttpClient以JSON格式发送post请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
@@ -182,16 +182,12 @@ public class HttpRequest {
 					br.close();
 				} catch (IOException e) {
 					br = null;
+					LogUtil.APP.error("使用HttpClient以JSON格式发送post请求后关闭br流出现异常，请检查！", e);
 					throw new RuntimeException(e);
 				}
 			}
 		}		
 		return resultBuffer.toString();
-	}
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

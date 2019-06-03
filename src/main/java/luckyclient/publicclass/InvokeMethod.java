@@ -83,7 +83,7 @@ public class InvokeMethod {
             	}
                 String templateidstr = extend.substring(1, extend.indexOf("】"));
                 String templatenamestr = extend.substring(extend.indexOf("】") + 1);
-                LogUtil.APP.info("即将使用模板【" + templatenamestr + "】，ID:【" + templateidstr + "】发送HTTP请求！");
+                LogUtil.APP.info("即将使用模板【{}】，ID:【{}】发送HTTP请求！",templatenamestr,templateidstr);
 
                 ProjectProtocolTemplate ppt = GetServerAPI.clientGetProjectProtocolTemplateByTemplateId(Integer.valueOf(templateidstr));
                 if (null == ppt) {
@@ -134,7 +134,7 @@ public class InvokeMethod {
                             		if (key.contains("[") && key.endsWith("]")) {
                             			index = Integer.valueOf(key.substring(key.lastIndexOf("[") + 1, key.lastIndexOf("]")));
                             			key = key.substring(0, key.lastIndexOf("["));
-                            			LogUtil.APP.info("准备替换JSON对象中的参数值，替换指定第" + index + "个参数...");
+                            			LogUtil.APP.info("准备替换JSON对象中的参数值，替换指定第{}个参数...",index);
                             		} else {
                             			LogUtil.APP.info("准备替换JSON对象中的参数值，未检测到指定参数名序号，默认替换第1个参数...");                       			
                             		}
@@ -145,14 +145,14 @@ public class InvokeMethod {
                                             ptp.setParamValue(map.get("json"));
                                             paramslist.set(i, ptp);
                                             replaceflag=1;
-                                            LogUtil.APP.info("替换参数"+key+"完成...");
+                                            LogUtil.APP.info("替换参数【{}】完成...",key);
                                             break;
                                 		}
                                 	}else if(ptp.getParamValue().contains(key)){
                                 		ptp.setParamValue(ptp.getParamValue().replace(key, value));
                                 		paramslist.set(i, ptp);
                                         replaceflag=1;
-                                        LogUtil.APP.info("检查当前文本不属于JSON,在字符串【"+ptp.getParamValue()+"】中直接把【"+key+"】替换成【"+value+"】...");
+                                        LogUtil.APP.info("检查当前文本不属于JSON,在字符串【{}】中直接把【{}】替换成【{}】...",ptp.getParamValue(),key,value);
                                         break;
                                 	}else{
                                 		LogUtil.APP.warn("请检查您的纯文本模板是否是正常的JSON格式或是文本中是否存在需替换的关键字。");
@@ -162,14 +162,14 @@ public class InvokeMethod {
                                         ptp.setParamValue(value);
                                         paramslist.set(i, ptp);
                                         replaceflag=1;
-                                        LogUtil.APP.info("把模板中参数【"+key+"】的值设置成【"+value+"】");
+                                        LogUtil.APP.info("把模板中参数【{}】的值设置成【{}】",key,value);
                                         break;
                                     }
                                 }
                             }
                             if(replaceflag==0){
-                            	LogUtil.APP.warn("步骤参数【"+key+"】没有在模板中找到可替换的参数对应默认值，"
-                            			+ "设置请求参数失败，请检查协议模板中此参数是否存在。");
+                            	LogUtil.APP.warn("步骤参数【{}】没有在模板中找到可替换的参数对应默认值，"
+                            			+ "设置请求参数失败，请检查协议模板中此参数是否存在。",key);
                             }
                         }else{
                         	LogUtil.APP.warn("替换模板或是头域参数失败，原因是因为没有检测到#，"
@@ -191,26 +191,26 @@ public class InvokeMethod {
                     if (ptp.getParamType() == 1) {
                         JSONObject json = JSONObject.parseObject(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), json);
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONObject类型参数值:【" + json.toString() + "】");
+                        LogUtil.APP.info("模板参数【{}】  JSONObject类型参数值:【{}】",ptp.getParamName(),json.toString());
                     } else if (ptp.getParamType() == 2) {
                         JSONArray jarr = JSONArray.parseArray(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), jarr);
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
+                        LogUtil.APP.info("模板参数【{}】  JSONArray类型参数值:【{}】",ptp.getParamName(),jarr.toString());
                     } else if (ptp.getParamType() == 3) {
                         File file = new File(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), file);
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
+                        LogUtil.APP.info("模板参数【{}】  File类型参数值:【{}】",ptp.getParamName(),file.getAbsolutePath());
                     } else if (ptp.getParamType() == 4) {
                         Double dp = Double.valueOf(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), dp);
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  数字类型参数值:【" + tempparam + "】");
+                        LogUtil.APP.info("模板参数【{}】  数字类型参数值:【{}】",ptp.getParamName(),tempparam);
                     } else if (ptp.getParamType() == 5) {
                         Boolean bn = Boolean.valueOf(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), bn);
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  Boolean类型参数值:【" + bn + "】");
+                        LogUtil.APP.info("模板参数【{}】  Boolean类型参数值:【{}】",ptp.getParamName(),bn);
                     } else {
                         params.put(ptp.getParamName().replace("&quot;", "\""), ptp.getParamValue().replace("&quot;", "\""));
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  String类型参数值:【" + ptp.getParamValue().replace("&quot;", "\"") + "】");
+                        LogUtil.APP.info("模板参数【{}】  String类型参数值:【{}】",ptp.getParamName(),ptp.getParamValue().replace("&quot;", "\""));
                     }
                 }
 
@@ -240,13 +240,13 @@ public class InvokeMethod {
                 } else if (functionname.toLowerCase().equals("httpclientget")) {
                     result = HttpClientHelper.httpClientGet(packagename, params, headmsg, ppt);
                 } else {
-                    LogUtil.APP.warn("您的HTTP操作方法异常，检测到的操作方法是：" + functionname);
+                    LogUtil.APP.warn("您的HTTP操作方法异常，检测到的操作方法是:{}",functionname);
                     result = "调用异常，请查看错误日志！";
                 }
             } else if (steptype == 4) {
                 String templateidstr = extend.substring(1, extend.indexOf("】"));
                 String templatenamestr = extend.substring(extend.indexOf("】") + 1);
-                LogUtil.APP.info("即将使用模板【" + templatenamestr + "】，ID:【" + templateidstr + "】 发送SOCKET请求！");
+                LogUtil.APP.info("即将使用模板【{}】，ID:【{}】 发送SOCKET请求！",templatenamestr,templateidstr);
 
                 ProjectProtocolTemplate ppt = GetServerAPI.clientGetProjectProtocolTemplateByTemplateId(Integer.valueOf(templateidstr));
                 if (null == ppt) {
@@ -297,7 +297,7 @@ public class InvokeMethod {
                                 			key = key.substring(0, key.lastIndexOf("["));
                                 			LogUtil.APP.info("准备替换JSON对象中的参数值，未检测到指定参数名序号，默认替换第1个参数...");
                                 		} else {
-                                			LogUtil.APP.info("准备替换JSON对象中的参数值，替换指定第" + index + "个参数...");
+                                			LogUtil.APP.info("准备替换JSON对象中的参数值，替换指定第【{}】个参数...",index);
                                 		}
                                 		
                                 		Map<String,String> map=ChangString.changjson(ptp.getParamValue(), key, value,index);
@@ -305,14 +305,14 @@ public class InvokeMethod {
                                             ptp.setParamValue(map.get("json"));
                                             paramslist.set(i, ptp);
                                             replaceflag=1;
-                                            LogUtil.APP.info("替换参数"+key+"完成...");
+                                            LogUtil.APP.info("替换参数【{}】完成...",key);
                                             break;
                                 		}
                                 	}else if(ptp.getParamValue().indexOf(key)>=0){
                                 		ptp.setParamValue(ptp.getParamValue().replace(key, value));
                                 		paramslist.set(i, ptp);
                                         replaceflag=1;
-                                        LogUtil.APP.info("检查当前文本不属于JSON,在字符串【"+ptp.getParamValue()+"】中直接把【"+key+"】替换成【"+value+"】...");
+                                        LogUtil.APP.info("检查当前文本不属于JSON,在字符串【{}】中直接把【{}】替换成【{}】...",ptp.getParamValue(),key,value);
                                         break;
                                 	}else{
                                 		LogUtil.APP.warn("请检查您的纯文本模板是否是正常的JSON格式或是文本中是否存在需替换的关键字。");
@@ -322,14 +322,14 @@ public class InvokeMethod {
                                         ptp.setParamValue(value);
                                         paramslist.set(i, ptp);
                                         replaceflag=1;
-                                        LogUtil.APP.info("把模板中参数【"+key+"】的值设置成【"+value+"】");
+                                        LogUtil.APP.info("把模板中参数【{}】的值设置成【{}】",key,value);
                                         break;
                                     }
                                 }
                             }
                             if(replaceflag==0){
-                            	LogUtil.APP.warn("步骤参数【"+key+"】没有在模板中找到可替换的参数对应默认值，"
-                            			+ "设置请求参数失败，请检查协议模板中此参数是否存在。");
+                            	LogUtil.APP.warn("步骤参数【{}】没有在模板中找到可替换的参数对应默认值，"
+                            			+ "设置请求参数失败，请检查协议模板中此参数是否存在。",key);
                             }
                         }else{
                         	LogUtil.APP.warn("替换模板或是头域参数失败，原因是因为没有检测到#，"
@@ -349,26 +349,26 @@ public class InvokeMethod {
                     if (ptp.getParamType() == 1) {
                         JSONObject json = JSONObject.parseObject(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), json);
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONObject类型参数值:【" + json.toString() + "】");
+                        LogUtil.APP.info("模板参数【{}】  JSONObject类型参数值:【{}】",ptp.getParamName(),json.toString());
                     } else if (ptp.getParamType() == 2) {
                         JSONArray jarr = JSONArray.parseArray(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), jarr);
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  JSONArray类型参数值:【" + jarr.toString() + "】");
+                        LogUtil.APP.info("模板参数【{}】  JSONArray类型参数值:【{}】",ptp.getParamName(),jarr.toString());
                     } else if (ptp.getParamType() == 3) {
                         File file = new File(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), file);
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  File类型参数值:【" + file.getAbsolutePath() + "】");
+                        LogUtil.APP.info("模板参数【{}】  File类型参数值:【{}】",ptp.getParamName(),file.getAbsolutePath());
                     } else if (ptp.getParamType() == 4) {
                         Double dp = Double.valueOf(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), dp);
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  数字类型参数值:【" + tempparam + "】");
+                        LogUtil.APP.info("模板参数【{}】  数字类型参数值:【{}】",ptp.getParamName(),tempparam);
                     } else if (ptp.getParamType() == 5) {
                         Boolean bn = Boolean.valueOf(tempparam);
                         params.put(ptp.getParamName().replace("&quot;", "\""), bn);
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  Boolean类型参数值:【" + bn + "】");
+                        LogUtil.APP.info("模板参数【{}】  Boolean类型参数值:【{}】",ptp.getParamName(),bn);
                     } else {
                         params.put(ptp.getParamName().replace("&quot;", "\""), ptp.getParamValue().replace("&quot;", "\""));
-                        LogUtil.APP.info("模板参数【" + ptp.getParamName() + "】  String类型参数值:【" + ptp.getParamValue().replace("&quot;", "\"") + "】");
+                        LogUtil.APP.info("模板参数【{}】  String类型参数值:【{}】",ptp.getParamName(),ptp.getParamValue().replace("&quot;", "\""));
                     }
                 }
 
@@ -378,12 +378,12 @@ public class InvokeMethod {
                 } else if (functionname.toLowerCase().equals("socketget")) {
                     result = HttpClientHelper.sendSocketGet(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
                 } else {
-                    LogUtil.APP.warn("您的SOCKET操作方法异常，检测到的操作方法是：" + functionname);
+                    LogUtil.APP.warn("您的SOCKET操作方法异常，检测到的操作方法是:{}",functionname);
                     result = "调用异常，请查看错误日志！";
                 }
             }
         } catch (Throwable e) {
-            LogUtil.APP.error(e.getMessage(), e);
+            LogUtil.APP.error("调用异常，请查看错误日志！", e);
             return "调用异常，请查看错误日志！";
         }
         return result;
@@ -457,7 +457,7 @@ public class InvokeMethod {
             	args[1]=packagename+File.separator+functionname;
             	//args[1]="E:\\PycharmProjects\\untitled\\venv\\testaaa.py";
             }
-            LogUtil.APP.info("调用Python脚本路径:"+args[1]);
+            LogUtil.APP.info("调用Python脚本路径:{}",args[1]);
     		for(int i=0;i < params;i++){
     			args[2+i]=getParameterValues[i].toString();
     		}
@@ -479,29 +479,24 @@ public class InvokeMethod {
             // 打印流信息
             if(outerrStream.toString().equals("")){
             	result = outStream.toString().trim();
-            	LogUtil.APP.info("成功调用Python脚本，返回结果:"+result);
+            	LogUtil.APP.info("成功调用Python脚本，返回结果:{}",result);
             }else{
             	result = outerrStream.toString().trim();
             	if(result.indexOf("ModuleNotFoundError")>-1){
             		LogUtil.APP.warn("调用Python脚本出现异常，有相关Python模块未引用到，请在Python脚本中注意设置系统环境路径(例: sys.path.append(\"E:\\PycharmProjects\\untitled\\venv\\Lib\\site-packages\"))，"
-            				+ "详细错误信息:"+result);
+            				+ "详细错误信息:{}",result);
             	}else if(result.indexOf("No such file or directory")>-1){
-            		LogUtil.APP.warn("调用Python脚本出现异常，在指定路径下未找到Python脚本，原因有可能是Python脚本路径错误或是传入Python指定参数个数不一致，详细错误信息:"+result);
+            		LogUtil.APP.warn("调用Python脚本出现异常，在指定路径下未找到Python脚本，原因有可能是Python脚本路径错误或是传入Python指定参数个数不一致，详细错误信息:{}",result);
             	}else{
-            		LogUtil.APP.warn("调用Python脚本出现异常，错误信息:"+result);
+            		LogUtil.APP.warn("调用Python脚本出现异常，错误信息:{}",result);
             	}        	
             }
            } 
          catch (Exception e) {
-            e.printStackTrace();
+        	 LogUtil.APP.error("调用Python脚本出现异常,请检查！",e);
             return result;
         }
     	return result;
-    }
-    
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
     }
 
 }

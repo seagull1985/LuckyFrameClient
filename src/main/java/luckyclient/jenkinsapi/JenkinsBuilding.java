@@ -48,7 +48,7 @@ public class JenkinsBuilding {
             Map<String, List<String>> map = connection.getHeaderFields();
             // 遍历所有的响应头字段
             for (String key : map.keySet()) {
-                LogUtil.APP.info(key + "--->" + map.get(key));
+                LogUtil.APP.info("{}--->{}",key,map.get(key));
             }
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(
@@ -68,7 +68,7 @@ public class JenkinsBuilding {
                     in.close();
                 }
             } catch (Exception e2) {
-                e2.printStackTrace();
+            	LogUtil.APP.error("使用finally块来关闭输入流时出现异常！", e2);
             }
         }
         return result;
@@ -104,7 +104,7 @@ public class JenkinsBuilding {
             Map<String, List<String>> map = connection.getHeaderFields();
             // 遍历所有的响应头字段
             for (String key : map.keySet()) {
-                LogUtil.APP.info(key + "--->" + map.get(key));
+                LogUtil.APP.info("{}--->{}",key,map.get(key));
             }
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(

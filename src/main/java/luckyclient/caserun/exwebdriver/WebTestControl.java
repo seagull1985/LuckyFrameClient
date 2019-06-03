@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
@@ -52,7 +51,7 @@ public class WebTestControl {
 			wd = WebDriverInitialization.setWebDriverForLocal();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.APP.error("初始化WebDriver出现异常！",e);
 		}
 		LogOperation caselog = new LogOperation();
 		List<ProjectCase> testCases = GetServerAPI.getCasesbyplanname(planname);
@@ -60,7 +59,7 @@ public class WebTestControl {
 		if (testCases.size() != 0) {
 			pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
 		}
-		LogUtil.APP.info("当前计划中读取到用例共 " + testCases.size() + " 个");
+		LogUtil.APP.info("当前计划中读取到用例共【{}】个",testCases.size());
 		int i = 0;
 		for (ProjectCase testcase : testCases) {
 			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
@@ -68,15 +67,14 @@ public class WebTestControl {
 				continue;
 			}
 			i++;
-			LogUtil.APP.info("开始执行第" + i + "条用例：【" + testcase.getCaseSign() + "】......");
+			LogUtil.APP.info("开始执行第{}条用例:【{}】......",i,testcase.getCaseSign());
 			try {
 				WebCaseExecution.caseExcution(testcase, steps, taskid, wd, caselog, pcplist);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				LogUtil.APP.error("用户执行过程中抛出异常！", e);
-				e.printStackTrace();
 			}
-			LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
+			LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条",testcase.getCaseSign());
 		}
 		LogUtil.APP.info("当前项目测试计划中的用例已经全部执行完成...");
 		// 关闭浏览器
@@ -106,15 +104,13 @@ public class WebTestControl {
 					wd = WebDriverInitialization.setWebDriverForTask(drivertype);
 				} catch (WebDriverException e1) {
 					LogUtil.APP.error("初始化WebDriver出错 WebDriverException！", e1);
-					e1.printStackTrace();
 				} catch (IOException e2) {
 					LogUtil.APP.error("初始化WebDriver出错 IOException！", e2);
-					e2.printStackTrace();
 				}
 				LogOperation caselog = new LogOperation();
 
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
-				LogUtil.APP.info("当前计划中读取到用例共 " + cases.size() + " 个");
+				LogUtil.APP.info("当前计划中读取到用例共【{}】个",cases.size());
 				LogOperation.updateTaskExecuteStatus(taskid, cases.size());
 
 				for (ProjectCase testcase : cases) {
@@ -122,7 +118,7 @@ public class WebTestControl {
 					if (steps.size() == 0) {
 						continue;
 					}
-					LogUtil.APP.info("开始执行用例：【" + testcase.getCaseSign() + "】......");
+					LogUtil.APP.info("开始执行用例:【{}】......",testcase.getCaseSign());
 					try {
 						// 插入开始执行的用例
 						caselog.insertTaskCaseExecute(taskid, taskScheduling.getProjectId(),testcase.getCaseId(),testcase.getCaseSign(), testcase.getCaseName(), 4);
@@ -130,14 +126,13 @@ public class WebTestControl {
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						LogUtil.APP.error("用户执行过程中抛出异常！", e);
-						e.printStackTrace();
 					}
-					LogUtil.APP.info("当前用例：【" + testcase.getCaseSign() + "】执行完成......进入下一条");
+					LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条",testcase.getCaseSign());
 				}
 				tastcount = LogOperation.updateTaskExecuteData(taskid, cases.size());
 
 				String testtime = LogOperation.getTestTime(taskid);
-				LogUtil.APP.info("当前项目【" + projectname + "】测试计划中的用例已经全部执行完成...");
+				LogUtil.APP.info("当前项目【{}】测试计划中的用例已经全部执行完成...",projectname);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
 						HtmlMail.htmlContentFormat(tastcount, taskid, buildstatus, restartstatus, testtime, jobname),
 						taskid, taskScheduling, tastcount);
@@ -152,17 +147,6 @@ public class WebTestControl {
 			LogUtil.APP.warn("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
 			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid,
 					taskScheduling, tastcount);
-		}
-	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		try {
-			PropertyConfigurator.configure(System.getProperty("user.dir") + "\\log4j.conf");
-			// ManualExecutionPlan("automation test");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 

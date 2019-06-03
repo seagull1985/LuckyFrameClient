@@ -8,6 +8,7 @@ import java.util.Properties;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.publicclass.SysConfig;
 
 /**
@@ -58,6 +59,7 @@ public class FreemarkerEmailTemplate {
             template.process(parameters, stringWriter);
             return stringWriter.toString();
         } catch (Exception e) {
+        	LogUtil.APP.error("获取邮件模板引擎配置出现异常",e);
             throw new RuntimeException(e);
         }
     }

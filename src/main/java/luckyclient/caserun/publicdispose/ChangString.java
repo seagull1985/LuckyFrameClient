@@ -51,7 +51,7 @@ public class ChangString {
 
 			// 如果存在传参，进行处理
 			if (varcount > 0) {
-				LogUtil.APP.info("在" + changname + "【" + str + "】中找到" + varcount + "个可替换参数");
+				LogUtil.APP.info("在{}【{}】中找到{}个可替换参数",changname,str,varcount);
 				int changcount = 0;
 
 				// 准备将HASHMAP换成LINKMAP，对KEY进行排序，解决要先替换最长KEY的问题
@@ -82,15 +82,14 @@ public class ChangString {
 						// "\\\\&#39;"));
 						int viewcount = counter(str, "@" + entry.getKey());
 						str = str.replace("@" + entry.getKey(), entry.getValue());
-						LogUtil.APP
-								.info("将" + changname + "引用变量【@" + entry.getKey() + "】替换成值【" + entry.getValue() + "】");
+						LogUtil.APP.info("将{}引用变量【@{}】替换成值【{}】",changname,entry.getKey(),entry.getValue());
 						str = str.replace("////CHANG////", "@@" + entry.getKey());
 						changcount = changcount + viewcount;
 					}
 				}
 
 				if (varcount != changcount) {
-					LogUtil.APP.warn(changname + "有引用变量未在参数列中找到，请检查！处理结果【" + str + "】");
+					LogUtil.APP.warn(changname + "有引用变量未在参数列中找到，请检查！处理结果【{}】",str);
 				}
 			}
 			str = str.replace("@@", "@");
@@ -98,7 +97,7 @@ public class ChangString {
 			str=ParamsManageForSteps.paramsManage(str);
 			return str;
 		} catch (Exception e) {
-			e.printStackTrace();
+			LogUtil.APP.error("替换参数过程中出现异常，请检查！",e);
 			return "";
 		}
 	}
@@ -220,10 +219,10 @@ public class ChangString {
 		if(entry.getValue() instanceof List){
 			if(key.equals(entry.getKey())){
 				if(keyindex==COUNTER){
-					LogUtil.APP.info("对象原始String值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象原始String值:【{}】",entry.getValue());
 					JSONArray jsonarr = JSONArray.parseArray(value);
 					entry.setValue(jsonarr);
-					LogUtil.APP.info("对象替换后String值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象替换后String值:【{}】",entry.getValue());
 					BCHANG=true;
 				}			
 				COUNTER++;
@@ -238,10 +237,10 @@ public class ChangString {
 					}catch(JSONException jsone){
 						if(key.equals(entry.getKey())){
 							if(keyindex==COUNTER){
-								LogUtil.APP.info("对象原始List值：【"+entry.getValue()+"】");
+								LogUtil.APP.info("对象原始List值:【{}】",entry.getValue());
 								JSONArray jsonarr = JSONArray.parseArray(value);
 								entry.setValue(jsonarr);
-								LogUtil.APP.info("对象替换后List值：【"+entry.getValue()+"】");
+								LogUtil.APP.info("对象替换后List值:【{}】",entry.getValue());
 								BCHANG=true;
 							}			
 							COUNTER++;
@@ -255,9 +254,9 @@ public class ChangString {
 		if(entry.getValue() instanceof String){
 			if(key.equals(entry.getKey())){
 				if(keyindex==COUNTER){
-					LogUtil.APP.info("对象原始String值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象原始String值:【{}】",entry.getValue());
 					entry.setValue(value);
-					LogUtil.APP.info("对象替换后String值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象替换后String值:【{}】",entry.getValue());
 					BCHANG=true;
 				}			
 				COUNTER++;
@@ -267,9 +266,9 @@ public class ChangString {
 		if(entry.getValue() instanceof Integer){
 			if(key.equals(entry.getKey())){
 				if(keyindex==COUNTER){
-					LogUtil.APP.info("对象原始Integer值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象原始Integer值:【{}】",entry.getValue());
 					entry.setValue(Integer.valueOf(value));
-					LogUtil.APP.info("对象替换后Integer值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象替换后Integer值:【{}】",entry.getValue());
 					BCHANG=true;
 				}
 				COUNTER++;
@@ -279,9 +278,9 @@ public class ChangString {
 		if(entry.getValue() instanceof Long){
 			if(key.equals(entry.getKey())){
 				if(keyindex==COUNTER){
-					LogUtil.APP.info("对象原始Long值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象原始Long值:【{}】",entry.getValue());
 					entry.setValue(Long.valueOf(value));
-					LogUtil.APP.info("对象替换后Long值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象替换后Long值:【{}】",entry.getValue());
 					BCHANG=true;
 				}
 				COUNTER++;
@@ -291,10 +290,10 @@ public class ChangString {
 		if(entry.getValue() instanceof BigDecimal){
 			if(key.equals(entry.getKey())){
 				if(keyindex==COUNTER){
-					LogUtil.APP.info("对象原始BigDecimal值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象原始BigDecimal值:【{}】",entry.getValue());
 					BigDecimal bd = new BigDecimal(value);
 					entry.setValue(bd);
-					LogUtil.APP.info("对象替换后BigDecimal值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象替换后BigDecimal值:【{}】",entry.getValue());
 					BCHANG=true;
 				}
 				COUNTER++;
@@ -304,9 +303,9 @@ public class ChangString {
 		if(entry.getValue() instanceof Boolean){
 			if(key.equals(entry.getKey())){
 				if(keyindex==COUNTER){
-					LogUtil.APP.info("对象原始Boolean值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象原始Boolean值:【{}】",entry.getValue());
 					entry.setValue(Boolean.valueOf(value));
-					LogUtil.APP.info("对象替换后Boolean值：【"+entry.getValue()+"】");
+					LogUtil.APP.info("对象替换后Boolean值:【{}】",entry.getValue());
 					BCHANG=true;
 				}
 				COUNTER++;
@@ -326,10 +325,7 @@ public class ChangString {
 	 */
 	public static Map<String, String> changjson(String json, String key, String value,int index) {
 		json=json.trim();
-		LogUtil.APP.info("原始JSON：【"+json+"】");
-		LogUtil.APP.info("待替换JSON KEY：【"+key+"】");
-		LogUtil.APP.info("待替换JSON VALUE：【"+value+"】");
-		LogUtil.APP.info("待替换JSON KEY序号：【"+index+"】");
+		LogUtil.APP.info("原始JSON:【{}】，待替换JSON KEY:【{}】，待替换JSON VALUE:【{}】，待替换JSON KEY序号:【{}】",json,key,value,index);
 		Map<String, String> map = new HashMap<String, String>(0);
 		map.put("json", json);
 		map.put("boolean", BCHANG.toString().toLowerCase());
@@ -339,12 +335,11 @@ public class ChangString {
 				JSONObject jsonStr = JSONObject.parseObject(json);				
 				jsonStr=parseJsonString(json,key,value,index);
 				if (BCHANG) {
-					LogUtil.APP
-							.info("JSON字符串替换成功，新JSON:【" + jsonStr.toJSONString() + "】");
+					LogUtil.APP.info("JSON字符串替换成功，新JSON:【{}】",jsonStr.toJSONString());
 				}
 				map.put("json", jsonStr.toJSONString());
 			} catch (Exception e) {
-				LogUtil.APP.error("格式化成JSON异常，请检查参数：" + json, e);
+				LogUtil.APP.error("格式化成JSON异常，请检查参数:{}",json, e);
 				return map;
 			}
 		} else if (json.startsWith("[") && json.endsWith("]")) {
@@ -356,15 +351,14 @@ public class ChangString {
 					jsonStr=parseJsonString(jsonStr.toJSONString(),key,value,index);
 					if(BCHANG){
 						jsonarr.set(i, jsonStr);
-						LogUtil.APP.info(
-								"JSONARRAY字符串替换成功，新JSONARRAY:【" + jsonarr.toJSONString() + "】");
+						LogUtil.APP.info("JSONARRAY字符串替换成功，新JSONARRAY:【{}】",jsonarr.toJSONString());
 						break;
 					}
 				}
 				map.put("json", jsonarr.toJSONString());
 				
 			} catch (Exception e) {
-				LogUtil.APP.error("格式化成JSONArray异常，请检查参数：" + json, e);
+				LogUtil.APP.error("格式化成JSONArray异常，请检查参数:{}",json, e);
 				return map;
 			}
 		}

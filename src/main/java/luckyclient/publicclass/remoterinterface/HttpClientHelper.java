@@ -87,7 +87,7 @@ public class HttpClientHelper {
 		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
@@ -100,7 +100,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(e.getValue());
 					sbParams.append("&");
-					LogUtil.APP.info("设置HTTPURLPost参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
+					LogUtil.APP.info("设置HTTPURLPost参数信息...key:【{}】    value:【{}】",e.getKey(),e.getValue());
 				}
 			}
 		}
@@ -121,11 +121,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	LogUtil.APP.info("开始设置|替换HTTPURLPost头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换HTTPURLPost头域信息...key:【{}】    value:【{}】",key,value);
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -161,14 +161,14 @@ public class HttpClientHelper {
 				resultBuffer.append("Content-Length=0");
 			}
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用HttpURLConnection发送post请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpURLConnection发送post请求后关闭流出现异常，请检查！", e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -182,7 +182,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpURLConnection发送post请求后关闭流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -214,7 +214,7 @@ public class HttpClientHelper {
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
@@ -226,7 +226,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(e.getValue());
 					sbParams.append("&");
-					LogUtil.APP.info("设置URLPost参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
+					LogUtil.APP.info("设置URLPost参数信息...key:【{}】    value:【{}】",e.getKey(),e.getValue());
 				}
 			}
 		}
@@ -246,11 +246,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	LogUtil.APP.info("开始设置|替换URLPost头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换URLPost头域信息...key:【{}】    value:【{}】",key,value);
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -293,14 +293,14 @@ public class HttpClientHelper {
 					resultBuffer.append("Content-Length=0");
 			}
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用URLConnection发送post请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用URLConnection发送post请求后关闭osw流出现异常，请检查！", e);
 					osw = null;
 					throw new RuntimeException(e);
 				}
@@ -309,7 +309,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用URLConnection发送post请求后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -328,7 +328,7 @@ public class HttpClientHelper {
 	 */
 	public static String sendGetAndSaveFile(String urlParam, Map<String, Object> params, String fileSavePath, Map<String, String> headmsg,ProjectProtocolTemplate ppt) {
 		// 构建请求参数
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		int timeout=ppt.getTimeout();
 		int responsehead=ppt.getIsResponseHead();
 		int responsecode=ppt.getIsResponseCode();
@@ -343,7 +343,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(entry.getValue());
 					sbParams.append("&");
-					LogUtil.APP.info("设置HTTPSaveFile参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置HTTPSaveFile参数信息...key:【{}】    value:【{}】",entry.getKey(),entry.getValue());
 				}
 			}
 		}
@@ -363,11 +363,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	LogUtil.APP.info("开始设置|替换HTTPSaveFile头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换HTTPSaveFile头域信息...key:【{}】    value:【{}】",key,value);
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -395,14 +395,14 @@ public class HttpClientHelper {
 			os.flush();
 			return resultBuffer.toString()+"下载文件成功，请前往客户端路径:" + fileSavePath + " 查看附件。";
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("发送get请求保存下载文件出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (os != null) {
 				try {
 					os.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("发送get请求保存下载文件后关闭OS流出现异常，请检查！", e);
 					os = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -416,7 +416,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("发送get请求保存下载文件后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -446,7 +446,7 @@ public class HttpClientHelper {
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
@@ -458,7 +458,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(entry.getValue());
 					sbParams.append("&");
-					LogUtil.APP.info("设置HTTPURLGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置HTTPURLGet参数信息...key:【{}】    value:【{}】",entry.getKey(),entry.getValue());
 				}
 			}
 		}
@@ -477,11 +477,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	LogUtil.APP.info("开始设置|替换HTTPURLGet头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换HTTPURLGet头域信息...key:【{}】    value:【{}】",key,value);
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -507,14 +507,14 @@ public class HttpClientHelper {
 				resultBuffer.append("读取服务器响应数据异常!响应码："+con.getResponseCode());
 			}
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用HttpURLConnection发送get请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpURLConnection发送get请求后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -545,7 +545,7 @@ public class HttpClientHelper {
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
@@ -557,7 +557,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(entry.getValue());
 					sbParams.append("&");
-					LogUtil.APP.info("设置URLGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置URLGet参数信息...key:【{}】    value:【{}】",entry.getKey(),entry.getValue());
 				}
 			}
 
@@ -580,11 +580,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	LogUtil.APP.info("开始设置|替换URLGet头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换URLGet头域信息...key:【{}】    value:【{}】",key,value);
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 		    		con.setRequestProperty(key, value);
 		    	}else{
 		    		con.setRequestProperty(key, value);
@@ -611,14 +611,14 @@ public class HttpClientHelper {
 				resultBuffer.append("读取服务器响应数据异常!");
 			}
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用URLConnection发送get请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用URLConnection发送get请求后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -646,7 +646,7 @@ public class HttpClientHelper {
 		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
 	    httpPost.setHeader("Content-Type", "application/json");
@@ -659,11 +659,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	LogUtil.APP.info("开始设置|替换HTTPPostJson头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换HTTPPostJson头域信息...key:【{}】    value:【{}】",key,value);
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 	    		httpPost.setHeader(key, value);
 	    	}else{
 	    		httpPost.setHeader(key, value);
@@ -674,12 +674,12 @@ public class HttpClientHelper {
 		try {
 		if(params.size()>0){
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				LogUtil.APP.info("参数类型：TEXT,设置HTTPPostJson参数信息...【"+params.get("_forTextJson").toString()+"】");
+				LogUtil.APP.info("参数类型：TEXT,设置HTTPPostJson参数信息...【{}】",params.get("_forTextJson").toString());
 				StringEntity entity = new StringEntity(params.get("_forTextJson").toString(),charset);
 				httpPost.setEntity(entity);
 			}else{
 			    String jsonString = JSON.toJSONString(params);
-				LogUtil.APP.info("参数类型：FORM,设置HTTPPostJson参数信息...【"+jsonString+"】");
+				LogUtil.APP.info("参数类型：FORM,设置HTTPPostJson参数信息...【{}】",jsonString);
 				StringEntity entity = new StringEntity(jsonString,charset);
 				httpPost.setEntity(entity);
 			}
@@ -708,14 +708,14 @@ public class HttpClientHelper {
 			}	
 		}
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用HttpClient以JSON格式发送post请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpClient以JSON格式发送post请求后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -744,7 +744,7 @@ public class HttpClientHelper {
 		
 		StringBuffer resultBuffer = null;
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		HttpPost httpPost = new HttpPost(urlParam);
 	    RequestConfig requestConfig = RequestConfig.custom()  
 	            .setConnectTimeout(timeout)
@@ -755,11 +755,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	LogUtil.APP.info("开始设置|替换HTTPClientPost头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换HTTPClientPost头域信息...key:【{}】    value:【{}】",key,value);
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 	    		httpPost.setHeader(key, value);
 	    	}else{
 	    		httpPost.setHeader(key, value);
@@ -777,7 +777,7 @@ public class HttpClientHelper {
 				    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
 				    for (Map.Entry<String, Object> m :params.entrySet())  { 
 			            nvps.add(new BasicNameValuePair(m.getKey(), m.getValue().toString()));
-			            LogUtil.APP.info("设置HTTPClientPost参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
+			            LogUtil.APP.info("设置HTTPClientPost参数信息...key:【{}】    value:【{}】",m.getKey(),m.getValue());
 			        }
 				    httpPost.setEntity(new UrlEncodedFormEntity(nvps,charset));
 				}
@@ -806,14 +806,14 @@ public class HttpClientHelper {
 				resultBuffer.append("读取服务器响应数据异常，响应码："+response.getStatusLine().getStatusCode());
 			}
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用HttpClient发送post请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpClient发送post请求后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -842,7 +842,7 @@ public class HttpClientHelper {
 		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPost httpPost = new HttpPost(urlParam);
 	    RequestConfig requestConfig = RequestConfig.custom()  
@@ -854,11 +854,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	LogUtil.APP.info("开始设置|替换httpClientUploadFile头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换httpClientUploadFile头域信息...key:【{}】    value:【{}】",key,value);
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 	    		httpPost.setHeader(key, value);
 	    	}else{
 	    		httpPost.setHeader(key, value);
@@ -880,10 +880,10 @@ public class HttpClientHelper {
 				    for (Map.Entry<String, Object> m :params.entrySet())  {
 				    	if (m.getValue() instanceof File) {
 				    		entityBuilder.addBinaryBody(m.getKey(), (File)m.getValue());
-				    		LogUtil.APP.info("设置httpClientUploadFile 上传文件参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
+				    		LogUtil.APP.info("设置httpClientUploadFile 上传文件参数信息...key:【{}】    value:【{}】",m.getKey(),m.getValue());
 				    	}else{
 				    		entityBuilder.addTextBody(m.getKey(), m.getValue().toString());
-				    		LogUtil.APP.info("设置httpClientUploadFile参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
+				    		LogUtil.APP.info("设置httpClientUploadFile参数信息...key:【{}】    value:【{}】",m.getKey(),m.getValue());
 				    	}
 			        }
 				    HttpEntity reqEntity =entityBuilder.build();
@@ -914,14 +914,14 @@ public class HttpClientHelper {
 				resultBuffer.append("读取服务器响应数据异常，响应码："+response.getStatusLine().getStatusCode());
 			}
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用HttpClient上传文件出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpClient上传文件后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -949,7 +949,7 @@ public class HttpClientHelper {
 		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");	
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);	
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		BufferedReader br = null;
 		// 构建请求参数
@@ -965,11 +965,11 @@ public class HttpClientHelper {
 					try {
 						sbParams.append(URLEncoder.encode(String.valueOf(entry.getValue()), charset));
 					} catch (UnsupportedEncodingException e) {
-						LogUtil.APP.error(e.getMessage(), e);
+						LogUtil.APP.error("使用HttpClient发送get请求拼接URL时出现异常，请检查！", e);
 						throw new RuntimeException(e);
 					}
 					sbParams.append("&");
-					LogUtil.APP.info("设置HTTPClientGet参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置HTTPClientGet参数信息...key:【{}】    value:【{}】",entry.getKey(),entry.getValue());
 				}
 			}
 			
@@ -987,11 +987,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	LogUtil.APP.info("开始设置|替换HTTPClientGet头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换HTTPClientGet头域信息...key:【{}】    value:【{}】",key,value);
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 	    		httpGet.setHeader(key, value);
 	    	}else{
 	    		httpGet.setHeader(key, value);
@@ -1019,14 +1019,14 @@ public class HttpClientHelper {
 				resultBuffer.append(temp);
 			}
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用HttpClient发送get请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpClient发送get请求后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -1046,7 +1046,7 @@ public class HttpClientHelper {
 	public static String sendSocketPost(String urlParam, Map<String, Object> params, String charset,
 			Map<String, String> headmsg) {
 		String result = "";
-		LogUtil.APP.info("设置Socket请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置Socket请求地址:【{}】",urlParam);
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
@@ -1059,7 +1059,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(entry.getValue());
 					sbParams.append("&");
-					LogUtil.APP.info("设置SocketPost参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置SocketPost参数信息...key:【{}】    value:【{}】",entry.getKey(),entry.getValue());
 				}
 			}
 		}
@@ -1084,11 +1084,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	LogUtil.APP.info("开始设置|替换Socket头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换Socket头域信息...key:【{}】    value:【{}】",key,value);
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 		    		sb.append(key+": "+value+" \r\n");
 		    	}else{
 		    		sb.append(key+": "+value+" \r\n");
@@ -1119,14 +1119,14 @@ public class HttpClientHelper {
 			// 读取出响应体数据（就是你要的数据）
 			result = readLine(is, contentLength, charset);
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用socket发送post请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用socket发送post请求后关闭osw流出现异常，请检查！", e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1134,7 +1134,7 @@ public class HttpClientHelper {
 						try {
 							socket.close();
 						} catch (IOException e) {
-							LogUtil.APP.error(e.getMessage(), e);
+							LogUtil.APP.error("使用socket发送post请求后关闭socket出现异常，请检查！", e);
 							socket = null;
 							throw new RuntimeException(e);
 						}
@@ -1145,7 +1145,7 @@ public class HttpClientHelper {
 				try {
 					is.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用socket发送post请求后关闭socket is对象出现异常，请检查！", e);
 					is = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1154,7 +1154,7 @@ public class HttpClientHelper {
 							socket.close();
 						} catch (IOException e) {
 							socket = null;
-							LogUtil.APP.error(e.getMessage(), e);
+							LogUtil.APP.error("使用socket发送post请求后关闭socket出现异常，请检查！", e);
 							throw new RuntimeException(e);
 						}
 					}
@@ -1174,7 +1174,7 @@ public class HttpClientHelper {
 	 */
 	public static String sendSocketGet(String urlParam, Map<String, Object> params, String charset,Map<String, String> headmsg) {
 		String result = "";
-		LogUtil.APP.info("设置Socket请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置Socket请求地址:【{}】",urlParam);
 		// 构建请求参数
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
@@ -1187,7 +1187,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(entry.getValue());
 					sbParams.append("&");
-					LogUtil.APP.info("设置SocketPost参数信息...key:【"+entry.getKey()+"】    value:【"+entry.getValue()+"】");
+					LogUtil.APP.info("设置SocketPost参数信息...key:【{}】    value:【{}】",entry.getKey(),entry.getValue());
 				}
 			}
 
@@ -1213,11 +1213,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	LogUtil.APP.info("开始设置|替换Socket头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换Socket头域信息...key:【{}】    value:【{}】",key,value);
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 		    		sb.append(key+": "+value+" \r\n");
 		    	}else{
 		    		sb.append(key+": "+value+" \r\n");
@@ -1248,14 +1248,14 @@ public class HttpClientHelper {
 			// 读取出响应体数据（就是你要的数据）
 			result = readLine(is, contentLength, charset);
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用socket发送get请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用socket发送get请求后关闭osw流出现异常，请检查！", e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1263,7 +1263,7 @@ public class HttpClientHelper {
 						try {
 							socket.close();
 						} catch (IOException e) {
-							LogUtil.APP.error(e.getMessage(), e);
+							LogUtil.APP.error("使用socket发送get请求后关闭socket出现异常，请检查！", e);
 							socket = null;
 							throw new RuntimeException(e);
 						}
@@ -1274,7 +1274,7 @@ public class HttpClientHelper {
 				try {
 					is.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用socket发送get请求后关闭socket is对象出现异常，请检查！", e);
 					is = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1282,7 +1282,7 @@ public class HttpClientHelper {
 						try {
 							socket.close();
 						} catch (IOException e) {
-							LogUtil.APP.error(e.getMessage(), e);
+							LogUtil.APP.error("使用socket发送get请求后关闭socket对象出现异常，请检查！", e);
 							socket = null;
 							throw new RuntimeException(e);
 						}
@@ -1344,7 +1344,7 @@ public class HttpClientHelper {
 		
 		StringBuffer resultBuffer = null;
 		// 构建请求参数
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		StringBuffer sbParams = new StringBuffer();
 		if (params != null && params.size() > 0) {
 			if(1==params.size()&&params.containsKey("_forTextJson")){
@@ -1356,7 +1356,7 @@ public class HttpClientHelper {
 					sbParams.append("=");
 					sbParams.append(e.getValue());
 					sbParams.append("&");
-					LogUtil.APP.info("设置HttpURLDel参数信息...key:【"+e.getKey()+"】    value:【"+e.getValue()+"】");
+					LogUtil.APP.info("设置HttpURLDel参数信息...key:【{}】    value:【{}】",e.getKey(),e.getValue());
 				}
 			}
 		}
@@ -1376,11 +1376,11 @@ public class HttpClientHelper {
 		    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 		    	String key=m.getKey();
 		    	String value=m.getValue();
-		    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
+		    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【{}】    value:【{}】",key,value);
 		    	if(null!=value&&value.indexOf("Base64(")==0){
 		    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 		    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-		    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+		    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 		    		con.setRequestProperty(key,value);
 		    	}else{
 		    		con.setRequestProperty(key,value);
@@ -1413,14 +1413,14 @@ public class HttpClientHelper {
 				}
 		    }
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用HttpURLConnection发送delete请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (osw != null) {
 				try {
 					osw.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpURLConnection发送delete请求后关闭osw流出现异常，请检查！", e);
 					osw = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1434,7 +1434,7 @@ public class HttpClientHelper {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpURLConnection发送delete请求后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				} finally {
@@ -1469,7 +1469,7 @@ public class HttpClientHelper {
 		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
 	    httpput.setHeader("Content-Type", "application/json");
@@ -1482,11 +1482,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【{}】    value:【{}】",key,value);
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 	    		httpput.setHeader(key,value);
 	    	}else{
 	    		httpput.setHeader(key,value);
@@ -1497,12 +1497,12 @@ public class HttpClientHelper {
 		try {
 		if(params.size()>0){
 			if(1==params.size()&&params.containsKey("_forTextJson")){
-				LogUtil.APP.info("参数类型：TEXT,设置HTTPClientPutJson参数信息...【"+params.get("_forTextJson").toString()+"】");
+				LogUtil.APP.info("参数类型：TEXT,设置HTTPClientPutJson参数信息...【{}】",params.get("_forTextJson").toString());
 				StringEntity entity = new StringEntity(params.get("_forTextJson").toString(),charset);
 				httpput.setEntity(entity);
 			}else{
 			    String jsonString = JSON.toJSONString(params);
-				LogUtil.APP.info("参数类型：FORM,设置HTTPClientPutJson参数信息...【"+jsonString+"】");
+				LogUtil.APP.info("参数类型：FORM,设置HTTPClientPutJson参数信息...【{}】",jsonString);
 				StringEntity entity = new StringEntity(jsonString,charset);
 				httpput.setEntity(entity);
 			}
@@ -1532,14 +1532,14 @@ public class HttpClientHelper {
 				}
 	        }
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用HttpClient发送put请求(参数JSON格式)出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpClient发送put请求(参数JSON格式)后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -1567,7 +1567,7 @@ public class HttpClientHelper {
 		int responsecode=ppt.getIsResponseCode();
 		
 		StringBuffer resultBuffer = null;
-		LogUtil.APP.info("设置HTTP请求地址:【"+urlParam+"】");
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
 		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
 		HttpPut httpput = new HttpPut(urlParam);
 	    RequestConfig requestConfig = RequestConfig.custom()  
@@ -1579,11 +1579,11 @@ public class HttpClientHelper {
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
 	    	String key=m.getKey();
 	    	String value=m.getValue();
-	    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【"+key+"】    value:【"+value+"】");
+	    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【{}】    value:【{}】",key,value);
 	    	if(null!=value&&value.indexOf("Base64(")==0){
 	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
 	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
-	    		LogUtil.APP.info("将头域【"+key+"】的值【"+value+"】FORMAT成BASE64格式...");
+	    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
 	    		httpput.setHeader(key,value);
 	    	}else{
 	    		httpput.setHeader(key,value);
@@ -1601,7 +1601,7 @@ public class HttpClientHelper {
 				    List <NameValuePair> nvps = new ArrayList <NameValuePair>();
 				    for (Map.Entry<String, Object> m :params.entrySet())  { 
 			            nvps.add(new BasicNameValuePair(m.getKey(), m.getValue().toString()));
-			            LogUtil.APP.info("开始设置HTTPClientPut参数信息...key:【"+m.getKey()+"】    value:【"+m.getValue()+"】");
+			            LogUtil.APP.info("开始设置HTTPClientPut参数信息...key:【{}】    value:【{}】",m.getKey(),m.getValue());
 			        }
 				    httpput.setEntity(new UrlEncodedFormEntity(nvps,charset));
 				}
@@ -1631,14 +1631,14 @@ public class HttpClientHelper {
 				}
 	        }		
 		} catch (Exception e) {
-			LogUtil.APP.error(e.getMessage(), e);
+			LogUtil.APP.error("使用HttpClient发送put请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					LogUtil.APP.error(e.getMessage(), e);
+					LogUtil.APP.error("使用HttpClient发送put请求后关闭br流出现异常，请检查！", e);
 					br = null;
 					throw new RuntimeException(e);
 				}
@@ -1657,7 +1657,7 @@ public class HttpClientHelper {
         SSLContext sslContext = null;
         FileInputStream instream = null;
         KeyStore trustStore = null;
-        LogUtil.APP.info("证书路径："+keyStorePath+"  密钥："+keyStorepass);
+        LogUtil.APP.info("证书路径:{}  密钥:{}",keyStorePath,keyStorepass);
         try {
             trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
             LogUtil.APP.info("开始读取证书文件流...");
@@ -1674,12 +1674,12 @@ public class HttpClientHelper {
             sslContext = SSLContext.getInstance("SSL", "SunJSSE");
             sslContext.init(null, tms, new java.security.SecureRandom());
         } catch (Exception e) {
-        	LogUtil.APP.error(e.getMessage(), e);
+        	LogUtil.APP.error("设置信任自签名证书出现异常，请检查！", e);
         } finally {
             try {
                 instream.close();
             } catch (IOException e) {
-            	LogUtil.APP.error(e.getMessage(), e);
+            	LogUtil.APP.error("设置信任自签名证书后关闭instream流出现异常，请检查！", e);
             }
         }
         return sslContext;

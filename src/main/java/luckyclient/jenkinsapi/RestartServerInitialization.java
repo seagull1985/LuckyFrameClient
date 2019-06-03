@@ -21,10 +21,9 @@ public class RestartServerInitialization {
 		try{
 			String[] command = LogOperation.getRestartComm(tastid);
 			if(command!=null){
-				LogUtil.APP.info("准备重启指定的TOMCAT！请稍等。。。参数个数："+command.length);
+				LogUtil.APP.info("准备重启指定的TOMCAT！请稍等。。。参数个数:{}",command.length);
 				if(command.length==5){
-					LogUtil.APP.info("开始调用重启TOMCAT方法。。。参数0："+command[0]+" 参数1："+command[1]
-							+" 参数2："+command[2]+" 参数3："+command[3]+" 参数4："+command[4]);
+					LogUtil.APP.info("开始调用重启TOMCAT方法。。。参数0:{} 参数1:{} 参数2:{} 参数3:{} 参数4:{}",command[0],command[1],command[2],command[3],command[4]);
 					result = RmtShellExecutor.sshShell(command[0], command[1], command[2], Integer.valueOf(command[3]), command[4]);
 				}else{
 					LogUtil.APP.warn("重启TOMCAT命令行参数出现异常，请检查配置信息！");
@@ -40,10 +39,6 @@ public class RestartServerInitialization {
 			return result;
 		}
 		return result;
-
-	}
-	
-	public static void main(String[] args) {
 
 	}
 

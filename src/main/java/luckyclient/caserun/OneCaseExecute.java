@@ -11,6 +11,7 @@ import luckyclient.caserun.exinterface.TestCaseExecution;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.ex.WebOneCaseExecute;
 import luckyclient.publicclass.AppiumConfig;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.TaskExecute;
 import luckyclient.serverapi.entity.TaskScheduling;
@@ -30,32 +31,37 @@ public class OneCaseExecute extends TestControl {
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		PropertyConfigurator.configure(System.getProperty("user.dir")+ File.separator +"log4j.conf");
-		String taskId = args[0];
-		String caseId = args[1];
-		int version = Integer.parseInt(args[2]);
-		TaskExecute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskId));
-		TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskId));
-		if (taskScheduling.getTaskType() == 0) {
-				// 接口测试
-				TestCaseExecution.oneCaseExecuteForTask(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), String.valueOf(task.getTaskId()));
+		try{
+			PropertyConfigurator.configure(System.getProperty("user.dir")+ File.separator +"log4j.conf");
+			String taskId = args[0];
+			String caseId = args[1];
+			int version = Integer.parseInt(args[2]);
+			TaskExecute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskId));
+			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskId));
+			if (taskScheduling.getTaskType() == 0) {
+					// 接口测试
+					TestCaseExecution.oneCaseExecuteForTask(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), String.valueOf(task.getTaskId()));
 
-		} else if (taskScheduling.getTaskType() == 1) {
-				WebOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), version,
-						String.valueOf(task.getTaskId()));
+			} else if (taskScheduling.getTaskType() == 1) {
+					WebOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), version,
+							String.valueOf(task.getTaskId()));
 
-		} else if (taskScheduling.getTaskType() == 2) {
-			Properties properties = AppiumConfig.getConfiguration();
+			} else if (taskScheduling.getTaskType() == 2) {
+				Properties properties = AppiumConfig.getConfiguration();
 
-			if ("Android".equals(properties.getProperty("platformName"))) {
-				AndroidOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId),
-						version, String.valueOf(task.getTaskId()));
-			} else if ("IOS".equals(properties.getProperty("platformName"))) {
-				IosOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), version,
-						String.valueOf(task.getTaskId()));
-			}
+				if ("Android".equals(properties.getProperty("platformName"))) {
+					AndroidOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId),
+							version, String.valueOf(task.getTaskId()));
+				} else if ("IOS".equals(properties.getProperty("platformName"))) {
+					IosOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), version,
+							String.valueOf(task.getTaskId()));
+				}
 
+			}			
+		}catch(Exception e){
+			LogUtil.APP.error("启动单个用例运行主函数出现异常，请检查！",e);
+		} finally{
+			System.exit(0);
 		}
-		System.exit(0);
 	}
 }

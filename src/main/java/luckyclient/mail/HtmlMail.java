@@ -38,7 +38,7 @@ public class HtmlMail {
             Map<String, String> headmsg = new HashMap<>(0);
             Properties properties = SysConfig.getConfiguration();
             if ("true".equals(properties.getProperty("task.push.switch").toLowerCase())) {
-                LogUtil.APP.info("开始向第三方平台推送任务执行情况....");
+                LogUtil.APP.info("开始向第三方平台推送任务执行情况...");
                 Map<String, Object> pushparameters = new HashMap<>(0);
                 pushparameters.put("buildstatus", buildstatus);
                 pushparameters.put("restartstatus", restartstatus);
@@ -59,7 +59,6 @@ public class HtmlMail {
             }
         } catch (Exception e) {
             LogUtil.APP.error("向第三方平台推送任务执行情况出现异常，请检查！", e);
-            e.printStackTrace();
             return fet.getText("task-body", parameters);
         }
         return fet.getText("task-body", parameters);

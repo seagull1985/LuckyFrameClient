@@ -19,7 +19,7 @@ public class AppiumConfig {
 		    InputStream in = new BufferedInputStream(AppiumConfig.class.getResourceAsStream(SYS_CONFIG_FILE));
 			SYS_CONFIG.load(new InputStreamReader(in, "UTF-8"));
 		} catch (IOException e) {
-			e.printStackTrace();
+			LogUtil.APP.error("读取移动端appium_config.properties配置文件出现异常，请检查！", e);
 		}
 	}
 	private AppiumConfig(){}

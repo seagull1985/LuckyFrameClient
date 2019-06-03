@@ -51,7 +51,7 @@ public class MailSendInitialization {
         String[] addresses = LogOperation.getEmailAddress(taskid);
         Properties properties = SysConfig.getConfiguration();
         if (addresses != null) {
-            LogUtil.APP.info("准备将测试结果发送邮件通知！请稍等。。。。");
+            LogUtil.APP.info("准备将测试结果发送邮件通知！请稍等...");
             //这个类主要是设置邮件
             MailSenderInfo mailInfo = new MailSenderInfo();
             //这个类主要来发送邮件
@@ -77,17 +77,13 @@ public class MailSendInitialization {
             }
             String addressesmail = stringBuilder.toString();
             if (sms.sendHtmlMail(mailInfo)) {
-                LogUtil.APP.info("给" + addressesmail + "的测试结果通知邮件发送完成！");
+                LogUtil.APP.info("给{}的测试结果通知邮件发送完成！",addressesmail);
             } else {
-                LogUtil.APP.warn("给" + addressesmail + "的测试结果通知邮件发送失败！");
+                LogUtil.APP.warn("给{}的测试结果通知邮件发送失败！",addressesmail);
             }
         } else {
             LogUtil.APP.info("当前任务不需要发送邮件通知！");
         }
-    }
-
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
     }
 
 }

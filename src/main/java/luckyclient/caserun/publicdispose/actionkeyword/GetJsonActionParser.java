@@ -29,7 +29,7 @@ public class GetJsonActionParser implements ActionKeyWordParser {
             key=actionParams;
             testResult=SubString.getJsonValue(testResult, key, index);
         }
-        LogUtil.APP.info("Action(getJV):获取JSON字符串指定Key的值是："+testResult);
+        LogUtil.APP.info("Action(getJV):获取JSON字符串指定Key的值是:{}",testResult);
         return testResult;
     }
 }

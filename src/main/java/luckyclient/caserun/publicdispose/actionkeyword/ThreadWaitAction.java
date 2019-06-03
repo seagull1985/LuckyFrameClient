@@ -23,7 +23,7 @@ public class ThreadWaitAction implements ActionKeyWordParser {
                 // 获取步骤间等待时间
                 int time=Integer.parseInt(actionParams);
                 if (time > 0) {
-                    LogUtil.APP.info("Action(Wait):线程等待"+time+"秒...");
+                    LogUtil.APP.info("Action(Wait):线程等待【{}】秒...",time);
                     Thread.sleep(time * 1000);
                 }
             } catch (InterruptedException e) {

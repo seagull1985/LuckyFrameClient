@@ -7,6 +7,7 @@ import org.apache.log4j.PropertyConfigurator;
 import luckyclient.caserun.exappium.AppTestControl;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.WebTestControl;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.TaskExecute;
 import luckyclient.serverapi.entity.TaskScheduling;
@@ -39,10 +40,11 @@ public class RunAutomationTest extends TestControl {
 			} else if (taskScheduling.getTaskType() == 2) {
 				AppTestControl.taskExecutionPlan(task);
 			}
-	 		System.exit(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.APP.error("启动测试任务运行主函数出现异常，请检查！",e);
+		} finally{
+			System.exit(0);
 		}
 	}
 }

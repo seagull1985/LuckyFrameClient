@@ -41,11 +41,10 @@ public class BaseWebDrive {
 			FileUtils.copyFile(scrFile, new File(pngpath));
 		} catch (IOException e) {
 			LogUtil.APP.error("截图操作失败，抛出异常请查看日志...", e);
-			e.printStackTrace();
 		}
 		scrFile.deleteOnExit();
 		LogUtil.APP
-				.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【" + pngpath + "】");
+				.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【{}】",pngpath);
 		return result;
 	}
 

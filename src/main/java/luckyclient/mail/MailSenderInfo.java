@@ -78,7 +78,7 @@ public class MailSenderInfo {
                 p.put("mail.smtp.ssl.socketFactory", sf);
             }
         } catch (GeneralSecurityException e) {
-            LogUtil.APP.error("获得邮件会话属性失败或异常: " + e.getMessage());
+            LogUtil.APP.error("获得邮件会话属性失败或异常: ",e);
             return null;
         }
         return p;

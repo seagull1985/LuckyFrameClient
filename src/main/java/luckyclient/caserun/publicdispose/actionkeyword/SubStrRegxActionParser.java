@@ -29,7 +29,7 @@ public class SubStrRegxActionParser implements ActionKeyWordParser {
             key=actionParams;
             testResult= SubString.subStrRgex(testResult, key, index);
         }
-        LogUtil.APP.info("Action(subStrRgex):获取JSON字符串指定Key的值是："+testResult);
+        LogUtil.APP.info("Action(subStrRgex):获取JSON字符串指定Key的值是:{}",testResult);
         return testResult;
     }
 }

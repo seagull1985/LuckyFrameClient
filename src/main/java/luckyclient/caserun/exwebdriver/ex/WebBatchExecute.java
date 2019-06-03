@@ -40,7 +40,7 @@ public class WebBatchExecute{
 			wd = WebDriverInitialization.setWebDriverForTask(drivertype);
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			LogUtil.APP.error("初始化WebDriver出现异常！", e1);
 		}
 		LogOperation caselog = new LogOperation();
 		TaskExecute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
@@ -58,7 +58,6 @@ public class WebBatchExecute{
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				LogUtil.APP.error("用户执行过程中抛出异常！", e);
-				e.printStackTrace();
 			 }
 			}			
 		}else{                                           //批量执行用例
@@ -73,7 +72,6 @@ public class WebBatchExecute{
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
-					e.printStackTrace();
 				}
 			}
 		}

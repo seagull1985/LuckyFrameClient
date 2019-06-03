@@ -40,7 +40,7 @@ public class WebDriverInitialization{
 		File directory = new File("");
 		String drivenpath=directory.getCanonicalPath()+File.separator+"BrowserDriven"+File.separator;
 		WebDriver webDriver = null;
-		LogUtil.APP.info("准备初始化WebDriver对象...检查到当前操作系统是："+os);
+		LogUtil.APP.info("准备初始化WebDriver对象...检查到当前操作系统是:{}",os);
 		if(drivertype==0){
 			if(os.startsWith("win")){
 				System.setProperty("webdriver.ie.driver",drivenpath+"IEDriverServer.exe");
@@ -90,7 +90,7 @@ public class WebDriverInitialization{
 				LogUtil.APP.warn("当前操作系统无法进行Edge浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
 			}
 		}else{
-			LogUtil.APP.warn("浏览器类型标识："+drivertype+"，获取到的浏览器类型标识未定义，默认IE浏览器进行执行....");
+			LogUtil.APP.warn("浏览器类型标识:{}，获取到的浏览器类型标识未定义，默认IE浏览器进行执行....",drivertype);
 			System.setProperty("webdriver.ie.driver",drivenpath+"IEDriverServer.exe");
 			webDriver = new InternetExplorerDriver();
 		}

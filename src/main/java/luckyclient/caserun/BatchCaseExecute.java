@@ -11,6 +11,7 @@ import luckyclient.caserun.exinterface.BatchTestCaseExecution;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.ex.WebBatchExecute;
 import luckyclient.publicclass.AppiumConfig;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.TaskExecute;
 import luckyclient.serverapi.entity.TaskScheduling;
@@ -58,9 +59,10 @@ public class BatchCaseExecute extends TestControl {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.APP.error("启动批量运行用例主函数出现异常，请检查！",e);
+		} finally{
+			System.exit(0);
 		}
-		System.exit(0);
 	}
 
 }

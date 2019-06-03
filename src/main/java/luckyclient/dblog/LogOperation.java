@@ -50,8 +50,7 @@ public class LogOperation {
 			String imgname) {
 		if (0 == exetype) {
 			if (logDetail.length()>5000) {
-				 LogUtil.APP.info("日志明细超过5000字符，无法进入数据库存储，进行日志明细打印...");
-				 LogUtil.APP.info("第"+logStep+"步，日志级别"+logGrade+",日志明细【"+logGrade+"】...");
+				 LogUtil.APP.info("第{}步，日志级别{}，日志明细【{}】...日志明细超过5000字符，无法进入数据库存储，进行日志明细打印...",logStep,logGrade,logDetail);
 				 logDetail="日志明细超过5000字符无法存入数据库，已在LOG4J日志中打印，请前往查看...";
 			}
 			
@@ -137,7 +136,7 @@ public class LogOperation {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.APP.error("获取邮件收件人地址出现异常，请检查！",e);
 			return address;
 		}
 		return address;
@@ -170,7 +169,7 @@ public class LogOperation {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.APP.error("获取构建地址出现异常，请检查！",e);
 			return buildname;
 		}
 		return buildname;
@@ -207,7 +206,7 @@ public class LogOperation {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.APP.error("获取远程shell地址出现异常，请检查！",e);
 			return command;
 		}
 		return command;
@@ -235,7 +234,7 @@ public class LogOperation {
             }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.APP.error("获取任务测试时长出现异常，请检查！",e);
 			return desTime;
 		}
 		return desTime;
@@ -252,14 +251,10 @@ public class LogOperation {
 			driverType = taskScheduling.getBrowserType();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogUtil.APP.error("获取浏览器类型出现异常，请检查！",e);
 			return driverType;
 		}
 		return driverType;
-	}
-
-	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
 	}
 
 }

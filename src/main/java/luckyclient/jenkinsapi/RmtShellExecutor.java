@@ -33,7 +33,7 @@ public class RmtShellExecutor {
 	    String result = "Status:true"+" 重启命令执行成功！";
 	    try { 
 	    JSch jsch = new JSch();
-	    LogUtil.APP.info("进入到重启TOMCAT方法。。。");
+	    LogUtil.APP.info("进入到重启TOMCAT方法...");
 	    //设置密钥和密码
 	    if (privateKey != null && !"".equals(privateKey)) {
 	        if (passphrase != null && "".equals(passphrase)) {
@@ -47,11 +47,11 @@ public class RmtShellExecutor {
 	     
 	    if(port <=0){
 	        //连接服务器，采用默认端口
-	    	LogUtil.APP.info("设置重启TOMCAT服务器IP及默认端口。。。");
+	    	LogUtil.APP.info("设置重启TOMCAT服务器IP及默认端口...");
 	        session = jsch.getSession(user, ip);
 	    }else{
 	        //采用指定的端口连接服务器
-	    	LogUtil.APP.info("设置重启TOMCAT服务器IP及端口。。。");
+	    	LogUtil.APP.info("设置重启TOMCAT服务器IP及端口...");
 	        session = jsch.getSession(user, ip ,port);
 	        LogUtil.APP.info("设置重启TOMCAT服务器IP及端口完成!");
 	    }
@@ -96,13 +96,13 @@ public class RmtShellExecutor {
 	             
 	            //转换输出结果并打印出来
 	            String temp = new String(data, 0, nLen,"iso8859-1");
-	            LogUtil.APP.info("开始打印重启TOMCAT命令执行结果"+temp);
+	            LogUtil.APP.info("开始打印重启TOMCAT命令执行结果...",temp);
 	        }
 	        outstream.close();
 	        instream.close();
 	    } catch (Exception e) {
 	    	result = "重启TOMCAT过程中，出现异常！";
-	    	LogUtil.APP.error(e.getMessage(), e);
+	    	LogUtil.APP.error("重启TOMCAT过程中，出现异常！", e);
 		    return result;
 	    } finally {
 	    	if(null!=session){

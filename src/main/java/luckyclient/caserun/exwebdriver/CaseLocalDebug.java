@@ -34,13 +34,12 @@ public class CaseLocalDebug{
 		try {
 			ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
 			List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
-			LogUtil.APP.info("开始执行用例：【"+testCaseExternalId+"】......");
+			LogUtil.APP.info("开始执行用例:【{}】......",testCaseExternalId);
 			List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 			WebCaseExecution.caseExcution(testcase,steps, "888888",wd,caselog,pcplist);
-			LogUtil.APP.info("当前用例：【"+testcase.getCaseSign()+"】执行完成......进入下一条");
+			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (Exception e) {
-			LogUtil.APP.info("用户执行过程中抛出异常！", e);
-			e.printStackTrace();
+			LogUtil.APP.error("用户执行过程中抛出异常！", e);
 		}
         //关闭浏览器
         wd.quit();
@@ -56,17 +55,12 @@ public class CaseLocalDebug{
 		System.out.println("当前调试用例总共："+addtestcase.size());
 		for(String testCaseExternalId:addtestcase) {
 		    try{
-		    LogUtil.APP.info("开始调用方法，项目名："+projectname+"，用例编号：" + testCaseExternalId); 
+		    LogUtil.APP.info("开始调用方法，项目名:{}，用例编号:{}",projectname,testCaseExternalId); 
 		    oneCasedebug(wd,testCaseExternalId);
 		    }catch(Exception e){
 		    	continue;
 		    }
 		}
-	}
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub	
-
 	}
 
 }

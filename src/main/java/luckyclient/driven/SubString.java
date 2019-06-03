@@ -14,6 +14,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
 
+import luckyclient.publicclass.LogUtil;
+
 /**
  * 公用驱动
  * =================================================================
@@ -45,6 +47,7 @@ public class SubString {
 			String getstr = str.substring(startnum,endnum);
 			return getstr;
 		}catch(Exception e){
+			LogUtil.APP.error("subCentreStr截取字符串出现异常，请检查参数！",e);
 			return "截取字符串出现异常，请检查参数！";
 		}
 	}
@@ -61,6 +64,7 @@ public class SubString {
 			String getstr = str.substring(str.indexOf(startstr) + startstr.length());
 			return getstr;
 		}catch(Exception e){
+			LogUtil.APP.error("subStartStr截取字符串出现异常，请检查参数！",e);
 			return "截取字符串出现异常，请检查参数！";
 		}
 	}
@@ -77,6 +81,7 @@ public class SubString {
 			String getstr = str.substring(0, str.indexOf(endstr));
 			return getstr;
 		}catch(Exception e){
+			LogUtil.APP.error("subEndStr截取字符串出现异常，请检查参数！",e);
 			return "截取字符串出现异常，请检查参数！";
 		}
 	}
@@ -116,6 +121,7 @@ public class SubString {
 
 			return getstr;
 		}catch(Exception e){
+			LogUtil.APP.error("subCentreNum截取字符串出现异常，请检查参数！",e);
 			return "截取字符串出现异常，请检查参数！";
 		}
 	}
@@ -145,6 +151,7 @@ public class SubString {
 
 			return getstr;
 		}catch(Exception e){
+			LogUtil.APP.error("subStartNum截取字符串出现异常，请检查参数！",e);
 			return "截取字符串出现异常，请检查参数！";
 		}
 	}
@@ -174,6 +181,7 @@ public class SubString {
 
 			return getstr;
 		}catch(Exception e){
+			LogUtil.APP.error("subEndNum截取字符串出现异常，请检查参数！",e);
 			return "截取字符串出现异常，请检查参数！";
 		}
 	}
@@ -206,6 +214,7 @@ public class SubString {
 			}
 			return getstr;
 		}catch(Exception e){
+			LogUtil.APP.error("subStrRgex截取字符串出现异常，请检查参数！",e);
 			return "截取字符串出现异常，请检查参数！";
 		}
 	}
@@ -349,11 +358,6 @@ public class SubString {
 		COUNTER = 1;
 		JSONVALUE = "【获取JSON KEY中的Value异常】";
 		return result;
-	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

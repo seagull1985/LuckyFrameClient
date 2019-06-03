@@ -25,7 +25,7 @@ public class BuildingInitialization {
 				String result = JenkinsBuilding.buildingResult(buildname[i]);
 				if(result.indexOf("alt=\"Failed\"")>-1){
 					buildresult = "项目"+buildname[i]+"构建失败，自动化测试退出！";
-					LogUtil.APP.warn("项目"+buildname[i]+"构建失败，自动化测试退出！");
+					LogUtil.APP.warn("项目【{}】构建失败，自动化测试退出！",buildname[i]);
 					break;
 				}else if(result.indexOf("alt=\"Success\"")>-1){
 					k++;
@@ -34,7 +34,7 @@ public class BuildingInitialization {
 			if(buildresult.indexOf("Status:true")<=-1){
 				break;
 			}
-			LogUtil.APP.info("正在检查构建中的项目(每6秒检查一次)。。。需要构建项目"+buildname.length+"个，目前成功"+k+"个");
+			LogUtil.APP.info("正在检查构建中的项目(每6秒检查一次)。。。需要构建项目【{}】个，目前成功【{}】个",buildname.length,k);
 			if(k==buildname.length){
 				break;
 			}			
@@ -65,11 +65,6 @@ public class BuildingInitialization {
 			return result;
 		}
 		return result;
-
-	}
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 	}
 
