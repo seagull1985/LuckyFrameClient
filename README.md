@@ -22,15 +22,16 @@
    <img alt="code style" src="https://img.shields.io/badge/BUILD-PASSING-green.svg">
   </a>
   <a href="http://git.oschina.net/seagull1985/LuckyFrameWeb/releases">
-   <img src="https://img.shields.io/badge/LuckyFrame-V2.7.1 releases-green.svg" >
+   <img src="https://img.shields.io/badge/LuckyFrame-V3.0 releases-green.svg" >
   </a>
 </p>
 
 # 捐赠 | 感谢
 > [【捐赠支持(微信)】](https://git.oschina.net/uploads/images/2017/0913/175706_f58b543b_1215415.jpeg)  [【捐赠支持(支付宝)】](https://git.oschina.net/uploads/images/2017/0913/175750_e96add72_1215415.jpeg)
 
-> 感谢你们的认可与支持    [【捐赠记录】](https://git.oschina.net/seagull1985/LuckyFrameWeb/wikis/pages?title=捐赠列表&parent=捐赠)
+> 感谢你们的认可与支持    [【关于LuckyFrame】](http://www.luckyframe.cn/page/aboutme.html)
 
+> 如果你喜欢这个项目，那就点击一下右上方的【Star】以及【Fork】，支持一下我们吧！
 
 # 介绍
 
@@ -59,13 +60,13 @@
 
 # 瞅一眼吧
 
-![首页](https://git.oschina.net/uploads/images/2017/0913/193800_d0189b51_1215415.jpeg "首页")
-![用例管理](https://git.oschina.net/uploads/images/2017/0913/193821_2e58d1cc_1215415.jpeg "用例管理")
-![步骤管理自动联想](https://gitee.com/uploads/images/2017/1110/150236_b5e0d674_1215415.png "步骤管理自动联想")
-![测试计划管理](https://git.oschina.net/uploads/images/2017/0913/193847_c32f96ff_1215415.jpeg "测试计划管理")
-![测试任务调度](https://git.oschina.net/uploads/images/2017/0913/193913_fdccc46f_1215415.png "测试任务调度")
-![测试任务执行](https://git.oschina.net/uploads/images/2017/0913/193935_3b381747_1215415.png "测试任务执行")
-![用例日志查询](https://git.oschina.net/uploads/images/2017/0913/194004_6414aa59_1215415.png "用例日志查询")
+![首页](https://images.gitee.com/uploads/images/2019/0611/173415_00d4017e_1215415.png "首页.png")
+![数据展示](https://images.gitee.com/uploads/images/2019/0611/173438_76b3d394_1215415.jpeg "数据展示.jpg")
+![用例管理](https://images.gitee.com/uploads/images/2019/0611/173454_0201b647_1215415.jpeg "用例管理.jpg")
+![计划用例](https://images.gitee.com/uploads/images/2019/0611/173512_d09b21a8_1215415.jpeg "计划用例.jpg")
+![任务调度](https://images.gitee.com/uploads/images/2019/0611/173536_36d4b1d9_1215415.jpeg "任务调度.jpg")
+![任务执行](https://images.gitee.com/uploads/images/2019/0611/173555_74ee4629_1215415.jpeg "任务执行.jpg")
+![用例明细](https://images.gitee.com/uploads/images/2019/0611/173617_f3c5e38d_1215415.jpeg "用例明细.jpg")
 
 # 版本更新
 > [【直达官网查看版本更新文章】](http://www.luckyframe.cn/dynamic.html)
