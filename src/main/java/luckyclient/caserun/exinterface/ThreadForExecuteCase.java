@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
-import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.InvokeMethod;
@@ -76,12 +75,10 @@ public class ThreadForExecuteCase extends Thread {
         caselog.insertTaskCaseExecute(taskid, projectId, caseId, caseSign, testcase.getCaseName(), 3);
         for (int i = 0; i < steps.size(); i++) {
             // 解析单个步骤中的脚本
-            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog);
+            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog,variable);
             try {
-                packagename = casescript.get("PackageName");
-                packagename = ChangString.changparams(packagename, variable, "包路径");
-                functionname = casescript.get("FunctionName");
-                functionname = ChangString.changparams(functionname, variable, "方法名");
+                packagename = casescript.get("PackageName");               
+                functionname = casescript.get("FunctionName");               
             } catch (Exception e) {
                 k = 0;
                 LogUtil.APP.error("用例:{} 解析包名或是方法名出现异常，请检查！",testcase.getCaseSign(),e);
@@ -95,7 +92,6 @@ public class ThreadForExecuteCase extends Thread {
                 break;
             }
             expectedresults = casescript.get("ExpectedResults");
-            expectedresults = ChangString.changparams(expectedresults, variable, "预期结果");
             // 判断方法是否带参数
             if (casescript.size() > 4) {
                 // 获取传入参数，放入对象中
@@ -106,7 +102,6 @@ public class ThreadForExecuteCase extends Thread {
                         break;
                     }
                     String parameterValues = casescript.get("FunctionParams" + (j + 1));
-                    parameterValues = ChangString.changparams(parameterValues, variable, "用例参数");
                     LogUtil.APP.info("用例:{} 解析包名:{} 方法名:{} 第{}个参数:{}",testcase.getCaseSign(),packagename,functionname,(j+1),parameterValues);
                     caselog.insertTaskCaseLog(taskid, caseId, "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues, "info", String.valueOf(i + 1), "");
                     getParameterValues[j] = parameterValues;

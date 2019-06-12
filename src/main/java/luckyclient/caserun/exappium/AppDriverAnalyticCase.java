@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
+import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.entity.ProjectCase;
@@ -34,27 +37,32 @@ public class AppDriverAnalyticCase {
 	 * @author Seagull
 	 * @date 2019年1月17日
 	 */
-	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCaseSteps step,String taskid,LogOperation caselog){
+	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCaseSteps step,String taskid,LogOperation caselog, Map<String, String> variable){
 		Map<String,String> params = new HashMap<String,String>(0);
 
 		String resultstr = null;
 		try {
-		if(null!=step.getStepPath()&&step.getStepPath().indexOf("=")>-1){
-			String property = step.getStepPath().substring(0, step.getStepPath().indexOf("="));
-			String propertyValue = step.getStepPath().substring(step.getStepPath().indexOf("=")+1, step.getStepPath().length());
+			// 处理值传递
+			String path = ChangString.changparams(step.getStepPath(), variable, "包路径|定位路径");
+		if(null != path && path.contains("=")){
+			String property = path.substring(0, path.indexOf("=")).trim();
+			String propertyValue = path.substring(path.indexOf("=")+1, path.length()).trim();
 			//set属性
-			params.put("property", property.trim().toLowerCase());   
+			params.put("property", property.toLowerCase());   
 			//set属性值
-			params.put("property_value", propertyValue.trim());  
-			LogUtil.APP.info("对象属性解析结果：property:{};  property_value:{}",property.trim(),propertyValue.trim());		
+			params.put("property_value", propertyValue);  
+			LogUtil.APP.info("对象属性解析结果：property:{};  property_value:{}",property,propertyValue);		
 		}
-		//set操作方法
-		params.put("operation", step.getStepOperation().toLowerCase());   
-		if(null!=step.getStepParameters()&&!"".equals(step.getStepParameters())){
+		// set操作方法,处理值传递
+		String operation = ChangString.changparams(step.getStepOperation().toLowerCase(), variable, "操作");
+		params.put("operation", operation);   
+		// set属性值,处理值传递
+		String operationValue = ChangString.changparams(step.getStepParameters(), variable, "操作参数");
+		if(StringUtils.isNotEmpty(operationValue)){
 			 //set属性值
-			params.put("operation_value", step.getStepParameters());  
+			params.put("operation_value", operationValue);  
 		}
-		LogUtil.APP.info("对象操作解析结果：operation:{};  operation_value:{}",step.getStepOperation().toLowerCase(),step.getStepParameters());
+		LogUtil.APP.info("对象操作解析结果：operation:{};  operation_value:{}",operation,operationValue);
 		 //获取预期结果字符串
 		resultstr = step.getExpectedResult();  
 
@@ -68,7 +76,10 @@ public class AppDriverAnalyticCase {
 			if(expectedResults.startsWith("check(")){
 				params.put("checkproperty", expectedResults.substring(expectedResults.indexOf("check(")+6, expectedResults.indexOf("=")));
 				params.put("checkproperty_value", expectedResults.substring(expectedResults.indexOf("=")+1, expectedResults.lastIndexOf(")")));
-			}			
+			}
+			
+			//处理值传递
+            expectedResults = ChangString.changparams(expectedResults, variable, "预期结果");
 			params.put("ExpectedResults", expectedResults);
 			LogUtil.APP.info("预期结果解析：ExpectedResults:{}",expectedResults);
 		}

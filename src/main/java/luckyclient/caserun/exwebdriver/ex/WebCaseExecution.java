@@ -16,7 +16,6 @@ import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.exwebdriver.BaseWebDrive;
 import luckyclient.caserun.exwebdriver.EncapsulateOperation;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
-import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.LogUtil;
@@ -55,9 +54,9 @@ public class WebCaseExecution extends TestCaseExecution {
 
             // 根据步骤类型来分析步骤参数
             if (1 == step.getStepType()){
-            	params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
+            	params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog, variable);
             }else{
-            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
+            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog, variable);
             }
 
             // 判断分析步骤参数是否有异常
@@ -68,13 +67,12 @@ public class WebCaseExecution extends TestCaseExecution {
 
             // 根据步骤类型来执行步骤
             if (1 == step.getStepType()){
-            	result = runWebStep(params, variable, wd, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
+            	result = runWebStep(params, wd, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
             }else{
-            	result = TestCaseExecution.runStep(params, variable, taskid, testcase.getCaseSign(), step, caselog);
+            	result = TestCaseExecution.runStep(params, taskid, testcase.getCaseSign(), step, caselog);
             }
 
             String expectedResults = params.get("ExpectedResults");
-            expectedResults = ChangString.changparams(expectedResults, variable, "预期结果");
 
             // 判断结果
 			int stepresult = judgeResult(testcase, step, params, wd, taskid, expectedResults, result, caselog);
@@ -101,7 +99,7 @@ public class WebCaseExecution extends TestCaseExecution {
         }
     }
 
-    public static String runWebStep(Map<String, String> params, Map<String, String> variable, WebDriver wd, String taskid, Integer caseId, int stepno, LogOperation caselog) {
+    public static String runWebStep(Map<String, String> params, WebDriver wd, String taskid, Integer caseId, int stepno, LogOperation caselog) {
         String result = "";
         String property;
         String propertyValue;
@@ -113,12 +111,6 @@ public class WebCaseExecution extends TestCaseExecution {
             propertyValue = params.get("property_value");
             operation = params.get("operation");
             operationValue = params.get("operation_value");
-
-            // 处理值传递
-            property = ChangString.changparams(property, variable, "定位方式");
-            propertyValue = ChangString.changparams(propertyValue, variable, "定位路径");
-            operation = ChangString.changparams(operation, variable, "操作");
-            operationValue = ChangString.changparams(operationValue, variable, "操作参数");
 
             LogUtil.APP.info("二次解析用例过程完成，等待进行对象操作......");
             caselog.insertTaskCaseLog(taskid, caseId, "对象操作:" + operation + "; 操作值:" + operationValue, "info", String.valueOf(stepno), "");

@@ -54,9 +54,9 @@ public class AndroidCaseExecution extends TestCaseExecution{
 
             // 根据步骤类型来分析步骤参数
             if (3 == step.getStepType()){
-            	params = AppDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog);
+            	params = AppDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog,variable);
             }else{
-            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
+            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog,variable);
             }
 			
 			if(params.get("exception")!=null&&params.get("exception").toString().indexOf("解析异常")>-1){
@@ -66,9 +66,9 @@ public class AndroidCaseExecution extends TestCaseExecution{
 			
             // 根据步骤类型来执行步骤
             if (3 == step.getStepType()){
-            	result = androidRunStep(params, variable, appium, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
+            	result = androidRunStep(params, appium, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
             }else{
-            	result = TestCaseExecution.runStep(params, variable, taskid, testcase.getCaseSign(), step, caselog);
+            	result = TestCaseExecution.runStep(params, taskid, testcase.getCaseSign(), step, caselog);
             }
 
 			String expectedResults = params.get("ExpectedResults").toString();
@@ -100,7 +100,7 @@ public class AndroidCaseExecution extends TestCaseExecution{
 		//LogOperation.UpdateTastdetail(taskid, 0);
 	}
 
-	public static String androidRunStep(Map<String, String> params, Map<String, String> variable, AndroidDriver<AndroidElement> appium,String taskid,Integer caseId,int stepno,LogOperation caselog) {
+	public static String androidRunStep(Map<String, String> params, AndroidDriver<AndroidElement> appium,String taskid,Integer caseId,int stepno,LogOperation caselog) {
 		String result = "";
 		String property;
 		String propertyValue;
@@ -112,12 +112,6 @@ public class AndroidCaseExecution extends TestCaseExecution{
 			propertyValue = params.get("property_value");
 			operation = params.get("operation");
 			operationValue = params.get("operation_value");
-
-			// 处理值传递
-			property = ChangString.changparams(property, variable,"定位方式");
-			propertyValue=ChangString.changparams(propertyValue, variable,"定位路径");
-			operation=ChangString.changparams(operation, variable,"操作");
-			operationValue=ChangString.changparams(operationValue, variable,"操作参数");
 			
 			LogUtil.APP.info("二次解析用例过程完成，等待进行对象操作......");
 			caselog.insertTaskCaseLog(taskid, caseId, "对象操作:"+operation+"; 操作值:"+operationValue,"info", String.valueOf(stepno),"");

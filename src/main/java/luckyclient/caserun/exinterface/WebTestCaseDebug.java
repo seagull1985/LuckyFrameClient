@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
-import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
@@ -60,12 +59,10 @@ public class WebTestCaseDebug {
         List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
         //进入循环，解析用例所有步骤
         for (int i = 0; i < steps.size(); i++) {
-            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), "888888", null);
+            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), "888888", null,variable);
             try {
                 packagename = casescript.get("PackageName");
-                packagename = ChangString.changparams(packagename, variable, "包路径");
                 functionname = casescript.get("FunctionName");
-                functionname = ChangString.changparams(functionname, variable, "方法名");
             } catch (Exception e) {
                 k = 0;
                 LogUtil.APP.error("解析包名或是方法名出现异常！",e);
@@ -79,7 +76,6 @@ public class WebTestCaseDebug {
                 break;
             }
             expectedresults = casescript.get("ExpectedResults");
-            expectedresults = ChangString.changparams(expectedresults, variable, "预期结果");
             //判断方法是否带参数
             if (casescript.size() > 4) {
                 //获取传入参数，放入对象中
@@ -91,7 +87,6 @@ public class WebTestCaseDebug {
                     }
 
                     String parameterValues = casescript.get("FunctionParams" + (j + 1));
-                    parameterValues = ChangString.changparams(parameterValues, variable, "用例参数");
                     PostServerAPI.cPostDebugLog(userId, caseId, "INFO", "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues, 0);
                     getParameterValues[j] = parameterValues;
                 }

@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
-import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.LogUtil;
 import luckyclient.publicclass.remoterinterface.HttpRequest;
@@ -63,12 +62,10 @@ public class ApiTestCaseDebug {
 		// 进入循环，解析用例所有步骤
 		for (int i = 0; i < steps.size(); i++) {
 			Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), "888888",
-					null);
+					null,variable);
 			try {
 				packagename = casescript.get("PackageName").toString();
-				packagename = ChangString.changparams(packagename, variable, "包路径");
 				functionname = casescript.get("FunctionName").toString();
-				functionname = ChangString.changparams(functionname, variable, "方法名");
 			} catch (Exception e) {
 				k = 0;
 				LogUtil.APP.error("用例:{} 解析包名或是方法名失败，请检查！",testcase.getCaseSign(),e);
@@ -81,7 +78,6 @@ public class ApiTestCaseDebug {
 				break;
 			}
 			expectedresults = casescript.get("ExpectedResults").toString();
-			expectedresults = ChangString.changparams(expectedresults, variable, "预期结果");
 			// 判断方法是否带参数
 			if (casescript.size() > 4) {
 				// 获取传入参数，放入对象中，初始化参数对象个数
@@ -92,7 +88,6 @@ public class ApiTestCaseDebug {
 						break;
 					}
 					String parameterValues = casescript.get("FunctionParams" + (j + 1));
-					parameterValues = ChangString.changparams(parameterValues, variable, "用例参数");
 					LogUtil.APP.info("用例:{} 解析包名:{} 方法名:{} 第{}个参数:{}",testcase.getCaseSign(),packagename,functionname,(j+1),parameterValues);
 					getParameterValues[j] = parameterValues;
 				}

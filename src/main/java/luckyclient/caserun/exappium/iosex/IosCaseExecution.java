@@ -55,9 +55,9 @@ public class IosCaseExecution extends TestCaseExecution{
 			
             // 根据步骤类型来分析步骤参数
             if (3 == step.getStepType()){
-            	params = AppDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog);
+            	params = AppDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog,variable);
             }else{
-            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
+            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog,variable);
             }
             
 			if(params.get("exception")!=null&&params.get("exception").toString().indexOf("解析异常")>-1){
@@ -69,7 +69,7 @@ public class IosCaseExecution extends TestCaseExecution{
             if (3 == step.getStepType()){
             	result = iosRunStep(params, variable, appium, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
             }else{
-            	result = TestCaseExecution.runStep(params, variable, taskid, testcase.getCaseSign(), step, caselog);
+            	result = TestCaseExecution.runStep(params, taskid, testcase.getCaseSign(), step, caselog);
             }
 
 			String expectedResults = params.get("ExpectedResults").toString();

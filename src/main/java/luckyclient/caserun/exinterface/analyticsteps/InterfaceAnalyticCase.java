@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.entity.ProjectCase;
@@ -30,7 +31,7 @@ public class InterfaceAnalyticCase{
 	 * @param caselog
 	 * @return
 	 */
-	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCaseSteps step,String taskid,LogOperation caselog){
+	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCaseSteps step,String taskid,LogOperation caselog, Map<String, String> variable){
 		Map<String,String> params = new HashMap<String,String>(0);
 
 		try {
@@ -38,8 +39,12 @@ public class InterfaceAnalyticCase{
 	    String functionname = step.getStepOperation();
 	    String resultstr = step.getExpectedResult();
 		params.put("Action", step.getAction());
-	    params.put("PackageName", packagenage.trim()); 
-		params.put("FunctionName", functionname.trim());
+		// 处理值传递
+		String packageName = ChangString.changparams(packagenage.trim(), variable, "包路径");
+	    params.put("PackageName", packageName);
+	 // 处理值传递
+	    String functionName = ChangString.changparams(functionname.trim(), variable, "方法名");
+		params.put("FunctionName", functionName);
 		String stepParams = replaceSpi(step.getStepParameters(),0);
 		String[] temp=stepParams.split("\\|",-1);
 		for(int i=0;i<temp.length;i++){
@@ -50,14 +55,16 @@ public class InterfaceAnalyticCase{
 				params.put("FunctionParams"+(i+1), "");  
 			}else{
 				 //set第N个传入参数
-				params.put("FunctionParams"+(i+1), replaceSpi(temp[i],1));  
+				String parameterValues = ChangString.changparams(replaceSpi(temp[i],1), variable, "用例参数");
+				params.put("FunctionParams"+(i+1), parameterValues);  
 			}
 		}
 		//set预期结果
 		if(null==resultstr||"".equals(resultstr)){
 			params.put("ExpectedResults", "");
 		}else{
-			params.put("ExpectedResults", subComment(resultstr));
+			String expectedResults = ChangString.changparams(subComment(resultstr), variable, "预期结果");
+			params.put("ExpectedResults", expectedResults);
 		}
 		LogUtil.APP.info("用例编号:{} 步骤编号:{} 解析自动化用例步骤脚本完成！",projectcase.getCaseSign(),step.getStepSerialNumber());
 		if(null!=caselog){

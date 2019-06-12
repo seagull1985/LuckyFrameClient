@@ -19,7 +19,6 @@ import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.exwebdriver.ex.WebCaseExecution;
 import luckyclient.caserun.exwebdriver.ex.WebDriverAnalyticCase;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
-import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
@@ -85,12 +84,10 @@ public class TestCaseExecution {
         }
         // 进入循环，解析用例所有步骤
         for (int i = 0; i < steps.size(); i++) {
-            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog);
+            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog,VARIABLE);
             try {
                 packagename = casescript.get("PackageName");
-                packagename = ChangString.changparams(packagename, VARIABLE, "包路径");
                 functionname = casescript.get("FunctionName");
-                functionname = ChangString.changparams(functionname, VARIABLE, "方法名");
             } catch (Exception e) {
                 k = 0;
                 LogUtil.APP.error("用例:{} 解析包名或是方法名失败，请检查！",testcase.getCaseSign(),e);
@@ -104,7 +101,6 @@ public class TestCaseExecution {
                 break;
             }
             expectedresults = casescript.get("ExpectedResults");
-            expectedresults = ChangString.changparams(expectedresults, VARIABLE, "预期结果");
             // 判断方法是否带参数
             if (casescript.size() > 4) {
                 // 获取传入参数，放入对象中，初始化参数对象个数
@@ -116,7 +112,6 @@ public class TestCaseExecution {
                     }
 
                     String parameterValues = casescript.get("FunctionParams" + (j + 1));
-                    parameterValues = ChangString.changparams(parameterValues, VARIABLE, "用例参数");
                     LogUtil.APP.info("用例:{} 解析包名:{} 方法名:{} 第{}个参数:{}",testcase.getCaseSign(),packagename,functionname,(j+1),parameterValues);
                     caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues, "info", String.valueOf(i + 1), "");
                     getParameterValues[j] = parameterValues;
@@ -211,12 +206,10 @@ public class TestCaseExecution {
         }
         // 进入循环，解析用例所有步骤
         for (int i = 0; i < steps.size(); i++) {
-            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog);
+            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog,variable);
             try {
                 packagename = casescript.get("PackageName");
-                packagename = ChangString.changparams(packagename, variable, "包路径");
                 functionname = casescript.get("FunctionName");
-                functionname = ChangString.changparams(functionname, variable, "方法名");
             } catch (Exception e) {
                 k = 0;
                 LogUtil.APP.error("用例:{} 解析包名或是方法名失败，请检查！",testcase.getCaseId(),e);
@@ -230,7 +223,6 @@ public class TestCaseExecution {
                 break;
             }
             expectedresults = casescript.get("ExpectedResults");
-            expectedresults = ChangString.changparams(expectedresults, variable, "预期结果");
             // 判断方法是否带参数
             if (casescript.size() > 4) {
                 // 获取传入参数，放入对象中
@@ -241,7 +233,6 @@ public class TestCaseExecution {
                         break;
                     }
                     String parameterValues = casescript.get("FunctionParams" + (j + 1));
-                    parameterValues = ChangString.changparams(parameterValues, variable, "用例参数");
                     LogUtil.APP.info("用例:{} 解析包名:{} 方法名:{} 第{}个参数:{}",testcase.getCaseSign(),packagename,functionname,(j+1),parameterValues);
                     caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues, "info", String.valueOf(i + 1), "");
                     getParameterValues[j] = parameterValues;
@@ -355,11 +346,11 @@ public class TestCaseExecution {
 
             // 根据步骤类型来分析步骤参数
             if (1 == step.getStepType()){
-            	params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
+            	params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog,VARIABLE);
             }else if (3 == step.getStepType()){
-            	params = AppDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog);
+            	params = AppDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog,VARIABLE);
             } else{
-            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog);
+            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog,VARIABLE);
             } 
 
             // 判断分析步骤参数是否有异常
@@ -369,18 +360,17 @@ public class TestCaseExecution {
             }
 
             expectedresults = params.get("ExpectedResults");
-            expectedresults = ChangString.changparams(expectedresults, VARIABLE, "预期结果");
             
             // 根据步骤类型来执行步骤
             if (1 == step.getStepType()){
             	WebDriver wd=(WebDriver)driver;
-            	result = WebCaseExecution.runWebStep(params, VARIABLE, wd, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
+            	result = WebCaseExecution.runWebStep(params, wd, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
                 // 判断结果
                 setresult = WebCaseExecution.judgeResult(testcase, step, params, wd, taskid, expectedresults, result, caselog);
             }else if (3 == step.getStepType()){
             	if (driver instanceof AndroidDriver){
             		AndroidDriver<AndroidElement> ad=(AndroidDriver<AndroidElement>)driver;
-            		result = AndroidCaseExecution.androidRunStep(params, VARIABLE, ad, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
+            		result = AndroidCaseExecution.androidRunStep(params, ad, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
             		// 判断结果
                     setresult = AndroidCaseExecution.judgeResult(testcase, step, params, ad, taskid, expectedresults, result, caselog);
             	}else{
@@ -391,7 +381,7 @@ public class TestCaseExecution {
             	}
             	
             } else{
-            	result = runStep(params, VARIABLE, taskid, testcase.getCaseSign(), step, caselog);
+            	result = runStep(params, taskid, testcase.getCaseSign(), step, caselog);
             	// 判断结果
             	setresult = interfaceJudgeResult(testcase, step, taskid, expectedresults, testnote, caselog);
             } 
@@ -422,7 +412,7 @@ public class TestCaseExecution {
      * @param caselog
      * @return
      */
-    public static String runStep(Map<String, String> params, Map<String, String> variable, String taskid, String casenum, ProjectCaseSteps step, LogOperation caselog) {
+    public static String runStep(Map<String, String> params, String taskid, String casenum, ProjectCaseSteps step, LogOperation caselog) {
         String result = "";
         String packagename = "";
         String functionname = "";
@@ -430,9 +420,7 @@ public class TestCaseExecution {
         ProjectCase projectCase = GetServerAPI.cgetCaseBysign(casenum);
         try {
             packagename = params.get("PackageName");
-            packagename = ChangString.changparams(packagename, variable, "包路径");
             functionname = params.get("FunctionName");
-            functionname = ChangString.changparams(functionname, variable, "方法名");
 
             if (null != functionname && functionname.contains("解析异常")) {
                 LogUtil.APP.warn("用例:{}, 解析这个方法【{}】失败！",casenum,functionname);
@@ -448,7 +436,6 @@ public class TestCaseExecution {
                             break;
                         }
                         String parameterValues = params.get("FunctionParams" + (j + 1));
-                        parameterValues = ChangString.changparams(parameterValues, variable, "用例参数");
                         LogUtil.APP.info("用例:{}, 解析包路径:{}; 方法名:{} 第{}个参数:{}",casenum,packagename,functionname,(j+1),parameterValues);
                         caselog.insertTaskCaseLog(taskid, projectCase.getCaseId(), "用例: " + casenum + ", 解析包名：" + packagename + " 方法名：" + functionname + " 第" + (j + 1) + "个参数：" + parameterValues, "info", String.valueOf(step.getStepSerialNumber()), "");
                         getParameterValues[j] = parameterValues;
