@@ -110,7 +110,7 @@ public class TestControl {
 
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
 				LogUtil.APP.info("当前测试任务 {} 中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
-				LogOperation.updateTaskExecuteStatus(taskid, cases.size());
+				LogOperation.updateTaskExecuteStatusIng(taskid, cases.size());
 				int casepriority = 0;
 				for (int j = 0; j < cases.size(); j++) {
 					ProjectCase projectcase = cases.get(j);
@@ -140,14 +140,16 @@ public class TestControl {
 				}
 				// 多线程计数，用于检测线程是否全部执行完
 				int i = 0;
+				int taskStatus=2;
 				while (THREAD_COUNT != 0) {
 					i++;
 					if (i > timeout * 10) {
+						taskStatus=3;
 						break;
 					}
 					Thread.sleep(6000);
 				}
-				tastcount = LogOperation.updateTaskExecuteData(taskid, cases.size());
+				tastcount = LogOperation.updateTaskExecuteData(taskid, cases.size(),taskStatus);
 
 				String testtime = LogOperation.getTestTime(taskid);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),

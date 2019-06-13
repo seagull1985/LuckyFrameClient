@@ -172,7 +172,7 @@ public class TestCaseExecution {
             LogUtil.APP.warn("用例{}在执行过程中失败，请检查日志！",testcase.getCaseSign());
             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "在执行过程中失败，请检查日志！", "error", "EXECUTECASESUC...", "");
         }
-        LogOperation.updateTaskExecuteData(taskid, 0);
+        LogOperation.updateTaskExecuteData(taskid, 0, 2);
     }
 
     /**

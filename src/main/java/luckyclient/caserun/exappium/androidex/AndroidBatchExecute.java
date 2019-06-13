@@ -87,7 +87,7 @@ public class AndroidBatchExecute {
 				}
 			}
 		}
-		LogOperation.updateTaskExecuteData(taskid, 0);
+		LogOperation.updateTaskExecuteData(taskid, 0,2);
 		ad.closeApp();
 		//关闭Appium服务的线程
 		if(as!=null){

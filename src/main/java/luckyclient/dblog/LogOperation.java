@@ -63,11 +63,11 @@ public class LogOperation {
 	 * 更新本次任务的执行统计情况
 	 * 状态 0未执行 1执行中 2执行完成 3执行失败 4唤起客户端失败
 	 */
-	public static int[] updateTaskExecuteData(String taskIdStr, int caseCount) {
+	public static int[] updateTaskExecuteData(String taskIdStr, int caseCount, int taskStatus) {
 		int[] taskcount = null;
 		if (0 == exetype) {
 			Integer taskId = Integer.parseInt(taskIdStr);
-			String str = PostServerAPI.clientUpdateTaskExecuteData(taskId, caseCount,2);
+			String str = PostServerAPI.clientUpdateTaskExecuteData(taskId, caseCount,taskStatus);
 			JSONObject jsonObject = JSONObject.parseObject(str);
 
 			// 返回本次任务执行情况
@@ -86,7 +86,7 @@ public class LogOperation {
 	 * 更新本次任务的执行状态
 	 * 状态 0未执行 1执行中 2执行完成 3执行失败 4唤起客户端失败
 	 */
-	public static void updateTaskExecuteStatus(String taskIdStr, int caseCount) {
+	public static void updateTaskExecuteStatusIng(String taskIdStr, int caseCount) {
 		if (0 == exetype) {
 			Integer taskId = Integer.parseInt(taskIdStr);
 			PostServerAPI.clientUpdateTaskExecuteData(taskId, caseCount,1);

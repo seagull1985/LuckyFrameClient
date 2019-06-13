@@ -85,7 +85,7 @@ public class IosBatchExecute {
 				}
 			}
 		}
-		LogOperation.updateTaskExecuteData(taskid, 0);
+		LogOperation.updateTaskExecuteData(taskid, 0,2);
 		iosd.closeApp();
 		//关闭Appium服务的线程
 		if(as!=null){

@@ -75,7 +75,7 @@ public class WebBatchExecute{
 				}
 			}
 		}
-		LogOperation.updateTaskExecuteData(taskid, 0);
+		LogOperation.updateTaskExecuteData(taskid, 0,2);
         //¹Ø±Õä¯ÀÀÆ÷
         wd.quit();
 	}

@@ -111,7 +111,7 @@ public class WebTestControl {
 
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
 				LogUtil.APP.info("当前测试任务 {} 中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
-				LogOperation.updateTaskExecuteStatus(taskid, cases.size());
+				LogOperation.updateTaskExecuteStatusIng(taskid, cases.size());
 				int i = 0;
 				for (ProjectCase testcase : cases) {
 					i++;
@@ -130,7 +130,7 @@ public class WebTestControl {
 					}
 					LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条",testcase.getCaseSign());
 				}
-				tastcount = LogOperation.updateTaskExecuteData(taskid, cases.size());
+				tastcount = LogOperation.updateTaskExecuteData(taskid, cases.size(),2);
 
 				String testtime = LogOperation.getTestTime(taskid);
 				LogUtil.APP.info("当前项目【{}】测试计划中的用例已经全部执行完成...",projectname);

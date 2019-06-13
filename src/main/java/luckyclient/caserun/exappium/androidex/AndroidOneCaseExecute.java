@@ -64,7 +64,7 @@ public class AndroidOneCaseExecute {
 		} catch (InterruptedException e) {
 			LogUtil.APP.error("用户执行过程中抛出异常！", e);
 		}
-		LogOperation.updateTaskExecuteData(taskid, 0);
+		LogOperation.updateTaskExecuteData(taskid, 0,2);
 		ad.closeApp();
 		//关闭Appium服务的线程
 		if(as!=null){
