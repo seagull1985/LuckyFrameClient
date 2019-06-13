@@ -110,7 +110,7 @@ public class WebTestControl {
 				LogOperation caselog = new LogOperation();
 
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
-				LogUtil.APP.info("当前计划中读取到用例共【{}】个",cases.size());
+				LogUtil.APP.info("当前计划【{}】中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
 				LogOperation.updateTaskExecuteStatus(taskid, cases.size());
 
 				for (ProjectCase testcase : cases) {

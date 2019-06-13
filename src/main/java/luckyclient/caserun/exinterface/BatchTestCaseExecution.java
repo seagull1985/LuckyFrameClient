@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import luckyclient.dblog.LogOperation;
+import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerAPI;
 import luckyclient.serverapi.entity.ProjectCase;
 
@@ -45,6 +46,7 @@ public class BatchTestCaseExecution {
 			}			
 		}else{                                           //批量执行用例
 			String[] temp=batchcase.split("\\#");
+			LogUtil.APP.info("当前批量执行任务中共有【{}】条待测试用例...",temp.length);
 			for(int i=0;i<temp.length;i++){
 				TestControl.THREAD_COUNT++;   //多线程计数++，用于检测线程是否全部执行完
 				threadExecute.execute(new ThreadForBatchCase(projectname,Integer.valueOf(temp[i]),taskid));

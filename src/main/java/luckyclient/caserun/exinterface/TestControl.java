@@ -109,6 +109,7 @@ public class TestControl {
 						new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
+				LogUtil.APP.info("当前计划【{}】中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
 				LogOperation.updateTaskExecuteStatus(taskid, cases.size());
 				int casepriority = 0;
 				for (int j = 0; j < cases.size(); j++) {
