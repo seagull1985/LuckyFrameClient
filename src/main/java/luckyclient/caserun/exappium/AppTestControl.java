@@ -146,13 +146,14 @@ public class AppTestControl {
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
 				LogUtil.APP.info("当前计划【{}】中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
 				LogOperation.updateTaskExecuteStatus(taskId, cases.size());
-
+				int i = 0;
 				for (ProjectCase testcase : cases) {
+					i++;
+					LogUtil.APP.info("开始执行当前测试任务 {} 的第【{}】条测试用例:【{}】......",task.getTaskName(),i,testcase.getCaseSign());
 					List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
 					if (steps.size() == 0) {
 						continue;
 					}
-					LogUtil.APP.info("开始执行用例：【{}】......",testcase.getCaseSign());
 					try {
 						//插入开始执行的用例
 						caselog.insertTaskCaseExecute(taskId, taskScheduling.getProjectId(),testcase.getCaseId(),testcase.getCaseSign(), testcase.getCaseName(), 4);

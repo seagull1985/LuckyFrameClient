@@ -109,7 +109,7 @@ public class TestControl {
 						new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 
 				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
-				LogUtil.APP.info("当前计划【{}】中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
+				LogUtil.APP.info("当前测试任务 {} 中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
 				LogOperation.updateTaskExecuteStatus(taskid, cases.size());
 				int casepriority = 0;
 				for (int j = 0; j < cases.size(); j++) {
@@ -135,6 +135,7 @@ public class TestControl {
 					}
 					casepriority = projectcase.getPriority();
 					THREAD_COUNT++; // 多线程计数++，用于检测线程是否全部执行完
+					LogUtil.APP.info("开始执行当前测试任务 {} 的第【{}】条测试用例...",task.getTaskName(),j+1);
 					threadExecute.execute(new ThreadForExecuteCase(projectcase, steps, taskid, pcplist, caselog));
 				}
 				// 多线程计数，用于检测线程是否全部执行完
