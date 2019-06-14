@@ -128,6 +128,7 @@ public class TestControl {
 						while (THREAD_COUNT != 0) {
 							i++;
 							if (i > timeout * 60 * 5 / cases.size()) {
+								LogUtil.APP.warn("用例编号:{} 上条用例优先级:{} 当前用例优先级:{} 等待时间已经超过设置的用例平均超时间{}秒(计算公式：任务超时时间*5/用例总数)，现在继续往下执行...",projectcase.getCaseSign(),casepriority,projectcase.getPriority(),i);
 								break;
 							}
 							Thread.sleep(1000);
@@ -145,6 +146,7 @@ public class TestControl {
 					i++;
 					if (i > timeout * 10) {
 						taskStatus=3;
+						LogUtil.APP.warn("当前测试任务 {} 执行已经超过设置的最大任务超时时间【{}】分钟，现在即将停止任务执行...",task.getTaskName(),timeout);
 						break;
 					}
 					Thread.sleep(6000);

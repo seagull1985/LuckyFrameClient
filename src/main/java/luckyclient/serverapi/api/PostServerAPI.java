@@ -1,8 +1,5 @@
 package luckyclient.serverapi.api;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
@@ -62,8 +59,6 @@ public class PostServerAPI {
 		taskCaseExecute.setCaseSign(caseSign);
 		taskCaseExecute.setCaseName(caseName);
 		taskCaseExecute.setCaseStatus(caseStatus);
-		taskCaseExecute.setCreateTime(new Date());
-		taskCaseExecute.setUpdateTime(new Date());
 		
 		HttpRequest.httpClientPostJson(prefix+"/clientPostTaskCaseExecute", JSONObject.toJSONString(taskCaseExecute));
 	}
@@ -81,7 +76,6 @@ public class PostServerAPI {
 		taskCaseExecute.setTaskId(taskId);
 		taskCaseExecute.setCaseId(caseId);
 		taskCaseExecute.setCaseStatus(caseStatus);
-		taskCaseExecute.setUpdateTime(new Date());
 		
 		HttpRequest.httpClientPostJson(prefix+"/clientUpdateTaskCaseExecuteStatus", JSONObject.toJSONString(taskCaseExecute));
 	}
@@ -106,8 +100,6 @@ public class PostServerAPI {
 		taskCaseLog.setLogGrade(logGrade);
 		taskCaseLog.setLogStep(logStep);
 		taskCaseLog.setImgname(imgname);
-		taskCaseLog.setCreateTime(new Date());
-		taskCaseLog.setUpdateTime(new Date());
 		
 		HttpRequest.httpClientPostJson(prefix+"/clientPostTaskCaseLog", JSONObject.toJSONString(taskCaseLog));
 	}
@@ -136,10 +128,6 @@ public class PostServerAPI {
 		String str = "{\"taskId\":"+taskId+",\"caseId\":"+caseId+"}";
 		JSONObject jsonObject = JSON.parseObject(str);
 		return HttpRequest.httpClientPostJson(prefix+"/clientDeleteTaskCaseLog", jsonObject.toJSONString());
-	}
-	
-	public static void main(String[] args) throws UnsupportedEncodingException {
-
 	}
 
 }
