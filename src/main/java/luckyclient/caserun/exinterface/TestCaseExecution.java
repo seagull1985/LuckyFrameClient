@@ -65,6 +65,8 @@ public class TestCaseExecution {
         String testnote = "初始化测试结果";
         int k = 0;
         ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseId);
+        //更新用例状态
+        caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), 3);
         // 删除旧的日志
         LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 
