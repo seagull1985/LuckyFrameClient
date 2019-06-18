@@ -129,5 +129,18 @@ public class PostServerAPI {
 		JSONObject jsonObject = JSON.parseObject(str);
 		return HttpRequest.httpClientPostJson(prefix+"/clientDeleteTaskCaseLog", jsonObject.toJSONString());
 	}
+	
+	/**
+	 * 提取测试用例的详细日志以及结果
+	 * @param taskId
+	 * @param casecount
+	 * @author Seagull
+	 * @date 2019年4月22日
+	 */
+	public static String getLogDetailResult(String taskName, String caseSign){
+		String str = "{\"taskName\":\""+taskName+"\",\"caseSign\":\""+caseSign+"\"}";
+		JSONObject jsonObject = JSON.parseObject(str);
+		return HttpRequest.httpClientPostJson(prefix+"/getLogDetailResult", jsonObject.toJSONString());
+	}
 
 }
