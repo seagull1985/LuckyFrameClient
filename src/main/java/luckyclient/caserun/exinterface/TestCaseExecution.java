@@ -344,7 +344,6 @@ public class TestCaseExecution {
         // 进入循环，解析用例所有步骤
         for (ProjectCaseSteps step : steps) {
             Map<String, String> params;
-            String result;
 
             // 根据步骤类型来分析步骤参数
             if (1 == step.getStepType()){
@@ -366,24 +365,24 @@ public class TestCaseExecution {
             // 根据步骤类型来执行步骤
             if (1 == step.getStepType()){
             	WebDriver wd=(WebDriver)driver;
-            	result = WebCaseExecution.runWebStep(params, wd, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
+            	testnote = WebCaseExecution.runWebStep(params, wd, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
                 // 判断结果
-                setresult = WebCaseExecution.judgeResult(testcase, step, params, wd, taskid, expectedresults, result, caselog);
+                setresult = WebCaseExecution.judgeResult(testcase, step, params, wd, taskid, expectedresults, testnote, caselog);
             }else if (3 == step.getStepType()){
             	if (driver instanceof AndroidDriver){
             		AndroidDriver<AndroidElement> ad=(AndroidDriver<AndroidElement>)driver;
-            		result = AndroidCaseExecution.androidRunStep(params, ad, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
+            		testnote = AndroidCaseExecution.androidRunStep(params, ad, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
             		// 判断结果
-                    setresult = AndroidCaseExecution.judgeResult(testcase, step, params, ad, taskid, expectedresults, result, caselog);
+                    setresult = AndroidCaseExecution.judgeResult(testcase, step, params, ad, taskid, expectedresults, testnote, caselog);
             	}else{
             		IOSDriver<IOSElement> ios=(IOSDriver<IOSElement>)driver;
-            		result = IosCaseExecution.iosRunStep(params, VARIABLE, ios, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
+            		testnote = IosCaseExecution.iosRunStep(params, VARIABLE, ios, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
             		// 判断结果
-                    setresult = IosCaseExecution.judgeResult(testcase, step, params, ios, taskid, expectedresults, result, caselog);
+                    setresult = IosCaseExecution.judgeResult(testcase, step, params, ios, taskid, expectedresults, testnote, caselog);
             	}
             	
             } else{
-            	result = runStep(params, taskid, testcase.getCaseSign(), step, caselog);
+            	testnote = runStep(params, taskid, testcase.getCaseSign(), step, caselog);
             	// 判断结果
             	setresult = interfaceJudgeResult(testcase, step, taskid, expectedresults, testnote, caselog);
             } 
@@ -395,11 +394,9 @@ public class TestCaseExecution {
 
         VARIABLE.clear(); // 清空传参MAP
         if (0 == setresult) {
-            testnote = "调用用例【" + testcase.getCaseSign() + "】执行成功！";
-            LogUtil.APP.info("用例:{}步骤全部执行成功！",testcase.getCaseSign());
+            LogUtil.APP.info("调用用例:{}步骤全部执行成功！",testcase.getCaseSign());
         } else {
-            testnote = "调用用例【" + testcase.getCaseSign() + "】执行失败，请检查日志！";
-            LogUtil.APP.warn("用例:{}在执行过程中失败，请检查日志！",testcase.getCaseSign());
+            LogUtil.APP.warn("调用用例:{}在执行过程中失败，请检查日志！",testcase.getCaseSign());
         }
         return testnote;
     }
