@@ -168,8 +168,11 @@ public class WebCaseExecution extends TestCaseExecution {
             return "步骤执行失败：元素定位过程或是操作过程失败或异常！" + e.getMessage();
         }
 
-        if (result.contains("步骤执行失败：")) caselog.insertTaskCaseLog(taskid, caseId, result, "error", String.valueOf(stepno), "");
-        else caselog.insertTaskCaseLog(taskid, caseId, result, "info", String.valueOf(stepno), "");
+        if (result.contains("步骤执行失败：")){
+        	caselog.insertTaskCaseLog(taskid, caseId, result, "error", String.valueOf(stepno), "");
+        } else{
+        	caselog.insertTaskCaseLog(taskid, caseId, result, "info", String.valueOf(stepno), "");
+        } 
 
         if (result.contains("获取到的值是【") && result.contains("】")) {
             result = result.substring(result.indexOf("获取到的值是【") + "获取到的值是【".length(), result.length() - 1);

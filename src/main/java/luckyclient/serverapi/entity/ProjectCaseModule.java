@@ -94,6 +94,7 @@ public class ProjectCaseModule extends BaseEntity
 		this.projectName = projectName;
 	}
 
+	@Override
 	public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("moduleId", getModuleId())

@@ -1,7 +1,5 @@
 package luckyclient.serverapi.entity;
 
-import java.util.Date;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -31,8 +29,6 @@ public class TaskCaseLog extends BaseEntity
 	private String logStep;
 	/** UI自动化自动截图地址 */
 	private String imgname;
-	/** 创建时间 */
-	private Date createTime;
 
 	public Integer getCaseId() {
 		return caseId;
@@ -105,16 +101,8 @@ public class TaskCaseLog extends BaseEntity
 	{
 		return imgname;
 	}
-	public void setCreateTime(Date createTime) 
-	{
-		this.createTime = createTime;
-	}
 
-	public Date getCreateTime() 
-	{
-		return createTime;
-	}
-
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("logId", getLogId())

@@ -49,7 +49,7 @@ import springboot.model.WebDebugCaseEntity;
 @RestController
 public class HttpImpl {
 	private static final Logger log = LoggerFactory.getLogger(HttpImpl.class);
-	private static final String os=System.getProperty("os.name").toLowerCase();
+	private static final String OS=System.getProperty("os.name").toLowerCase();
 	/**
 	 * 运行自动化任务
 	 * @param req
@@ -87,7 +87,7 @@ public class HttpImpl {
 			sbf.append(runTaskEntity.getTaskId()).append(" ");
 			sbf.append(runTaskEntity.getLoadPath());
 			log.info("启动任务模式测试程序...调度名称:【{}】  任务ID:【{}】",runTaskEntity.getSchedulingName(),runTaskEntity.getTaskId());
-			if(os.startsWith("win")){
+			if(OS.startsWith("win")){
 				log.info("开始调起windows命令行窗口...");
 				run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));
 				log.info("调起windows命令行窗口完成...");
@@ -146,7 +146,7 @@ public class HttpImpl {
 			sb.append(batchCase).append(" ");
 			sb.append(loadPath);
 			log.info("启动批量用例模式测试程序...测试项目:{}  任务ID:{}",projectName,taskId);
-			if(os.startsWith("win")){
+			if(OS.startsWith("win")){
 				log.info("开始调起windows命令行窗口...");
 				run.exec("cmd.exe /k start " + "task_batch.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
 				log.info("调起windows命令行窗口完成...");
@@ -196,7 +196,7 @@ public class HttpImpl {
 			sb.append(webDebugCaseEntity.getCaseId()).append(" ");
 			sb.append(webDebugCaseEntity.getUserId()).append(" ");
 			sb.append(webDebugCaseEntity.getLoadpath());
-			if(os.startsWith("win")){
+			if(OS.startsWith("win")){
 				run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));			
 			}else{
 				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"web_debugcase.sh"+ " " +sb.toString());

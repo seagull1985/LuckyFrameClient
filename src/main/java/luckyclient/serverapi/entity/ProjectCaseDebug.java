@@ -101,6 +101,7 @@ public class ProjectCaseDebug extends BaseEntity
 		return logDetail;
 	}
 
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("debugId", getDebugId())

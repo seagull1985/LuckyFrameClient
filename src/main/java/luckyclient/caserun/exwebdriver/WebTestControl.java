@@ -16,7 +16,7 @@ import luckyclient.jenkinsapi.RestartServerInitialization;
 import luckyclient.mail.HtmlMail;
 import luckyclient.mail.MailSendInitialization;
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
@@ -54,15 +54,15 @@ public class WebTestControl {
 			LogUtil.APP.error("初始化WebDriver出现异常！",e);
 		}
 		LogOperation caselog = new LogOperation();
-		List<ProjectCase> testCases = GetServerAPI.getCasesbyplanname(planname);
+		List<ProjectCase> testCases = GetServerApi.getCasesbyplanname(planname);
 		List<ProjectCaseParams> pcplist = new ArrayList<ProjectCaseParams>();
 		if (testCases.size() != 0) {
-			pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
+			pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
 		}
 		LogUtil.APP.info("当前计划中读取到用例共【{}】个",testCases.size());
 		int i = 0;
 		for (ProjectCase testcase : testCases) {
-			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+			List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
 			if (steps.size() == 0) {
 				continue;
 			}
@@ -88,10 +88,10 @@ public class WebTestControl {
 		TestControl.TASKID = taskid;
 		String restartstatus = RestartServerInitialization.restartServerRun(taskid);
 		String buildstatus = BuildingInitialization.buildingRun(taskid);
-		List<ProjectCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(task.getProjectId().toString());
-		TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(task.getTaskId());
+		List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(task.getProjectId().toString());
+		TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId());
 		String projectname = taskScheduling.getProject().getProjectName();
-		task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
+		task = GetServerApi.cgetTaskbyid(Integer.valueOf(taskid));
 		String jobname = taskScheduling.getSchedulingName();
 		int drivertype = LogOperation.querydrivertype(taskid);
 		int[] tastcount = null;
@@ -109,14 +109,14 @@ public class WebTestControl {
 				}
 				LogOperation caselog = new LogOperation();
 
-				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
+				List<ProjectCase> cases = GetServerApi.getCasesbyplanId(taskScheduling.getPlanId());
 				LogUtil.APP.info("当前测试任务 {} 中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
 				LogOperation.updateTaskExecuteStatusIng(taskid, cases.size());
 				int i = 0;
 				for (ProjectCase testcase : cases) {
 					i++;
 					LogUtil.APP.info("开始执行当前测试任务 {} 的第【{}】条测试用例:【{}】......",task.getTaskName(),i,testcase.getCaseSign());
-					List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+					List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
 					if (steps.size() == 0) {
 						continue;
 					}

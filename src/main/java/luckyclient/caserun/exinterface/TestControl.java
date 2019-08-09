@@ -13,7 +13,7 @@ import luckyclient.jenkinsapi.RestartServerInitialization;
 import luckyclient.mail.HtmlMail;
 import luckyclient.mail.MailSendInitialization;
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
@@ -48,17 +48,17 @@ public class TestControl {
 		ThreadPoolExecutor threadExecute = new ThreadPoolExecutor(threadcount, 20, 3, TimeUnit.SECONDS,
 				new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 
-		List<ProjectCase> testCases = GetServerAPI.getCasesbyplanname(planname);
+		List<ProjectCase> testCases = GetServerApi.getCasesbyplanname(planname);
 		List<ProjectCaseParams> pcplist = new ArrayList<ProjectCaseParams>();
 		if (testCases.size() != 0) {
-			pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
+			pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
 		}
 
 		String taskid = "888888";
 		// 初始化写用例结果以及日志模块
 		LogOperation caselog = new LogOperation();
 		for (ProjectCase testcase : testCases) {
-			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+			List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
 			if (steps.size() == 0) {
 				LogUtil.APP.warn("用例【{}】没有找到步骤，直接跳过，请检查！",testcase.getCaseSign());
 				caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "在用例中没有找到步骤，请检查", "error", "1", "");
@@ -92,11 +92,11 @@ public class TestControl {
 		TestControl.TASKID = taskid;
 		String restartstatus = RestartServerInitialization.restartServerRun(taskid);
 		String buildstatus = BuildingInitialization.buildingRun(taskid);
-		TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(task.getTaskId());
+		TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId());
 		String jobname = taskScheduling.getSchedulingName();
 		int timeout = taskScheduling.getTaskTimeout();
 		int[] tastcount = null;
-		List<ProjectCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(taskScheduling.getProjectId().toString());
+		List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(taskScheduling.getProjectId().toString());
 		// 初始化写用例结果以及日志模块
 		LogOperation caselog = new LogOperation();
 		// 判断是否要自动重启TOMCAT
@@ -108,13 +108,13 @@ public class TestControl {
 				ThreadPoolExecutor threadExecute = new ThreadPoolExecutor(threadcount, 20, 3, TimeUnit.SECONDS,
 						new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 
-				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
+				List<ProjectCase> cases = GetServerApi.getCasesbyplanId(taskScheduling.getPlanId());
 				LogUtil.APP.info("当前测试任务 {} 中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
 				LogOperation.updateTaskExecuteStatusIng(taskid, cases.size());
 				int casepriority = 0;
 				for (int j = 0; j < cases.size(); j++) {
 					ProjectCase projectcase = cases.get(j);
-					List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(projectcase.getCaseId());
+					List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(projectcase.getCaseId());
 					if (steps.size() == 0) {
 						caselog.insertTaskCaseExecute(taskid, taskScheduling.getProjectId(),projectcase.getCaseId(),projectcase.getCaseSign(), projectcase.getCaseName(), 2);
 						LogUtil.APP.warn("用例【{}】没有找到步骤，直接跳过，请检查！",projectcase.getCaseSign());

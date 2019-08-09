@@ -154,7 +154,8 @@ public class HttpRequest {
 	    RequestConfig requestConfig = RequestConfig.custom()  
 	            .setConnectTimeout(60*1000)
 	            .setConnectionRequestTimeout(60*1000)  
-	            .setSocketTimeout(60*1000).build();  //设置请求和传输超时时间
+	            //设置请求和传输超时时间
+	            .setSocketTimeout(60*1000).build(); 
 	    httpPost.setConfig(requestConfig);
 		// 构建请求参数
 		BufferedReader br = null;

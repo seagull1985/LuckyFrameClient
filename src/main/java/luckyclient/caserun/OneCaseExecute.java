@@ -12,7 +12,7 @@ import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.ex.WebOneCaseExecute;
 import luckyclient.publicclass.AppiumConfig;
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.TaskExecute;
 import luckyclient.serverapi.entity.TaskScheduling;
 
@@ -36,8 +36,8 @@ public class OneCaseExecute extends TestControl {
 			String taskId = args[0];
 			String caseId = args[1];
 			int version = Integer.parseInt(args[2]);
-			TaskExecute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskId));
-			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskId));
+			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.valueOf(taskId));
+			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.valueOf(taskId));
 			if (taskScheduling.getTaskType() == 0) {
 					// ½Ó¿Ú²âÊÔ
 					TestCaseExecution.oneCaseExecuteForTask(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), String.valueOf(task.getTaskId()));

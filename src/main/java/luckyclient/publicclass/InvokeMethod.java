@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import luckyclient.caserun.publicdispose.ChangString;
 import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.publicclass.remoterinterface.HttpClientHelper;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.ProjectProtocolTemplate;
 import luckyclient.serverapi.entity.ProjectTemplateParams;
 
@@ -85,13 +85,13 @@ public class InvokeMethod {
                 String templatenamestr = extend.substring(extend.indexOf("】") + 1);
                 LogUtil.APP.info("即将使用模板【{}】，ID:【{}】发送HTTP请求！",templatenamestr,templateidstr);
 
-                ProjectProtocolTemplate ppt = GetServerAPI.clientGetProjectProtocolTemplateByTemplateId(Integer.valueOf(templateidstr));
+                ProjectProtocolTemplate ppt = GetServerApi.clientGetProjectProtocolTemplateByTemplateId(Integer.valueOf(templateidstr));
                 if (null == ppt) {
                     LogUtil.APP.warn("协议模板为空，请检查用例使用的协议模板是否已经删除！");
                     return "协议模板为空，请确认用例使用的模板是否已经删除！";
                 }
 
-                List<ProjectTemplateParams> paramslist = GetServerAPI.clientGetProjectTemplateParamsListByTemplateId(Integer.valueOf(templateidstr));
+                List<ProjectTemplateParams> paramslist = GetServerApi.clientGetProjectTemplateParamsListByTemplateId(Integer.valueOf(templateidstr));
 
                 //处理头域
                 Map<String, String> headmsg = new HashMap<String, String>(0);
@@ -248,13 +248,13 @@ public class InvokeMethod {
                 String templatenamestr = extend.substring(extend.indexOf("】") + 1);
                 LogUtil.APP.info("即将使用模板【{}】，ID:【{}】 发送SOCKET请求！",templatenamestr,templateidstr);
 
-                ProjectProtocolTemplate ppt = GetServerAPI.clientGetProjectProtocolTemplateByTemplateId(Integer.valueOf(templateidstr));
+                ProjectProtocolTemplate ppt = GetServerApi.clientGetProjectProtocolTemplateByTemplateId(Integer.valueOf(templateidstr));
                 if (null == ppt) {
                     LogUtil.APP.warn("协议模板为空，请检查用例使用的协议模板是否已经删除！");
                     return "协议模板为空，请确认用例使用的模板是否已经删除！";
                 }
                 
-                List<ProjectTemplateParams> paramslist = GetServerAPI.clientGetProjectTemplateParamsListByTemplateId(Integer.valueOf(templateidstr));
+                List<ProjectTemplateParams> paramslist = GetServerApi.clientGetProjectTemplateParamsListByTemplateId(Integer.valueOf(templateidstr));
                 
                 //处理头域
                 Map<String, String> headmsg = new HashMap<String, String>(0);

@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 
 /**
@@ -30,7 +30,7 @@ public class BatchTestCaseExecution {
 	 */
 	
 	public static void batchCaseExecuteForTast(String projectname,String taskid,String batchcase) throws Exception{
-		int threadcount = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid)).getExThreadCount();
+		int threadcount = GetServerApi.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid)).getExThreadCount();
 		ThreadPoolExecutor	threadExecute	= new ThreadPoolExecutor(threadcount, 30, 3, TimeUnit.SECONDS,
 	            new ArrayBlockingQueue<Runnable>(1000),
 	            new ThreadPoolExecutor.CallerRunsPolicy());
@@ -40,7 +40,7 @@ public class BatchTestCaseExecution {
 			LogOperation caselog = new LogOperation();        
 			List<Integer> caseIdList = caselog.getCaseListForUnSucByTaskId(taskid);
 			for(int i=0;i<caseIdList.size();i++){
-			   ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseIdList.get(i));
+			   ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseIdList.get(i));
 			   TestControl.THREAD_COUNT++;   //多线程计数++，用于检测线程是否全部执行完
 			   threadExecute.execute(new ThreadForBatchCase(projectname,testcase.getCaseId(),taskid));
 			}			

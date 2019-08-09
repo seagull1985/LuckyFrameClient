@@ -44,7 +44,8 @@ public class ParamsManageForSteps {
 	 */
 	private String replaceRandomInt(String params) {
 		try {
-			Pattern pattern = Pattern.compile("(?i)@\\{random\\[(\\d+)\\]\\[(\\d+)\\]\\}");
+			String str="(?i)@\\{random\\[(\\d+)\\]\\[(\\d+)\\]\\}";
+			Pattern pattern = Pattern.compile(str);
 			Matcher m = pattern.matcher(params);
 			while (m.find()) {
 				String matcherstr = m.group(0);
@@ -77,7 +78,8 @@ public class ParamsManageForSteps {
 	 */
 	private String replaceTimeNow(String params) {
 		try {
-			Pattern pattern = Pattern.compile("(?i)@\\{timenow\\[(.*?)\\]\\}");
+			String str="(?i)@\\{timenow\\[(.*?)\\]\\}";
+			Pattern pattern = Pattern.compile(str);
 			Matcher m = pattern.matcher(params);
 			while (m.find()) {
 				String matcherstr = m.group(0);

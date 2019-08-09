@@ -40,14 +40,6 @@ public class TaskExecute extends BaseEntity
 	private Integer caseNoexecCount;
 	/** 任务结束时间 */
 	private Date finishTime;
-	/** 创建者 */
-	private String createBy;
-	/** 创建时间 */
-	private Date createTime;
-	/** 更新者 */
-	private String updateBy;
-	/** 更新时间 */
-	private Date updateTime;
 	/** 关联项目实体 */
 	private Project project;
 	/** 任务执行百分比 */
@@ -168,43 +160,8 @@ public class TaskExecute extends BaseEntity
 	{
 		return finishTime;
 	}
-	public void setCreateBy(String createBy) 
-	{
-		this.createBy = createBy;
-	}
 
-	public String getCreateBy() 
-	{
-		return createBy;
-	}
-	public void setCreateTime(Date createTime) 
-	{
-		this.createTime = createTime;
-	}
-
-	public Date getCreateTime() 
-	{
-		return createTime;
-	}
-	public void setUpdateBy(String updateBy) 
-	{
-		this.updateBy = updateBy;
-	}
-
-	public String getUpdateBy() 
-	{
-		return updateBy;
-	}
-	public void setUpdateTime(Date updateTime) 
-	{
-		this.updateTime = updateTime;
-	}
-
-	public Date getUpdateTime() 
-	{
-		return updateTime;
-	}
-
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("taskId", getTaskId())

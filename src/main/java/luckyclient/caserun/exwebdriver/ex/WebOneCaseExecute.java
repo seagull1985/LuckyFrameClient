@@ -10,7 +10,7 @@ import luckyclient.caserun.exwebdriver.WebDriverInitialization;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
@@ -40,14 +40,14 @@ public class WebOneCaseExecute{
 			LogUtil.APP.error("初始化WebDriver出错！", e1);
 		}
 		LogOperation caselog = new LogOperation();
-		ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseId);
+		ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseId);
 		//删除旧的日志
 		LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);    
 
-		List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+		List<ProjectCaseParams> pcplist=GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
 		LogUtil.APP.info("开始执行用例:【{}】......",testcase.getCaseSign());
 		try {
-			List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+			List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
 			WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
 			LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (InterruptedException e) {

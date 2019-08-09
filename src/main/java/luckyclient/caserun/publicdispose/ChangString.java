@@ -59,6 +59,7 @@ public class ChangString {
 				// 然后通过比较器来实现排序
 				Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
 					// 按KEY长度降序排序
+					@Override
 					public int compare(Entry<String, String> o1, Entry<String, String> o2) {
 						return o2.getKey().length() - o1.getKey().length();
 					}
@@ -144,7 +145,8 @@ public class ChangString {
 	 * @return
 	 */
 	public static boolean isInteger(String str) {
-		Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+		String patternStr="^[-\\+]?[\\d]*$";
+		Pattern pattern = Pattern.compile(patternStr);
 		return pattern.matcher(str).matches();
 	}
 

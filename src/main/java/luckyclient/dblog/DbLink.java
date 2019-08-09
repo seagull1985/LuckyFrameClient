@@ -2,7 +2,7 @@ package luckyclient.dblog;
 
 import java.util.Properties;
 
-import luckyclient.publicclass.DBOperation;
+import luckyclient.publicclass.DbOperation;
 import luckyclient.publicclass.SysConfig;
 
 /**
@@ -30,13 +30,13 @@ public class DbLink {
 	 * @date 2015年4月20日 上午9:29:40  
 	 * 
 	 */
-	public  static DBOperation dbLogLink(){
+	public  static DbOperation dbLogLink(){
 		Properties properties = SysConfig.getConfiguration();
 		String urlBase = "jdbc:mysql://"+properties.getProperty("mysql.db.ip")+":"+properties.getProperty("mysql.db.port")
 		+"/"+properties.getProperty("mysql.db.dbname")+"?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false";
 		String userNameBase = properties.getProperty("mysql.db.username");
 		String passwordBase = properties.getProperty("mysql.db.userpwd");
-		return new DBOperation(urlBase, userNameBase, passwordBase);
+		return new DbOperation(urlBase, userNameBase, passwordBase);
 	}
 	/**
 	 * 任务执行类型： 0   任务调度模式    1   控制台模式

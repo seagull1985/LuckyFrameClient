@@ -20,7 +20,7 @@ import luckyclient.mail.HtmlMail;
 import luckyclient.mail.MailSendInitialization;
 import luckyclient.publicclass.AppiumConfig;
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
@@ -65,15 +65,15 @@ public class AppTestControl {
 			LogUtil.APP.error("控制台模式初始化Appium Driver异常！", e);
 		}
 		LogOperation caselog = new LogOperation();
-		List<ProjectCase> testCases = GetServerAPI.getCasesbyplanname(planname);
+		List<ProjectCase> testCases = GetServerApi.getCasesbyplanname(planname);
 		List<ProjectCaseParams> pcplist = new ArrayList<ProjectCaseParams>();
 		if (testCases.size() != 0) {
-			pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
+			pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
 		}
 		LogUtil.APP.info("当前计划中读取到用例共{}个",testCases.size());
 		int i = 0;
 		for (ProjectCase testcase : testCases) {
-			List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+			List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
 			if (steps.size() == 0) {
 				continue;
 			}
@@ -119,13 +119,13 @@ public class AppTestControl {
 			as.start();
 			Thread.sleep(10000);
 		}
-		TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(task.getTaskId());
+		TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId());
 		String restartstatus = RestartServerInitialization.restartServerRun(taskId);
 		String buildstatus = BuildingInitialization.buildingRun(taskId);
-		List<ProjectCaseParams> pcplist = GetServerAPI
+		List<ProjectCaseParams> pcplist = GetServerApi
 				.cgetParamsByProjectid(task.getProjectId().toString());
 		String projectname = task.getProject().getProjectName();
-		String jobname = GetServerAPI.cGetTaskSchedulingByTaskId(task.getTaskId()).getSchedulingName();
+		String jobname = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId()).getSchedulingName();
         int[] tastcount = null;
 		// 判断是否要自动重启TOMCAT
 		if (restartstatus.indexOf("Status:true") > -1) {
@@ -143,14 +143,14 @@ public class AppTestControl {
 					LogUtil.APP.error("初始化AppiumDriver出错 ！APPIUM Server【http://{}/wd/hub】",properties.getProperty("appiumsever"), e);
 				}
 				LogOperation caselog = new LogOperation();
-				List<ProjectCase> cases = GetServerAPI.getCasesbyplanId(taskScheduling.getPlanId());
+				List<ProjectCase> cases = GetServerApi.getCasesbyplanId(taskScheduling.getPlanId());
 				LogUtil.APP.info("当前计划【{}】中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
 				LogOperation.updateTaskExecuteStatusIng(taskId, cases.size());
 				int i = 0;
 				for (ProjectCase testcase : cases) {
 					i++;
 					LogUtil.APP.info("开始执行当前测试任务 {} 的第【{}】条测试用例:【{}】......",task.getTaskName(),i,testcase.getCaseSign());
-					List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+					List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
 					if (steps.size() == 0) {
 						continue;
 					}

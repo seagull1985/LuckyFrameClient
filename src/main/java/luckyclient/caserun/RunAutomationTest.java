@@ -8,7 +8,7 @@ import luckyclient.caserun.exappium.AppTestControl;
 import luckyclient.caserun.exinterface.TestControl;
 import luckyclient.caserun.exwebdriver.WebTestControl;
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.TaskExecute;
 import luckyclient.serverapi.entity.TaskScheduling;
 
@@ -29,8 +29,8 @@ public class RunAutomationTest extends TestControl {
 		try {
 			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
 			String taskid = args[0];
-			TaskExecute task = GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
-			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid));
+			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.valueOf(taskid));
+			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid));
 			if (taskScheduling.getTaskType() == 0) {
 				// ½Ó¿Ú²âÊÔ
 				TestControl.taskExecutionPlan(task);

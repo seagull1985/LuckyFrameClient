@@ -8,7 +8,7 @@ import luckyclient.caserun.exwebdriver.ex.WebCaseExecution;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
@@ -32,10 +32,10 @@ public class CaseLocalDebug{
 		DbLink.exetype = 1;  
 		LogOperation caselog = new LogOperation();
 		try {
-			ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-			List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+			ProjectCase testcase = GetServerApi.cgetCaseBysign(testCaseExternalId);
+			List<ProjectCaseParams> pcplist=GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
 			LogUtil.APP.info("开始执行用例:【{}】......",testCaseExternalId);
-			List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+			List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
 			WebCaseExecution.caseExcution(testcase,steps, "888888",wd,caselog,pcplist);
 			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (Exception e) {

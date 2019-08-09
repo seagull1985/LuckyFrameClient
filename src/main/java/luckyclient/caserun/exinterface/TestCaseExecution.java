@@ -24,7 +24,7 @@ import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
@@ -64,20 +64,20 @@ public class TestCaseExecution {
         Object[] getParameterValues = null;
         String testnote = "初始化测试结果";
         int k = 0;
-        ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseId);
+        ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseId);
         //更新用例状态
         caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), 3);
         // 删除旧的日志
         LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 
-        List<ProjectCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+        List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
         // 把公共参数加入到MAP中
         for (ProjectCaseParams pcp : pcplist) {
         	VARIABLE.put(pcp.getParamsName(), pcp.getParamsValue());
         }
         // 加入全局变量
         VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
-        List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+        List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
         if (steps.size() == 0) {
             setcaseresult = 2;
             LogUtil.APP.warn("用例中未找到步骤，请检查！");
@@ -193,13 +193,13 @@ public class TestCaseExecution {
         Object[] getParameterValues = null;
         String testnote = "初始化测试结果";
         int k = 0;
-        ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-        List<ProjectCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+        ProjectCase testcase = GetServerApi.cgetCaseBysign(testCaseExternalId);
+        List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
         // 把公共参数加入到MAP中
         for (ProjectCaseParams pcp : pcplist) {
             variable.put(pcp.getParamsName(), pcp.getParamsValue());
         }
-        List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+        List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
         if (steps.size() == 0) {
             setresult = 2;
             LogUtil.APP.warn("用例中未找到步骤，请检查！");
@@ -325,15 +325,15 @@ public class TestCaseExecution {
         String expectedresults = null;
         Integer setresult = 1;
         String testnote = "初始化测试结果";
-        ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-        List<ProjectCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+        ProjectCase testcase = GetServerApi.cgetCaseBysign(testCaseExternalId);
+        List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
         // 把公共参数加入到MAP中
         for (ProjectCaseParams pcp : pcplist) {
         	VARIABLE.put(pcp.getParamsName(), pcp.getParamsValue());
         }
         // 加入全局变量
         VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
-        List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+        List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
         if (steps.size() == 0) {
             setresult = 2;
             LogUtil.APP.warn("用例中未找到步骤，请检查！");
@@ -416,7 +416,7 @@ public class TestCaseExecution {
         String packagename = "";
         String functionname = "";
         Object[] getParameterValues = null;
-        ProjectCase projectCase = GetServerAPI.cgetCaseBysign(casenum);
+        ProjectCase projectCase = GetServerApi.cgetCaseBysign(casenum);
         try {
             packagename = params.get("PackageName");
             functionname = params.get("FunctionName");

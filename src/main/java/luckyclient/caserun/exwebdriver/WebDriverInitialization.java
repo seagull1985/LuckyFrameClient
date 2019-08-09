@@ -27,7 +27,7 @@ import luckyclient.publicclass.LogUtil;
  * 
  */
 public class WebDriverInitialization{
-	private static final String os=System.getProperty("os.name").toLowerCase();
+	private static final String OS=System.getProperty("os.name").toLowerCase();
 	/**
 	 * 初始化WebDriver
 	 * @param drivertype
@@ -40,9 +40,9 @@ public class WebDriverInitialization{
 		File directory = new File("");
 		String drivenpath=directory.getCanonicalPath()+File.separator+"BrowserDriven"+File.separator;
 		WebDriver webDriver = null;
-		LogUtil.APP.info("准备初始化WebDriver对象...检查到当前操作系统是:{}",os);
+		LogUtil.APP.info("准备初始化WebDriver对象...检查到当前操作系统是:{}",OS);
 		if(drivertype==0){
-			if(os.startsWith("win")){
+			if(OS.startsWith("win")){
 				System.setProperty("webdriver.ie.driver",drivenpath+"IEDriverServer.exe");
 				webDriver = new InternetExplorerDriver();
 			}else{
@@ -50,9 +50,9 @@ public class WebDriverInitialization{
 			}		
 		}else if(drivertype==1){
 			FirefoxOptions options = new FirefoxOptions();
-			if(os.startsWith("win")){
+			if(OS.startsWith("win")){
 				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver.exe");
-			}else if(os.contains("mac")){
+			}else if(OS.contains("mac")){
 				options.addArguments("start-maximized");
 				System.setProperty("webdriver.gecko.driver",drivenpath+"geckodriver_mac");
 			}else{
@@ -67,9 +67,9 @@ public class WebDriverInitialization{
 			webDriver = new FirefoxDriver(options);
 		}else if(drivertype==2){
 			ChromeOptions options = new ChromeOptions();
-			if(os.startsWith("win")){
+			if(OS.startsWith("win")){
 				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver.exe");
-			}else if(os.contains("mac")){
+			}else if(OS.contains("mac")){
 				options.addArguments("start-maximized");
 				System.setProperty("webdriver.chrome.driver",drivenpath+"chromedriver_mac");
 			}else{
@@ -83,7 +83,7 @@ public class WebDriverInitialization{
 			}			
 			webDriver = new ChromeDriver(options);
 		}else if(drivertype==3){
-			if(os.startsWith("win")){
+			if(OS.startsWith("win")){
 				System.setProperty("webdriver.edge.driver",drivenpath+"MicrosoftWebDriver.exe");
 				webDriver = new EdgeDriver();
 			}else{
@@ -96,7 +96,7 @@ public class WebDriverInitialization{
 		}
 		
 		//解决webdriver在unix环境中，最大化会出现异常的bug，unix最大化在options中单独设置
-		if(os.startsWith("win")){
+		if(OS.startsWith("win")){
 			webDriver.manage().window().maximize();
 		}
 

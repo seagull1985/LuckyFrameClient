@@ -11,7 +11,7 @@ import luckyclient.caserun.exwebdriver.WebDriverInitialization;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
@@ -43,14 +43,14 @@ public class WebBatchExecute{
 			LogUtil.APP.error("初始化WebDriver出现异常！", e1);
 		}
 		LogOperation caselog = new LogOperation();
-		TaskExecute task=GetServerAPI.cgetTaskbyid(Integer.valueOf(taskid));
-		List<ProjectCaseParams> pcplist=GetServerAPI.cgetParamsByProjectid(task.getProjectId().toString());
+		TaskExecute task=GetServerApi.cgetTaskbyid(Integer.valueOf(taskid));
+		List<ProjectCaseParams> pcplist=GetServerApi.cgetParamsByProjectid(task.getProjectId().toString());
 		 //执行全部非成功状态用例
 		if(batchcase.indexOf("ALLFAIL")>-1){   
 			List<Integer> caseIdList = caselog.getCaseListForUnSucByTaskId(taskid);
 			for(int i=0;i<caseIdList.size();i++){
-			   ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(caseIdList.get(i));
-			   List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+			   ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseIdList.get(i));
+			   List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
 			   //删除旧的日志
 			   LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);    
 			   try {
@@ -63,8 +63,8 @@ public class WebBatchExecute{
 		}else{                                           //批量执行用例
 			String[] temp=batchcase.split("\\#");
 			for(int i=0;i<temp.length;i++){
-				ProjectCase testcase = GetServerAPI.cGetCaseByCaseId(Integer.valueOf(temp[i]));
-				List<ProjectCaseSteps> steps=GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+				ProjectCase testcase = GetServerApi.cGetCaseByCaseId(Integer.valueOf(temp[i]));
+				List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
 				//删除旧的日志
 				LogOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {

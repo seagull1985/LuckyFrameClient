@@ -189,7 +189,8 @@ public class SubString {
 	public static String subStrRgex(String str, String rgex, String num) {
 		List<String> list = new ArrayList<String>();
 		try{
-			Pattern pattern = Pattern.compile(rgex);// 匹配的模式
+			// 匹配的模式
+			Pattern pattern = Pattern.compile(rgex);
 			Matcher m = pattern.matcher(str);
 			while (m.find()) {
 //				int i = 1;
@@ -220,7 +221,8 @@ public class SubString {
 	}
 
 	private static boolean isInteger(String str) {
-		Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+		String patternStr="^[-\\+]?[\\d]*$";
+		Pattern pattern = Pattern.compile(patternStr);
 		return pattern.matcher(str).matches();
 	}
 

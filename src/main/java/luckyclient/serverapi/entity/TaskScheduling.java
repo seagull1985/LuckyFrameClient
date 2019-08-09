@@ -56,8 +56,6 @@ public class TaskScheduling extends BaseEntity
     private String cronExpression;
     /** 任务状态（0正常 1暂停） */
     private String status;
-    /** 任务备注 */
-    private String remark;
 
 	public String getSchedulingName() {
 		return schedulingName;
@@ -65,14 +63,6 @@ public class TaskScheduling extends BaseEntity
 
 	public void setSchedulingName(String schedulingName) {
 		this.schedulingName = schedulingName;
-	}
-
-	public String getRemark() {
-		return remark;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
 	}
 
 	public String getJobName() {
@@ -242,6 +232,7 @@ public class TaskScheduling extends BaseEntity
 		return clientDriverPath;
 	}
 
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("schedulingId", getSchedulingId())

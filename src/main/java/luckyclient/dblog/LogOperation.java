@@ -6,8 +6,8 @@ import java.util.List;
 import com.alibaba.fastjson.JSONObject;
 
 import luckyclient.publicclass.LogUtil;
-import luckyclient.serverapi.api.GetServerAPI;
-import luckyclient.serverapi.api.PostServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
+import luckyclient.serverapi.api.PostServerApi;
 import luckyclient.serverapi.entity.TaskExecute;
 import luckyclient.serverapi.entity.TaskScheduling;
 
@@ -29,7 +29,7 @@ public class LogOperation {
 	public void insertTaskCaseExecute(String taskIdStr, Integer projectId,Integer caseId,  String caseSign,String caseName, Integer caseStatus) {
 		if (0 == exetype) {
 			Integer taskId=Integer.valueOf(taskIdStr);
-			PostServerAPI.clientPostInsertTaskCaseExecute(taskId, projectId, caseId, caseSign, caseName, caseStatus);
+			PostServerApi.clientPostInsertTaskCaseExecute(taskId, projectId, caseId, caseSign, caseName, caseStatus);
 		}
 	}
 
@@ -39,7 +39,7 @@ public class LogOperation {
 	public void updateTaskCaseExecuteStatus(String taskIdStr, Integer caseId, Integer caseStatus) {
 		if (0 == exetype) {
 			Integer taskId=Integer.valueOf(taskIdStr);
-			PostServerAPI.clientUpdateTaskCaseExecuteStatus(taskId, caseId, caseStatus);
+			PostServerApi.clientUpdateTaskCaseExecuteStatus(taskId, caseId, caseStatus);
 		}
 	}
 
@@ -55,7 +55,7 @@ public class LogOperation {
 			}
 			
 			Integer taskId=Integer.valueOf(taskIdStr);
-			PostServerAPI.clientPostInsertTaskCaseLog(taskId, caseId, logDetail, logGrade, logStep, imgname);
+			PostServerApi.clientPostInsertTaskCaseLog(taskId, caseId, logDetail, logGrade, logStep, imgname);
 		}
 	}
 
@@ -67,7 +67,7 @@ public class LogOperation {
 		int[] taskcount = null;
 		if (0 == exetype) {
 			Integer taskId = Integer.parseInt(taskIdStr);
-			String str = PostServerAPI.clientUpdateTaskExecuteData(taskId, caseCount,taskStatus);
+			String str = PostServerApi.clientUpdateTaskExecuteData(taskId, caseCount,taskStatus);
 			JSONObject jsonObject = JSONObject.parseObject(str);
 
 			// 返回本次任务执行情况
@@ -89,7 +89,7 @@ public class LogOperation {
 	public static void updateTaskExecuteStatusIng(String taskIdStr, int caseCount) {
 		if (0 == exetype) {
 			Integer taskId = Integer.parseInt(taskIdStr);
-			PostServerAPI.clientUpdateTaskExecuteData(taskId, caseCount,1);
+			PostServerApi.clientUpdateTaskExecuteData(taskId, caseCount,1);
 		}
 	}
 
@@ -98,7 +98,7 @@ public class LogOperation {
 	 */
 	public static void deleteTaskCaseLog(Integer caseId, String taskIdStr) {
 		Integer taskId = Integer.parseInt(taskIdStr);
-		PostServerAPI.clientDeleteTaskCaseLog(taskId, caseId);
+		PostServerApi.clientDeleteTaskCaseLog(taskId, caseId);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class LogOperation {
 	 */
 	public List<Integer> getCaseListForUnSucByTaskId(String taskIdStr) {
 		int taskId = Integer.parseInt(taskIdStr);
-		return GetServerAPI.clientGetCaseListForUnSucByTaskId(taskId);
+		return GetServerApi.clientGetCaseListForUnSucByTaskId(taskId);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class LogOperation {
 		Integer taskId = Integer.parseInt(taskIdStr);
 		String[] address = null;
 		try {
-			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(taskId);
+			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
 			if (!taskScheduling.getEmailSendCondition().equals(-1)) {
 				String temp = taskScheduling.getEmailAddress();
 				// 清除最后一个;
@@ -149,7 +149,7 @@ public class LogOperation {
 		Integer taskId = Integer.parseInt(taskIdStr);
 		String[] buildname = null;
 		try {
-			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(taskId);
+			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
 			if (null == taskScheduling.getBuildingLink() || "".equals(taskScheduling.getBuildingLink())) {
 				return buildname;
 			}else{
@@ -186,7 +186,7 @@ public class LogOperation {
 		Integer taskId = Integer.parseInt(taskIdStr);
 		String[] command = null;
 		try {
-			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(taskId);
+			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
 			if (null == taskScheduling.getRemoteShell() || "".equals(taskScheduling.getRemoteShell())) {
 				return command;
 			}else{
@@ -220,7 +220,7 @@ public class LogOperation {
 		Integer taskId = Integer.parseInt(taskIdStr);
 		String desTime = "计算测试时长出错！";
 		try {
-			TaskExecute taskExecute = GetServerAPI.cgetTaskbyid(taskId);
+			TaskExecute taskExecute = GetServerApi.cgetTaskbyid(taskId);
 			Date start = taskExecute.getCreateTime();
             if (null!= taskExecute.getFinishTime()) {
                 Date finish = taskExecute.getFinishTime();
@@ -245,9 +245,9 @@ public class LogOperation {
 	 */
 	public static int querydrivertype(String taskIdStr) {
 		Integer taskId = Integer.parseInt(taskIdStr);
-		Integer driverType = 0;
+		int driverType = 0;
 		try {
-			TaskScheduling taskScheduling = GetServerAPI.cGetTaskSchedulingByTaskId(taskId);
+			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
 			driverType = taskScheduling.getBrowserType();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

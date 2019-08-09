@@ -127,6 +127,7 @@ public class ProjectProtocolTemplate extends BaseEntity
 		return isResponseCode;
 	}
 
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("templateId", getTemplateId())

@@ -20,13 +20,13 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
  * @date 2014年8月24日 上午9:29:40  
  * 
  */
-public class DBToolkit { 
+public class DbToolkit { 
     /** 
      * 建立数据库链接池
      */ 
 	public ComboPooledDataSource cpds=null;
 	
-	public DBToolkit(String urlBase,String usernameBase,String passwordBase){
+	public DbToolkit(String urlBase,String usernameBase,String passwordBase){
 		cpds=new ComboPooledDataSource();  
         cpds.setUser(usernameBase);  
         cpds.setPassword(passwordBase);  

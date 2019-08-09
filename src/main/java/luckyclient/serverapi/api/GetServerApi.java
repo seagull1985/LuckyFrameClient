@@ -26,16 +26,16 @@ import luckyclient.serverapi.entity.TaskScheduling;
  * @date 2017年12月1日 上午9:29:40
  * 
  */
-public class GetServerAPI {
+public class GetServerApi {
 	
-	private static final String prefix = "/openGetApi";
+	private static final String PREFIX = "/openGetApi";
 	/**
 	 * 通过计划ID获取测试用例对象集
 	 * @param planid
 	 * @return
 	 */
 	public static List<ProjectCase> getCasesbyplanId(int planId) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetCaseListByPlanId.do?planId=" + planId);		
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseListByPlanId.do?planId=" + planId);		
         List<ProjectCase> caseList = JSONObject.parseArray(result, ProjectCase.class);
 		return caseList;
 	}
@@ -46,7 +46,7 @@ public class GetServerAPI {
 	 * @return
 	 */
 	public static List<ProjectCase> getCasesbyplanname(String name) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetCaseListByPlanName.do?planName=" + name);
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseListByPlanName.do?planName=" + name);
 		List<ProjectCase> caseList = JSONObject.parseArray(result, ProjectCase.class);
 		return caseList;
 	}
@@ -57,7 +57,7 @@ public class GetServerAPI {
 	 * @return
 	 */
 	public static List<ProjectCaseSteps> getStepsbycaseid(Integer caseid) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetStepListByCaseId.do?caseId=" + caseid);
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetStepListByCaseId.do?caseId=" + caseid);
 		List<ProjectCaseSteps> stepsList = JSONObject.parseArray(result, ProjectCaseSteps.class);
 		return stepsList;
 	}
@@ -68,7 +68,7 @@ public class GetServerAPI {
 	 * @return
 	 */
 	public static TaskExecute cgetTaskbyid(int taskid) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetTaskByTaskId.do?taskId=" + taskid);
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetTaskByTaskId.do?taskId=" + taskid);
 		TaskExecute task = JSONObject.parseObject(result, TaskExecute.class);
 		return task;
 	}
@@ -79,7 +79,7 @@ public class GetServerAPI {
 	 * @return
 	 */
 	public static TaskScheduling cGetTaskSchedulingByTaskId(int taskid) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetTaskSchedulingByTaskId.do?taskId=" + taskid);
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetTaskSchedulingByTaskId.do?taskId=" + taskid);
 		TaskScheduling taskScheduling = JSONObject.parseObject(result, TaskScheduling.class);
 		return taskScheduling;
 	}
@@ -90,7 +90,7 @@ public class GetServerAPI {
 	 * @return
 	 */
 	public static ProjectCase cgetCaseBysign(String sign) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetCaseByCaseSign.do?caseSign=" + sign);
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseByCaseSign.do?caseSign=" + sign);
 		ProjectCase projectCase = JSONObject.parseObject(result, ProjectCase.class);
 		return projectCase;
 	}
@@ -101,7 +101,7 @@ public class GetServerAPI {
 	 * @return
 	 */
 	public static ProjectCase cGetCaseByCaseId(Integer caseId) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetCaseByCaseId.do?caseId=" + caseId);
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseByCaseId.do?caseId=" + caseId);
 		ProjectCase projectCase = JSONObject.parseObject(result, ProjectCase.class);
 		return projectCase;
 	}
@@ -112,7 +112,7 @@ public class GetServerAPI {
 	 * @return
 	 */
 	public static List<ProjectCaseParams> cgetParamsByProjectid(String projectid) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetParamsByProjectId.do?projectId="+projectid);
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetParamsByProjectId.do?projectId="+projectid);
 		List<ProjectCaseParams> paramsList = JSONObject.parseArray(result, ProjectCaseParams.class);
 		return paramsList;
 	}
@@ -123,7 +123,7 @@ public class GetServerAPI {
 	 * @return
 	 */
 	public static List<Integer> clientGetCaseListForUnSucByTaskId(Integer taskId) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetCaseListForUnSucByTaskId.do?taskId=" + taskId);		
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseListForUnSucByTaskId.do?taskId=" + taskId);		
         List<Integer> caseIdList = JSONObject.parseArray(result, Integer.class);
 		return caseIdList;
 	}
@@ -136,7 +136,7 @@ public class GetServerAPI {
 	 * @date 2019年4月24日
 	 */
 	public static ProjectProtocolTemplate clientGetProjectProtocolTemplateByTemplateId(Integer templateId) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetProjectProtocolTemplateByTemplateId.do?templateId=" + templateId);
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetProjectProtocolTemplateByTemplateId.do?templateId=" + templateId);
 		ProjectProtocolTemplate projectProtocolTemplate = JSONObject.parseObject(result, ProjectProtocolTemplate.class);
 		return projectProtocolTemplate;
 	}
@@ -149,7 +149,7 @@ public class GetServerAPI {
 	 * @date 2019年4月24日
 	 */
 	public static List<ProjectTemplateParams> clientGetProjectTemplateParamsListByTemplateId(Integer templateId) {
-		String result = HttpRequest.loadJSON(prefix+"/clientGetProjectTemplateParamsListByTemplateId.do?templateId=" + templateId);
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetProjectTemplateParamsListByTemplateId.do?templateId=" + templateId);
 		List<ProjectTemplateParams> projectTemplateParamsList = JSONObject.parseArray(result, ProjectTemplateParams.class);
 		return projectTemplateParamsList;
 	}

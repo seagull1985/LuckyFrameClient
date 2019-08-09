@@ -442,15 +442,24 @@ public class EncapsulateOperation {
             } else {
                 String[] tmp = param.split(split, 2);
                 for (int i = 0; i < 2; i++) {
-                    if (! tmp[i].trim().isEmpty()) location[i] = Integer.valueOf(tmp[i].trim());
+                    if (! tmp[i].trim().isEmpty()){
+                    	location[i] = Integer.valueOf(tmp[i].trim());
+                    } 
                 }
             }
         }
         return location;
     }
 
-    // operationValue为目标窗口句柄的下标, 1开始; 小于等于0即获取当前窗口的句柄值
-    // 窗口句柄值都已CDwindow-开头, 可以作为预期结果的断言
+    /**
+     * operationValue为目标窗口句柄的下标, 1开始; 小于等于0即获取当前窗口的句柄值
+     * 窗口句柄值都已CDwindow-开头, 可以作为预期结果的断言
+     * @param driver
+     * @param target
+     * @return
+     * @author Seagull
+     * @date 2019年8月9日
+     */
     private static String getTargetWindowHandle(WebDriver driver, String target) {
         String result;
         if (null != driver) {
@@ -463,8 +472,11 @@ public class EncapsulateOperation {
         } else {
             result = "获取窗口句柄值失败，WebDriver为空";
         }
-        if (result.contains("获取窗口句柄值失败")) LogUtil.APP.warn(result);
-        else LogUtil.APP.info("获取窗口句柄值成功，目标窗口句柄值为【{}】",result);
+        if (result.contains("获取窗口句柄值失败")){
+        	LogUtil.APP.warn(result);
+        } else {
+        	LogUtil.APP.info("获取窗口句柄值成功，目标窗口句柄值为【{}】",result);
+        }
         return result;
     }
 
@@ -482,7 +494,9 @@ public class EncapsulateOperation {
                     break;
                 }
             }
-            if (0 < windowHandles.size()) driver.switchTo().window(original);
+            if (0 < windowHandles.size()){
+            	driver.switchTo().window(original);
+            } 
         }
         result = result.isEmpty() ? "获取窗口句柄值失败，需要获取窗口句柄值的标题【" + title + "】没有找到" : "获取到的值是【" + result + "】";
         return result;
@@ -495,8 +509,11 @@ public class EncapsulateOperation {
             if (index > windowHandles.size()) {
                 result = "获取窗口句柄值失败，需要获取窗口句柄值的下标【" + index + "】大于当前窗口句柄总数【" + windowHandles.size() + "】";
             } else {
-                if (0 >= index) result = "获取到的值是【" + driver.getWindowHandle() + "】";
-                else result = "获取到的值是【" + windowHandles.get(index - 1) + "】";
+                if (0 >= index){
+                	result = "获取到的值是【" + driver.getWindowHandle() + "】";
+                } else{
+                	result = "获取到的值是【" + windowHandles.get(index - 1) + "】";
+                } 
             }
         } catch (IndexOutOfBoundsException e) {
         	LogUtil.APP.error("获取窗口句柄值出现异常，需要获取窗口句柄值的下标【{}】越界",index,e);
@@ -506,25 +523,28 @@ public class EncapsulateOperation {
     }
 
     // 最长等待30秒, 每500毫秒轮询一次
-    private static FluentWait<WebDriver> Wait(WebDriver driver) {
+    private static FluentWait<WebDriver> wait(WebDriver driver) {
         return new FluentWait<>(driver).withTimeout(30 * 1000, MILLISECONDS).pollingEvery(500, MILLISECONDS);
     }
 
     private static ExpectedCondition<WebDriver> windowToBeAvailableAndSwitchToIt(final String nameOrHandleOrTitle) {
         return driver -> {
             try {
-                if (null != driver)
-                    return driver.switchTo().window(nameOrHandleOrTitle);
-                else
-                    return null;
+                if (null != driver){
+                	return driver.switchTo().window(nameOrHandleOrTitle);
+                } else{
+                	return null;
+                }
+                    
             } catch (NoSuchWindowException windowWithNameOrHandleNotFound) {
                 try {
                     return windowByTitle(driver, nameOrHandleOrTitle);
                 } catch (NoSuchWindowException windowWithTitleNotFound) {
-                    if (ChangString.isInteger(nameOrHandleOrTitle))
-                        return windowByIndex(driver, Integer.valueOf(nameOrHandleOrTitle));
-                    else
-                        return null;
+                    if (ChangString.isInteger(nameOrHandleOrTitle)){
+                    	return windowByIndex(driver, Integer.valueOf(nameOrHandleOrTitle));
+                    } else{
+                    	return null;
+                    }                       
                 }
             }
         };
@@ -539,7 +559,9 @@ public class EncapsulateOperation {
                 return driver;
             }
         }
-        if (0 < windowHandles.size()) driver.switchTo().window(original);
+        if (0 < windowHandles.size()){
+        	driver.switchTo().window(original);
+        } 
         throw new NoSuchWindowException("Window with title[" + title + "] not found");
     }
 
@@ -555,7 +577,7 @@ public class EncapsulateOperation {
     private static String switchToTargetWindow(WebDriver driver, String target) {
         String result;
         try {
-            if (null == Wait(driver).until(windowToBeAvailableAndSwitchToIt(target))) {
+            if (null == wait(driver).until(windowToBeAvailableAndSwitchToIt(target))) {
                 result = "切换窗口句柄失败，未找到句柄值为【" + target + "】的对象";
                 LogUtil.APP.warn("切换窗口句柄失败，未找到句柄值为【{}】的对象",target);
             } else {

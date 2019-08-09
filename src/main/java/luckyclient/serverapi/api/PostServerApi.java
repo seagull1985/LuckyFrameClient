@@ -18,9 +18,9 @@ import luckyclient.serverapi.entity.TaskCaseLog;
  * @author Seagull
  * @date 2019年4月18日
  */
-public class PostServerAPI {
+public class PostServerApi {
 	
-	private static final String prefix = "/openPostApi";
+	private static final String PREFIX = "/openPostApi";
 	
 	/**
 	 * put web界面的数据到服务端
@@ -30,14 +30,14 @@ public class PostServerAPI {
 	 * @param detail
 	 */
 	public static void cPostDebugLog(Integer userId, Integer caseId, String logLevel, String logDetail,Integer debugIsend){
-		ProjectCaseDebug ProjectCaseDebug = new ProjectCaseDebug();
-		ProjectCaseDebug.setCaseId(caseId);
-		ProjectCaseDebug.setUserId(userId);
-		ProjectCaseDebug.setLogLevel(logLevel);
-		ProjectCaseDebug.setLogDetail(logDetail);
-		ProjectCaseDebug.setDebugIsend(debugIsend);
+		ProjectCaseDebug projectCaseDebug = new ProjectCaseDebug();
+		projectCaseDebug.setCaseId(caseId);
+		projectCaseDebug.setUserId(userId);
+		projectCaseDebug.setLogLevel(logLevel);
+		projectCaseDebug.setLogDetail(logDetail);
+		projectCaseDebug.setDebugIsend(debugIsend);
 		
-		HttpRequest.httpClientPostJson(prefix+"/clientPostCaseDebugLog", JSONObject.toJSONString(ProjectCaseDebug));
+		HttpRequest.httpClientPostJson(PREFIX+"/clientPostCaseDebugLog", JSONObject.toJSONString(projectCaseDebug));
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class PostServerAPI {
 		taskCaseExecute.setCaseName(caseName);
 		taskCaseExecute.setCaseStatus(caseStatus);
 		
-		HttpRequest.httpClientPostJson(prefix+"/clientPostTaskCaseExecute", JSONObject.toJSONString(taskCaseExecute));
+		HttpRequest.httpClientPostJson(PREFIX+"/clientPostTaskCaseExecute", JSONObject.toJSONString(taskCaseExecute));
 	}
 	
 	/**
@@ -77,7 +77,7 @@ public class PostServerAPI {
 		taskCaseExecute.setCaseId(caseId);
 		taskCaseExecute.setCaseStatus(caseStatus);
 		
-		HttpRequest.httpClientPostJson(prefix+"/clientUpdateTaskCaseExecuteStatus", JSONObject.toJSONString(taskCaseExecute));
+		HttpRequest.httpClientPostJson(PREFIX+"/clientUpdateTaskCaseExecuteStatus", JSONObject.toJSONString(taskCaseExecute));
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class PostServerAPI {
 		taskCaseLog.setLogStep(logStep);
 		taskCaseLog.setImgname(imgname);
 		
-		HttpRequest.httpClientPostJson(prefix+"/clientPostTaskCaseLog", JSONObject.toJSONString(taskCaseLog));
+		HttpRequest.httpClientPostJson(PREFIX+"/clientPostTaskCaseLog", JSONObject.toJSONString(taskCaseLog));
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public class PostServerAPI {
 	public static String clientUpdateTaskExecuteData(Integer taskId, Integer caseCount, Integer taskStatus){
 		String str = "{\"taskId\":"+taskId+",\"caseCount\":"+caseCount+",\"taskStatus\":"+taskStatus+"}";
 		JSONObject jsonObject = JSON.parseObject(str);
-		return HttpRequest.httpClientPostJson(prefix+"/clientUpdateTaskExecuteData", jsonObject.toJSONString());
+		return HttpRequest.httpClientPostJson(PREFIX+"/clientUpdateTaskExecuteData", jsonObject.toJSONString());
 	}
 	
 	/**
@@ -127,7 +127,7 @@ public class PostServerAPI {
 	public static String clientDeleteTaskCaseLog(Integer taskId, Integer caseId){
 		String str = "{\"taskId\":"+taskId+",\"caseId\":"+caseId+"}";
 		JSONObject jsonObject = JSON.parseObject(str);
-		return HttpRequest.httpClientPostJson(prefix+"/clientDeleteTaskCaseLog", jsonObject.toJSONString());
+		return HttpRequest.httpClientPostJson(PREFIX+"/clientDeleteTaskCaseLog", jsonObject.toJSONString());
 	}
 	
 	/**
@@ -140,7 +140,7 @@ public class PostServerAPI {
 	public static String getLogDetailResult(String taskName, String caseSign){
 		String str = "{\"taskName\":\""+taskName+"\",\"caseSign\":\""+caseSign+"\"}";
 		JSONObject jsonObject = JSON.parseObject(str);
-		return HttpRequest.httpClientPostJson(prefix+"/getLogDetailResult", jsonObject.toJSONString());
+		return HttpRequest.httpClientPostJson(PREFIX+"/getLogDetailResult", jsonObject.toJSONString());
 	}
 
 }

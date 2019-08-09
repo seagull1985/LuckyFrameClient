@@ -11,7 +11,7 @@ import luckyclient.caserun.publicdispose.ActionManageForSteps;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.LogUtil;
 import luckyclient.publicclass.remoterinterface.HttpRequest;
-import luckyclient.serverapi.api.GetServerAPI;
+import luckyclient.serverapi.api.GetServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
@@ -47,13 +47,13 @@ public class ApiTestCaseDebug {
 		Object[] getParameterValues = null;
 		String testnote = "初始化测试结果";
 		int k = 0;
-		ProjectCase testcase = GetServerAPI.cgetCaseBysign(testCaseExternalId);
-		List<ProjectCaseParams> pcplist = GetServerAPI.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+		ProjectCase testcase = GetServerApi.cgetCaseBysign(testCaseExternalId);
+		List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
 		// 把公共参数加入到MAP中
 		for (ProjectCaseParams pcp : pcplist) {
 			variable.put(pcp.getParamsName(), pcp.getParamsValue());
 		}
-		List<ProjectCaseSteps> steps = GetServerAPI.getStepsbycaseid(testcase.getCaseId());
+		List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
 		if (steps.size() == 0) {
 			setcaseresult = 2;
 			LogUtil.APP.warn("用例中未找到步骤，请检查！");

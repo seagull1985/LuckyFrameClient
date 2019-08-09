@@ -653,7 +653,8 @@ public class HttpClientHelper {
 	    RequestConfig requestConfig = RequestConfig.custom()  
 	            .setConnectTimeout(timeout)
 	            .setConnectionRequestTimeout(timeout)  
-	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	             //设置请求和传输超时时间
+	            .setSocketTimeout(timeout).build();  
 	    httpPost.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
@@ -748,8 +749,9 @@ public class HttpClientHelper {
 		HttpPost httpPost = new HttpPost(urlParam);
 	    RequestConfig requestConfig = RequestConfig.custom()  
 	            .setConnectTimeout(timeout)
-	            .setConnectionRequestTimeout(timeout)  
-	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	            .setConnectionRequestTimeout(timeout) 
+	            //设置请求和传输超时时间
+	            .setSocketTimeout(timeout).build(); 
 	    httpPost.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
@@ -848,7 +850,8 @@ public class HttpClientHelper {
 	    RequestConfig requestConfig = RequestConfig.custom()  
 	            .setConnectTimeout(timeout)
 	            .setConnectionRequestTimeout(timeout)  
-	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	             //设置请求和传输超时时间
+	            .setSocketTimeout(timeout).build();  
 	    httpPost.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
@@ -980,8 +983,9 @@ public class HttpClientHelper {
 		HttpGet httpGet = new HttpGet(urlParam);
 	    RequestConfig requestConfig = RequestConfig.custom()  
 	            .setConnectTimeout(timeout)
-	            .setConnectionRequestTimeout(timeout)  
-	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	            .setConnectionRequestTimeout(timeout) 
+	            //设置请求和传输超时时间
+	            .setSocketTimeout(timeout).build(); 
 	    httpGet.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
@@ -1476,7 +1480,8 @@ public class HttpClientHelper {
 	    RequestConfig requestConfig = RequestConfig.custom()  
 	            .setConnectTimeout(timeout)
 	            .setConnectionRequestTimeout(timeout)  
-	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	            //设置请求和传输超时时间
+	            .setSocketTimeout(timeout).build();  
 	    httpput.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
@@ -1573,7 +1578,8 @@ public class HttpClientHelper {
 	    RequestConfig requestConfig = RequestConfig.custom()  
 	            .setConnectTimeout(timeout)
 	            .setConnectionRequestTimeout(timeout)  
-	            .setSocketTimeout(timeout).build();  //设置请求和传输超时时间
+	            //设置请求和传输超时时间
+	            .setSocketTimeout(timeout).build();  
 	    httpput.setConfig(requestConfig);
 		//替换头域信息
 	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
@@ -1669,7 +1675,7 @@ public class HttpClientHelper {
             // 构造 javax.net.ssl.TrustManager 对象
             TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509", "SunJSSE");
             tmf.init(trustStore);
-            TrustManager tms [] = tmf.getTrustManagers();
+            TrustManager[] tms = tmf.getTrustManagers();
             // 使用构造好的 TrustManager 访问相应的 https 站点
             sslContext = SSLContext.getInstance("SSL", "SunJSSE");
             sslContext.init(null, tms, new java.security.SecureRandom());
@@ -1708,7 +1714,7 @@ public class HttpClientHelper {
     	        sslContext.init(null, trustManagers, new SecureRandom());
     		}else{
     			LogUtil.APP.info("开始构建HTTPS双向认证请求...");
-    			String strcerpath[]=cerpath.split(";",-1);
+    			String[] strcerpath=cerpath.split(";",-1);
     			sslContext = sslContextKeyStore(strcerpath[0], strcerpath[1]);
     		}
             

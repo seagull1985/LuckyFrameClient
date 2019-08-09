@@ -16,14 +16,14 @@ import java.sql.SQLException;
  * @date 2014年8月24日 上午9:29:40  
  * 
  */
-public class DBOperation {
+public class DbOperation {
 		
-	DBToolkit dbt =null;
+	DbToolkit dbt =null;
 	/**
 	 * 创建链接池，注意此方法不能new多次，会导致多次创建链接池，最好放在任务启动方法中
 	 */
-	public DBOperation(String urlBase,String usernameBase,String passwordBase) {
-	 dbt = new DBToolkit(urlBase,usernameBase,passwordBase);
+	public DbOperation(String urlBase,String usernameBase,String passwordBase) {
+	 dbt = new DbToolkit(urlBase,usernameBase,passwordBase);
 	}
 	
 	
@@ -38,7 +38,7 @@ public class DBOperation {
 		String result;
 		try{
 			conn = dbt.getBaseConnection();
-			int resultnum = DBToolkit.executeSQL(conn, sql);
+			int resultnum = DbToolkit.executeSQL(conn, sql);
 			if(resultnum>0){
 				result= "成功执行SQL,更新数据"+resultnum+"行！";
 			}else{
@@ -48,7 +48,7 @@ public class DBOperation {
 		}catch(Exception e){
 			return e.toString();
 		}finally{
-			DBToolkit.closeConnection(conn);
+			DbToolkit.closeConnection(conn);
 		}
 	}
 	
@@ -64,7 +64,7 @@ public class DBOperation {
 		try{
 			conn = dbt.getBaseConnection();
 			StringBuffer  sb = new StringBuffer();
-			rs = DBToolkit.executeQuery(conn, sql);
+			rs = DbToolkit.executeQuery(conn, sql);
 			ResultSetMetaData metaData = rs.getMetaData();
 			int colum = metaData.getColumnCount(); 
 			int count=0;
@@ -95,7 +95,7 @@ public class DBOperation {
 			if(rs!=null){
 				rs.close();
 			}
-			DBToolkit.closeConnection(conn);
+			DbToolkit.closeConnection(conn);
 		}		
 	}
 	
