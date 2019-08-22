@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 
+import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.publicclass.remoterinterface.HttpRequest;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
@@ -114,6 +115,10 @@ public class GetServerApi {
 	public static List<ProjectCaseParams> cgetParamsByProjectid(String projectid) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetParamsByProjectId.do?projectId="+projectid);
 		List<ProjectCaseParams> paramsList = JSONObject.parseArray(result, ProjectCaseParams.class);
+		//当公共参数存在内置函数时，先进行数据转换
+		for(ProjectCaseParams pcp:paramsList){
+			pcp.setParamsValue(ParamsManageForSteps.paramsManage(pcp.getParamsValue()));
+		}
 		return paramsList;
 	}
 	
