@@ -21,6 +21,7 @@ import luckyclient.serverapi.api.PostServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
+import org.apache.commons.compress.utils.Lists;
 
 /**
  * =================================================================
@@ -151,7 +152,13 @@ public class WebTestCaseDebug {
                         expectedresults = expectedresults.substring(JSONPATH_SIGN.length());
                         String jsonpath = expectedresults.split("=")[0];
                         String exceptResult = expectedresults.split("=")[1];
-                        List<String> exceptResults = Arrays.asList(exceptResult.split(","));
+                        List<String> exceptResultList = Arrays.asList(exceptResult.split("(?<!&),"));
+                        List<String> exceptResults = Lists.newArrayList();
+                        // 处理期望值里本身包含英文逗号的情况
+                        for (String s : exceptResultList) {
+                            s = s.replace("&,",",");
+                            exceptResults.add(s);
+                        }
                         Configuration conf = Configuration.defaultConfiguration();
                         JSONArray datasArray = JSON.parseArray(JSON.toJSONString(JsonPath.using(conf).parse(testnote).read(jsonpath)));
                         List<String> result = JSONObject.parseArray(datasArray.toJSONString(), String.class);
