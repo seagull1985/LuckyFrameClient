@@ -297,5 +297,12 @@
 			<artifactId>reflections</artifactId>
 			<version>0.9.11</version>
 		</dependency>
+
+		<!-- jsonpath依赖 -->
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>2.4.0</version>
+		</dependency>
 	</dependencies>
 </project>
