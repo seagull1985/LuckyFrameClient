@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import org.apache.commons.compress.utils.Lists;
 import org.openqa.selenium.WebDriver;
 
 import io.appium.java_client.android.AndroidDriver;
@@ -293,7 +294,13 @@ public class TestCaseExecution {
                         expectedresults = expectedresults.substring(JSONPATH_SIGN.length());
                         String jsonpath = expectedresults.split("=")[0];
                         String exceptResult = expectedresults.split("=")[1];
-                        List<String> exceptResults = Arrays.asList(exceptResult.split(","));
+                        List<String> exceptResultList = Arrays.asList(exceptResult.split("(?<!&),"));
+                        List<String> exceptResults = Lists.newArrayList();
+                        // 处理期望值里本身包含英文逗号的情况
+                        for (String s : exceptResultList) {
+                            s = s.replace("&,",",");
+                            exceptResults.add(s);
+                        }
                         Configuration conf = Configuration.defaultConfiguration();
                         JSONArray datasArray = JSON.parseArray(JSON.toJSONString(JsonPath.using(conf).parse(testnote).read(jsonpath)));
                         List<String> result = JSONObject.parseArray(datasArray.toJSONString(), String.class);
@@ -537,7 +544,13 @@ public class TestCaseExecution {
                     expectedresults = expectedresults.substring(JSONPATH_SIGN.length());
                     String jsonpath = expectedresults.split("=")[0];
                     String exceptResult = expectedresults.split("=")[1];
-                    List<String> exceptResults = Arrays.asList(exceptResult.split(","));
+                    List<String> exceptResultList = Arrays.asList(exceptResult.split("(?<!&),"));
+                    List<String> exceptResults = Lists.newArrayList();
+                    // 处理期望值里本身包含英文逗号的情况
+                    for (String s : exceptResultList) {
+                        s = s.replace("&,",",");
+                        exceptResults.add(s);
+                    }
                     Configuration conf = Configuration.defaultConfiguration();
                     JSONArray datasArray = JSON.parseArray(JSON.toJSONString(JsonPath.using(conf).parse(testnote).read(jsonpath)));
                     List<String> result = JSONObject.parseArray(datasArray.toJSONString(), String.class);
