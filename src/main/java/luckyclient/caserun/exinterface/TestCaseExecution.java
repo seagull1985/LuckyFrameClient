@@ -1,11 +1,17 @@
 package luckyclient.caserun.exinterface;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
 import org.openqa.selenium.WebDriver;
 
 import io.appium.java_client.android.AndroidDriver;
@@ -44,8 +50,9 @@ public class TestCaseExecution {
     protected static final String FUZZY_MATCHING_SIGN = "%=";
     protected static final String REGULAR_MATCHING_SIGN = "~=";
     protected static final String ASSIGNMENT_GLOBALSIGN = "$A=";
+    protected static final String JSONPATH_SIGN = "$J=";
     private static Map<String, String> VARIABLE = new HashMap<String, String>(0);
-    
+
     /**
      * @param projectname        项目名
      * @param testCaseExternalId 用例编号
@@ -139,7 +146,7 @@ public class TestCaseExecution {
                         LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......",testcase.getCaseSign(),steps.get(i).getStepSerialNumber());
                     }
                 }
-                
+
             } catch (Exception e) {
                 caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "调用方法过程出错，方法名：" + functionname + " 请重新检查脚本方法名称以及参数！", "error", String.valueOf(i + 1), "");
                 LogUtil.APP.error("调用方法过程出错，方法名:{} 请重新检查脚本方法名称以及参数！",functionname, e);
@@ -154,7 +161,7 @@ public class TestCaseExecution {
                 }
             }
         }
-        
+
         VARIABLE.clear(); // 清空传参MAP
         // 如果调用方法过程中未出错，进入设置测试结果流程
         if (!testnote.contains("CallCase调用出错！") && !testnote.contains("解析出错啦！")) {
@@ -281,6 +288,26 @@ public class TestCaseExecution {
                             break; // 某一步骤失败后，此条用例置为失败退出
                         }
                     }
+                    //jsonpath断言
+                    else if (expectedresults.length() > JSONPATH_SIGN.length() && expectedresults.startsWith(JSONPATH_SIGN)) {
+                        expectedresults = expectedresults.substring(JSONPATH_SIGN.length());
+                        String jsonpath = expectedresults.split("=")[0];
+                        String exceptResult = expectedresults.split("=")[1];
+                        List<String> exceptResults = Arrays.asList(exceptResult.split(","));
+                        Configuration conf = Configuration.defaultConfiguration();
+                        JSONArray datasArray = JSON.parseArray(JSON.toJSONString(JsonPath.using(conf).parse(testnote).read(jsonpath)));
+                        List<String> result = JSONObject.parseArray(datasArray.toJSONString(), String.class);
+                        if (exceptResults.equals(result)) {
+                            setresult = 0;
+                            LogUtil.APP.info("用例:{} 第{}步，jsonpath断言预期结果成功！预期结果:{} 测试结果: {} 执行结果:true",testcase.getCaseSign(),(i+1),exceptResults,result);
+                        } else {
+                            setresult = 1;
+                            LogUtil.APP.warn("用例:{} 第{}步，jsonpath断言预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),(i+1),expectedresults.substring(REGULAR_MATCHING_SIGN.length()),testnote);
+                            testnote = "用例第" + (i + 1) + "步，jsonpath断言预期结果失败！";
+                            // 某一步骤失败后，此条用例置为失败退出
+                            break;
+                        }
+                    }
                     // 完全相等
                     else {
                         if (expectedresults.equals(testnote)) {
@@ -311,7 +338,7 @@ public class TestCaseExecution {
     }
 
     /**
-     * 
+     *
      * @param testCaseExternalId
      * @param taskid
      * @param caselog
@@ -352,7 +379,7 @@ public class TestCaseExecution {
             	params = AppDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog,VARIABLE);
             } else{
             	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog,VARIABLE);
-            } 
+            }
 
             // 判断分析步骤参数是否有异常
             if (params.get("exception") != null && params.get("exception").contains("解析异常")) {
@@ -361,7 +388,7 @@ public class TestCaseExecution {
             }
 
             expectedresults = params.get("ExpectedResults");
-            
+
             // 根据步骤类型来执行步骤
             if (1 == step.getStepType()){
             	WebDriver wd=(WebDriver)driver;
@@ -380,12 +407,12 @@ public class TestCaseExecution {
             		// 判断结果
                     setresult = IosCaseExecution.judgeResult(testcase, step, params, ios, taskid, expectedresults, testnote, caselog);
             	}
-            	
+
             } else{
             	testnote = runStep(params, taskid, testcase.getCaseSign(), step, caselog);
             	// 判断结果
             	setresult = interfaceJudgeResult(testcase, step, taskid, expectedresults, testnote, caselog);
-            } 
+            }
 
             if (0 != setresult){
             	break;
@@ -400,7 +427,7 @@ public class TestCaseExecution {
         }
         return testnote;
     }
-    
+
     /**
      * 其他类型测试用例中调用接口测试步骤
      * @param params
@@ -460,7 +487,7 @@ public class TestCaseExecution {
         }
         return result;
     }
-    
+
     private static int interfaceJudgeResult(ProjectCase testcase, ProjectCaseSteps step, String taskid, String expectedresults, String testnote, LogOperation caselog){
         int setresult = 0;
         try{
@@ -505,6 +532,26 @@ public class TestCaseExecution {
                         testnote = "用例第" + step.getStepSerialNumber() + "步，正则匹配预期结果失败！";
                     }
                 }
+                //jsonpath断言
+                else if (expectedresults.length() > JSONPATH_SIGN.length() && expectedresults.startsWith(JSONPATH_SIGN)) {
+                    expectedresults = expectedresults.substring(JSONPATH_SIGN.length());
+                    String jsonpath = expectedresults.split("=")[0];
+                    String exceptResult = expectedresults.split("=")[1];
+                    List<String> exceptResults = Arrays.asList(exceptResult.split(","));
+                    Configuration conf = Configuration.defaultConfiguration();
+                    JSONArray datasArray = JSON.parseArray(JSON.toJSONString(JsonPath.using(conf).parse(testnote).read(jsonpath)));
+                    List<String> result = JSONObject.parseArray(datasArray.toJSONString(), String.class);
+                    if (exceptResults.equals(result)) {
+                        setresult = 0;
+                        LogUtil.APP.info("用例:{} 第{}步，jsonpath断言预期结果成功！预期结果:{} 测试结果: {} 执行结果:true",testcase.getCaseSign(),step.getStepSerialNumber(),exceptResults,result);
+                    } else {
+                        setresult = 1;
+                        LogUtil.APP.warn("用例:{} 第{}步，jsonpath断言预期结果失败！预期结果:{}，测试结果:{}" + expectedresults + "，测试结果：" + result.toString(), "error", String.valueOf(step.getStepSerialNumber()), "");
+                        testnote = "用例第" + step.getStepSerialNumber() + "步，jsonpath断言预期结果失败！";
+                        // 某一步骤失败后，此条用例置为失败退出
+                    }
+
+                }
                 // 完全相等
                 else {
                     if (expectedresults.equals(testnote)) {
@@ -520,11 +567,11 @@ public class TestCaseExecution {
             }
         }catch(Exception e){
         	LogUtil.APP.error("匹配接口预期结果出现异常！",e);
-        	setresult = 2; 
+        	setresult = 2;
         	return setresult;
         }
-        return setresult; 	
+        return setresult;
     }
-    
-    
+
+
 }

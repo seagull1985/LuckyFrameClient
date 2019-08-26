@@ -1,11 +1,17 @@
 package luckyclient.caserun.exinterface;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
 import luckyclient.caserun.publicdispose.ParamsManageForSteps;
@@ -33,6 +39,7 @@ public class ThreadForExecuteCase extends Thread {
     private static final String ASSIGNMENT_GLOBALSIGN = "$A=";
     private static final String FUZZY_MATCHING_SIGN = "%=";
     private static final String REGULAR_MATCHING_SIGN = "~=";
+    private static final String JSONPATH_SIGN = "$J=";
 
     private Integer caseId;
     private String caseSign;
@@ -77,8 +84,8 @@ public class ThreadForExecuteCase extends Thread {
             // 解析单个步骤中的脚本
             Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog,variable);
             try {
-                packagename = casescript.get("PackageName");               
-                functionname = casescript.get("FunctionName");               
+                packagename = casescript.get("PackageName");
+                functionname = casescript.get("FunctionName");
             } catch (Exception e) {
                 k = 0;
                 LogUtil.APP.error("用例:{} 解析包名或是方法名出现异常，请检查！",testcase.getCaseSign(),e);
@@ -167,6 +174,35 @@ public class ThreadForExecuteCase extends Thread {
                             } else {
                                 LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......",testcase.getCaseSign(),(i+1));
                             }
+                        }
+                    }
+                    //jsonpath断言
+                    else if (expectedresults.length() > JSONPATH_SIGN.length() && expectedresults.startsWith(JSONPATH_SIGN)) {
+                        expectedresults = expectedresults.substring(JSONPATH_SIGN.length());
+                        String jsonpath = expectedresults.split("=")[0];
+                        String exceptResult = expectedresults.split("=")[1];
+                        List<String> exceptResults = Arrays.asList(exceptResult.split(","));
+                        Configuration conf = Configuration.defaultConfiguration();
+                        JSONArray datasArray = JSON.parseArray(JSON.toJSONString(JsonPath.using(conf).parse(testnote).read(jsonpath)));
+                        List<String> result = JSONObject.parseArray(datasArray.toJSONString(), String.class);
+                        if (exceptResults.equals(result)) {
+                            setcaseresult = 0;
+                            LogUtil.APP.info("用例【{}】 第【{}】步，jsonpath断言预期结果成功！预期结果:{} 测试结果: {} 执行结果:true",testcase.getCaseSign(),(i+1),exceptResults,result);
+                            caselog.insertTaskCaseLog(taskid, caseId, "jsonpath断言预期结果成功！预期结果:"+ expectedresults + "测试结果:" + result + "执行结果:true","info", String.valueOf(i + 1), "");
+                        } else {
+                            setcaseresult = 1;
+                            LogUtil.APP.warn("用例:{} 第{}步，jsonpath断言预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),(i+1),expectedresults,result);
+                            caselog.insertTaskCaseLog(taskid, caseId, "第" + (i + 1) + "步，正则匹配预期结果失败！预期结果：" + exceptResults + "，测试结果：" + result, "error", String.valueOf(i + 1), "");
+                            testnote = "用例第" + (i + 1) + "步，jsonpath断言预期结果失败！";
+                            if (testcase.getFailcontinue() == 0) {
+                                LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......",testcase.getCaseSign(),(i+1));
+                                break;
+                            } else {
+                                LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，继续本条用例后续步骤执行，进入下个步骤执行中......",testcase.getCaseSign(),(i+1));
+                            }
+
+                            // 某一步骤失败后，此条用例置为失败退出
+                            break;
                         }
                     }
                     // 完全相等
