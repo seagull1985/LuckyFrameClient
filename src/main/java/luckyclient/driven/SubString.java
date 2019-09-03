@@ -13,6 +13,8 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
 
 import luckyclient.publicclass.LogUtil;
 
@@ -362,4 +364,52 @@ public class SubString {
 		return result;
 	}
 
+    /**
+     * 通过jsonPath表达式获取JSON字符串指定值
+     * @param actionParams
+     * @param testResult
+     * @return
+     * @author Seagull
+     * @date 2019年8月28日
+     */
+    public static String jsonPathGetParams(String expressionParams, String jsonString) {
+        String type="String";
+        String expression="";
+        if(expressionParams.endsWith("]")&&expressionParams.contains("[")){
+        	try{
+            	type=expressionParams.substring(0,expressionParams.indexOf("["));
+            	expression=expressionParams.substring(expressionParams.indexOf("[")+1, expressionParams.lastIndexOf("]"));
+            	if("list".equals(type.toLowerCase())){
+            		List<Object> list = JsonPath.parse(jsonString).read(expression);
+            		jsonString="";
+            		for(Object result:list){
+            			result = (String)jsonString+result+",";
+            			jsonString = (String)result;
+            		}    		
+            	}else{                	
+            		jsonString=JsonPath.parse(jsonString).read(expression);
+            	}
+        	}catch(PathNotFoundException pnfe){
+        		LogUtil.APP.error("通过jsonPath获取JSON字符串指定值出现异常，没有找到对应参数路径，请确认JSON字符串【{}】表达式是否正确【{}】！",jsonString,expression);
+        	}catch(Exception e){
+        		LogUtil.APP.error("通过jsonPath获取JSON字符串指定值出现异，请检查您的动作参数格式(String/List[表达式])或是被提取的json字符串是否正常！",expressionParams);
+        	}
+        }else{
+        	LogUtil.APP.warn("获取JSON字符串指定jsonPath表达式【{}】异常，请检查您的动作参数格式(String/List[表达式])是否正常！",expressionParams);
+        }
+        LogUtil.APP.info("获取JSON字符串指定jsonPath表达式【{}】的值是:{}",expression,jsonString);
+        return jsonString;
+    }
+    
+    public static void main(String[] args) {
+		String aa="$JP#\\=fd=sa#fdsdsaa\\#jjdj\\=s#ff";
+		aa = aa.substring("$JP#".length());
+		String[] bb = aa.split("(?<!\\\\)=");
+		System.out.println(bb[0]);
+		for(String s:bb){
+			s = s.replace("\\=","=");
+			System.out.println(s);
+		}
+		System.out.println(bb[1]);
+	}
 }

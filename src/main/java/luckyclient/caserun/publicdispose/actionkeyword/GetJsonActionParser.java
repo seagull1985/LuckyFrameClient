@@ -22,8 +22,8 @@ public class GetJsonActionParser implements ActionKeyWordParser {
         String key="";
         String index="1";
         if(actionParams.endsWith("]")&&actionParams.contains("[")){
-            key=actionParams.substring(0,actionParams.lastIndexOf("["));
-            index=actionParams.substring(actionParams.lastIndexOf("[")+1, actionParams.lastIndexOf("]"));
+            key=actionParams.substring(0,actionParams.indexOf("["));
+            index=actionParams.substring(actionParams.indexOf("[")+1, actionParams.lastIndexOf("]"));
             testResult= SubString.getJsonValue(testResult, key, index);
         }else{
             key=actionParams;

@@ -1,19 +1,14 @@
 package luckyclient.caserun.exinterface;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
 import luckyclient.caserun.exinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
+import luckyclient.driven.SubString;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerApi;
@@ -21,7 +16,6 @@ import luckyclient.serverapi.api.PostServerApi;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
 import luckyclient.serverapi.entity.ProjectCaseSteps;
-import org.apache.commons.compress.utils.Lists;
 
 /**
  * =================================================================
@@ -39,7 +33,7 @@ public class WebTestCaseDebug {
 	private static final String ASSIGNMENT_SIGN = "$=";
 	private static final String FUZZY_MATCHING_SIGN = "%=";
 	private static final String REGULAR_MATCHING_SIGN = "~=";
-    protected static final String JSONPATH_SIGN = "$J=";
+    protected static final String JSONPATH_SIGN = "$JP#";
 
     /**
      * @param executor
@@ -150,24 +144,17 @@ public class WebTestCaseDebug {
                     //jsonpath断言
                     else if (expectedresults.length() > JSONPATH_SIGN.length() && expectedresults.startsWith(JSONPATH_SIGN)) {
                         expectedresults = expectedresults.substring(JSONPATH_SIGN.length());
-                        String jsonpath = expectedresults.split("=")[0];
-                        String exceptResult = expectedresults.split("=")[1];
-                        List<String> exceptResultList = Arrays.asList(exceptResult.split("(?<!&),"));
-                        List<String> exceptResults = Lists.newArrayList();
-                        // 处理期望值里本身包含英文逗号的情况
-                        for (String s : exceptResultList) {
-                            s = s.replace("&,",",");
-                            exceptResults.add(s);
-                        }
-                        Configuration conf = Configuration.defaultConfiguration();
-                        JSONArray datasArray = JSON.parseArray(JSON.toJSONString(JsonPath.using(conf).parse(testnote).read(jsonpath)));
-                        List<String> result = JSONObject.parseArray(datasArray.toJSONString(), String.class);
-                        if (exceptResults.equals(result)) {
+                        String expression = expectedresults.split("(?<!\\\\)=")[0].replace("\\=","=");
+                        String exceptResult = expectedresults.split("(?<!\\\\)=")[1].replace("\\=","=");
+                        //对测试结果进行jsonPath取值
+                        String result = SubString.jsonPathGetParams(expression, testnote);
+                        
+                        if (exceptResult.equals(result)) {
                             setcaseresult = 0;
-                            PostServerAPI.cPostDebugLog(userId, caseId, "INFO", "jsonpath断言预期结果成功！预期结果：" + expectedresults + " 测试结果: " + result.toString() + "校验结果: true", 0);
+                            PostServerApi.cPostDebugLog(userId, caseId, "INFO", "jsonpath断言预期结果成功！预期结果：" + exceptResult + " 测试结果: " + result.toString() + "校验结果: true", 0);
                         } else {
                             setcaseresult = 1;
-                            PostServerAPI.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，jsonpath断言预期结果失败！预期结果：" + expectedresults + "，测试结果：" + result.toString(),0);
+                            PostServerApi.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，jsonpath断言预期结果失败！预期结果：" + exceptResult + "，测试结果：" + result.toString(),0);
                             testnote = "用例第" + (i + 1) + "步，jsonpath断言预期结果失败！";
                             if (testcase.getFailcontinue() == 0) {
                                 LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......",testcase.getCaseSign(),(i+1));

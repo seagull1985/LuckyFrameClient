@@ -17,23 +17,16 @@ public class JsonPathActionParser implements ActionKeyWordParser {
 
 
     /**
-     * 获取JSON字符串指定Key的值是
+     * 通过jsonPath表达式获取JSON字符串指定值
+     * 仅支持返回值是String类型，不支持List,如果jsonPath表达式返回的是List将抛出异常
      * @param actionKeyWord 动作关键字
      * @param testResult 测试结果
      */
-    @Override
+	@Override
     public String parse(String actionParams, String testResult) {
-        String key="";
-        String index="1";
-        if(actionParams.endsWith("]")&&actionParams.contains("[")){
-            key=actionParams.substring(0,actionParams.lastIndexOf("["));
-            index=actionParams.substring(actionParams.lastIndexOf("[")+1, actionParams.lastIndexOf("]"));
-            testResult= SubString.getJsonValue(testResult, key, index);
-        }else{
-            key=actionParams;
-            testResult=SubString.getJsonValue(testResult, key, index);
-        }
-        LogUtil.APP.info("Action(getJV):获取JSON字符串指定Key的值是:{}",testResult);
+    	LogUtil.APP.info("Action(jsonPath):开始处理jsonPath动作...参数：【{}】   待处理json字符串：【{}】",actionParams,testResult);
+    	testResult = SubString.jsonPathGetParams(actionParams, testResult);
+        LogUtil.APP.info("Action(jsonPath):处理jsonPath动作完成...处理结果【{}】",testResult);
         return testResult;
     }
 }

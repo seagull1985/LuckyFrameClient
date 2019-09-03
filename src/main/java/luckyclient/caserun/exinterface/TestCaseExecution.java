@@ -1,18 +1,11 @@
 package luckyclient.caserun.exinterface;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.JsonPath;
-import org.apache.commons.compress.utils.Lists;
 import org.openqa.selenium.WebDriver;
 
 import io.appium.java_client.android.AndroidDriver;
@@ -29,6 +22,7 @@ import luckyclient.caserun.publicdispose.ActionManageForSteps;
 import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.dblog.DbLink;
 import luckyclient.dblog.LogOperation;
+import luckyclient.driven.SubString;
 import luckyclient.publicclass.InvokeMethod;
 import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.api.GetServerApi;
@@ -51,7 +45,7 @@ public class TestCaseExecution {
     protected static final String FUZZY_MATCHING_SIGN = "%=";
     protected static final String REGULAR_MATCHING_SIGN = "~=";
     protected static final String ASSIGNMENT_GLOBALSIGN = "$A=";
-    protected static final String JSONPATH_SIGN = "$J=";
+    protected static final String JSONPATH_SIGN = "$JP#";
     private static Map<String, String> VARIABLE = new HashMap<String, String>(0);
 
     /**
@@ -292,21 +286,14 @@ public class TestCaseExecution {
                     //jsonpath断言
                     else if (expectedresults.length() > JSONPATH_SIGN.length() && expectedresults.startsWith(JSONPATH_SIGN)) {
                         expectedresults = expectedresults.substring(JSONPATH_SIGN.length());
-                        String jsonpath = expectedresults.split("=")[0];
-                        String exceptResult = expectedresults.split("=")[1];
-                        List<String> exceptResultList = Arrays.asList(exceptResult.split("(?<!&),"));
-                        List<String> exceptResults = Lists.newArrayList();
-                        // 处理期望值里本身包含英文逗号的情况
-                        for (String s : exceptResultList) {
-                            s = s.replace("&,",",");
-                            exceptResults.add(s);
-                        }
-                        Configuration conf = Configuration.defaultConfiguration();
-                        JSONArray datasArray = JSON.parseArray(JSON.toJSONString(JsonPath.using(conf).parse(testnote).read(jsonpath)));
-                        List<String> result = JSONObject.parseArray(datasArray.toJSONString(), String.class);
-                        if (exceptResults.equals(result)) {
+                        String expression = expectedresults.split("(?<!\\\\)=")[0].replace("\\=","=");
+                        String exceptResult = expectedresults.split("(?<!\\\\)=")[1].replace("\\=","=");
+                        //对测试结果进行jsonPath取值
+                        String result = SubString.jsonPathGetParams(expression, testnote);
+                        
+                        if (exceptResult.equals(result)) {
                             setresult = 0;
-                            LogUtil.APP.info("用例:{} 第{}步，jsonpath断言预期结果成功！预期结果:{} 测试结果: {} 执行结果:true",testcase.getCaseSign(),(i+1),exceptResults,result);
+                            LogUtil.APP.info("用例:{} 第{}步，jsonpath断言预期结果成功！预期结果:{} 测试结果: {} 执行结果:true",testcase.getCaseSign(),(i+1),exceptResult,result);
                         } else {
                             setresult = 1;
                             LogUtil.APP.warn("用例:{} 第{}步，jsonpath断言预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),(i+1),expectedresults.substring(REGULAR_MATCHING_SIGN.length()),testnote);
@@ -542,21 +529,14 @@ public class TestCaseExecution {
                 //jsonpath断言
                 else if (expectedresults.length() > JSONPATH_SIGN.length() && expectedresults.startsWith(JSONPATH_SIGN)) {
                     expectedresults = expectedresults.substring(JSONPATH_SIGN.length());
-                    String jsonpath = expectedresults.split("=")[0];
-                    String exceptResult = expectedresults.split("=")[1];
-                    List<String> exceptResultList = Arrays.asList(exceptResult.split("(?<!&),"));
-                    List<String> exceptResults = Lists.newArrayList();
-                    // 处理期望值里本身包含英文逗号的情况
-                    for (String s : exceptResultList) {
-                        s = s.replace("&,",",");
-                        exceptResults.add(s);
-                    }
-                    Configuration conf = Configuration.defaultConfiguration();
-                    JSONArray datasArray = JSON.parseArray(JSON.toJSONString(JsonPath.using(conf).parse(testnote).read(jsonpath)));
-                    List<String> result = JSONObject.parseArray(datasArray.toJSONString(), String.class);
-                    if (exceptResults.equals(result)) {
+                    String expression = expectedresults.split("(?<!\\\\)=")[0].replace("\\=","=");
+                    String exceptResult = expectedresults.split("(?<!\\\\)=")[1].replace("\\=","=");
+                    //对测试结果进行jsonPath取值
+                    String result = SubString.jsonPathGetParams(expression, testnote);
+                    
+                    if (exceptResult.equals(result)) {
                         setresult = 0;
-                        LogUtil.APP.info("用例:{} 第{}步，jsonpath断言预期结果成功！预期结果:{} 测试结果: {} 执行结果:true",testcase.getCaseSign(),step.getStepSerialNumber(),exceptResults,result);
+                        LogUtil.APP.info("用例:{} 第{}步，jsonpath断言预期结果成功！预期结果:{} 测试结果: {} 执行结果:true",testcase.getCaseSign(),step.getStepSerialNumber(),exceptResult,result);
                     } else {
                         setresult = 1;
                         LogUtil.APP.warn("用例:{} 第{}步，jsonpath断言预期结果失败！预期结果:{}，测试结果:{}" + expectedresults + "，测试结果：" + result.toString(), "error", String.valueOf(step.getStepSerialNumber()), "");
