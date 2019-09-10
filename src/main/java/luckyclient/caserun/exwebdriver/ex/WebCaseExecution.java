@@ -140,6 +140,9 @@ public class WebCaseExecution extends TestCaseExecution {
                     return "步骤执行失败：定位的元素不存在！";
                 }
 
+                //点亮即将操作的元素
+                BaseWebDrive.highLightElement(wd, we);
+                
                 if (operation.contains("select")) {
                     result = EncapsulateOperation.selectOperation(we, operation, operationValue);
                 } else if (operation.contains("get")) {

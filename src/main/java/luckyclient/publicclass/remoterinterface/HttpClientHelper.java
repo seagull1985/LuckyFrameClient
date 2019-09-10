@@ -1406,16 +1406,13 @@ public class HttpClientHelper {
 			if(1==responsecode){
 				resultBuffer.append("RESPONSE_CODE:【"+con.getResponseCode()+"】 ");
 			}
-		    if(null!=con.getHeaderField("Content-Length")){
-				int contentLength = Integer.parseInt(con.getHeaderField("Content-Length"));
-				if (contentLength > 0||"chunked".equals(con.getHeaderField("Transfer-Encoding"))) {
-					br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
-					String temp;
-					while ((temp = br.readLine()) != null) {
-						resultBuffer.append(temp);
-					}
+			if (null != con.getHeaderField("Content-Length") || null != con.getHeaderField("Transfer-Encoding")) {
+				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
+				String temp;
+				while ((temp = br.readLine()) != null) {
+					resultBuffer.append(temp);
 				}
-		    }
+			}
 		} catch (Exception e) {
 			LogUtil.APP.error("使用HttpURLConnection发送delete请求出现异常，请检查！", e);
 			throw new RuntimeException(e);
