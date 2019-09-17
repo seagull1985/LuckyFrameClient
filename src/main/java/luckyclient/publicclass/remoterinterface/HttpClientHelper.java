@@ -3,6 +3,7 @@ package luckyclient.publicclass.remoterinterface;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,6 +53,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContexts;
+import org.apache.http.util.EntityUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -1733,7 +1735,126 @@ public class HttpClientHelper {
     	return httpclient;
     }
 	
-	public static void main(String[] args) throws KeyManagementException, NoSuchAlgorithmException {
+    /**
+	 * 使用HttpClient以XML发送post请求
+	 * @param urlParam
+	 * @param params
+	 * @param charset
+	 * @param headmsg
+	 * @param cerpath
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 * @throws KeyManagementException
+	 */
+	public static String httpClientPostXml(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
+		
+		StringBuffer resultBuffer = null;
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
+		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
+		HttpPost httpPost = new HttpPost(urlParam);
+	    httpPost.setHeader("Content-Type", "text/xml");
+	    RequestConfig requestConfig = RequestConfig.custom()  
+	            .setConnectTimeout(timeout)
+	            .setConnectionRequestTimeout(timeout)  
+	             //设置请求和传输超时时间
+	            .setSocketTimeout(timeout).build();  
+	    httpPost.setConfig(requestConfig);
+		//替换头域信息
+	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+	    	String key=m.getKey();
+	    	String value=m.getValue();
+	    	LogUtil.APP.info("开始设置|替换httpClientPostXml头域信息...key:【{}】    value:【{}】",key,value);
+	    	if(null!=value&&value.indexOf("Base64(")==0){
+	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+	    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
+	    		httpPost.setHeader(key, value);
+	    	}else{
+	    		httpPost.setHeader(key, value);
+	    	}
+        }
 
+		try {
+		if(params.size()>0){
+			if(1==params.size()&&params.containsKey("_forTextXml")){
+				LogUtil.APP.info("参数类型：XML,设置httpClientPostXml参数信息...【{}】",params.get("_forTextXml").toString());
+				String xmlStr=getXmlString(params.get("_forTextXml").toString());
+				StringEntity entity = new StringEntity(xmlStr,charset);
+				entity.setContentType("text/xml");
+				httpPost.setEntity(entity);
+			}else{
+			    String jsonString = JSON.toJSONString(params);
+				LogUtil.APP.info("参数类型：FORM,设置httpClientPostXml参数信息...【{}】",jsonString);
+				StringEntity entity = new StringEntity(jsonString,charset);
+				httpPost.setEntity(entity);
+			}
+		}
+       
+		 CloseableHttpResponse response = httpclient.execute(httpPost);
+
+		// 读取服务器响应数据
+		resultBuffer = new StringBuffer();
+		if(1==responsehead){
+			Header[] headmsgstr=response.getAllHeaders();
+			resultBuffer.append("RESPONSE_HEAD:【{");
+			for(Header header:headmsgstr){
+				resultBuffer.append("\""+header.getName()+"\":\""+header.getValue()+"\",");
+			}
+			resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}】 ");
+		}
+		if(1==responsecode){
+			resultBuffer.append("RESPONSE_CODE:【"+response.getStatusLine().getStatusCode()+"】 ");
+		}
+		if(null!=response.getEntity()){
+            HttpEntity entity =  response.getEntity();
+            resultBuffer.append(EntityUtils.toString(entity));
+		}
+		} catch (Exception e) {
+			LogUtil.APP.error("使用HttpClient以XML发送post请求出现异常，请检查！", e);
+			throw new RuntimeException(e);
+		}	
+		return resultBuffer.toString();
 	}
+	
+	/**
+	 * 读取xml内容,将请求的xml保存成字符串 进行post发送
+	 * @param path
+	 * @return
+	 * @author Seagull
+	 * @date 2019年9月17日
+	 */
+	private static String getXmlString(String path) {
+		StringBuilder sb = new StringBuilder();
+		// 构建请求参数
+	    BufferedReader br = null;
+		try {
+			InputStream inputStream = new FileInputStream(path);
+			br = new BufferedReader(new InputStreamReader(inputStream));
+			String line = "";
+			for (line = br.readLine(); line != null; line = br.readLine()) {
+				sb.append(line + "\n");
+			}
+		} catch (FileNotFoundException e) {
+			LogUtil.APP.error("此路径【"+path+"】下没有找到对应的XML文件", e);
+		} catch (IOException e) {
+			LogUtil.APP.error("读取文件失败，出现异常！", e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					LogUtil.APP.error("读取xml文件后关闭br流出现异常，请检查！", e);
+					br = null;
+					throw new RuntimeException(e);
+				}
+			}
+		}	
+		return sb.toString();
+	}
+
 }

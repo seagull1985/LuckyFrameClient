@@ -401,15 +401,4 @@ public class SubString {
         return jsonString;
     }
     
-    public static void main(String[] args) {
-		String aa="$JP#\\=fd=sa#fdsdsaa\\#jjdj\\=s#ff";
-		aa = aa.substring("$JP#".length());
-		String[] bb = aa.split("(?<!\\\\)=");
-		System.out.println(bb[0]);
-		for(String s:bb){
-			s = s.replace("\\=","=");
-			System.out.println(s);
-		}
-		System.out.println(bb[1]);
-	}
 }

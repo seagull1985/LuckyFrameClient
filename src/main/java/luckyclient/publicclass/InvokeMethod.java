@@ -239,6 +239,8 @@ public class InvokeMethod {
                     result = HttpClientHelper.httpClientPut(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpclientget")) {
                     result = HttpClientHelper.httpClientGet(packagename, params, headmsg, ppt);
+                } else if (functionname.toLowerCase().equals("httpclientpostxml")) {
+                    result = HttpClientHelper.httpClientPostXml(packagename, params, headmsg, ppt);
                 } else {
                     LogUtil.APP.warn("您的HTTP操作方法异常，检测到的操作方法是:{}",functionname);
                     result = "调用异常，请查看错误日志！";
