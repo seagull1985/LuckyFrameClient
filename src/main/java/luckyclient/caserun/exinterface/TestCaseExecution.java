@@ -417,6 +417,7 @@ public class TestCaseExecution {
         if (0 == setresult) {
             LogUtil.APP.info("调用用例:{}步骤全部执行成功！",testcase.getCaseSign());
         } else {
+        	testnote = "【调用用例:{"+testcase.getCaseSign()+"}在执行过程中失败】"+testnote;
             LogUtil.APP.warn("调用用例:{}在执行过程中失败，请检查日志！",testcase.getCaseSign());
         }
         return testnote;
