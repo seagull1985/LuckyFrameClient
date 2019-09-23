@@ -373,6 +373,18 @@ public class EncapsulateOperation {
                 wd.close();
                 result = "关闭当前浏览器窗口...";
                 break;
+            case "pagerefresh":
+                wd.navigate().refresh();
+                result = "刷新当前浏览器窗口...";
+                break;
+            case "pageforward":
+                wd.navigate().forward();
+                result = "前进当前浏览器窗口...";
+                break;
+            case "pageback":
+                wd.navigate().back();
+                result = "回退当前浏览器窗口...";
+                break;
             case "timeout":
                 try {
                     // 设置页面加载最大时长30秒
