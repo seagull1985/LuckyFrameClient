@@ -134,6 +134,19 @@ public class WebCaseExecution extends TestCaseExecution {
             // 页面元素层
             if (null != property && null != propertyValue && null != operation) {
                 WebElement we = isElementExist(wd, property, propertyValue);
+                
+                //判断元素是否存在关键字
+            	if(operation.equals("iselementexist")){
+                    // 判断此元素是否存在
+                    if (null == we) {
+                        LogUtil.APP.warn("获取到的值是【false】");
+                        return "获取到的值是【false】";
+                    }else{
+                        LogUtil.APP.info("获取到的值是【true】");
+                        return "获取到的值是【true】";
+                    }
+            	}
+            	
                 // 判断此元素是否存在
                 if (null == we) {
                     LogUtil.APP.warn("定位对象失败，isElementExist为null!");
