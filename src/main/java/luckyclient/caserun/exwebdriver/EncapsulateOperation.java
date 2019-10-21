@@ -590,7 +590,7 @@ public class EncapsulateOperation {
         String result;
         try {
             if (null == wait(driver).until(windowToBeAvailableAndSwitchToIt(target))) {
-                result = "切换窗口句柄失败，未找到句柄值为【" + target + "】的对象";
+                result = "步骤执行失败：切换窗口句柄失败，未找到句柄值为【" + target + "】的对象";
                 LogUtil.APP.warn("切换窗口句柄失败，未找到句柄值为【{}】的对象",target);
             } else {
                 result = "切换窗口句柄成功，找到句柄值为【" + target + "】的对象";
@@ -598,7 +598,7 @@ public class EncapsulateOperation {
             }
             return result;
         } catch (TimeoutException e) {
-            result = "切换窗口句柄失败，等待超时，未找到句柄值为【" + target + "】的对象";
+            result = "步骤执行失败：切换窗口句柄失败，等待超时，未找到句柄值为【" + target + "】的对象";
             LogUtil.APP.error("切换窗口句柄失败，等待超时，未找到句柄值为【{}】的对象",target,e);
             return result;
         }
