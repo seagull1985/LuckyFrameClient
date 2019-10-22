@@ -18,6 +18,7 @@ import luckyclient.caserun.exwebdriver.EncapsulateOperation;
 import luckyclient.caserun.publicdispose.ActionManageForSteps;
 import luckyclient.caserun.publicdispose.ParamsManageForSteps;
 import luckyclient.dblog.LogOperation;
+import luckyclient.publicclass.Constants;
 import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.entity.ProjectCase;
 import luckyclient.serverapi.entity.ProjectCaseParams;
@@ -33,7 +34,7 @@ import luckyclient.serverapi.entity.ProjectCaseSteps;
  * @author： seagull
  * @date 2018年3月1日
  */
-public class WebCaseExecution extends TestCaseExecution {
+public class WebCaseExecution{
     private static Map<String, String> variable = new HashMap<>();
     private static String casenote = "备注初始化";
     private static String imagname = "";
@@ -69,7 +70,8 @@ public class WebCaseExecution extends TestCaseExecution {
             if (1 == step.getStepType()){
             	result = runWebStep(params, wd, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
             }else{
-            	result = TestCaseExecution.runStep(params, taskid, testcase.getCaseSign(), step, caselog);
+            	TestCaseExecution testCaseExecution=new TestCaseExecution();
+            	result = testCaseExecution.runStep(params, taskid, testcase.getCaseSign(), step, caselog);
             }
 
             String expectedResults = params.get("ExpectedResults");
@@ -123,7 +125,8 @@ public class WebCaseExecution extends TestCaseExecution {
             //调用另一条用例，支持接口，web类型用例
             if (null != operation && null != operationValue && "runcase".equals(operation)) {
                 String[] temp = operationValue.split(",", -1);
-                String ex = TestCaseExecution.oneCaseExecuteForUICase(temp[0], taskid, caselog, wd);
+                TestCaseExecution testCaseExecution=new TestCaseExecution();
+                String ex = testCaseExecution.oneCaseExecuteForUICase(temp[0], taskid, caselog, wd);
                 if (!ex.contains("CallCase调用出错！") && !ex.contains("解析出错啦！") && !ex.contains("失败")) {
                     return ex;
                 } else {
@@ -245,17 +248,17 @@ public class WebCaseExecution extends TestCaseExecution {
             if (null != expect && !expect.isEmpty()) {
                 LogUtil.APP.info("期望结果为【{}】",expect);
                 // 赋值传参模式
-                if (expect.length() > ASSIGNMENT_SIGN.length() && expect.startsWith(ASSIGNMENT_SIGN)) {
-                    variable.put(expect.substring(ASSIGNMENT_SIGN.length()), result);
-                    LogUtil.APP.info("用例:{} 第{}步，将测试结果【{}】赋值给变量【{}】",testcase.getCaseSign(),step.getStepSerialNumber(),result,expect.substring(ASSIGNMENT_SIGN.length()));
-                    caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "将测试结果【" + result + "】赋值给变量【" + expect.substring(ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(step.getStepSerialNumber()), "");
+                if (expect.length() > Constants.ASSIGNMENT_SIGN.length() && expect.startsWith(Constants.ASSIGNMENT_SIGN)) {
+                    variable.put(expect.substring(Constants.ASSIGNMENT_SIGN.length()), result);
+                    LogUtil.APP.info("用例:{} 第{}步，将测试结果【{}】赋值给变量【{}】",testcase.getCaseSign(),step.getStepSerialNumber(),result,expect.substring(Constants.ASSIGNMENT_SIGN.length()));
+                    caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "将测试结果【" + result + "】赋值给变量【" + expect.substring(Constants.ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(step.getStepSerialNumber()), "");
                 }
                 // 赋值全局变量
-                else if (expect.length() > ASSIGNMENT_GLOBALSIGN.length() && expect.startsWith(ASSIGNMENT_GLOBALSIGN)) {
-                	variable.put(expect.substring(ASSIGNMENT_GLOBALSIGN.length()), result);
-                	ParamsManageForSteps.GLOBAL_VARIABLE.put(expect.substring(ASSIGNMENT_GLOBALSIGN.length()), result);
-                    LogUtil.APP.info("用例:{} 第{}步，将测试结果【{}】赋值给全局变量【{}】",testcase.getCaseSign(),step.getStepSerialNumber(),result,expect.substring(ASSIGNMENT_GLOBALSIGN.length()));
-                    caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "将测试结果【" + result + "】赋值给全局变量【" + expect.substring(ASSIGNMENT_GLOBALSIGN.length()) + "】", "info", String.valueOf(step.getStepSerialNumber()), "");
+                else if (expect.length() > Constants.ASSIGNMENT_GLOBALSIGN.length() && expect.startsWith(Constants.ASSIGNMENT_GLOBALSIGN)) {
+                	variable.put(expect.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()), result);
+                	ParamsManageForSteps.GLOBAL_VARIABLE.put(expect.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()), result);
+                    LogUtil.APP.info("用例:{} 第{}步，将测试结果【{}】赋值给全局变量【{}】",testcase.getCaseSign(),step.getStepSerialNumber(),result,expect.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()));
+                    caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "将测试结果【" + result + "】赋值给全局变量【" + expect.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()) + "】", "info", String.valueOf(step.getStepSerialNumber()), "");
                 }
                 // WebUI检查模式
                 else if (1 == step.getStepType() && params.get("checkproperty") != null && params.get("checkproperty_value") != null) {
@@ -277,21 +280,21 @@ public class WebCaseExecution extends TestCaseExecution {
                 // 其它匹配模式
                 else {
                     // 模糊匹配预期结果模式
-                    if (expect.length() > FUZZY_MATCHING_SIGN.length() && expect.startsWith(FUZZY_MATCHING_SIGN)) {
-                        if (result.contains(expect.substring(FUZZY_MATCHING_SIGN.length()))) {
+                    if (expect.length() > Constants.FUZZY_MATCHING_SIGN.length() && expect.startsWith(Constants.FUZZY_MATCHING_SIGN)) {
+                        if (result.contains(expect.substring(Constants.FUZZY_MATCHING_SIGN.length()))) {
                             LogUtil.APP.info("用例:{} 第{}步，模糊匹配预期结果成功！执行结果：",testcase.getCaseSign(),step.getStepSerialNumber(),result);
                             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "模糊匹配预期结果成功！执行结果：" + result, "info", String.valueOf(step.getStepSerialNumber()), "");
                         } else {
                             casenote = "第" + step.getStepSerialNumber() + "步，模糊匹配预期结果失败！";
                             setresult = 1;
                             BaseWebDrive.webScreenShot(driver, imagname);
-                            LogUtil.APP.warn("用例:{} 第{}步，模糊匹配预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),expect.substring(FUZZY_MATCHING_SIGN.length()),result);
-                            caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "模糊匹配预期结果失败！预期结果：" + expect.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + result, "error", String.valueOf(step.getStepSerialNumber()), imagname);
+                            LogUtil.APP.warn("用例:{} 第{}步，模糊匹配预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),expect.substring(Constants.FUZZY_MATCHING_SIGN.length()),result);
+                            caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "模糊匹配预期结果失败！预期结果：" + expect.substring(Constants.FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + result, "error", String.valueOf(step.getStepSerialNumber()), imagname);
                         }
                     }
                     // 正则匹配预期结果模式
-                    else if (expect.length() > REGULAR_MATCHING_SIGN.length() && expect.startsWith(REGULAR_MATCHING_SIGN)) {
-                        Pattern pattern = Pattern.compile(expect.substring(REGULAR_MATCHING_SIGN.length()));
+                    else if (expect.length() > Constants.REGULAR_MATCHING_SIGN.length() && expect.startsWith(Constants.REGULAR_MATCHING_SIGN)) {
+                        Pattern pattern = Pattern.compile(expect.substring(Constants.REGULAR_MATCHING_SIGN.length()));
                         Matcher matcher = pattern.matcher(result);
                         if (matcher.find()) {
                             LogUtil.APP.info("用例:{} 第{}步，正则匹配预期结果成功！执行结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),result);
@@ -300,8 +303,8 @@ public class WebCaseExecution extends TestCaseExecution {
                             casenote = "第" + step.getStepSerialNumber() + "步，正则匹配预期结果失败！";
                             setresult = 1;
                             BaseWebDrive.webScreenShot(driver, imagname);
-                            LogUtil.APP.warn("用例:{} 第{}步，正则匹配预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),expect.substring(REGULAR_MATCHING_SIGN.length()),result);
-                            caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "正则匹配预期结果失败！预期结果：" + expect.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + result, "error", String.valueOf(step.getStepSerialNumber()), imagname);
+                            LogUtil.APP.warn("用例:{} 第{}步，正则匹配预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),expect.substring(Constants.REGULAR_MATCHING_SIGN.length()),result);
+                            caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "正则匹配预期结果失败！预期结果：" + expect.substring(Constants.REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + result, "error", String.valueOf(step.getStepSerialNumber()), imagname);
                         }
                     }
                     // 精确匹配预期结果模式

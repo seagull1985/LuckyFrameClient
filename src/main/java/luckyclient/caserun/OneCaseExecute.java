@@ -40,7 +40,8 @@ public class OneCaseExecute extends TestControl {
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.valueOf(taskId));
 			if (taskScheduling.getTaskType() == 0) {
 					// ½Ó¿Ú²âÊÔ
-					TestCaseExecution.oneCaseExecuteForTask(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), String.valueOf(task.getTaskId()));
+				    TestCaseExecution testCaseExecution=new TestCaseExecution();
+				    testCaseExecution.oneCaseExecuteForTask(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), String.valueOf(task.getTaskId()));
 
 			} else if (taskScheduling.getTaskType() == 1) {
 					WebOneCaseExecute.oneCaseExecuteForTast(taskScheduling.getProject().getProjectName(), Integer.valueOf(caseId), version,

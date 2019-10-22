@@ -24,15 +24,10 @@ public class ThreadForBatchCase extends Thread{
 	}
 	
 	@Override
-	public void run(){		
-		 TestCaseExecution.oneCaseExecuteForTask(projectname, caseId, taskid);
-		 TestControl.THREAD_COUNT--;        //多线程计数--，用于检测线程是否全部执行完
-	}
-	
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public void run(){
+		TestCaseExecution testCaseExecution=new TestCaseExecution();
+		testCaseExecution.oneCaseExecuteForTask(projectname, caseId, taskid);
+		TestControl.THREAD_COUNT--;        //多线程计数--，用于检测线程是否全部执行完
 	}
 
 }
