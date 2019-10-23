@@ -58,6 +58,7 @@ import org.apache.http.util.EntityUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
+import luckyclient.publicclass.Constants;
 import luckyclient.publicclass.LogUtil;
 import luckyclient.serverapi.entity.ProjectProtocolTemplate;
 
@@ -148,10 +149,10 @@ public class HttpClientHelper {
 			if(1==responsehead){
 				Map<String, List<String>> headmsgstr=con.getHeaderFields();
 				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
-				resultBuffer.append("RESPONSE_HEAD:¡¾"+itemJSONObj+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_HEAD+itemJSONObj+Constants.RESPONSE_END);
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+con.getResponseCode()+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+con.getResponseCode()+Constants.RESPONSE_END);
 			}
 			if (contentLength > 0||"chunked".equals(con.getHeaderField("Transfer-Encoding"))) {
 				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
@@ -280,10 +281,10 @@ public class HttpClientHelper {
 			if(1==responsehead){
 				Map<String, List<String>> headmsgstr=con.getHeaderFields();
 				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
-				resultBuffer.append("RESPONSE_HEAD:¡¾"+itemJSONObj+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_HEAD+itemJSONObj+Constants.RESPONSE_END);
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+con.getHeaderField(null)+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+con.getHeaderField(null)+Constants.RESPONSE_END);
 			}
 			if (contentLength >= 0||"chunked".equals(con.getHeaderField("Transfer-Encoding"))) {
 				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
@@ -382,10 +383,10 @@ public class HttpClientHelper {
 			if(1==responsehead){
 				Map<String, List<String>> headmsgstr=con.getHeaderFields();
 				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
-				resultBuffer.append("RESPONSE_HEAD:¡¾"+itemJSONObj+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_HEAD+itemJSONObj+Constants.RESPONSE_END);
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+con.getResponseCode()+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+con.getResponseCode()+Constants.RESPONSE_END);
 			}
 			InputStream is = con.getInputStream();
 			os = new FileOutputStream(fileSavePath);
@@ -495,10 +496,10 @@ public class HttpClientHelper {
 			if(1==responsehead){
 				Map<String, List<String>> headmsgstr=con.getHeaderFields();
 				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
-				resultBuffer.append("RESPONSE_HEAD:¡¾"+itemJSONObj+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_HEAD+itemJSONObj+Constants.RESPONSE_END);
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+con.getResponseCode()+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+con.getResponseCode()+Constants.RESPONSE_END);
 			}
 			br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
 			String temp;
@@ -599,10 +600,10 @@ public class HttpClientHelper {
 			if(1==responsehead){
 				Map<String, List<String>> headmsgstr=con.getHeaderFields();
 				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
-				resultBuffer.append("RESPONSE_HEAD:¡¾"+itemJSONObj+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_HEAD+itemJSONObj+Constants.RESPONSE_END);
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+con.getHeaderField(null)+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+con.getHeaderField(null)+Constants.RESPONSE_END);
 			}
 			br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
 			String temp;
@@ -701,7 +702,7 @@ public class HttpClientHelper {
 			resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}¡¿ ");
 		}
 		if(1==responsecode){
-			resultBuffer.append("RESPONSE_CODE:¡¾"+response.getStatusLine().getStatusCode()+"¡¿ ");
+			resultBuffer.append(Constants.RESPONSE_CODE+response.getStatusLine().getStatusCode()+Constants.RESPONSE_END);
 		}
 		if(null!=response.getEntity()){
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
@@ -799,7 +800,7 @@ public class HttpClientHelper {
 				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}¡¿ ");
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+response.getStatusLine().getStatusCode()+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+response.getStatusLine().getStatusCode()+Constants.RESPONSE_END);
 			}
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
@@ -908,7 +909,7 @@ public class HttpClientHelper {
 				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}¡¿ ");
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+response.getStatusLine().getStatusCode()+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+response.getStatusLine().getStatusCode()+Constants.RESPONSE_END);
 			}
 			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
 			String temp;
@@ -1019,7 +1020,7 @@ public class HttpClientHelper {
 				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}¡¿ ");
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+response.getStatusLine().getStatusCode()+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+response.getStatusLine().getStatusCode()+Constants.RESPONSE_END);
 			}
 			while ((temp = br.readLine()) != null) {
 				resultBuffer.append(temp);
@@ -1403,10 +1404,10 @@ public class HttpClientHelper {
 			if(1==responsehead){
 				Map<String, List<String>> headmsgstr=con.getHeaderFields();
 				JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(headmsgstr));
-				resultBuffer.append("RESPONSE_HEAD:¡¾"+itemJSONObj+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_HEAD+itemJSONObj+Constants.RESPONSE_END);
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+con.getResponseCode()+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+con.getResponseCode()+Constants.RESPONSE_END);
 			}
 			if (null != con.getHeaderField("Content-Length") || null != con.getHeaderField("Transfer-Encoding")) {
 				br = new BufferedReader(new InputStreamReader(con.getInputStream(), charset));
@@ -1526,7 +1527,7 @@ public class HttpClientHelper {
 				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}¡¿ ");
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+response.getStatusLine().getStatusCode()+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+response.getStatusLine().getStatusCode()+Constants.RESPONSE_END);
 			}
 	        if(null!=response.getEntity()){
 	        	br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
@@ -1626,7 +1627,7 @@ public class HttpClientHelper {
 				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}¡¿ ");
 			}
 			if(1==responsecode){
-				resultBuffer.append("RESPONSE_CODE:¡¾"+response.getStatusLine().getStatusCode()+"¡¿ ");
+				resultBuffer.append(Constants.RESPONSE_CODE+response.getStatusLine().getStatusCode()+Constants.RESPONSE_END);
 			}
 	        if(null!=response.getEntity()){
 	        	br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
@@ -1808,7 +1809,7 @@ public class HttpClientHelper {
 			resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}¡¿ ");
 		}
 		if(1==responsecode){
-			resultBuffer.append("RESPONSE_CODE:¡¾"+response.getStatusLine().getStatusCode()+"¡¿ ");
+			resultBuffer.append(Constants.RESPONSE_CODE+response.getStatusLine().getStatusCode()+Constants.RESPONSE_END);
 		}
 		if(null!=response.getEntity()){
             HttpEntity entity =  response.getEntity();

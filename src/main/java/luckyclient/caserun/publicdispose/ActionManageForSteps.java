@@ -2,6 +2,7 @@ package luckyclient.caserun.publicdispose;
 
 import org.apache.commons.lang.StringUtils;
 
+import luckyclient.publicclass.Constants;
 import luckyclient.publicclass.LogUtil;
 
 /**
@@ -28,6 +29,17 @@ public class ActionManageForSteps {
 			LogUtil.APP.info("Action(动作)无需处理......");
 			return testresult;
 		}
+		
+		//去除测试响应头域消息
+		if(testresult.startsWith(Constants.RESPONSE_HEAD)){
+			testresult = testresult.substring(testresult.indexOf(Constants.RESPONSE_END)+1);
+		}
+		
+		//去除测试响应头域消息
+		if(testresult.startsWith(Constants.RESPONSE_CODE)){
+			testresult = testresult.substring(testresult.indexOf(Constants.RESPONSE_END)+1);
+		}
+		
 		stepsaction=stepsaction.trim();
 		String[] temp=stepsaction.split("\\|",-1);
 		for(String actionorder:temp){
@@ -64,4 +76,9 @@ public class ActionManageForSteps {
 		}
 	}
 
+	public static void main(String[] args) {
+		String testresult = Constants.RESPONSE_HEAD+"gfdssa"+Constants.RESPONSE_END+"21111"+Constants.RESPONSE_END+"111";
+		testresult = testresult.substring(testresult.indexOf(Constants.RESPONSE_END)+1);
+		System.out.println(testresult);
+	}
 }

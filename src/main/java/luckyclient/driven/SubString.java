@@ -16,6 +16,7 @@ import com.alibaba.fastjson.parser.Feature;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 
+import luckyclient.publicclass.Constants;
 import luckyclient.publicclass.LogUtil;
 
 /**
@@ -380,6 +381,16 @@ public class SubString {
             	type=expressionParams.substring(0,expressionParams.indexOf("["));
             	expression=expressionParams.substring(expressionParams.indexOf("[")+1, expressionParams.lastIndexOf("]"));
             	if("list".equals(type.toLowerCase())){
+            		//去除测试响应头域消息
+            		if(jsonString.startsWith(Constants.RESPONSE_HEAD)){
+            			jsonString = jsonString.substring(jsonString.indexOf(Constants.RESPONSE_END)+1);
+            		}
+            		
+            		//去除测试响应头域消息
+            		if(jsonString.startsWith(Constants.RESPONSE_CODE)){
+            			jsonString = jsonString.substring(jsonString.indexOf(Constants.RESPONSE_END)+1);
+            		}
+            		
             		List<Object> list = JsonPath.parse(jsonString).read(expression);
             		jsonString="";
             		for(Object result:list){
