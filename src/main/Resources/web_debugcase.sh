@@ -3,7 +3,7 @@ BASE_DIR="."
 LIB="${BASE_DIR}/lib"
 DRIVENPATH="${BASE_DIR}/$3"
 JAVA_OPTS=" -Xmx2048m -XX:PermSize=64m -XX:MaxPermSize=512m -XX:+PrintGCDateStamps -XX:+PrintGCDetails -Xloggc:logs/gc.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=1 -XX:GCLogFileSize=1024k -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs/mtdperf.hprof -server -Dfile.encoding=UTF-8"
-START_CLASS="luckyclient.caserun.WebDebugExecute $1 $2"
+START_CLASS="luckyclient.execution.WebDebugExecute $1 $2"
 
 echo ${LIB}
 

@@ -16,8 +16,8 @@ import com.alibaba.fastjson.parser.Feature;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 
-import luckyclient.publicclass.Constants;
-import luckyclient.publicclass.LogUtil;
+import luckyclient.utils.Constants;
+import luckyclient.utils.LogUtil;
 
 /**
  * ¹«ÓÃÇý¶¯
