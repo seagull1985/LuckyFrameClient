@@ -312,7 +312,6 @@ public class TestCaseExecution {
                 caselog.insertTaskCaseLog(taskid, projectCase.getCaseId(), "包路径: " + packagename + "; 方法名: " + functionname, "info", String.valueOf(step.getStepSerialNumber()), "");
 
                 result = InvokeMethod.callCase(packagename, functionname, getParameterValues, step.getStepType(), step.getExtend());
-                result = ActionManageForSteps.actionManage(step.getAction(), result);
             }
         } catch (Exception e) {
             LogUtil.APP.error("调用方法过程出错，方法名:{}，请重新检查脚本方法名称以及参数！",functionname,e);
