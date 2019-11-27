@@ -8,12 +8,14 @@ import java.util.regex.Pattern;
 
 import luckyclient.driven.SubString;
 import luckyclient.execution.dispose.ActionManageForSteps;
+import luckyclient.execution.dispose.ParamsManageForSteps;
 import luckyclient.execution.httpinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.api.PostServerApi;
 import luckyclient.remote.entity.ProjectCase;
 import luckyclient.remote.entity.ProjectCaseParams;
 import luckyclient.remote.entity.ProjectCaseSteps;
+import luckyclient.utils.Constants;
 import luckyclient.utils.InvokeMethod;
 import luckyclient.utils.LogUtil;
 
@@ -30,11 +32,6 @@ import luckyclient.utils.LogUtil;
  * @date 2018年3月1日
  */
 public class WebTestCaseDebug {
-	private static final String ASSIGNMENT_SIGN = "$=";
-	private static final String FUZZY_MATCHING_SIGN = "%=";
-	private static final String REGULAR_MATCHING_SIGN = "~=";
-    protected static final String JSONPATH_SIGN = "$JP#";
-
     /**
      * @param executor
      * @param sign 用于在WEB页面上调试用例时提供的接口
@@ -103,17 +100,24 @@ public class WebTestCaseDebug {
                 testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 if (null != expectedresults && !expectedresults.isEmpty()) {
                     // 赋值传参
-                    if (expectedresults.length() > ASSIGNMENT_SIGN.length() && expectedresults.startsWith(ASSIGNMENT_SIGN)) {
-                        variable.put(expectedresults.substring(ASSIGNMENT_SIGN.length()), testnote);
-                        PostServerApi.cPostDebugLog(userId, caseId, "INFO", "将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(ASSIGNMENT_SIGN.length()) + "】",0);
+                    if (expectedresults.length() > Constants.ASSIGNMENT_SIGN.length() && expectedresults.startsWith(Constants.ASSIGNMENT_SIGN)) {
+                        variable.put(expectedresults.substring(Constants.ASSIGNMENT_SIGN.length()), testnote);
+                        PostServerApi.cPostDebugLog(userId, caseId, "INFO", "将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(Constants.ASSIGNMENT_SIGN.length()) + "】",0);
+                    }
+                    // 赋值全局变量
+                    else if (expectedresults.length() > Constants.ASSIGNMENT_GLOBALSIGN.length() && expectedresults.startsWith(Constants.ASSIGNMENT_GLOBALSIGN)) {
+                        variable.put(expectedresults.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()), testnote);
+                        ParamsManageForSteps.GLOBAL_VARIABLE.put(expectedresults.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()), testnote);
+                        LogUtil.APP.info("用例:{} 第{}步，将测试结果【{}】赋值给全局变量【{}】",testcase.getCaseSign(),(i+1),testnote,expectedresults.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()));
+                        PostServerApi.cPostDebugLog(userId, caseId, "INFO", "将测试结果【" + testnote + "】赋值给全局变量【" + expectedresults.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()) + "】",0);
                     }
                     // 模糊匹配
-                    else if (expectedresults.length() > FUZZY_MATCHING_SIGN.length() && expectedresults.startsWith(FUZZY_MATCHING_SIGN)) {
-                        if (testnote.contains(expectedresults.substring(FUZZY_MATCHING_SIGN.length()))) {
+                    else if (expectedresults.length() > Constants.FUZZY_MATCHING_SIGN.length() && expectedresults.startsWith(Constants.FUZZY_MATCHING_SIGN)) {
+                        if (testnote.contains(expectedresults.substring(Constants.FUZZY_MATCHING_SIGN.length()))) {
                             PostServerApi.cPostDebugLog(userId, caseId, "INFO", "模糊匹配预期结果成功！执行结果：" + testnote,0);
                         } else {
                             setcaseresult = 1;
-                            PostServerApi.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，模糊匹配预期结果失败！预期结果：" + expectedresults.substring(FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote,0);
+                            PostServerApi.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，模糊匹配预期结果失败！预期结果：" + expectedresults.substring(Constants.FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote,0);
                             testnote = "用例第" + (i + 1) + "步，模糊匹配预期结果失败！";
                             if (testcase.getFailcontinue() == 0) {
                                 LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......",testcase.getCaseSign(),(i+1));
@@ -124,14 +128,14 @@ public class WebTestCaseDebug {
                         }
                     }
                     // 正则匹配
-                    else if (expectedresults.length() > REGULAR_MATCHING_SIGN.length() && expectedresults.startsWith(REGULAR_MATCHING_SIGN)) {
-                        Pattern pattern = Pattern.compile(expectedresults.substring(REGULAR_MATCHING_SIGN.length()));
+                    else if (expectedresults.length() > Constants.REGULAR_MATCHING_SIGN.length() && expectedresults.startsWith(Constants.REGULAR_MATCHING_SIGN)) {
+                        Pattern pattern = Pattern.compile(expectedresults.substring(Constants.REGULAR_MATCHING_SIGN.length()));
                         Matcher matcher = pattern.matcher(testnote);
                         if (matcher.find()) {
                             PostServerApi.cPostDebugLog(userId, caseId, "INFO", "正则匹配预期结果成功！执行结果：" + testnote,0);
                         } else {
                             setcaseresult = 1;
-                            PostServerApi.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，正则匹配预期结果失败！预期结果：" + expectedresults.substring(REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote,0);
+                            PostServerApi.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，正则匹配预期结果失败！预期结果：" + expectedresults.substring(Constants.REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote,0);
                             testnote = "用例第" + (i + 1) + "步，正则匹配预期结果失败！";
                             if (testcase.getFailcontinue() == 0) {
                                 LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......",testcase.getCaseSign(),(i+1));
@@ -142,8 +146,8 @@ public class WebTestCaseDebug {
                         }
                     }
                     //jsonpath断言
-                    else if (expectedresults.length() > JSONPATH_SIGN.length() && expectedresults.startsWith(JSONPATH_SIGN)) {
-                        expectedresults = expectedresults.substring(JSONPATH_SIGN.length());
+                    else if (expectedresults.length() > Constants.JSONPATH_SIGN.length() && expectedresults.startsWith(Constants.JSONPATH_SIGN)) {
+                        expectedresults = expectedresults.substring(Constants.JSONPATH_SIGN.length());
                         String expression = expectedresults.split("(?<!\\\\)=")[0].replace("\\=","=");
                         String exceptResult = expectedresults.split("(?<!\\\\)=")[1].replace("\\=","=");
                         //对测试结果进行jsonPath取值
