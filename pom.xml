@@ -304,9 +304,15 @@
 		</dependency>
 		<!-- Jenkins API -->
 		<dependency>
-            <groupId>com.offbytwo.jenkins</groupId>
-            <artifactId>jenkins-client</artifactId>
-            <version>0.3.8</version>
-        </dependency>
+			<groupId>com.offbytwo.jenkins</groupId>
+			<artifactId>jenkins-client</artifactId>
+			<version>0.3.8</version>
+		</dependency>
+		<!-- hutool工具包 -->
+		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>5.0.6</version>
+		</dependency>
 	</dependencies>
 </project>
