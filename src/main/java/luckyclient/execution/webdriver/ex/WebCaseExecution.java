@@ -130,7 +130,7 @@ public class WebCaseExecution{
                 if (!ex.contains("CallCase调用出错！") && !ex.contains("解析出错啦！") && !ex.contains("失败")) {
                     return ex;
                 } else {
-                    return "步骤执行失败：调用外部用例过程失败";
+                    return "步骤执行失败："+ex;
                 }
             }
 

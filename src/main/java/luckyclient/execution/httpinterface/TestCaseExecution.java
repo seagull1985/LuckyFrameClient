@@ -252,6 +252,8 @@ public class TestCaseExecution {
             }
 
             if (0 != setresult){
+            	testnote = "【调用用例:"+testcase.getCaseSign()+" 第"+step.getStepSerialNumber()+"步在执行过程中失败】";
+            	LogUtil.APP.warn("调用用例:{} 第{}步在执行过程中失败，请检查日志！{}",testcase.getCaseSign(),step.getStepSerialNumber(),testnote);
             	break;
             }
         }
@@ -259,10 +261,8 @@ public class TestCaseExecution {
         VARIABLE.clear(); // 清空传参MAP
         if (0 == setresult) {
             LogUtil.APP.info("调用用例:{}步骤全部执行成功！",testcase.getCaseSign());
-        } else {
-        	testnote = "【调用用例:{"+testcase.getCaseSign()+"}在执行过程中失败】"+testnote;
-            LogUtil.APP.warn("调用用例:{}在执行过程中失败，请检查日志！",testcase.getCaseSign());
         }
+        
         return testnote;
     }
 
