@@ -2,6 +2,7 @@ package luckyclient.execution.webdriver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.JavascriptExecutor;
@@ -11,7 +12,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.Augmenter;
 
+import cn.hutool.core.util.BooleanUtil;
 import luckyclient.utils.LogUtil;
+import luckyclient.utils.SysConfig;
 
 /**
  * =================================================================
@@ -58,9 +61,14 @@ public class BaseWebDrive {
 	 * @date 2019年9月6日
 	 */
     public static void highLightElement(WebDriver driver, WebElement element){
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        /*调用js将传入参数的页面元素对象的背景颜色和边框颜色分别设定为黄色和红色*/
-        js.executeScript("arguments[0].setAttribute('style', arguments[1]);", element, "background: yellow; border:2px solid red;");
+    	Properties properties = SysConfig.getConfiguration();
+    	Boolean highLight = BooleanUtil.toBoolean(properties.getProperty("webdriver.highlight"));
+
+    	if(highLight){
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            /*调用js将传入参数的页面元素对象的背景颜色和边框颜色分别设定为黄色和红色*/
+            js.executeScript("arguments[0].setAttribute('style', arguments[1]);", element, "background: yellow; border:2px solid red;");
+    	}
     }
 
 }
