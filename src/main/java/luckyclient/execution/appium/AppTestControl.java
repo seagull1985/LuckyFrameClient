@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import com.offbytwo.jenkins.model.BuildResult;
+
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
@@ -120,7 +122,7 @@ public class AppTestControl {
 		}
 		TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId());
 		String restartstatus = RestartServerInitialization.restartServerRun(taskId);
-		String buildstatus = BuildingInitialization.buildingRun(taskId);
+		BuildResult buildResult = BuildingInitialization.buildingRun(taskId);
 		List<ProjectCaseParams> pcplist = GetServerApi
 				.cgetParamsByProjectid(task.getProjectId().toString());
 		String projectname = task.getProject().getProjectName();
@@ -129,7 +131,7 @@ public class AppTestControl {
 		// 判断是否要自动重启TOMCAT
 		if (restartstatus.indexOf("Status:true") > -1) {
 			// 判断是否构建是否成功
-			if (buildstatus.indexOf("Status:true") > -1) {
+			if (BuildResult.SUCCESS.equals(buildResult)) {
 				try {
 					if ("Android".equals(properties.getProperty("platformName"))) {
 						androiddriver = AppiumInitialization.setAndroidAppium(properties);
@@ -171,7 +173,7 @@ public class AppTestControl {
 				String testtime = serverOperation.getTestTime(taskId);
 				LogUtil.APP.info("当前项目【{]】测试计划中的用例已经全部执行完成...",projectname);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
-						HtmlMail.htmlContentFormat(tastcount, taskId, buildstatus, restartstatus, testtime, jobname),
+						HtmlMail.htmlContentFormat(tastcount, taskId, buildResult.toString(), restartstatus, testtime, jobname),
 						taskId, taskScheduling, tastcount);
 				// 关闭APP以及appium会话
 				if ("Android".equals(properties.getProperty("platformName"))) {

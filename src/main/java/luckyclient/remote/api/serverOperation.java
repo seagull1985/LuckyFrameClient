@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.hutool.core.util.StrUtil;
 import luckyclient.remote.entity.TaskExecute;
 import luckyclient.remote.entity.TaskScheduling;
 import luckyclient.utils.LogUtil;
@@ -151,21 +152,21 @@ public class serverOperation {
 		String[] buildname = null;
 		try {
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
-			if (null == taskScheduling.getBuildingLink() || "".equals(taskScheduling.getBuildingLink())) {
+			if (StrUtil.isEmpty(taskScheduling.getBuildingLink())) {
 				return buildname;
 			}else{
-				String temp = taskScheduling.getBuildingLink();
+				String jobName = taskScheduling.getBuildingLink();
 				// 清除最后一个;
-				if (temp.indexOf(";") > -1 && temp.substring(temp.length() - 1, temp.length()).indexOf(";") > -1) {
-					temp = temp.substring(0, temp.length() - 1);
+				if (jobName.indexOf(";") > -1 && jobName.substring(jobName.length() - 1, jobName.length()).indexOf(";") > -1) {
+					jobName = jobName.substring(0, jobName.length() - 1);
 				}
 				// 多个名称
-				if (temp.indexOf("null") <= -1 && temp.indexOf(";") > -1) {
-					buildname = temp.split(";", -1);
+				if (jobName.indexOf("null") <= -1 && jobName.indexOf(";") > -1) {
+					buildname = jobName.split(";", -1);
 					// 一个名称
-				} else if (temp.indexOf("null") <= -1 && temp.indexOf(";") <= -1) {
+				} else if (jobName.indexOf("null") <= -1 && jobName.indexOf(";") <= -1) {
 					buildname = new String[1];
-					buildname[0] = temp;
+					buildname[0] = jobName;
 				}
 			}
 		} catch (Exception e) {

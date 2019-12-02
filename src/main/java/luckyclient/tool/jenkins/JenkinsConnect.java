@@ -1,14 +1,14 @@
 package luckyclient.tool.jenkins;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Properties;
+
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.client.JenkinsHttpClient;
 
 import luckyclient.utils.LogUtil;
 import luckyclient.utils.SysConfig;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Properties;
 
 /**
  * Jenkins¡¥Ω”
@@ -66,4 +66,5 @@ public class JenkinsConnect {
 		}
 		return jenkinsServer;
 	}
+
 }

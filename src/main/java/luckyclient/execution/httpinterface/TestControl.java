@@ -6,6 +6,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.offbytwo.jenkins.model.BuildResult;
+
 import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.api.serverOperation;
 import luckyclient.remote.entity.ProjectCase;
@@ -90,7 +92,7 @@ public class TestControl {
 		String taskid = task.getTaskId().toString();
 		TestControl.TASKID = taskid;
 		String restartstatus = RestartServerInitialization.restartServerRun(taskid);
-		String buildstatus = BuildingInitialization.buildingRun(taskid);
+		BuildResult buildResult = BuildingInitialization.buildingRun(taskid);
 		TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId());
 		String jobname = taskScheduling.getSchedulingName();
 		int timeout = taskScheduling.getTaskTimeout();
@@ -101,7 +103,7 @@ public class TestControl {
 		// 判断是否要自动重启TOMCAT
 		if (restartstatus.indexOf("Status:true") > -1) {
 			// 判断是否构建是否成功
-			if (buildstatus.indexOf("Status:true") > -1) {
+			if (BuildResult.SUCCESS.equals(buildResult)) {
 				int threadcount = taskScheduling.getExThreadCount();
 				// 创建线程池，多线程执行用例
 				ThreadPoolExecutor threadExecute = new ThreadPoolExecutor(threadcount, 20, 3, TimeUnit.SECONDS,
@@ -154,13 +156,13 @@ public class TestControl {
 
 				String testtime = serverOperation.getTestTime(taskid);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
-						HtmlMail.htmlContentFormat(tastcount, taskid, buildstatus, restartstatus, testtime, jobname),
+						HtmlMail.htmlContentFormat(tastcount, taskid, buildResult.toString(), restartstatus, testtime, jobname),
 						taskid, taskScheduling, tastcount);
 				threadExecute.shutdown();
 				LogUtil.APP.info("亲，没有下一条啦！我发现你的用例已经全部执行完毕，快去看看有没有失败的用例吧！");
 			} else {
-				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
-				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskid,
+				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请查看构建日志检查项目构建情况...");
+				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请查看构建日志检查项目构建情况...", taskid,
 						taskScheduling, tastcount);
 			}
 		} else {

@@ -7,6 +7,8 @@ import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
+import com.offbytwo.jenkins.model.BuildResult;
+
 import luckyclient.execution.httpinterface.TestControl;
 import luckyclient.execution.webdriver.ex.WebCaseExecution;
 import luckyclient.remote.api.GetServerApi;
@@ -86,7 +88,7 @@ public class WebTestControl {
 		String taskid = task.getTaskId().toString();
 		TestControl.TASKID = taskid;
 		String restartstatus = RestartServerInitialization.restartServerRun(taskid);
-		String buildstatus = BuildingInitialization.buildingRun(taskid);
+		BuildResult buildResult = BuildingInitialization.buildingRun(taskid);
 		List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(task.getProjectId().toString());
 		TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId());
 		String projectname = taskScheduling.getProject().getProjectName();
@@ -97,7 +99,7 @@ public class WebTestControl {
 		// 判断是否要自动重启TOMCAT
 		if (restartstatus.indexOf("Status:true") > -1) {
 			// 判断是否构建是否成功
-			if (buildstatus.indexOf("Status:true") > -1) {
+			if (BuildResult.SUCCESS.equals(buildResult)) {
 				WebDriver wd = null;
 				try {
 					wd = WebDriverInitialization.setWebDriverForTask(drivertype);
@@ -134,7 +136,7 @@ public class WebTestControl {
 				String testtime = serverOperation.getTestTime(taskid);
 				LogUtil.APP.info("当前项目【{}】测试计划中的用例已经全部执行完成...",projectname);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
-						HtmlMail.htmlContentFormat(tastcount, taskid, buildstatus, restartstatus, testtime, jobname),
+						HtmlMail.htmlContentFormat(tastcount, taskid, buildResult.toString(), restartstatus, testtime, jobname),
 						taskid, taskScheduling, tastcount);
 				// 关闭浏览器
 				wd.quit();
