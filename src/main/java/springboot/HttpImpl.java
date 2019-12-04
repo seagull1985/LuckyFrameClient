@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -283,13 +282,15 @@ public class HttpImpl {
         return b;
 	}
 	
+	/**
+	 * 上传驱动文件到客户端
+	 */
 	@PostMapping("/uploadJar")
 	private String uploadJar(HttpServletRequest req,HttpServletResponse res, HttpSession session,@RequestParam("jarfile") MultipartFile jarfile) throws IOException, ServletException{
 		if (!jarfile.isEmpty()){
-            if (!FilenameUtils.getExtension(jarfile.getOriginalFilename())
-                    .equalsIgnoreCase("jar")) {
-            	log.warn("文件格式后续不是.jar，上传失败");
-                return "文件格式后续不是.jar，上传失败";
+            if (!jarfile.getOriginalFilename().endsWith(".jar")&&!jarfile.getOriginalFilename().endsWith(".py")) {
+            	log.warn("文件格式后缀不是.jar或.py，上传失败");
+                return "文件格式后缀不是.jar或.py，上传失败";
             }
 		}else{
 			log.warn("上传文件为空，请检查！");
@@ -317,8 +318,8 @@ public class HttpImpl {
             os.write(jarfileByte);
             os.flush();
             os.close();
-            log.info("上传JAR包【{}】到客户端驱动目录【{}】成功!",name,file.getAbsolutePath());
-            return "上传JAR包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!";
+            log.info("上传驱动包【{}】到客户端驱动目录【{}】成功!",name,file.getAbsolutePath());
+            return "上传驱动包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!";
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             log.error("客户端未找到正确路径或文件，上传失败！文件路径名称:{}",pathName,e);
