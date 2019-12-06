@@ -1,7 +1,6 @@
 package luckyclient.execution.dispose;
 
-import org.apache.commons.lang.StringUtils;
-
+import cn.hutool.core.util.StrUtil;
 import luckyclient.utils.Constants;
 import luckyclient.utils.LogUtil;
 
@@ -66,10 +65,14 @@ public class ActionManageForSteps {
 	 */
 	private static String actionExecute(String actionKeyWord,String testResult){
 		try{
+			String keyWord = "";
+			String actionParams = "";
+			if(actionKeyWord.contains("#")){
+				keyWord = actionKeyWord.substring(actionKeyWord.lastIndexOf("#")+1, actionKeyWord.length());
+				actionParams = actionKeyWord.substring(0, actionKeyWord.lastIndexOf("#"));
+			}
 
-			String keyWord = actionKeyWord.substring(actionKeyWord.lastIndexOf("#")+1, actionKeyWord.length());
-			String actionParams = actionKeyWord.substring(0, actionKeyWord.lastIndexOf("#"));
-			if(StringUtils.isNotEmpty(keyWord)&& keyWord.length()>0){
+			if(StrUtil.isNotEmpty(keyWord)&& keyWord.length()>0){
 				ActionContext actionContext = new ActionContext(keyWord.toLowerCase());
 				testResult = actionContext.parse(actionParams, testResult, actionKeyWord);
 			}else {
