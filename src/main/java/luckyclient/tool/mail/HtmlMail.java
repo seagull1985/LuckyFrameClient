@@ -7,7 +7,7 @@ import java.util.Properties;
 import luckyclient.remote.entity.ProjectProtocolTemplate;
 import luckyclient.utils.LogUtil;
 import luckyclient.utils.SysConfig;
-import luckyclient.utils.httputils.HttpClientHelper;
+import luckyclient.utils.httputils.HttpClientTools;
 
 /**
  * =================================================================
@@ -55,7 +55,7 @@ public class HtmlMail {
                 ProjectProtocolTemplate ppt=new ProjectProtocolTemplate();
                 ppt.setEncoding("utf-8");
                 ppt.setTimeout(60);
-                HttpClientHelper.httpClientPostJson(pushurl, pushparameters, headmsg,ppt);
+                HttpClientTools.httpClientPostJson(pushurl, pushparameters, headmsg,ppt);
             }
         } catch (Exception e) {
             LogUtil.APP.error("向第三方平台推送任务执行情况出现异常，请检查！", e);

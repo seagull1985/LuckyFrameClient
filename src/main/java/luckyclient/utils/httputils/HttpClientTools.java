@@ -73,7 +73,7 @@ import luckyclient.utils.LogUtil;
  * @date 2017年12月1日 上午9:29:40
  * 
  */
-public class HttpClientHelper {
+public class HttpClientTools {
 	/**
 	 * 使用HttpURLConnection发送post请求
 	 * @param urlParam

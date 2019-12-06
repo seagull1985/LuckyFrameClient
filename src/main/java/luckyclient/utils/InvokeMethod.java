@@ -16,7 +16,7 @@ import luckyclient.execution.dispose.ParamsManageForSteps;
 import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.entity.ProjectProtocolTemplate;
 import luckyclient.remote.entity.ProjectTemplateParams;
-import luckyclient.utils.httputils.HttpClientHelper;
+import luckyclient.utils.httputils.HttpClientTools;
 
 /**
  * =================================================================
@@ -215,32 +215,32 @@ public class InvokeMethod {
                 }
 
                 if (functionname.toLowerCase().equals("httpurlpost")) {
-                    result = HttpClientHelper.sendHttpURLPost(packagename, params,headmsg,ppt);
+                    result = HttpClientTools.sendHttpURLPost(packagename, params,headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("urlpost")) {
-                    result = HttpClientHelper.sendURLPost(packagename, params, headmsg,ppt);
+                    result = HttpClientTools.sendURLPost(packagename, params, headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("getandsavefile")) {
                     String fileSavePath = System.getProperty("user.dir") + "\\HTTPSaveFile\\";
-                    result = HttpClientHelper.sendGetAndSaveFile(packagename, params, fileSavePath, headmsg,ppt);
+                    result = HttpClientTools.sendGetAndSaveFile(packagename, params, fileSavePath, headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("httpurlget")) {
-                    result = HttpClientHelper.sendHttpURLGet(packagename, params, headmsg,ppt);
+                    result = HttpClientTools.sendHttpURLGet(packagename, params, headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("urlget")) {
-                    result = HttpClientHelper.sendURLGet(packagename, params, headmsg,ppt);
+                    result = HttpClientTools.sendURLGet(packagename, params, headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("httpclientpost")) {
-                    result = HttpClientHelper.httpClientPost(packagename, params, headmsg , ppt);
+                    result = HttpClientTools.httpClientPost(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpclientuploadfile")) {
-                    result = HttpClientHelper.httpClientUploadFile(packagename, params, headmsg , ppt);
+                    result = HttpClientTools.httpClientUploadFile(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpclientpostjson")) {
-                    result = HttpClientHelper.httpClientPostJson(packagename, params, headmsg , ppt);
+                    result = HttpClientTools.httpClientPostJson(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpurldelete")) {
-                    result = HttpClientHelper.sendHttpURLDel(packagename, params, headmsg,ppt);
+                    result = HttpClientTools.sendHttpURLDel(packagename, params, headmsg,ppt);
                 } else if (functionname.toLowerCase().equals("httpclientputjson")) {
-                    result = HttpClientHelper.httpClientPutJson(packagename, params, headmsg , ppt);
+                    result = HttpClientTools.httpClientPutJson(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpclientput")) {
-                    result = HttpClientHelper.httpClientPut(packagename, params, headmsg , ppt);
+                    result = HttpClientTools.httpClientPut(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpclientget")) {
-                    result = HttpClientHelper.httpClientGet(packagename, params, headmsg, ppt);
+                    result = HttpClientTools.httpClientGet(packagename, params, headmsg, ppt);
                 } else if (functionname.toLowerCase().equals("httpclientpostxml")) {
-                    result = HttpClientHelper.httpClientPostXml(packagename, params, headmsg, ppt);
+                    result = HttpClientTools.httpClientPostXml(packagename, params, headmsg, ppt);
                 } else {
                     LogUtil.APP.warn("您的HTTP操作方法异常，检测到的操作方法是:{}",functionname);
                     result = "调用异常，请查看错误日志！";
@@ -376,9 +376,9 @@ public class InvokeMethod {
 
 
                 if (functionname.toLowerCase().equals("socketpost")) {
-                    result = HttpClientHelper.sendSocketPost(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
+                    result = HttpClientTools.sendSocketPost(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
                 } else if (functionname.toLowerCase().equals("socketget")) {
-                    result = HttpClientHelper.sendSocketGet(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
+                    result = HttpClientTools.sendSocketGet(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
                 } else {
                     LogUtil.APP.warn("您的SOCKET操作方法异常，检测到的操作方法是:{}",functionname);
                     result = "调用异常，请查看错误日志！";
