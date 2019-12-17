@@ -22,7 +22,7 @@ public class ActionContext {
     private static Map<String, Class> allActions;
 
     static {
-        Reflections reflections = new Reflections("luckyclient.caserun.publicdispose.actionkeyword");
+        Reflections reflections = new Reflections("luckyclient.execution.dispose.actionkeyword");
         Set<Class<?>> annotatedClasses =
                 reflections.getTypesAnnotatedWith(Action.class);
         allActions = new ConcurrentHashMap<String, Class>();
