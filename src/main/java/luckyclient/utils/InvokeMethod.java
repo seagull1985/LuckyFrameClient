@@ -233,6 +233,10 @@ public class InvokeMethod {
                     result = HttpClientTools.httpClientPostJson(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpurldelete")) {
                     result = HttpClientTools.sendHttpURLDel(packagename, params, headmsg,ppt);
+                } else if (functionname.toLowerCase().equals("httpclientdeletejson")) {
+                    result = HttpClientTools.httpClientDeleteJson(packagename, params, headmsg,ppt);
+                } else if (functionname.toLowerCase().equals("httpclientpatchjson")) {
+                    result = HttpClientTools.httpClientPatchJson(packagename, params, headmsg, ppt);
                 } else if (functionname.toLowerCase().equals("httpclientputjson")) {
                     result = HttpClientTools.httpClientPutJson(packagename, params, headmsg , ppt);
                 } else if (functionname.toLowerCase().equals("httpclientput")) {

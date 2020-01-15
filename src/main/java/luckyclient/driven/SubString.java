@@ -412,4 +412,11 @@ public class SubString {
         return jsonString;
     }
     
+    public static void main(String[] args) {
+    	String json = " "
+    			+ "{\"access_token\":\"d26b9148-20c9-4779-888c-0d9988cf3bf5\",\"token_type\":\"bearer\",\"expires_in\":599999,\"scope\":\"1/platformehicle/access_gateway/engine/forbid,1/platformehicle/access_gateway/engine/enable 1/platformehicle/access_gateway/system/diagnosis\"} ";
+    	String key = "access_token";
+    	String indexstr = "1";
+    	System.out.println(getJsonValue(json, key, indexstr));
+	}
 }

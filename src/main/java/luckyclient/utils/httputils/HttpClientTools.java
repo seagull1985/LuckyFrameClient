@@ -37,6 +37,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.config.Registry;
@@ -1453,7 +1454,204 @@ public class HttpClientTools {
 		return resultBuffer.toString();
 	}
 
+	/**
+	 * 使用HttpClient发送Delete请求  参数JSON格式
+	 * @param urlParam
+	 * @param params
+	 * @param charset
+	 * @param headmsg
+	 * @param cerpath
+	 * @return
+	 * @throws KeyManagementException
+	 * @throws NoSuchAlgorithmException
+	 */
+	public static String httpClientDeleteJson(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws KeyManagementException, NoSuchAlgorithmException {
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
+		
+		StringBuffer resultBuffer = null;
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
+		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
+		HttpDeleteWithBody httpDel = new HttpDeleteWithBody(urlParam);
+		httpDel.setHeader("Content-Type", "application/json");
+	    RequestConfig requestConfig = RequestConfig.custom()  
+	            .setConnectTimeout(timeout)
+	            .setConnectionRequestTimeout(timeout)  
+	            //设置请求和传输超时时间
+	            .setSocketTimeout(timeout).build();  
+	    httpDel.setConfig(requestConfig);
+		//替换头域信息
+	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+	    	String key=m.getKey();
+	    	String value=m.getValue();
+	    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【{}】    value:【{}】",key,value);
+	    	if(null!=value&&value.indexOf("Base64(")==0){
+	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+	    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
+	    		httpDel.setHeader(key,value);
+	    	}else{
+	    		httpDel.setHeader(key,value);
+	    	}
+        }
+		// 构建请求参数
+		BufferedReader br = null;
+		try {
+		if(params.size()>0){
+			if(1==params.size()&&params.containsKey("_forTextJson")){
+				LogUtil.APP.info("参数类型：TEXT,设置httpClientDeleteJson参数信息...【{}】",params.get("_forTextJson").toString());
+				StringEntity entity = new StringEntity(params.get("_forTextJson").toString(),charset);
+				httpDel.setEntity(entity);
+			}else{
+			    String jsonString = JSON.toJSONString(params);
+				LogUtil.APP.info("参数类型：FORM,设置httpClientDeleteJson参数信息...【{}】",jsonString);
+				StringEntity entity = new StringEntity(jsonString,charset);
+				httpDel.setEntity(entity);
+			}
 
+		}
+       
+		 CloseableHttpResponse response = httpclient.execute(httpDel);
+
+			// 读取服务器响应数据
+			resultBuffer = new StringBuffer();
+			if(1==responsehead){
+				Header[] headmsgstr=response.getAllHeaders();
+				resultBuffer.append("RESPONSE_HEAD:【{");
+				for(Header header:headmsgstr){
+					resultBuffer.append("\""+header.getName()+"\":\""+header.getValue()+"\",");
+				}
+				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append(Constants.RESPONSE_CODE+response.getStatusLine().getStatusCode()+Constants.RESPONSE_END);
+			}
+	        if(null!=response.getEntity()){
+	        	br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
+				String temp;
+				while ((temp = br.readLine()) != null) {
+					resultBuffer.append(temp);
+				}
+	        }
+		} catch (Exception e) {
+			LogUtil.APP.error("使用HttpClient发送Delete请求(参数JSON格式)出现异常，请检查！", e);
+			throw new RuntimeException(e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					LogUtil.APP.error("使用HttpClient发送Delete请求(参数JSON格式)后关闭br流出现异常，请检查！", e);
+					br = null;
+					throw new RuntimeException(e);
+				}
+			}
+		}		
+		return resultBuffer.toString();
+	}
+
+	/**
+	 * 使用HttpClient发送Patch请求  参数JSON格式
+	 * @param urlParam
+	 * @param params
+	 * @param charset
+	 * @param headmsg
+	 * @param cerpath
+	 * @return
+	 * @throws KeyManagementException
+	 * @throws NoSuchAlgorithmException
+	 */
+	public static String httpClientPatchJson(String urlParam, Map<String, Object> params, Map<String, String> headmsg,ProjectProtocolTemplate ppt) throws KeyManagementException, NoSuchAlgorithmException {
+		String cerpath=ppt.getCerificatePath();
+		String charset=ppt.getEncoding().toLowerCase();
+		int timeout=ppt.getTimeout()*1000;
+		int responsehead=ppt.getIsResponseHead();
+		int responsecode=ppt.getIsResponseCode();
+		
+		StringBuffer resultBuffer = null;
+		LogUtil.APP.info("设置HTTP请求地址:【{}】",urlParam);
+		CloseableHttpClient httpclient=iniHttpClient(urlParam,cerpath);
+		HttpPatch httpput = new HttpPatch(urlParam);
+	    httpput.setHeader("Content-Type", "application/json");
+	    RequestConfig requestConfig = RequestConfig.custom()  
+	            .setConnectTimeout(timeout)
+	            .setConnectionRequestTimeout(timeout)  
+	            //设置请求和传输超时时间
+	            .setSocketTimeout(timeout).build();  
+	    httpput.setConfig(requestConfig);
+		//替换头域信息
+	    for (Map.Entry<String, String> m :headmsg.entrySet())  {
+	    	String key=m.getKey();
+	    	String value=m.getValue();
+	    	LogUtil.APP.info("开始设置|替换HTTP头域信息...key:【{}】    value:【{}】",key,value);
+	    	if(null!=value&&value.indexOf("Base64(")==0){
+	    		String valuesub=value.substring(value.indexOf("Base64(")+7,value.lastIndexOf(")"));
+	    		value="Basic " + DatatypeConverter.printBase64Binary((valuesub).getBytes());
+	    		LogUtil.APP.info("将头域【{}】的值【{}】FORMAT成BASE64格式...",key,value);
+	    		httpput.setHeader(key,value);
+	    	}else{
+	    		httpput.setHeader(key,value);
+	    	}
+        }
+		// 构建请求参数
+		BufferedReader br = null;
+		try {
+		if(params.size()>0){
+			if(1==params.size()&&params.containsKey("_forTextJson")){
+				LogUtil.APP.info("参数类型：TEXT,设置httpClientPatchJson参数信息...【{}】",params.get("_forTextJson").toString());
+				StringEntity entity = new StringEntity(params.get("_forTextJson").toString(),charset);
+				httpput.setEntity(entity);
+			}else{
+			    String jsonString = JSON.toJSONString(params);
+				LogUtil.APP.info("参数类型：FORM,设置httpClientPatchJson参数信息...【{}】",jsonString);
+				StringEntity entity = new StringEntity(jsonString,charset);
+				httpput.setEntity(entity);
+			}
+
+		}
+       
+		 CloseableHttpResponse response = httpclient.execute(httpput);
+
+			// 读取服务器响应数据
+			resultBuffer = new StringBuffer();
+			if(1==responsehead){
+				Header[] headmsgstr=response.getAllHeaders();
+				resultBuffer.append("RESPONSE_HEAD:【{");
+				for(Header header:headmsgstr){
+					resultBuffer.append("\""+header.getName()+"\":\""+header.getValue()+"\",");
+				}
+				resultBuffer.delete(resultBuffer.length()-1, resultBuffer.length()).append("}】 ");
+			}
+			if(1==responsecode){
+				resultBuffer.append(Constants.RESPONSE_CODE+response.getStatusLine().getStatusCode()+Constants.RESPONSE_END);
+			}
+	        if(null!=response.getEntity()){
+	        	br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), charset));
+				String temp;
+				while ((temp = br.readLine()) != null) {
+					resultBuffer.append(temp);
+				}
+	        }
+		} catch (Exception e) {
+			LogUtil.APP.error("使用HttpClient发送Patch请求(参数JSON格式)出现异常，请检查！", e);
+			throw new RuntimeException(e);
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					LogUtil.APP.error("使用HttpClient发送Patch请求(参数JSON格式)后关闭br流出现异常，请检查！", e);
+					br = null;
+					throw new RuntimeException(e);
+				}
+			}
+		}		
+		return resultBuffer.toString();
+	}
+	
 	/**
 	 * 使用HttpClient发送put请求  参数JSON格式
 	 * @param urlParam

@@ -22,7 +22,7 @@
    <img alt="code style" src="https://img.shields.io/badge/BUILD-PASSING-green.svg">
   </a>
   <a href="http://git.oschina.net/seagull1985/LuckyFrameWeb/releases">
-   <img src="https://img.shields.io/badge/LuckyFrame-V3.1.1 releases-green.svg" >
+   <img src="https://img.shields.io/badge/LuckyFrame-V3.2 releases-green.svg" >
   </a>
 </p>
 
@@ -75,7 +75,7 @@
 > [【直达官网查看版本更新文章】](http://www.luckyframe.cn/dynamic.html)
 
 # 大家安静下，我再说一句
-此项目是LuckyFrame客户端项目，此外还有一个LuckyFrameWeb的项目做为服务端，如果您只需要先看看界面，那么单独下载LuckyFrameWeb项目就够了，如果您需要搭建整套环境，那还要把此LuckyFrame客户端项目下载下来。
+> 此项目是LuckyFrame客户端项目，此外还有一个[LuckyFrameWeb的项目](https://gitee.com/seagull1985/LuckyFrameWeb)做为服务端，如果您只需要先看看界面，那么单独下载LuckyFrameWeb项目就够了，如果您需要搭建整套环境，那还要把此LuckyFrame客户端项目下载下来。
 
 # 期待您更多的意见
 
