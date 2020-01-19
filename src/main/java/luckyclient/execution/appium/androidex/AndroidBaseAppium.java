@@ -162,8 +162,8 @@ public class AndroidBaseAppium {
 		AndroidTouchAction action = new AndroidTouchAction(driver);
 
 		for (int i = 0; i <= num; i++) {
-			action.press(PointOption.point(width / 2, height / 4)).waitAction(WaitOptions.waitOptions(duration))
-					.moveTo(PointOption.point(width / 2, height / 2)).release().perform();
+			action.press(PointOption.point(width / 2, 20)).waitAction(WaitOptions.waitOptions(duration))
+					.moveTo(PointOption.point(width / 2, height-20)).release().perform();
 		}
 	}
 
@@ -181,8 +181,8 @@ public class AndroidBaseAppium {
 		int height = driver.manage().window().getSize().height;
 		AndroidTouchAction action = new AndroidTouchAction(driver);
 		for (int i = 0; i <= num; i++) {
-			action.press(PointOption.point(width / 2, height / 2)).waitAction(WaitOptions.waitOptions(duration))
-					.moveTo(PointOption.point(width / 2, height / 4)).release().perform();
+			action.press(PointOption.point(width / 2, height-20)).waitAction(WaitOptions.waitOptions(duration))
+					.moveTo(PointOption.point(width / 2, 20)).release().perform();
 		}
 	}
 

@@ -60,7 +60,7 @@ public class AndroidCaseExecution{
             	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog,variable);
             }
 			
-			if(params.get("exception")!=null&&params.get("exception").toString().indexOf("解析异常")>-1){
+			if(null != params.get("exception") && params.get("exception").contains("解析异常")){
 				setcaseresult = 2;
 				break;
 			}

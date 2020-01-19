@@ -249,16 +249,16 @@ public class AndroidEncapsulateOperation {
 				Double second = Double.valueOf(tempup[0]);
 				if (null != tempup[1] && ChangString.isNumeric(tempup[1])) {
 					int num = Integer.valueOf(tempup[1]);
-					AndroidBaseAppium.swipePageUp(appium, second, num);
-					result = "swipeup页面向上滑动参数...秒|次数【" + second + "|" + num + "】";
-					LogUtil.APP.info("swipeup页面向上滑动参数...秒|次数【{}|{}】",second,num);
+					AndroidBaseAppium.swipePageDown(appium, second, num);
+					result = "swipeup手指向上滑动参数...秒|次数【" + second + "|" + num + "】";
+					LogUtil.APP.info("swipeup手指向上滑动参数...秒|次数【{}|{}】",second,num);
 				} else {
-					result = "swipeup页面向上滑动参数判断次数出现异常【" + tempup[1] + "】";
-					LogUtil.APP.info("swipeup页面向上滑动参数判断次数出现异常【{}】",tempup[1]);
+					result = "swipeup手指向上滑动参数判断次数出现异常【" + tempup[1] + "】";
+					LogUtil.APP.info("swipeup手指向上滑动参数判断次数出现异常【{}】",tempup[1]);
 				}
 			} else {
-				result = "swipeup页面向上滑动参数判断时间出现异常【" + tempup[0] + "】";
-				LogUtil.APP.info("swipeup页面向上滑动参数判断时间出现异常【{}】",tempup[0]);
+				result = "swipeup手指向上滑动参数判断时间出现异常【" + tempup[0] + "】";
+				LogUtil.APP.info("swipeup手指向上滑动参数判断时间出现异常【{}】",tempup[0]);
 			}
 			break;
 		case "swipedown":
@@ -267,52 +267,124 @@ public class AndroidEncapsulateOperation {
 				Double second = Double.valueOf(tempdown[0]);
 				if (null != tempdown[1] && ChangString.isNumeric(tempdown[1])) {
 					int num = Integer.valueOf(tempdown[1]);
-					AndroidBaseAppium.swipePageDown(appium, second, num);
-					result = "swipedown页面向下滑动参数...秒|次数【" + second + "|" + num + "】";
-					LogUtil.APP.info("swipedown页面向下滑动参数...秒|次数【{}|{}】",second,num);
+					AndroidBaseAppium.swipePageUp(appium, second, num);
+					result = "swipedown手指向下滑动参数...秒|次数【" + second + "|" + num + "】";
+					LogUtil.APP.info("swipedown手指向下滑动参数...秒|次数【{}|{}】",second,num);
 				} else {
-					result = "swipedown页面向下滑动参数判断次数出现异常【" + tempdown[1] + "】";
-					LogUtil.APP.info("swipedown页面向下滑动参数判断次数出现异常【{}】",tempdown[1]);
+					result = "swipedown手指向下滑动参数判断次数出现异常【" + tempdown[1] + "】";
+					LogUtil.APP.info("swipedown手指向下滑动参数判断次数出现异常【{}】",tempdown[1]);
 				}
 			} else {
-				result = "swipedown页面向下滑动参数判断时间出现异常【" + tempdown[0] + "】";
-				LogUtil.APP.info("swipedown页面向下滑动参数判断时间出现异常【{}】",tempdown[0]);
+				result = "swipedown手指向下滑动参数判断时间出现异常【" + tempdown[0] + "】";
+				LogUtil.APP.info("swipedown手指向下滑动参数判断时间出现异常【{}】",tempdown[0]);
 			}
 			break;
-		case "swipleft":
+		case "swipeleft":
 			String[] templeft = operationValue.split("\\|", -1);
 			if (null != templeft[0] && ChangString.isNumeric(templeft[0])) {
 				Double second = Double.valueOf(templeft[0]);
 				if (null != templeft[1] && ChangString.isNumeric(templeft[1])) {
 					int num = Integer.valueOf(templeft[1]);
-					AndroidBaseAppium.swipePageLeft(appium, second, num);
-					result = "swipleft页面向左滑动参数...秒|次数【" + second + "|" + num + "】";
-					LogUtil.APP.info("swipleft页面向左滑动参数...秒|次数【{}|{}】",second,num);
+					AndroidBaseAppium.swipePageRight(appium, second, num);
+					result = "swipleft手指向左滑动参数...秒|次数【" + second + "|" + num + "】";
+					LogUtil.APP.info("swipleft手指向左滑动参数...秒|次数【{}|{}】",second,num);
 				} else {
-					result = "swipleft页面向左滑动参数判断次数出现异常【" + templeft[1] + "】";
-					LogUtil.APP.info("swipleft页面向左滑动参数判断次数出现异常【{}】",templeft[1]);
+					result = "swipleft手指向左滑动参数判断次数出现异常【" + templeft[1] + "】";
+					LogUtil.APP.info("swipleft手指向左滑动参数判断次数出现异常【{}】",templeft[1]);
 				}
 			} else {
-				result = "swipleft页面向左滑动参数判断时间出现异常【" + templeft[0] + "】";
-				LogUtil.APP.info("swipleft页面向左滑动参数判断时间出现异常【{}】",templeft[0]);
+				result = "swipleft手指向左滑动参数判断时间出现异常【" + templeft[0] + "】";
+				LogUtil.APP.info("swipleft手指向左滑动参数判断时间出现异常【{}】",templeft[0]);
 			}
 			break;
-		case "swipright":
+		case "swiperight":
 			String[] tempright = operationValue.split("\\|", -1);
 			if (null != tempright[0] && ChangString.isNumeric(tempright[0])) {
 				Double second = Double.valueOf(tempright[0]);
 				if (null != tempright[1] && ChangString.isNumeric(tempright[1])) {
 					int num = Integer.valueOf(tempright[1]);
+					AndroidBaseAppium.swipePageLeft(appium, second, num);
+					result = "swipright手指向右滑动参数...秒|次数【" + second + "|" + num + "】";
+					LogUtil.APP.info("swipright手指向右滑动参数...秒|次数【{}|{}】",second,num);
+				} else {
+					result = "swipright手指向右滑动参数判断次数出现异常【" + tempright[1] + "】";
+					LogUtil.APP.info("swipright手指向右滑动参数判断次数出现异常【{}】",tempright[1]);
+				}
+			} else {
+				result = "swipright手指向右滑动参数判断时间出现异常【" + tempright[0] + "】";
+				LogUtil.APP.info("swipright手指向右滑动参数判断时间出现异常【{}】",tempright[0]);
+			}
+			break;
+		case "swipepageup":
+			String[] tempPageUp = operationValue.split("\\|", -1);
+			if (null != tempPageUp[0] && ChangString.isNumeric(tempPageUp[0])) {
+				Double second = Double.valueOf(tempPageUp[0]);
+				if (null != tempPageUp[1] && ChangString.isNumeric(tempPageUp[1])) {
+					int num = Integer.valueOf(tempPageUp[1]);
+					AndroidBaseAppium.swipePageUp(appium, second, num);
+					result = "swipeup页面向上滑动参数...秒|次数【" + second + "|" + num + "】";
+					LogUtil.APP.info("swipeup页面向上滑动参数...秒|次数【{}|{}】",second,num);
+				} else {
+					result = "swipeup页面向上滑动参数判断次数出现异常【" + tempPageUp[1] + "】";
+					LogUtil.APP.info("swipeup页面向上滑动参数判断次数出现异常【{}】",tempPageUp[1]);
+				}
+			} else {
+				result = "swipeup页面向上滑动参数判断时间出现异常【" + tempPageUp[0] + "】";
+				LogUtil.APP.info("swipeup页面向上滑动参数判断时间出现异常【{}】",tempPageUp[0]);
+			}
+			break;
+		case "swipepagedown":
+			String[] tempPageDown = operationValue.split("\\|", -1);
+			if (null != tempPageDown[0] && ChangString.isNumeric(tempPageDown[0])) {
+				Double second = Double.valueOf(tempPageDown[0]);
+				if (null != tempPageDown[1] && ChangString.isNumeric(tempPageDown[1])) {
+					int num = Integer.valueOf(tempPageDown[1]);
+					AndroidBaseAppium.swipePageDown(appium, second, num);
+					result = "swipedown页面向下滑动参数...秒|次数【" + second + "|" + num + "】";
+					LogUtil.APP.info("swipedown页面向下滑动参数...秒|次数【{}|{}】",second,num);
+				} else {
+					result = "swipedown页面向下滑动参数判断次数出现异常【" + tempPageDown[1] + "】";
+					LogUtil.APP.info("swipedown页面向下滑动参数判断次数出现异常【{}】",tempPageDown[1]);
+				}
+			} else {
+				result = "swipedown页面向下滑动参数判断时间出现异常【" + tempPageDown[0] + "】";
+				LogUtil.APP.info("swipedown页面向下滑动参数判断时间出现异常【{}】",tempPageDown[0]);
+			}
+			break;
+		case "swipepageleft":
+			String[] tempPageLeft = operationValue.split("\\|", -1);
+			if (null != tempPageLeft[0] && ChangString.isNumeric(tempPageLeft[0])) {
+				Double second = Double.valueOf(tempPageLeft[0]);
+				if (null != tempPageLeft[1] && ChangString.isNumeric(tempPageLeft[1])) {
+					int num = Integer.valueOf(tempPageLeft[1]);
+					AndroidBaseAppium.swipePageLeft(appium, second, num);
+					result = "swipleft页面向左滑动参数...秒|次数【" + second + "|" + num + "】";
+					LogUtil.APP.info("swipleft页面向左滑动参数...秒|次数【{}|{}】",second,num);
+				} else {
+					result = "swipleft页面向左滑动参数判断次数出现异常【" + tempPageLeft[1] + "】";
+					LogUtil.APP.info("swipleft页面向左滑动参数判断次数出现异常【{}】",tempPageLeft[1]);
+				}
+			} else {
+				result = "swipleft页面向左滑动参数判断时间出现异常【" + tempPageLeft[0] + "】";
+				LogUtil.APP.info("swipleft页面向左滑动参数判断时间出现异常【{}】",tempPageLeft[0]);
+			}
+			break;
+		case "swipepageright":
+			String[] tempPageRight = operationValue.split("\\|", -1);
+			if (null != tempPageRight[0] && ChangString.isNumeric(tempPageRight[0])) {
+				Double second = Double.valueOf(tempPageRight[0]);
+				if (null != tempPageRight[1] && ChangString.isNumeric(tempPageRight[1])) {
+					int num = Integer.valueOf(tempPageRight[1]);
 					AndroidBaseAppium.swipePageRight(appium, second, num);
 					result = "swipright页面向右滑动参数...秒|次数【" + second + "|" + num + "】";
 					LogUtil.APP.info("swipright页面向右滑动参数...秒|次数【{}|{}】",second,num);
 				} else {
-					result = "swipright页面向右滑动参数判断次数出现异常【" + tempright[1] + "】";
-					LogUtil.APP.info("swipright页面向右滑动参数判断次数出现异常【{}】",tempright[1]);
+					result = "swipright页面向右滑动参数判断次数出现异常【" + tempPageRight[1] + "】";
+					LogUtil.APP.info("swipright页面向右滑动参数判断次数出现异常【{}】",tempPageRight[1]);
 				}
 			} else {
-				result = "swipright页面向右滑动参数判断时间出现异常【" + tempright[0] + "】";
-				LogUtil.APP.info("swipright页面向右滑动参数判断时间出现异常【{}】",tempright[0]);
+				result = "swipright页面向右滑动参数判断时间出现异常【" + tempPageRight[0] + "】";
+				LogUtil.APP.info("swipright页面向右滑动参数判断时间出现异常【{}】",tempPageRight[0]);
 			}
 			break;
 		case "longpressxy":
