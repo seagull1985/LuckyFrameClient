@@ -1,7 +1,6 @@
 package luckyclient.execution.webdriver;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -536,7 +535,7 @@ public class EncapsulateOperation {
 
     // 最长等待30秒, 每500毫秒轮询一次
     private static FluentWait<WebDriver> wait(WebDriver driver) {
-        return new FluentWait<>(driver).withTimeout(30 * 1000, MILLISECONDS).pollingEvery(500, MILLISECONDS);
+        return new FluentWait<>(driver).withTimeout(Duration.ofSeconds(30)).pollingEvery(Duration.ofMillis(500));
     }
 
     private static ExpectedCondition<WebDriver> windowToBeAvailableAndSwitchToIt(final String nameOrHandleOrTitle) {
