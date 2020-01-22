@@ -9,9 +9,12 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.Select;
 
+import cn.hutool.core.util.StrUtil;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidTouchAction;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import io.appium.java_client.touch.LongPressOptions;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.ElementOption;
@@ -201,14 +204,21 @@ public class AndroidEncapsulateOperation {
 			result = "执行安卓adb命令...【" + operationValue + "】";
 			LogUtil.APP.info("执行安卓adb命令...【{}】",operationValue);		   
 		    break;
-		case "keycode":
+		case "androidkeycode":
 			// 模拟手机键盘
-			if (ChangString.isNumeric(operationValue)) {
-				appium.pressKeyCode(Integer.valueOf(operationValue));
-				result = "模拟手机键盘发送指令...keycode【" + operationValue + "】";
-				LogUtil.APP.info("模拟手机键盘发送指令...keycode【{}】",operationValue);
-			} else {
-
+			try {
+				if (StrUtil.isNotBlank(operationValue)) {
+					KeyEvent keyEvent = new KeyEvent();
+					appium.pressKey(keyEvent.withKey(AndroidKey.valueOf(operationValue)));
+					result = "模拟手机键盘发送指令...keycode【" + operationValue + "】";
+					LogUtil.APP.info("模拟手机键盘发送指令...keycode【{}】", operationValue);
+				} else {
+					result = "模拟手机键盘失败，键盘参数为空，请检查你的参数！";
+					LogUtil.APP.info("模拟手机键盘失败，键盘参数为空，请检查你的参数！");
+				}
+			} catch (IllegalArgumentException ae) {
+				result = "模拟手机按键失败，没有找到对应的按键参数，请检查你的参数！";
+				LogUtil.APP.info("模拟手机按键失败，没有找到对应的按键参数，请检查你的参数！");
 			}
 			break;
 		// 隐藏手机键盘

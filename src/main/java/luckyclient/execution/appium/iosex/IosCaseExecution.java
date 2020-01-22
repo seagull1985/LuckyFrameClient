@@ -221,9 +221,6 @@ public class IosCaseExecution{
 			case "iosnspredicate":
 				ae = appium.findElementByIosNsPredicate(propertyValue);
 				break;
-			case "iosuiautomation":
-				ae = appium.findElementByIosUIAutomation(propertyValue);
-				break;
 			default:
 				break;
 			}

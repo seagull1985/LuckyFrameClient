@@ -58,8 +58,8 @@ public class AppiumInitialization {
 		capabilities.setCapability("noSign", Boolean.valueOf(properties.getProperty("noSign")));
 		// 等待超时没接收到命令关闭appium
 		capabilities.setCapability("newCommandTimeout", properties.getProperty("newCommandTimeout"));
-		appium = new AndroidDriver<AndroidElement>(
-				new URL("http://" + properties.getProperty("appiumsever") + "/wd/hub"), capabilities);
+		String url="http://" + properties.getProperty("appiumsever") + "/wd/hub";
+		appium = new AndroidDriver<AndroidElement>(new URL(url), capabilities);
 		int waittime = Integer.valueOf(properties.getProperty("implicitlyWait"));
 		appium.manage().timeouts().implicitlyWait(waittime, TimeUnit.SECONDS);
 		return appium;
@@ -94,8 +94,8 @@ public class AppiumInitialization {
 		capabilities.setCapability("noSign", Boolean.valueOf(properties.getProperty("noSign")));
 		// 等待超时没接收到命令关闭appium
 		capabilities.setCapability("newCommandTimeout", properties.getProperty("newCommandTimeout"));
-		appium = new IOSDriver<IOSElement>(new URL("http://" + properties.getProperty("appiumsever") + "/wd/hub"),
-				capabilities);
+		String url="http://" + properties.getProperty("appiumsever") + "/wd/hub";
+		appium = new IOSDriver<IOSElement>(new URL(url),capabilities);
 		int waittime = Integer.valueOf(properties.getProperty("implicitlyWait"));
 		appium.manage().timeouts().implicitlyWait(waittime, TimeUnit.SECONDS);
 		return appium;

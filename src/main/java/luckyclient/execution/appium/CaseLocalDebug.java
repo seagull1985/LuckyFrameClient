@@ -1,10 +1,10 @@
-package luckyclient.execution.webdriver;
+package luckyclient.execution.appium;
 
 import java.util.List;
 
-import org.openqa.selenium.WebDriver;
-
-import luckyclient.execution.webdriver.ex.WebCaseExecution;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import luckyclient.execution.appium.androidex.AndroidCaseExecution;
 import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.api.serverOperation;
 import luckyclient.remote.entity.ProjectCase;
@@ -26,13 +26,13 @@ import luckyclient.utils.LogUtil;
 public class CaseLocalDebug{
 
 	/**
-	 * 单个用例Web UI调试
-	 * @param wd
+	 * 单个移动端用例调试
+	 * @param appium
 	 * @param testCaseExternalId
 	 * @author Seagull
 	 * @date 2020年1月20日
 	 */
-	public static void oneCasedebug(WebDriver wd,String testCaseExternalId){
+	public static void oneCasedebug(AndroidDriver<AndroidElement> appium,String testCaseExternalId){
 		 //不记录日志到数据库
 		serverOperation.exetype = 1;  
 		serverOperation caselog = new serverOperation();
@@ -41,29 +41,29 @@ public class CaseLocalDebug{
 			List<ProjectCaseParams> pcplist=GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
 			LogUtil.APP.info("开始执行用例:【{}】......",testCaseExternalId);
 			List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
-			WebCaseExecution.caseExcution(testcase,steps, "888888",wd,caselog,pcplist);
+			AndroidCaseExecution.caseExcution(testcase, steps, "888888", appium, caselog, pcplist);
 			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (Exception e) {
 			LogUtil.APP.error("用户执行过程中抛出异常！", e);
 		}
-        //关闭浏览器
-        wd.quit();
+        //退出
+		appium.quit();
 	}
 	
 	/**
-	 * 多个用例串行Web UI调试
-	 * @param wd
+	 * 多个移动端用例调试
+	 * @param appium
 	 * @param projectname
 	 * @param addtestcase
 	 * @author Seagull
 	 * @date 2020年1月20日
 	 */
-	public static void moreCaseDebug(WebDriver wd,String projectname,List<String> addtestcase){
+	public static void moreCaseDebug(AndroidDriver<AndroidElement> appium,String projectname,List<String> addtestcase){
 		System.out.println("当前调试用例总共："+addtestcase.size());
 		for(String testCaseExternalId:addtestcase) {
 		    try{
 		    LogUtil.APP.info("开始调用方法，项目名:{}，用例编号:{}",projectname,testCaseExternalId); 
-		    oneCasedebug(wd,testCaseExternalId);
+		    oneCasedebug(appium,testCaseExternalId);
 		    }catch(Exception e){
 		    	continue;
 		    }
