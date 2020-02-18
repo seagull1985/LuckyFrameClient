@@ -258,8 +258,8 @@ public class EncapsulateOperation {
                 LogUtil.APP.info("获取到的值是【{}】",we.isEnabled());
                 break;
             case "isdisplayed":
-                result = "获取到的值是【" + we.isDisplayed() + "】";
-                LogUtil.APP.info("获取到的值是【{}】",we.isDisplayed());
+                result = "获取到的值是【" + String.valueOf(we.isDisplayed()) + "】";
+                LogUtil.APP.info("获取到的值是【{}】",String.valueOf(we.isDisplayed()));
                 break;
             case "exjsob":
                 JavascriptExecutor jse = (JavascriptExecutor) wd;

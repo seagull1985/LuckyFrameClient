@@ -5,7 +5,7 @@ import java.util.Properties;
 import luckyclient.remote.api.serverOperation;
 import luckyclient.remote.entity.TaskScheduling;
 import luckyclient.utils.LogUtil;
-import luckyclient.utils.SysConfig;
+import luckyclient.utils.config.SysConfig;
 
 /**
  * =================================================================

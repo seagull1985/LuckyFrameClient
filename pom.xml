@@ -244,17 +244,15 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<!--<version>3.141.59</version>$NO-MVN-MAN-VER$-->
+			<!--<version>3.141.59</version>$NO-MVN-MAN-VER$ -->
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-remote-driver</artifactId>
 		</dependency>
 		<!-- 暂不需求，怀疑是以前testlink API需要的 -->
-<!-- 		<dependency>
-			<groupId>xml-apis</groupId>
-			<artifactId>xml-apis</artifactId>
-		</dependency> -->
+		<!-- <dependency> <groupId>xml-apis</groupId> <artifactId>xml-apis</artifactId> 
+			</dependency> -->
 		<dependency>
 			<groupId>io.appium</groupId>
 			<artifactId>java-client</artifactId>
@@ -310,6 +308,11 @@
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
 			<version>5.0.6</version>
+		</dependency>
+		<!-- mysql链接 用到数据库测试驱动的时候才需要 -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 	</dependencies>
 </project>

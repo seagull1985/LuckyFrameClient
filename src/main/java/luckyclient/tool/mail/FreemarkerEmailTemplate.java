@@ -9,7 +9,7 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import luckyclient.utils.LogUtil;
-import luckyclient.utils.SysConfig;
+import luckyclient.utils.config.SysConfig;
 
 /**
  * 基于Freemarker模板技术的邮件模板服务

@@ -21,7 +21,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import luckyclient.utils.LogUtil;
-import luckyclient.utils.SysConfig;
+import luckyclient.utils.config.SysConfig;
 
 /**
  * =================================================================

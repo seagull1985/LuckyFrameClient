@@ -30,7 +30,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import luckyclient.remote.entity.monitor.Server;
-import luckyclient.utils.SysConfig;
+import luckyclient.utils.config.SysConfig;
 import luckyclient.utils.httputils.HttpRequest;
 import springboot.model.RunBatchCaseEntity;
 import springboot.model.RunTaskEntity;

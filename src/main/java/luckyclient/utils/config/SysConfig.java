@@ -1,4 +1,4 @@
-package luckyclient.utils;
+package luckyclient.utils.config;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -7,22 +7,22 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
- * 初始化Appium配置参数
+ * 系统配置参数
  * @author seagull
  *
  */
-public class AppiumConfig {
+public class SysConfig {
 	private static final Properties SYS_CONFIG = new Properties();
-	private static final String SYS_CONFIG_FILE = "/appium_config.properties";
+	private static final String SYS_CONFIG_FILE = "/sys_config.properties";
 	static{
 		try {
-		    InputStream in = new BufferedInputStream(AppiumConfig.class.getResourceAsStream(SYS_CONFIG_FILE));
+		    InputStream in = new BufferedInputStream(SysConfig.class.getResourceAsStream(SYS_CONFIG_FILE));
 			SYS_CONFIG.load(new InputStreamReader(in, "UTF-8"));
 		} catch (IOException e) {
-			LogUtil.APP.error("读取移动端appium_config.properties配置文件出现异常，请检查！", e);
+			e.printStackTrace();
 		}
 	}
-	private AppiumConfig(){}
+	private SysConfig(){}
 	public static Properties getConfiguration(){
 		return SYS_CONFIG;
 	}

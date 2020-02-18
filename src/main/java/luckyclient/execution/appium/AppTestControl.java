@@ -25,8 +25,8 @@ import luckyclient.tool.jenkins.BuildingInitialization;
 import luckyclient.tool.mail.HtmlMail;
 import luckyclient.tool.mail.MailSendInitialization;
 import luckyclient.tool.shell.RestartServerInitialization;
-import luckyclient.utils.AppiumConfig;
 import luckyclient.utils.LogUtil;
+import luckyclient.utils.config.AppiumConfig;
 
 /**
  * =================================================================

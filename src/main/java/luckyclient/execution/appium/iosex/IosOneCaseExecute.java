@@ -14,8 +14,8 @@ import luckyclient.remote.api.serverOperation;
 import luckyclient.remote.entity.ProjectCase;
 import luckyclient.remote.entity.ProjectCaseParams;
 import luckyclient.remote.entity.ProjectCaseSteps;
-import luckyclient.utils.AppiumConfig;
 import luckyclient.utils.LogUtil;
+import luckyclient.utils.config.AppiumConfig;
 
 /**
  * =================================================================

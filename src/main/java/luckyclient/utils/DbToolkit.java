@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.List;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+
+import luckyclient.utils.config.DrivenConfig;
 /**
  * =================================================================
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
@@ -25,6 +27,7 @@ public class DbToolkit {
      * 建立数据库链接池
      */ 
 	public ComboPooledDataSource cpds=null;
+	private static final String DRIVERCLASS = DrivenConfig.getConfiguration().getProperty("db.ComboPooledDataSource.DriverClass");
 	
 	public DbToolkit(String urlBase,String usernameBase,String passwordBase){
 		cpds=new ComboPooledDataSource();  
@@ -32,7 +35,7 @@ public class DbToolkit {
         cpds.setPassword(passwordBase);  
         cpds.setJdbcUrl(urlBase);  
         try {  
-            cpds.setDriverClass("com.mysql.cj.jdbc.Driver");  
+            cpds.setDriverClass(DRIVERCLASS);  
         } catch (PropertyVetoException e) {  
             // TODO Auto-generated catch block  
             e.printStackTrace();  
@@ -46,7 +49,7 @@ public class DbToolkit {
     static { 
     	//注册驱动类 
         try { 
-                Class.forName("com.mysql.cj.jdbc.Driver"); 
+                Class.forName(DRIVERCLASS); 
         } catch (ClassNotFoundException e) { 
                 e.printStackTrace();
         } 

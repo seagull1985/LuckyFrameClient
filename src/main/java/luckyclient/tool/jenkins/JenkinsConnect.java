@@ -8,7 +8,7 @@ import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.client.JenkinsHttpClient;
 
 import luckyclient.utils.LogUtil;
-import luckyclient.utils.SysConfig;
+import luckyclient.utils.config.SysConfig;
 
 /**
  * Jenkins¡¥Ω”

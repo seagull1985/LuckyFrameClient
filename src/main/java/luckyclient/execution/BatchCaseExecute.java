@@ -13,8 +13,8 @@ import luckyclient.execution.webdriver.ex.WebBatchExecute;
 import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.entity.TaskExecute;
 import luckyclient.remote.entity.TaskScheduling;
-import luckyclient.utils.AppiumConfig;
 import luckyclient.utils.LogUtil;
+import luckyclient.utils.config.AppiumConfig;
 
 /**
  * =================================================================

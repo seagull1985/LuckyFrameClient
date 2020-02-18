@@ -6,8 +6,8 @@ import java.util.Properties;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
-import luckyclient.utils.AppiumConfig;
 import luckyclient.utils.LogUtil;
+import luckyclient.utils.config.AppiumConfig;
 
 /**
  * 
