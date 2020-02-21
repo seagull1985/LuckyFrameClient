@@ -370,8 +370,4 @@ public class ChangString {
 		return map;
 	}
 
-    public static void main(String[] args) {
-    	
-    }
-
 }
