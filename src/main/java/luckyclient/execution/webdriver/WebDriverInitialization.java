@@ -84,7 +84,10 @@ public class WebDriverInitialization{
 			webDriver = new ChromeDriver(options);
 		}else if(drivertype==3){
 			if(OS.startsWith("win")){
-				System.setProperty("webdriver.edge.driver",drivenpath+"MicrosoftWebDriver.exe");
+				System.setProperty("webdriver.edge.driver",drivenpath+"msedgedriver.exe");
+				webDriver = new EdgeDriver();
+			}else if(OS.contains("mac")){
+				System.setProperty("webdriver.edge.driver",drivenpath+"msedgedriver_mac");
 				webDriver = new EdgeDriver();
 			}else{
 				LogUtil.APP.warn("当前操作系统无法进行Edge浏览器的Web UI测试，请选择火狐或是谷歌浏览器！");
@@ -124,11 +127,6 @@ public class WebDriverInitialization{
 		//设置元素出现最大时长30秒  
 		webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);  
         return webDriver;
-	}
-	
-	public static void main(String[] args) throws IOException{
-		// TODO Auto-generated method stub
-
 	}
 
 }

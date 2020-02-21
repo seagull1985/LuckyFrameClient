@@ -94,6 +94,8 @@ public class AppiumInitialization {
 		capabilities.setCapability("resetKeyboard", Boolean.valueOf(properties.getProperty("resetKeyboard")));
 		// 不重新签名apk
 		capabilities.setCapability("noSign", Boolean.valueOf(properties.getProperty("noSign")));
+		// 是否避免重新安装APP
+		capabilities.setCapability("noReset", Boolean.valueOf(properties.getProperty("noReset")));
 		// 等待超时没接收到命令关闭appium
 		capabilities.setCapability("newCommandTimeout", properties.getProperty("newCommandTimeout"));
 		String url="http://" + properties.getProperty("appiumsever") + "/wd/hub";
