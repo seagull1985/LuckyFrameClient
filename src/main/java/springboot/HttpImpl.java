@@ -368,7 +368,7 @@ public class HttpImpl {
 	public static boolean checkHostNet() {
 		log.info("检查客户端配置中,请稍后......");
 		Properties properties = SysConfig.getConfiguration();
-		String version=properties.getProperty("client.verison");
+		String version="Version "+properties.getProperty("client.verison");
 		String webip=properties.getProperty("server.web.ip");
 		Integer webport=Integer.valueOf(properties.getProperty("server.web.port"));
         try {
@@ -376,7 +376,11 @@ public class HttpImpl {
         	if(version.equals(result)){
             	log.info("客户端访问Web端配置: {}:{} 检测通过......",webip,webport);
         	}else{
-        		log.warn("客户端版本:{} 服务端版本:{} 客户端与服务端版本不一致，有可能会导致未知问题，请检查...",version,result);
+        		if(result.startsWith("Version")){
+        			log.warn("客户端版本:{} 服务端版本:{} 客户端与服务端版本不一致，有可能会导致未知问题，请检查...",version,result);
+        		}else{
+        			log.error("请检查客户端配置，获取服务端版本信息出现异常！");
+        		}       		
         	}
 
         } catch (Exception e) {
