@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import luckyclient.netty.NettyClient;
+import luckyclient.utils.config.SysConfig;
 import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +25,26 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RunService {
 
 	private static final Logger log = LoggerFactory.getLogger(RunService.class);
+	private static final String NETTY_SERVER_IP= SysConfig.getConfiguration().getProperty("netty.server.ip");
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator +"bootlog4j.conf");
 		SpringApplication.run(RunService.class, args);
-        try {
-        	String host = InetAddress.getLocalHost().getHostAddress();
-        	log.info("启动客户端监听,请稍后......监听IP:{}",host);
-        } catch (UnknownHostException e) {
-        	log.error("获取服务IP出现异常......", e);
-        }
-		HttpImpl.checkHostNet();
+		try {
+			String host = InetAddress.getLocalHost().getHostAddress();
+			log.info("启动客户端监听,请稍后......监听IP:{}",host);
+		} catch (Exception e) {
+			log.error("获取服务IP出现异常......", e);
+		}
+		if(NETTY_SERVER_IP==null)
+			HttpImpl.checkHostNet();
+		try {
+			log.error("##################客户端netty开启#################");
+			NettyClient.start();
+		} catch (Exception e) {
+			log.error("连接服务端netty异常......");
+			e.printStackTrace();
+		}
 	}
 
 }
