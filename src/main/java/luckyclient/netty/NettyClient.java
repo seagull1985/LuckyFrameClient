@@ -27,7 +27,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 import luckyclient.utils.config.SysConfig;
 
 public class NettyClient {
-    private static final String NETTY_SERVER_IP= SysConfig.getConfiguration().getProperty("netty.server.ip");
+    private static final String NETTY_SERVER_IP= SysConfig.getConfiguration().getProperty("server.web.ip");
 
     private static final int  NETTY_SERVER_PORT=Integer.parseInt(SysConfig.getConfiguration().getProperty("netty.server.port"));
 
