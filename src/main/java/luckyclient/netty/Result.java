@@ -3,7 +3,11 @@ package luckyclient.netty;
 import java.io.Serializable;
 
 public class Result implements Serializable {
-    private int code;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int code;
     private Object message;
     private String uniId;
 

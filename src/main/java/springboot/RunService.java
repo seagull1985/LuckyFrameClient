@@ -2,15 +2,15 @@ package springboot;
 
 import java.io.File;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
-import luckyclient.netty.NettyClient;
-import luckyclient.utils.config.SysConfig;
 import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import luckyclient.netty.NettyClient;
+import luckyclient.utils.config.SysConfig;
 
 /**
  * =================================================================
@@ -39,7 +39,7 @@ public class RunService {
 		if(NETTY_SERVER_IP==null)
 			HttpImpl.checkHostNet();
 		try {
-			log.error("##################客户端netty开启#################");
+			log.info("##################客户端netty开启#################");
 			NettyClient.start();
 		} catch (Exception e) {
 			log.error("连接服务端netty异常......");

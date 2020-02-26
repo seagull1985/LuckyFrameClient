@@ -1,27 +1,29 @@
 package luckyclient.netty;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.EventLoop;
-import io.netty.handler.timeout.IdleState;
-import io.netty.handler.timeout.IdleStateEvent;
-import luckyclient.utils.config.SysConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-public class ClientHandler extends ChannelInboundHandlerAdapter {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.EventLoop;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import luckyclient.utils.config.SysConfig;
+
+public class ClientHandler extends ChannelHandlerAdapter {
 
     //从application.properties文件中获取用到的参数;
     private static Resource resource = new ClassPathResource("application.properties");
@@ -36,8 +38,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     }
 
     private static String port = props.getProperty("server.port");
-
-    private int counter;
 
     static final String ECHO_REQ = "$_";
 
@@ -86,7 +86,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
                 String tmpResult="";
                 if("get".equals(getOrPost))
                 {
-                    Map<String,Object> jsonparams = (Map<String,Object>)json.get("data");
+                    @SuppressWarnings("unchecked")
+					Map<String,Object> jsonparams = (Map<String,Object>)json.get("data");
                     //get方法
                     try {
                         tmpResult=HttpRequest.httpClientGet(urlParam,jsonparams,socketTimeout);
@@ -117,7 +118,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             String fileName=json.get("fileName").toString();
             //发出http请求下载文件
             try {
-                boolean isSuccess=HttpRequest.downLoadFromUrl("http://"+SERVER_IP+":"+SERVER_PORT+"/common/download?fileName="+fileName,fileName,path);
+                HttpRequest.downLoadFromUrl("http://"+SERVER_IP+":"+SERVER_PORT+"/common/download?fileName="+fileName,fileName,path);
                 //返回请求
                 JSONObject re=new JSONObject();
                 Result result=new Result(1,"上传成功",json.get("uuid").toString());
