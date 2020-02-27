@@ -67,10 +67,10 @@ public class ClientHandler extends ChannelHandlerAdapter {
 
         }catch (Exception e)
         {
-            log.error("收到服务端非Json消息："+jsonStr);
+            System.out.println("收到服务端非Json消息："+jsonStr);
             return;
         }
-        log.info("收到服务端消息："+json.toString());
+        System.out.println("收到服务端消息："+json.toString());
         //解析消息
         if("run".equals(json.get("method"))){
             try {
@@ -92,7 +92,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                     try {
                         tmpResult=HttpRequest.httpClientGet(urlParam,jsonparams,socketTimeout);
                     } catch (Exception e) {
-                        log.error("转发服务端GET请求出错");
+                        System.out.println("转发服务端GET请求出错");
                     }
                 }
                 else
@@ -102,7 +102,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                     try {
                         tmpResult=HttpRequest.httpClientPost(urlParam,jsonparams,socketTimeout);
                     } catch (Exception e) {
-                        log.error("转发服务端POST请求出错");
+                        System.out.println("转发服务端POST请求出错");
                     }
                 }
                 result.setMessage(tmpResult);
@@ -125,7 +125,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                 re.put("method","return");
                 re.put("data",result);
                 sendMessage(re.toString());
-                log.info("下载驱动包成功,路径为："+path+";文件名为："+fileName);
+                System.out.println("下载驱动包成功,路径为："+path+";文件名为："+fileName);
             } catch (Exception e) {
                 e.printStackTrace();
                 //返回请求
@@ -134,7 +134,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                 re.put("method","return");
                 re.put("data",result);
                 sendMessage(re.toString());
-                log.info("下载驱动包失败,路径为："+path+";文件名为："+fileName);
+                System.out.println("下载驱动包失败,路径为："+path+";文件名为："+fileName);
             }
         }
 
@@ -149,7 +149,6 @@ public class ClientHandler extends ChannelHandlerAdapter {
         json.put("method","clientUp");
         ClientHandler.ctx=ctx;
         sendMessage(json.toString());
-        System.out.println("通道已连接,客户端登录消息已发送");
     }
 
     @Override
