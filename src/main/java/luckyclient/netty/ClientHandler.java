@@ -19,6 +19,7 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import luckyclient.utils.config.SysConfig;
 
+
 public class ClientHandler extends ChannelHandlerAdapter {
 
     //从application.properties文件中获取用到的参数;
