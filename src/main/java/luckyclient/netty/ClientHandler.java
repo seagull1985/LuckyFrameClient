@@ -178,6 +178,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                         re.put("method","upload");
                         re.put("data",result);
                         re.put("uuid",json.get("uuid").toString());
+                        re.put("imgName",fileName);
                         sendMessage(re.toString());
                         try {
                             ctx.writeAndFlush(fileUploadFile);
