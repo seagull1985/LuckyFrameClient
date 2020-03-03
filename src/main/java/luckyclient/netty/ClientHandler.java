@@ -146,11 +146,12 @@ public class ClientHandler extends ChannelHandlerAdapter {
         else if("upload".equals(json.get("method")))
         {
             //上传截图到服务器
-            Map<String,Object> jsonparams = (Map<String,Object>)json.get("data");
+            @SuppressWarnings("unchecked")
+			Map<String,Object> jsonparams = (Map<String,Object>)json.get("data");
             String fileName=jsonparams.get("imgName").toString();
             String ctxPath = System.getProperty("user.dir")+File.separator+"log"+File.separator+"ScreenShot"+File.separator+fileName;
             File file=new File(ctxPath);
-            int start=Integer.valueOf(json.get("start").toString());
+            start=Integer.valueOf(json.get("start").toString());
             FileUploadFile fileUploadFile=new FileUploadFile();
             fileUploadFile.setFile(file);
             if (start != -1) {
