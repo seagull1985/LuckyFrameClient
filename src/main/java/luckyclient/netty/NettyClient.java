@@ -51,9 +51,9 @@ public class NettyClient {
                         public void initChannel(SocketChannel ch) throws Exception {
                             ByteBuf delimiter = Unpooled.copiedBuffer("$_".getBytes());
                             ChannelPipeline p = ch.pipeline();
+                            p.addLast(new DelimiterBasedFrameDecoder(1024, delimiter));
                             p.addLast("decoder", new StringDecoder());
                             p.addLast("encoder", new StringEncoder());
-                            p.addLast(new DelimiterBasedFrameDecoder(1024, delimiter));
                             p.addLast(new IdleStateHandler(1,0,0,TimeUnit.SECONDS));
                             p.addLast(clientHandler);
                         }
