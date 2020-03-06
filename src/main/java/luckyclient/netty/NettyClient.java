@@ -1,6 +1,7 @@
 package luckyclient.netty;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -52,8 +53,8 @@ public class NettyClient {
                             ByteBuf delimiter = Unpooled.copiedBuffer("$_".getBytes());
                             ChannelPipeline p = ch.pipeline();
                             p.addLast(new DelimiterBasedFrameDecoder(1024, delimiter));
-                            p.addLast("decoder", new StringDecoder());
-                            p.addLast("encoder", new StringEncoder());
+                            p.addLast("decoder", new StringDecoder(Charset.forName("GBK")));
+                            p.addLast("encoder", new StringEncoder(Charset.forName("UTF-8")));
                             p.addLast(new IdleStateHandler(1,0,0,TimeUnit.SECONDS));
                             p.addLast(clientHandler);
                         }

@@ -63,7 +63,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws UnsupportedEncodingException, InterruptedException {
         //服务端消息处理,如果接收到测试任务方法，则直接产生一个http请求并发送请求到本地
-        String jsonStr = new String(msg.toString().getBytes(), "UTF-8");
+        String jsonStr = msg.toString();
         JSONObject json = new JSONObject();
         try {
             json = JSON.parseObject(jsonStr);
