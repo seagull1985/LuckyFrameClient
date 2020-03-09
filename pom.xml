@@ -4,7 +4,7 @@
 
 	<groupId>LuckyFrameClient</groupId>
 	<artifactId>LuckyFrameClient</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>3.2</version>
 	<packaging>jar</packaging>
 
 	<name>LuckyFrameClient</name>
