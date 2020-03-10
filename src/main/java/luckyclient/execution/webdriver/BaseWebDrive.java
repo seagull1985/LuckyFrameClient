@@ -30,9 +30,10 @@ import luckyclient.utils.config.SysConfig;
 public class BaseWebDrive {
 
 	/**
-	 * @param args
-	 * @throws IOException
-	 * @throws IOException
+	 * 进测试结果进行截图
+	 * @param driver
+	 * @param imgname
+	 * @return
 	 */
 	public static Boolean webScreenShot(WebDriver driver,String imgname) {
 		Boolean result = false;

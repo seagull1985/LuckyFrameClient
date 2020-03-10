@@ -21,13 +21,14 @@ import luckyclient.utils.httputils.HttpRequest;
 public class PostServerApi {
 	
 	private static final String PREFIX = "/openPostApi";
-	
+
 	/**
 	 * put web界面的数据到服务端
-	 * @param sign
-	 * @param executor
-	 * @param loglevel
-	 * @param detail
+	 * @param userId
+	 * @param caseId
+	 * @param logLevel
+	 * @param logDetail
+	 * @param debugIsend
 	 */
 	public static void cPostDebugLog(Integer userId, Integer caseId, String logLevel, String logDetail,Integer debugIsend){
 		ProjectCaseDebug projectCaseDebug = new ProjectCaseDebug();
@@ -103,39 +104,37 @@ public class PostServerApi {
 		
 		HttpRequest.httpClientPostJson(PREFIX+"/clientPostTaskCaseLog", JSONObject.toJSONString(taskCaseLog));
 	}
-	
+
 	/**
 	 * 更新任务执行数据
 	 * @param taskId
-	 * @param casecount
-	 * @author Seagull
-	 * @date 2019年4月22日
+	 * @param caseCount
+	 * @param taskStatus
+	 * @return
 	 */
 	public static String clientUpdateTaskExecuteData(Integer taskId, Integer caseCount, Integer taskStatus){
 		String str = "{\"taskId\":"+taskId+",\"caseCount\":"+caseCount+",\"taskStatus\":"+taskStatus+"}";
 		JSONObject jsonObject = JSON.parseObject(str);
 		return HttpRequest.httpClientPostJson(PREFIX+"/clientUpdateTaskExecuteData", jsonObject.toJSONString());
 	}
-	
+
 	/**
 	 * 更新任务执行数据
 	 * @param taskId
-	 * @param casecount
-	 * @author Seagull
-	 * @date 2019年4月22日
+	 * @param caseId
+	 * @return
 	 */
 	public static String clientDeleteTaskCaseLog(Integer taskId, Integer caseId){
 		String str = "{\"taskId\":"+taskId+",\"caseId\":"+caseId+"}";
 		JSONObject jsonObject = JSON.parseObject(str);
 		return HttpRequest.httpClientPostJson(PREFIX+"/clientDeleteTaskCaseLog", jsonObject.toJSONString());
 	}
-	
+
 	/**
 	 * 提取测试用例的详细日志以及结果
-	 * @param taskId
-	 * @param casecount
-	 * @author Seagull
-	 * @date 2019年4月22日
+	 * @param taskName
+	 * @param caseSign
+	 * @return
 	 */
 	public static String getLogDetailResult(String taskName, String caseSign){
 		String str = "{\"taskName\":\""+taskName+"\",\"caseSign\":\""+caseSign+"\"}";

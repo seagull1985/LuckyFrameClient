@@ -19,8 +19,6 @@ public class RmtShellExecutor {
 	 * @param user 主机登陆用户名
 	 * @param psw  主机登陆密码
 	 * @param port 主机ssh2登陆端口，如果取默认值，传-1
-	 * @param privateKey 密钥文件路径
-	 * @param passphrase 密钥的密码
 	 * @param command Shell命令   cd /home/pospsettle/tomcat-7.0-7080/bin&&./restart.sh
 	 */
 	public static String sshShell(String ip, String user, String psw

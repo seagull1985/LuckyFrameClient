@@ -82,7 +82,7 @@ public class DbToolkit {
     /** 
      * 在一个数据库连接上执行一个静态SQL语句 
      * 
-     * @param conn数据库连接 
+     * @param conn 数据库连接
      * @param staticSql 静态SQL语句字符串 
      * @throws SQLException 
      */ 

@@ -15,7 +15,7 @@ public class SubCentreNumActionParser implements ActionKeyWordParser {
 
     /**
      * 截取测试结果指定开始及结束位置字符串
-     * @param actionKeyWord 动作关键字
+     * @param actionParams 动作关键字
      * @param testResult 测试结果
      */
     @Override

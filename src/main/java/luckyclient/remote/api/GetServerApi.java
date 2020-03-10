@@ -30,9 +30,10 @@ import luckyclient.utils.httputils.HttpRequest;
 public class GetServerApi {
 	
 	private static final String PREFIX = "/openGetApi";
+
 	/**
 	 * 通过计划ID获取测试用例对象集
-	 * @param planid
+	 * @param planId
 	 * @return
 	 */
 	public static List<ProjectCase> getCasesbyplanId(int planId) {
@@ -98,7 +99,7 @@ public class GetServerApi {
 
 	/**
 	 * 通过用例ID获取对象
-	 * @param sign
+	 * @param caseId
 	 * @return
 	 */
 	public static ProjectCase cGetCaseByCaseId(Integer caseId) {
@@ -121,10 +122,10 @@ public class GetServerApi {
 		}
 		return paramsList;
 	}
-	
+
 	/**
 	 * 通过计划ID获取测试用例对象集
-	 * @param planid
+	 * @param taskId
 	 * @return
 	 */
 	public static List<Integer> clientGetCaseListForUnSucByTaskId(Integer taskId) {

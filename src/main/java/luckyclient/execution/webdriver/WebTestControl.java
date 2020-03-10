@@ -38,11 +38,9 @@ import luckyclient.utils.LogUtil;
 public class WebTestControl {
 
 	/**
-	 * @param args
-	 * @throws ClassNotFoundException
-	 *             控制台模式调度计划执行用例
+	 * 控制台模式调度计划执行用例
+	 * @param planname
 	 */
-
 	public static void manualExecutionPlan(String planname) {
 		// 不记日志到数据库
 		serverOperation.exetype = 1;

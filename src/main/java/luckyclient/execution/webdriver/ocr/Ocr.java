@@ -45,11 +45,11 @@ public class Ocr {
 	/**
 	 * 默认把截图放在C盘根目录
 	 */
-	private static String cmdname = "handlingCAPTCHA.bat";  
+	private static String cmdname = "handlingCAPTCHA.bat";
 
 	/**
 	 * 读取生成的TXT文件中的验证码
-	 * @param filePath
+	 * @return
 	 */
 	private static String readTextFile() {
 		String lineTxt = "";

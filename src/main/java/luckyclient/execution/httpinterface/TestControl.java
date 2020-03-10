@@ -37,11 +37,10 @@ public class TestControl {
 	public static int THREAD_COUNT = 0;
 
 	/**
-	 * @param args
-	 * @throws ClassNotFoundException
-	 *             控制台模式调度计划执行用例
+	 * 控制台模式调度计划执行用例
+	 * @param planname
+	 * @throws Exception
 	 */
-
 	public static void manualExecutionPlan(String planname) throws Exception {
 		serverOperation.exetype = 1;
 		int threadcount = 10;
@@ -82,11 +81,10 @@ public class TestControl {
 	}
 
 	/**
-	 * @param args
-	 * @throws ClassNotFoundException
-	 *             计划任务模式调度计划执行用例
+	 * 计划任务模式调度计划执行用例
+	 * @param task
+	 * @throws Exception
 	 */
-
 	public static void taskExecutionPlan(TaskExecute task) throws Exception {
 		serverOperation.exetype = 0;
 		String taskid = task.getTaskId().toString();

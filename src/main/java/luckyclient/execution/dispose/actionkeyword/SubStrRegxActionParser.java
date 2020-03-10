@@ -14,7 +14,7 @@ public class SubStrRegxActionParser implements ActionKeyWordParser {
 
     /**
      * 获取JSON字符串指定Key的值，采用正则匹配
-     * @param actionKeyWord 动作关键字
+     * @param actionParams 动作关键字
      * @param testResult 测试结果
      */
     @Override

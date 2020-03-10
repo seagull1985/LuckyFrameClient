@@ -62,10 +62,11 @@ public class AndroidBaseAppium {
 	}
 
 	/**
-	 * @param args
-	 * @throws IOException
-	 * appium不支持中文输入 参考了robotium的以js方式为元素直接设置value的做法
+	 *  appium不支持中文输入 参考了robotium的以js方式为元素直接设置value的做法
 	 * 利用Selenium中Webdriver执行js方法实现中文输入
+	 * @param appium
+	 * @param preferences
+	 * @param value
 	 */
 	public static void sendChinese(AndroidDriver<AndroidElement> appium, String preferences, String value) {
 		org.openqa.selenium.JavascriptExecutor jse = (org.openqa.selenium.JavascriptExecutor) appium;
@@ -73,8 +74,14 @@ public class AndroidBaseAppium {
 	}
 
 	/**
-	 * @param args
 	 * js webview 支持4.1～4.4
+	 * @param appium
+	 * @param sX
+	 * @param sY
+	 * @param eX
+	 * @param eY
+	 * @param duration
+	 * @throws Exception
 	 */
 	public static void webViewSwipe(AndroidDriver<AndroidElement> appium, Double sX, Double sY, Double eX, Double eY,
 			Double duration) throws Exception {
@@ -100,8 +107,13 @@ public class AndroidBaseAppium {
 	}
 
 	/**
-	 * @param args
 	 * 调用 ADB直接滑动 支持4.1～4.4
+	 * @param appium
+	 * @param sX
+	 * @param sY
+	 * @param eX
+	 * @param eY
+	 * @throws Exception
 	 */
 	public static void adbSwipe(AndroidDriver<AndroidElement> appium, Double sX, Double sY, Double eX, Double eY)
 			throws Exception {
@@ -133,8 +145,11 @@ public class AndroidBaseAppium {
 	}
 
 	/**
-	 * @param args
 	 * 屏幕点击事件
+	 * @param drivers
+	 * @param x
+	 * @param y
+	 * @param duration
 	 */
 	public static void clickScreenForJs(AndroidDriver<AndroidElement> drivers, int x, int y, int duration) {
 		JavascriptExecutor js = (JavascriptExecutor) drivers;

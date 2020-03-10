@@ -22,11 +22,13 @@ import luckyclient.utils.LogUtil;
  * 
  */
 public class BatchTestCaseExecution {
-	
+
 	/**
-	 * @param args
-	 * @throws ClassNotFoundException
 	 * 创建线程池，多线程执行用例
+	 * @param projectname
+	 * @param taskid
+	 * @param batchcase
+	 * @throws Exception
 	 */
 	
 	public static void batchCaseExecuteForTast(String projectname,String taskid,String batchcase) throws Exception{

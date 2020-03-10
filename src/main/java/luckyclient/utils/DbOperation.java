@@ -29,8 +29,7 @@ public class DbOperation {
 	
 	/**
 	 * 执行SQL
-	 * @param request
-	 * @param response
+	 * @param sql
 	 * @throws Exception 
 	 */
 	public String executeSql(String sql) throws Exception{
@@ -54,8 +53,7 @@ public class DbOperation {
 	
 	/**
 	 * 执行SQL流水查询
-	 * @param request
-	 * @param response
+	 * @param sql
 	 * @throws SQLException 
 	 */
 	public String executeQuery(String sql) throws Exception{

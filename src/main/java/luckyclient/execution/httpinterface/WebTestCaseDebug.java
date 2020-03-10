@@ -33,8 +33,9 @@ import luckyclient.utils.LogUtil;
  */
 public class WebTestCaseDebug {
     /**
-     * @param executor
-     * @param sign 用于在WEB页面上调试用例时提供的接口
+     * 用于在WEB页面上调试用例时提供的接口
+     * @param caseIdStr
+     * @param userIdStr
      */
     public static void oneCaseDebug(String caseIdStr, String userIdStr) {
         Map<String, String> variable = new HashMap<>(0);

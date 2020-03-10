@@ -19,7 +19,7 @@ public class JsonPathActionParser implements ActionKeyWordParser {
     /**
      * 通过jsonPath表达式获取JSON字符串指定值
      * 仅支持返回值是String类型，不支持List,如果jsonPath表达式返回的是List将抛出异常
-     * @param actionKeyWord 动作关键字
+     * @param actionParams 动作关键字
      * @param testResult 测试结果
      */
 	@Override

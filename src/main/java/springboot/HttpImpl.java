@@ -52,7 +52,6 @@ public class HttpImpl {
 	/**
 	 * 运行自动化任务
 	 * @param req
-	 * @param res
 	 * @return
 	 * @throws RemoteException
 	 */

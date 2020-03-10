@@ -41,8 +41,7 @@ public class HttpRequest {
 
 	/**
 	 * 字符串参数
-	 * 
-	 * @param url
+	 * @param repath
 	 * @return
 	 */
 	public static String loadJSON(String repath) {
@@ -80,11 +79,8 @@ public class HttpRequest {
 
 	 /**
      * 向指定 URL 发送POST方法的请求
-     * 
-     * @param url
-     *            发送请求的 URL
      * @param param
-     *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+     * 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
      * @return 所代表远程资源的响应结果
      */
     public static String sendPost(String repath, String param) {
@@ -139,12 +135,7 @@ public class HttpRequest {
 	 * 使用HttpClient以JSON格式发送post请求
 	 * @param urlParam
 	 * @param params
-	 * @param charset
-	 * @param headmsg
-	 * @param cerpath
 	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws KeyManagementException
 	 */
 	public static String httpClientPostJson(String urlParam, String params){		
 		StringBuffer resultBuffer = null;
