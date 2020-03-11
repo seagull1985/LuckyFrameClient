@@ -19,6 +19,7 @@ import io.netty.channel.EventLoop;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import luckyclient.utils.config.SysConfig;
+import springboot.RunService;
 
 
 public class ClientHandler extends ChannelHandlerAdapter {
@@ -39,7 +40,9 @@ public class ClientHandler extends ChannelHandlerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(ClientHandler.class);
 
-    private static final String HOST_NAME = SysConfig.getConfiguration().getProperty("host.name");
+    private static final String NETTY_HOST = SysConfig.getConfiguration().getProperty("netty.host");
+
+    private static final String CLIENT_NAME = SysConfig.getConfiguration().getProperty("client.name");
 
     private static final String CLIENT_VERSION = SysConfig.getConfiguration().getProperty("client.verison");
 
@@ -207,8 +210,10 @@ public class ClientHandler extends ChannelHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //发送客户端登录消息
         JSONObject json = new JSONObject();
-        json.put("hostName", HOST_NAME);
+        json.put("hostName", NETTY_HOST);
+        json.put("clientName", CLIENT_NAME);
         json.put("version", CLIENT_VERSION);
+        json.put("ip", RunService.CLIENT_IP);
         json.put("method", "clientUp");
         ClientHandler.ctx = ctx;
         sendMessage(json.toString());
@@ -248,7 +253,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                 /**发送心跳,保持长连接*/
                 JSONObject json = new JSONObject();
                 json.put("method", "ping");
-                json.put("hostName", HOST_NAME);
+                json.put("hostName", NETTY_HOST);
                 //ctx.channel().writeAndFlush(json.toString() + "$_").sync();
                 sendMessage(json.toString());
                 //log.info("心跳发送成功!");

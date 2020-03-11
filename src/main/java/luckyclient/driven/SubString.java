@@ -76,7 +76,7 @@ public class SubString {
 	 * 截取字符串到指定字符结束
 	 * 
 	 * @param str
-	 * @param startstr
+	 * @param endstr
 	 * @return
 	 */
 	public static String subEndStr(String str, String endstr) {
@@ -93,8 +93,8 @@ public class SubString {
 	 * 通过字符串位置截取指定字符串的中间字段
 	 * 
 	 * @param str
-	 * @param startstr
-	 * @param endstr
+	 * @param startnum
+	 * @param endnum
 	 * @return
 	 */
 	public static String subCentreNum(String str, String startnum, String endnum) {
@@ -133,7 +133,7 @@ public class SubString {
 	 * 通过字符串位置截取字符串从指定字符开始
 	 * 
 	 * @param str
-	 * @param startstr
+	 * @param startnum
 	 * @return
 	 */
 	public static String subStartNum(String str, String startnum) {
@@ -163,7 +163,7 @@ public class SubString {
 	 * 截取字符串到指定字符结束
 	 * 
 	 * @param str
-	 * @param startstr
+	 * @param endnum
 	 * @return
 	 */
 	public static String subEndNum(String str, String endnum) {
@@ -367,8 +367,8 @@ public class SubString {
 
     /**
      * 通过jsonPath表达式获取JSON字符串指定值
-     * @param actionParams
-     * @param testResult
+     * @param expressionParams
+     * @param jsonString
      * @return
      * @author Seagull
      * @date 2019年8月28日
@@ -411,12 +411,5 @@ public class SubString {
         LogUtil.APP.info("获取JSON字符串指定jsonPath表达式【{}】的值是:{}",expression,jsonString);
         return jsonString;
     }
-    
-    public static void main(String[] args) {
-    	String json = " "
-    			+ "{\"access_token\":\"d26b9148-20c9-4779-888c-0d9988cf3bf5\",\"token_type\":\"bearer\",\"expires_in\":599999,\"scope\":\"1/platformehicle/access_gateway/engine/forbid,1/platformehicle/access_gateway/engine/enable 1/platformehicle/access_gateway/system/diagnosis\"} ";
-    	String key = "access_token";
-    	String indexstr = "1";
-    	System.out.println(getJsonValue(json, key, indexstr));
-	}
+
 }

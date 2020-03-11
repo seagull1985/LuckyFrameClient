@@ -27,13 +27,14 @@ public class RunService {
 
 	private static final Logger log = LoggerFactory.getLogger(RunService.class);
 	private static final Boolean NETTY_MODEL= BooleanUtil.toBoolean(SysConfig.getConfiguration().getProperty("netty.model"));
+	public static String CLIENT_IP = "";
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator +"bootlog4j.conf");
 		SpringApplication.run(RunService.class, args);
 		try {
-			String host = InetAddress.getLocalHost().getHostAddress();
-			log.info("启动客户端监听,请稍后......监听IP:{}",host);
+			CLIENT_IP = InetAddress.getLocalHost().getHostAddress();
+			log.info("启动客户端监听,请稍后......监听IP:{}",CLIENT_IP);
 		} catch (Exception e) {
 			log.error("获取服务IP出现异常......", e);
 		}
