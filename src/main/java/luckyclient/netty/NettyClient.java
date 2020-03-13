@@ -53,8 +53,8 @@ public class NettyClient {
                             ByteBuf delimiter = Unpooled.copiedBuffer("$_".getBytes());
                             ChannelPipeline p = ch.pipeline();
                             p.addLast(new DelimiterBasedFrameDecoder(1024, delimiter));
-                            p.addLast("decoder", new StringDecoder(Charset.forName("GBK")));
-                            p.addLast("encoder", new StringEncoder(Charset.forName("UTF-8")));
+                            p.addLast("decoder", new StringDecoder(Charset.forName("UTF-8")));
+                            p.addLast("encoder", new StringEncoder(Charset.forName("GBK")));
                             p.addLast(new IdleStateHandler(1,0,0,TimeUnit.SECONDS));
                             p.addLast(clientHandler);
                         }

@@ -38,7 +38,7 @@ public class InvokeMethod {
      * @param functionname
      * @param getParameterValues
      * @param steptype
-     * @param action
+     * @param extend
      * @return
      */
     public static String callCase(String packagename, String functionname, Object[] getParameterValues, int steptype, String extend) {

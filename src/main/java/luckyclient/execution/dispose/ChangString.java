@@ -209,6 +209,10 @@ public class ChangString {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map.Entry<String, Object> parseJsonMap(Map.Entry<String, Object> entry,String key,String value,int keyindex){
+		//如果是字符串型的null直接把对象设置为对象null
+		if("NULL".equals(value)){
+			value = null;
+		}
 		//如果是单个map继续遍历
 		if(entry.getValue() instanceof Map){
 		LinkedHashMap<String, Object> jsonMap = JSON.parseObject(entry.getValue().toString(), new TypeReference<LinkedHashMap<String, Object>>(){});

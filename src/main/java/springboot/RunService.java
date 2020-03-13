@@ -24,6 +24,10 @@ import luckyclient.utils.config.SysConfig;
  */
 @SpringBootApplication
 public class RunService {
+	/*
+	 * 注意：请不要在此处使用IDEA运行（Run）客户端，客户端的启动方式，请参照官网文档
+	 * 如果IDEA工具上运行时出现乱码，请设置VM options,添加-Dfile.encoding=GBK即可
+	 * */
 
 	private static final Logger log = LoggerFactory.getLogger(RunService.class);
 	private static final Boolean NETTY_MODEL= BooleanUtil.toBoolean(SysConfig.getConfiguration().getProperty("netty.model"));

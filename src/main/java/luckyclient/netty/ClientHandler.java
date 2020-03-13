@@ -1,6 +1,7 @@
 package luckyclient.netty;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -65,8 +66,9 @@ public class ClientHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws UnsupportedEncodingException, InterruptedException {
+        //统一转编码
+        String jsonStr = URLDecoder.decode(msg.toString(), "GBK");
         //服务端消息处理,如果接收到测试任务方法，则直接产生一个http请求并发送请求到本地
-        String jsonStr = msg.toString();
         JSONObject json = new JSONObject();
         try {
             json = JSON.parseObject(jsonStr);
@@ -262,8 +264,8 @@ public class ClientHandler extends ChannelHandlerAdapter {
         super.userEventTriggered(ctx, evt);
     }
 
-
     public static void sendMessage(String json) throws InterruptedException {
         ctx.channel().writeAndFlush(Unpooled.copiedBuffer((json + "$_").getBytes()));
     }
+
 }
