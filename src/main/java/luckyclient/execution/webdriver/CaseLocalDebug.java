@@ -27,8 +27,8 @@ public class CaseLocalDebug{
 
 	/**
 	 * 单个用例Web UI调试
-	 * @param wd
-	 * @param testCaseExternalId
+	 * @param wd 驱动
+	 * @param testCaseExternalId 用例编号
 	 * @author Seagull
 	 * @date 2020年1月20日
 	 */
@@ -52,9 +52,9 @@ public class CaseLocalDebug{
 	
 	/**
 	 * 多个用例串行Web UI调试
-	 * @param wd
-	 * @param projectname
-	 * @param addtestcase
+	 * @param wd 驱动
+	 * @param projectname 项目名称
+	 * @param addtestcase 用例集
 	 * @author Seagull
 	 * @date 2020年1月20日
 	 */
@@ -65,8 +65,8 @@ public class CaseLocalDebug{
 		    LogUtil.APP.info("开始调用方法，项目名:{}，用例编号:{}",projectname,testCaseExternalId); 
 		    oneCasedebug(wd,testCaseExternalId);
 		    }catch(Exception e){
-		    	continue;
-		    }
+				LogUtil.APP.error("用例运行出现异常，用例编号:{}",testCaseExternalId);
+			}
 		}
 	}
 

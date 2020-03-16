@@ -30,10 +30,10 @@ public class WebDriverInitialization{
 	private static final String OS=System.getProperty("os.name").toLowerCase();
 	/**
 	 * 初始化WebDriver
-	 * @param drivertype
-	 * @return
-	 * @throws WebDriverException
-	 * @throws IOException
+	 * @param drivertype 浏览器类型
+	 * @return 返回初始化结果
+	 * @throws WebDriverException 驱动抛出异常
+	 * @throws IOException 读取配置文件异常
 	 */
 	public static WebDriver setWebDriverForTask(int drivertype) throws WebDriverException,IOException{
 		// 参数为空
@@ -100,10 +100,12 @@ public class WebDriverInitialization{
 		
 		//解决webdriver在unix环境中，最大化会出现异常的bug，unix最大化在options中单独设置
 		if(OS.startsWith("win")){
+			assert webDriver != null;
 			webDriver.manage().window().maximize();
 		}
 
 		//设置页面加载最大时长30秒
+		assert webDriver != null;
 		webDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
 		//设置元素出现最大时长30秒  
 		webDriver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -113,8 +115,8 @@ public class WebDriverInitialization{
 
 	/**
 	 * 初始化WebDriver
-	 * @return
-	 * @throws IOException
+	 * @return 返回初始化结果
+	 * @throws IOException 读取配置文件异常
 	 */
 	public static WebDriver setWebDriverForLocal() throws IOException{
 		File directory = new File("");

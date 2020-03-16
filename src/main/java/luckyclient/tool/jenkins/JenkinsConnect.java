@@ -34,9 +34,7 @@ public class JenkinsConnect {
 
 	/**
 	 * 如果有些 API 该Jar工具包未提供，可以用此Http客户端操作远程接口，执行命令
-	 * @return
-	 * @author Seagull
-	 * @date 2019年10月29日
+	 * @return 返回jenkins客户端对象
 	 */
 	public JenkinsHttpClient getClient() {
 		JenkinsHttpClient jenkinsHttpClient = null;
@@ -50,7 +48,7 @@ public class JenkinsConnect {
 
 	/**
 	 * Jenkins API链接
-	 * @return
+	 * @return 返回jenkins服务对象
 	 * @author Seagull
 	 * @date 2019年10月29日
 	 */

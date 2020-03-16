@@ -60,11 +60,11 @@ public class ThreadForExecuteCase extends Thread {
         }
         // 加入全局变量
         variable.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
-        String functionname = null;
-        String packagename = null;
-        String expectedresults = null;
-        Integer setcaseresult = 0;
-        Object[] getParameterValues = null;
+        String functionname;
+        String packagename;
+        String expectedresults;
+        int setcaseresult = 0;
+        Object[] getParameterValues;
         String testnote = "初始化测试结果";
         int k = 0;
         // 进入循环，解析单个用例所有步骤
@@ -77,14 +77,12 @@ public class ThreadForExecuteCase extends Thread {
                 packagename = casescript.get("PackageName");
                 functionname = casescript.get("FunctionName");
             } catch (Exception e) {
-                k = 0;
                 LogUtil.APP.error("用例:{} 解析包名或是方法名出现异常，请检查！",testcase.getCaseSign(),e);
                 caselog.insertTaskCaseLog(taskid, caseId, "解析包名或是方法名失败，请检查！", "error", String.valueOf(i + 1), "");
                 break; // 某一步骤失败后，此条用例置为失败退出
             }
             // 用例名称解析出现异常或是单个步骤参数解析异常
             if ((null != functionname && functionname.contains("解析异常")) || k == 1) {
-                k = 0;
                 testnote = "用例第" + (i + 1) + "步解析出错啦！";
                 break;
             }

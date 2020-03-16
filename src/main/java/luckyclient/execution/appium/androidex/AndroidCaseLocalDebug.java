@@ -1,8 +1,6 @@
 package luckyclient.execution.appium.androidex;
 
-import java.io.IOException;
 import java.util.List;
-
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import luckyclient.remote.api.GetServerApi;
@@ -24,6 +22,11 @@ import luckyclient.utils.LogUtil;
  */
 public class AndroidCaseLocalDebug {
 
+	/**
+	 * IDEA工具方式调试测试用例
+	 * @param androiddriver 初始化appium对象
+	 * @param testCaseExternalId 用例编号
+	 */
 	public static void oneCasedebug(AndroidDriver<AndroidElement> androiddriver, String testCaseExternalId) {
 		// 不记录日志到数据库
 		serverOperation.exetype = 1;
@@ -45,9 +48,9 @@ public class AndroidCaseLocalDebug {
 
 	/**
 	 * 用于做多条用例串行调试
-	 * @param androiddriver
-	 * @param projectname
-	 * @param addtestcase
+	 * @param androiddriver 初始化appium对象
+	 * @param projectname 项目名称
+	 * @param addtestcase 用例集
 	 * @author Seagull
 	 * @date 2019年4月18日
 	 */
@@ -61,7 +64,6 @@ public class AndroidCaseLocalDebug {
 				oneCasedebug(androiddriver, testCaseExternalId);
 			} catch (Exception e) {
 				LogUtil.APP.error("多用例调试过程中抛出异常！", e);
-				continue;
 			}
 		}
 		// 关闭APP以及appium会话

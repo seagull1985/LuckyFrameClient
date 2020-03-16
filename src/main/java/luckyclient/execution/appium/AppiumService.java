@@ -30,12 +30,12 @@ public class AppiumService extends Thread{
 	                new AppiumServiceBuilder().withArgument(GeneralServerFlag.SESSION_OVERRIDE)
 	                        .withIPAddress(ip.split(":")[0].trim())
 	                        .withAppiumJS(mainjsFile)
-	                        .usingPort(Integer.valueOf(ip.split(":")[1].trim()));
+	                        .usingPort(Integer.parseInt(ip.split(":")[1].trim()));
 
 			AppiumDriverLocalService service = AppiumDriverLocalService.buildService(builder);
 	        service.start();
 	        
-	        if (service == null || !service.isRunning()){
+	        if (!service.isRunning()){
 	        	LogUtil.APP.warn("自动启动Appium服务失败，请检查！");
 	        }else{
 	        	LogUtil.APP.info("自动启动Appium服务成功，监听IP:{} 监听端口:{}",ip.split(":")[0].trim(),ip.split(":")[1].trim());

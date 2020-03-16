@@ -26,7 +26,7 @@ public class DbToolkit {
     /** 
      * 建立数据库链接池
      */ 
-	public ComboPooledDataSource cpds=null;
+	public ComboPooledDataSource cpds;
 	private static final String DRIVERCLASS = DrivenConfig.getConfiguration().getProperty("db.ComboPooledDataSource.DriverClass");
 	
 	public DbToolkit(String urlBase,String usernameBase,String passwordBase){
@@ -57,8 +57,7 @@ public class DbToolkit {
     
 	public  Connection getBaseConnection() throws SQLException{
 		// TODO Auto-generated method stub       
-        Connection conn = cpds.getConnection();
-        return conn; 
+        return cpds.getConnection();
 	}
 
     /** 
@@ -66,25 +65,22 @@ public class DbToolkit {
      * 
      * @param conn            数据库连接 
      * @param staticSql 静态SQL语句字符串 
-     * @return 返回查询结果集ResultSet对象 
-     * @throws SQLException 
+     * @return 返回查询结果集ResultSet对象
      */ 
     public static ResultSet executeQuery(Connection conn, String staticSql) throws SQLException { 
     	//创建执行SQL的对象 
             Statement stmt = conn.createStatement(); 
             
           //执行SQL，并获取返回结果 
-            ResultSet rs = stmt.executeQuery(staticSql); 
-           // stmt.close();
-            return rs; 
+        // stmt.close();
+            return stmt.executeQuery(staticSql);
     } 
 
     /** 
      * 在一个数据库连接上执行一个静态SQL语句 
      * 
      * @param conn 数据库连接
-     * @param staticSql 静态SQL语句字符串 
-     * @throws SQLException 
+     * @param staticSql 静态SQL语句字符串
      */ 
     public static int executeSQL(Connection conn, String staticSql) throws SQLException { 
     	//创建执行SQL的对象 

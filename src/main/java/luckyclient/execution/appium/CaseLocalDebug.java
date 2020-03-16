@@ -27,8 +27,8 @@ public class CaseLocalDebug{
 
 	/**
 	 * 单个移动端用例调试
-	 * @param appium
-	 * @param testCaseExternalId
+	 * @param appium appium初始化对象
+	 * @param testCaseExternalId 用例编号
 	 * @author Seagull
 	 * @date 2020年1月20日
 	 */
@@ -52,9 +52,9 @@ public class CaseLocalDebug{
 	
 	/**
 	 * 多个移动端用例调试
-	 * @param appium
-	 * @param projectname
-	 * @param addtestcase
+	 * @param appium appium对象
+	 * @param projectname 项目名
+	 * @param addtestcase 用例对象集
 	 * @author Seagull
 	 * @date 2020年1月20日
 	 */
@@ -65,8 +65,8 @@ public class CaseLocalDebug{
 		    LogUtil.APP.info("开始调用方法，项目名:{}，用例编号:{}",projectname,testCaseExternalId); 
 		    oneCasedebug(appium,testCaseExternalId);
 		    }catch(Exception e){
-		    	continue;
-		    }
+				LogUtil.APP.info("运行用例 出现异常，用例编号:{}",testCaseExternalId);
+			}
 		}
 	}
 

@@ -43,7 +43,7 @@ public class AppTestControl {
 
 	/**
 	 * 控制台模式调度计划执行用例
-	 * @param planname
+	 * @param planname 测试计划名称
 	 */
 	public static void manualExecutionPlan(String planname) {
 		// 不记日志到数据库
@@ -65,7 +65,7 @@ public class AppTestControl {
 		}
 		serverOperation caselog = new serverOperation();
 		List<ProjectCase> testCases = GetServerApi.getCasesbyplanname(planname);
-		List<ProjectCaseParams> pcplist = new ArrayList<ProjectCaseParams>();
+		List<ProjectCaseParams> pcplist = new ArrayList<>();
 		if (testCases.size() != 0) {
 			pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
 		}
@@ -84,21 +84,18 @@ public class AppTestControl {
 				} else if ("IOS".equals(properties.getProperty("platformName"))) {
 					IosCaseExecution.caseExcution(testcase, steps, taskid, iosdriver, caselog, pcplist);
 				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				LogUtil.APP.error("用户执行过程中抛出InterruptedException异常！", e);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				LogUtil.APP.error("用户执行过程中抛出IOException异常！", e);
+			} catch (Exception e) {
+				LogUtil.APP.error("用户执行过程中抛出Exception异常！", e);
 			}
 			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		}
 		LogUtil.APP.info("当前项目测试计划中的用例已经全部执行完成...");
 		// 关闭APP以及appium会话
 		if ("Android".equals(properties.getProperty("platformName"))) {
+			assert androiddriver != null;
 			androiddriver.closeApp();
 		} else if ("IOS".equals(properties.getProperty("platformName"))) {
+			assert iosdriver != null;
 			iosdriver.closeApp();
 		}
 	}
@@ -113,7 +110,7 @@ public class AppTestControl {
 		Properties properties = AppiumConfig.getConfiguration();
 		AppiumService as=null;
 		//根据配置自动启动Appiume服务
-		if(Boolean.valueOf(properties.getProperty("autoRunAppiumService"))){
+		if(Boolean.parseBoolean(properties.getProperty("autoRunAppiumService"))){
 			as =new AppiumService();
 			as.start();
 			Thread.sleep(10000);
@@ -127,7 +124,7 @@ public class AppTestControl {
 		String jobname = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId()).getSchedulingName();
         int[] tastcount = null;
 		// 判断是否要自动重启TOMCAT
-		if (restartstatus.indexOf("Status:true") > -1) {
+		if (restartstatus.contains("Status:true")) {
 			// 判断是否构建是否成功
 			if (BuildResult.SUCCESS.equals(buildResult)) {
 				try {
@@ -161,22 +158,23 @@ public class AppTestControl {
 						} else if ("IOS".equals(properties.getProperty("platformName"))) {
 							IosCaseExecution.caseExcution(testcase, steps, taskId, iosdriver, caselog, pcplist);
 						}
-					} catch (InterruptedException | IOException e) {
-						// TODO Auto-generated catch block
+					} catch (Exception e) {
 						LogUtil.APP.error("用户执行过程中抛出异常！", e);
 					}
 					LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 				}
 				tastcount = serverOperation.updateTaskExecuteData(taskId, cases.size(),2);
 				String testtime = serverOperation.getTestTime(taskId);
-				LogUtil.APP.info("当前项目【{]】测试计划中的用例已经全部执行完成...",projectname);
+				LogUtil.APP.info("当前项目【{}】测试计划中的用例已经全部执行完成...",projectname);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
 						HtmlMail.htmlContentFormat(tastcount, taskId, buildResult.toString(), restartstatus, testtime, jobname),
 						taskId, taskScheduling, tastcount);
 				// 关闭APP以及appium会话
 				if ("Android".equals(properties.getProperty("platformName"))) {
+					assert androiddriver != null;
 					androiddriver.closeApp();
 				} else if ("IOS".equals(properties.getProperty("platformName"))) {
+					assert iosdriver != null;
 					iosdriver.closeApp();
 				}
 			} else {

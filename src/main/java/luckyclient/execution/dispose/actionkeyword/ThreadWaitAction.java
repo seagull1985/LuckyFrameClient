@@ -15,9 +15,9 @@ public class ThreadWaitAction implements ActionKeyWordParser {
 
     /**
      * 动作关键字
-     * @param actionParams
-     * @param testResult
-     * @return
+     * @param actionParams 关键字参数
+     * @param testResult 待处理测试结果
+     * @return 返回处理后结果
      */
     @Override
     public String parse(String actionParams, String testResult) {

@@ -31,12 +31,10 @@ public class BaseWebDrive {
 
 	/**
 	 * 进测试结果进行截图
-	 * @param driver
-	 * @param imgname
-	 * @return
+	 * @param driver 驱动
+	 * @param imgname 图片名称
 	 */
-	public static Boolean webScreenShot(WebDriver driver,String imgname) {
-		Boolean result = false;
+	public static void webScreenShot(WebDriver driver, String imgname) {
 		String relativelyPath = System.getProperty("user.dir");
 		String pngpath=relativelyPath +File.separator+ "log"+File.separator+"ScreenShot" +File.separator+ imgname + ".png";
 
@@ -51,19 +49,18 @@ public class BaseWebDrive {
 		scrFile.deleteOnExit();
 		LogUtil.APP
 				.info("已对当前界面进行截图操作，可通过用例执行界面的日志明细查看，也可以前往客户端上查看...【{}】",pngpath);
-		return result;
 	}
 
 	/**
 	 * 在自动化过程中加入点击显示效果
-	 * @param driver
-	 * @param element
+	 * @param driver 驱动
+	 * @param element 定位元素
 	 * @author Seagull
 	 * @date 2019年9月6日
 	 */
     public static void highLightElement(WebDriver driver, WebElement element){
     	Properties properties = SysConfig.getConfiguration();
-    	Boolean highLight = BooleanUtil.toBoolean(properties.getProperty("webdriver.highlight"));
+    	boolean highLight = BooleanUtil.toBoolean(properties.getProperty("webdriver.highlight"));
 
     	if(highLight){
             JavascriptExecutor js = (JavascriptExecutor) driver;

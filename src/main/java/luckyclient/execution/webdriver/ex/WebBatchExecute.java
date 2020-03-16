@@ -29,7 +29,7 @@ import luckyclient.utils.LogUtil;
  */
 public class WebBatchExecute{
 	
-	public static void batchCaseExecuteForTast(String projectname,String taskid,String batchcase) throws IOException{
+	public static void batchCaseExecuteForTast(String taskid, String batchcase) throws IOException{
 		//记录日志到数据库
 		serverOperation.exetype = 0;   
 		TestControl.TASKID = taskid;
@@ -38,45 +38,43 @@ public class WebBatchExecute{
 		try {
 			wd = WebDriverInitialization.setWebDriverForTask(drivertype);
 		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
 			LogUtil.APP.error("初始化WebDriver出现异常！", e1);
 		}
 		serverOperation caselog = new serverOperation();
-		TaskExecute task=GetServerApi.cgetTaskbyid(Integer.valueOf(taskid));
+		TaskExecute task=GetServerApi.cgetTaskbyid(Integer.parseInt(taskid));
 		List<ProjectCaseParams> pcplist=GetServerApi.cgetParamsByProjectid(task.getProjectId().toString());
 		 //执行全部非成功状态用例
-		if(batchcase.indexOf("ALLFAIL")>-1){   
+		if(batchcase.contains("ALLFAIL")){
 			List<Integer> caseIdList = caselog.getCaseListForUnSucByTaskId(taskid);
-			for(int i=0;i<caseIdList.size();i++){
-			   ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseIdList.get(i));
-			   List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
-			   //删除旧的日志
-			   serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);    
-			   try {
-				WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				LogUtil.APP.error("用户执行过程中抛出异常！", e);
-			 }
-			}			
-		}else{                                           //批量执行用例
-			String[] temp=batchcase.split("\\#");
-			for(int i=0;i<temp.length;i++){
-				ProjectCase testcase = GetServerApi.cGetCaseByCaseId(Integer.valueOf(temp[i]));
-				List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
+			for (Integer integer : caseIdList) {
+				ProjectCase testcase = GetServerApi.cGetCaseByCaseId(integer);
+				List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
 				//删除旧的日志
 				serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
-					WebCaseExecution.caseExcution(testcase, steps,taskid,wd,caselog,pcplist);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					WebCaseExecution.caseExcution(testcase, steps, taskid, wd, caselog, pcplist);
+				} catch (Exception e) {
+					LogUtil.APP.error("用户执行过程中抛出异常！", e);
+				}
+			}			
+		}else{                                           //批量执行用例
+			String[] temp=batchcase.split("#");
+			for (String s : temp) {
+				ProjectCase testcase = GetServerApi.cGetCaseByCaseId(Integer.valueOf(s));
+				List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
+				//删除旧的日志
+				serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
+				try {
+					WebCaseExecution.caseExcution(testcase, steps, taskid, wd, caselog, pcplist);
+				} catch (Exception e) {
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				}
 			}
 		}
 		serverOperation.updateTaskExecuteData(taskid, 0,2);
         //关闭浏览器
-        wd.quit();
+		assert wd != null;
+		wd.quit();
 	}
 	
 }

@@ -50,6 +50,7 @@ public class IpUtils
     public static boolean internalIp(String ip)
     {
         byte[] addr = textToNumericFormatV4(ip);
+        assert addr != null;
         return internalIp(addr) || "127.0.0.1".equals(ip);
     }
 
@@ -76,13 +77,7 @@ public class IpUtils
                     return true;
                 }
             case section5:
-                switch (b1)
-                {
-                    case section6:
-                        return true;
-                    default:
-                        return false;
-                }
+                return b1 == section6;
             default:
                 return false;
         }
@@ -182,7 +177,7 @@ public class IpUtils
         {
             return InetAddress.getLocalHost().getHostAddress();
         }
-        catch (UnknownHostException e)
+        catch (UnknownHostException ignored)
         {
         }
         return "127.0.0.1";
@@ -194,7 +189,7 @@ public class IpUtils
         {
             return InetAddress.getLocalHost().getHostName();
         }
-        catch (UnknownHostException e)
+        catch (UnknownHostException ignored)
         {
         }
         return "δ֪";

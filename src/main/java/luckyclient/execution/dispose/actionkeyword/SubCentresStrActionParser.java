@@ -19,8 +19,8 @@ public class SubCentresStrActionParser implements ActionKeyWordParser {
      */
     @Override
     public String parse(String actionParams, String testResult) {
-        String startstr="";
-        String endstr="";
+        String startstr;
+        String endstr;
         if(actionParams.startsWith("[")&&actionParams.endsWith("]")){
             startstr=actionParams.substring(actionParams.indexOf("[")+1, actionParams.indexOf("]"));
             endstr=actionParams.substring(actionParams.lastIndexOf("[")+1, actionParams.lastIndexOf("]"));

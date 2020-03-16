@@ -23,20 +23,15 @@ import luckyclient.utils.LogUtil;
  * 这是一个受限制的自由软件！您不能在任何未经允许的前提下对程序代码进行修改和用于商业用途；也不允许对程序代码修改后以任何形式任何目的的再发布。
  * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改 有任何疑问欢迎联系作者讨论。 QQ:1573584944 seagull1985
  * =================================================================
- * 
  * @author： seagull
- * 
  * @date 2017年12月1日 上午9:29:40
- * 
  */
 public class AndroidBaseAppium {
 
 	/**
 	 * 安卓手机报错截图
-	 * 
-	 * @param appium
-	 * @param imagname
-	 * @throws IOException
+	 * @param appium appium初始化对象
+	 * @param imagname 截图名称
 	 */
 	public static void screenShot(AndroidDriver<AndroidElement> appium, String imagname) {
 		imagname = imagname + ".png";
@@ -64,33 +59,31 @@ public class AndroidBaseAppium {
 	/**
 	 *  appium不支持中文输入 参考了robotium的以js方式为元素直接设置value的做法
 	 * 利用Selenium中Webdriver执行js方法实现中文输入
-	 * @param appium
-	 * @param preferences
-	 * @param value
+	 * @param appium appium初始化对象
+	 * @param preferences 对象名称
+	 * @param value 传入值
 	 */
 	public static void sendChinese(AndroidDriver<AndroidElement> appium, String preferences, String value) {
-		org.openqa.selenium.JavascriptExecutor jse = (org.openqa.selenium.JavascriptExecutor) appium;
-		jse.executeScript("document.getElementByName('" + preferences + "').value='" + value + "'");
+		((JavascriptExecutor) appium).executeScript("document.getElementByName('" + preferences + "').value='" + value + "'");
 	}
 
 	/**
-	 * js webview 支持4.1～4.4
-	 * @param appium
-	 * @param sX
-	 * @param sY
-	 * @param eX
-	 * @param eY
-	 * @param duration
-	 * @throws Exception
+	 * js webview 支持4.1～4.4 页面滑动
+	 * @param appium appium初始化对象
+	 * @param sX 开始X坐标
+	 * @param sY 开始Y坐标
+	 * @param eX 结束X坐标
+	 * @param eY 结束Y坐标
+	 * @param duration 持续时间
 	 */
 	public static void webViewSwipe(AndroidDriver<AndroidElement> appium, Double sX, Double sY, Double eX, Double eY,
-			Double duration) throws Exception {
+			Double duration) {
 		JavascriptExecutor js;
 		HashMap<String, Double> swipeObject;
 		try {
 			// 滑动
-			js = (JavascriptExecutor) appium;
-			swipeObject = new HashMap<String, Double>(5);
+			js = appium;
+			swipeObject = new HashMap<>(5);
 			swipeObject.put("startX", sX);
 			swipeObject.put("startY", sY);
 			swipeObject.put("endX", eX);
@@ -100,23 +93,18 @@ public class AndroidBaseAppium {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			LogUtil.APP.error("安卓手机滑动出现异常",e);
-		} finally {
-			// 释放变量
 		}
-
 	}
 
 	/**
 	 * 调用 ADB直接滑动 支持4.1～4.4
-	 * @param appium
-	 * @param sX
-	 * @param sY
-	 * @param eX
-	 * @param eY
-	 * @throws Exception
+	 * @param appium appium初始化对象
+	 * @param sX 开始X坐标
+	 * @param sY 开始Y坐标
+	 * @param eX 结束X坐标
+	 * @param eY 结束Y坐标
 	 */
-	public static void adbSwipe(AndroidDriver<AndroidElement> appium, Double sX, Double sY, Double eX, Double eY)
-			throws Exception {
+	public static void adbSwipe(AndroidDriver<AndroidElement> appium, Double sX, Double sY, Double eX, Double eY) {
 		int xLine;
 		int yLine;
 		int sX2;
@@ -138,36 +126,30 @@ public class AndroidBaseAppium {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			LogUtil.APP.error("安卓手机调用 ADB直接滑动出现异常",e);
-		} finally {
-			// 释放变量
 		}
 
 	}
 
 	/**
 	 * 屏幕点击事件
-	 * @param drivers
-	 * @param x
-	 * @param y
-	 * @param duration
+	 * @param drivers appium初始化对象
+	 * @param x 点击X坐标
+	 * @param y 点击Y坐标
+	 * @param duration 持续时间
 	 */
 	public static void clickScreenForJs(AndroidDriver<AndroidElement> drivers, int x, int y, int duration) {
-		JavascriptExecutor js = (JavascriptExecutor) drivers;
-		HashMap<String, Integer> tapObject = new HashMap<String, Integer>(3);
+		HashMap<String, Integer> tapObject = new HashMap<>(3);
 		tapObject.put("x", x);
 		tapObject.put("y", y);
 		tapObject.put("duration", duration);
-		js.executeScript("mobile: tap", tapObject);
+		((JavascriptExecutor) drivers).executeScript("mobile: tap", tapObject);
 	}
 
 	/**
 	 * 拖住页面按屏幕比例向上滑动(手指向下，页面向上)
-	 * 
-	 * @param driver
-	 * @param second
-	 *            持续时间
-	 * @param num
-	 *            滚动次数
+	 * @param driver appium初始化对象
+	 * @param second 持续时间
+	 * @param num 滚动次数
 	 */
 	public static void swipePageUp(AndroidDriver<AndroidElement> driver, Double second, int num) {
 		int nanos = (int) (second * 1000);
@@ -184,10 +166,9 @@ public class AndroidBaseAppium {
 
 	/**
 	 * 拖住页面按屏幕比例向下滑动(手指向上，页面向下)
-	 * 
-	 * @param driver
-	 * @param second
-	 * @param num
+	 * @param driver appium初始化对象
+	 * @param second 持续时间
+	 * @param num 滑动次数
 	 */
 	public static void swipePageDown(AndroidDriver<AndroidElement> driver, Double second, int num) {
 		int nanos = (int) (second * 1000);
@@ -203,10 +184,9 @@ public class AndroidBaseAppium {
 
 	/**
 	 * 拖住页面按屏幕比例向左滑动(手指向左，页面向左滚动)
-	 * 
-	 * @param driver
-	 * @param second
-	 * @param num
+	 * @param driver appium初始化对象
+	 * @param second 持续时间
+	 * @param num 滑动次数
 	 */
 	public static void swipePageLeft(AndroidDriver<AndroidElement> driver, Double second, int num) {
 		int nanos = (int) (second * 1000);
@@ -222,10 +202,9 @@ public class AndroidBaseAppium {
 
 	/**
 	 * 拖住页面按屏幕比例向右滑动(手指向右，页面向右)
-	 * 
-	 * @param driver
-	 * @param second
-	 * @param num
+	 * @param driver appium初始化对象
+	 * @param second 持续时间
+	 * @param num 滑动次数
 	 */
 	public static void swipePageRight(AndroidDriver<AndroidElement> driver, Double second, int num) {
 		int nanos = (int) (second * 1000);

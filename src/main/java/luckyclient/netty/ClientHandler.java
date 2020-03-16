@@ -51,8 +51,6 @@ public class ClientHandler extends ChannelHandlerAdapter {
 
     private static final String SERVER_PORT = SysConfig.getConfiguration().getProperty("server.web.port");
 
-    private int byteRead;
-
 
     private volatile int lastLength = 0;
 
@@ -61,15 +59,15 @@ public class ClientHandler extends ChannelHandlerAdapter {
 
     private static ChannelHandlerContext ctx;
 
-    public ClientHandler() throws IOException {
+    public ClientHandler() {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws UnsupportedEncodingException, InterruptedException {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws UnsupportedEncodingException {
         //统一转编码
         String jsonStr = URLDecoder.decode(msg.toString(), "GBK");
         //服务端消息处理,如果接收到测试任务方法，则直接产生一个http请求并发送请求到本地
-        JSONObject json = new JSONObject();
+        JSONObject json;
         try {
             json = JSON.parseObject(jsonStr);
 
@@ -80,41 +78,37 @@ public class ClientHandler extends ChannelHandlerAdapter {
         log.info("收到服务端消息：" + json.toString());
         //解析消息
         if ("run".equals(json.get("method"))) {
-            try {
-                //返回请求
-                JSONObject re = new JSONObject();
-                re.put("method", "return");
-                Result result = new Result(1, "同步等待消息返回", json.get("uuid").toString(), null);
-                //如果是调度请求，则发起一个HTTP请求
-                //获取是get方法还是post方法
-                String getOrPost = json.get("getOrPost").toString();
-                String urlParam = "http://127.0.0.1:" + port + "/" + json.get("url").toString();
-                Integer socketTimeout = Integer.valueOf(json.get("socketTimeout").toString());
-                String tmpResult = "";
-                if ("get".equals(getOrPost)) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> jsonparams = (Map<String, Object>) json.get("data");
-                    //get方法
-                    try {
-                        tmpResult = HttpRequest.httpClientGet(urlParam, jsonparams, socketTimeout);
-                    } catch (Exception e) {
-                        log.error("转发服务端GET请求出错");
-                    }
-                } else {
-                    String jsonparams = json.get("data").toString();
-                    //post方法
-                    try {
-                        tmpResult = HttpRequest.httpClientPost(urlParam, jsonparams, socketTimeout);
-                    } catch (Exception e) {
-                        log.error("转发服务端POST请求出错");
-                    }
+            //返回请求
+            JSONObject re = new JSONObject();
+            re.put("method", "return");
+            Result result = new Result(1, "同步等待消息返回", json.get("uuid").toString(), null);
+            //如果是调度请求，则发起一个HTTP请求
+            //获取是get方法还是post方法
+            String getOrPost = json.get("getOrPost").toString();
+            String urlParam = "http://127.0.0.1:" + port + "/" + json.get("url").toString();
+            Integer socketTimeout = Integer.valueOf(json.get("socketTimeout").toString());
+            String tmpResult = "";
+            if ("get".equals(getOrPost)) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> jsonparams = (Map<String, Object>) json.get("data");
+                //get方法
+                try {
+                    tmpResult = HttpRequest.httpClientGet(urlParam, jsonparams, socketTimeout);
+                } catch (Exception e) {
+                    log.error("转发服务端GET请求出错");
                 }
-                result.setMessage(tmpResult);
-                re.put("data", result);
-                sendMessage(re.toString());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } else {
+                String jsonparams = json.get("data").toString();
+                //post方法
+                try {
+                    tmpResult = HttpRequest.httpClientPost(urlParam, jsonparams, socketTimeout);
+                } catch (Exception e) {
+                    log.error("转发服务端POST请求出错");
+                }
             }
+            result.setMessage(tmpResult);
+            re.put("data", result);
+            sendMessage(re.toString());
         } else if ("download".equals(json.get("method"))) {
             String loadpath = json.get("path").toString();
             String path = System.getProperty("user.dir") + loadpath;
@@ -147,7 +141,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                 String fileName = jsonparams.get("imgName").toString();
                 String ctxPath = System.getProperty("user.dir") + File.separator + "log" + File.separator + "ScreenShot" + File.separator + fileName;
                 File file = new File(ctxPath);
-                int start = Integer.valueOf(json.get("start").toString());
+                int start = Integer.parseInt(json.get("start").toString());
                 FileUploadFile fileUploadFile = new FileUploadFile();
                 fileUploadFile.setFile(file);
                 if (start != -1) {
@@ -164,6 +158,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                     log.info("文件长度：" + (randomAccessFile.length()) + ",start:" + start + ",a:" + a + ",b:" + b + ",lastLength:" + lastLength);
                     byte[] bytes = new byte[lastLength];
                     log.info("bytes的长度是=" + bytes.length);
+                    int byteRead;
                     if ((byteRead = randomAccessFile.read(bytes)) != -1 && (randomAccessFile.length() - start) > 0) {
                         log.info("byteRead = " + byteRead);
                         fileUploadFile.setEndPos(byteRead);
@@ -209,7 +204,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         //发送客户端登录消息
         JSONObject json = new JSONObject();
         json.put("hostName", NETTY_HOST);
@@ -226,14 +221,11 @@ public class ClientHandler extends ChannelHandlerAdapter {
         log.info("连接已断开，正在尝试重连...");
         //使用过程中断线重连
         final EventLoop eventLoop = ctx.channel().eventLoop();
-        eventLoop.schedule(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    NettyClient.start();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+        eventLoop.schedule(() -> {
+            try {
+                NettyClient.start();
+            } catch (Exception e) {
+                log.error("链接出现异常，正在尝试重连...",e);
             }
         }, 1, TimeUnit.SECONDS);
 
@@ -252,7 +244,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state().equals(IdleState.READER_IDLE)) {
-                /**发送心跳,保持长连接*/
+                //发送心跳,保持长连接
                 JSONObject json = new JSONObject();
                 json.put("method", "ping");
                 json.put("hostName", NETTY_HOST);
@@ -264,7 +256,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
         super.userEventTriggered(ctx, evt);
     }
 
-    public static void sendMessage(String json) throws InterruptedException {
+    public static void sendMessage(String json) {
         ctx.channel().writeAndFlush(Unpooled.copiedBuffer((json + "$_").getBytes()));
     }
 

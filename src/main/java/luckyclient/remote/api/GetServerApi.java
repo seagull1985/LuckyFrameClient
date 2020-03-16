@@ -1,19 +1,11 @@
 package luckyclient.remote.api;
 
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-
 import com.alibaba.fastjson.JSONObject;
-
 import luckyclient.execution.dispose.ParamsManageForSteps;
-import luckyclient.remote.entity.ProjectCase;
-import luckyclient.remote.entity.ProjectCaseParams;
-import luckyclient.remote.entity.ProjectCaseSteps;
-import luckyclient.remote.entity.ProjectProtocolTemplate;
-import luckyclient.remote.entity.ProjectTemplateParams;
-import luckyclient.remote.entity.TaskExecute;
-import luckyclient.remote.entity.TaskScheduling;
+import luckyclient.remote.entity.*;
 import luckyclient.utils.httputils.HttpRequest;
+
+import java.util.List;
 
 
 /**
@@ -33,85 +25,78 @@ public class GetServerApi {
 
 	/**
 	 * 通过计划ID获取测试用例对象集
-	 * @param planId
-	 * @return
+	 * @param planId 测试计划ID
+	 * @return 返回用例List
 	 */
 	public static List<ProjectCase> getCasesbyplanId(int planId) {
-		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseListByPlanId.do?planId=" + planId);		
-        List<ProjectCase> caseList = JSONObject.parseArray(result, ProjectCase.class);
-		return caseList;
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseListByPlanId.do?planId=" + planId);
+		return JSONObject.parseArray(result, ProjectCase.class);
 	}
 
 	/**
 	 * 通过计划名称获取测试用例对象集
-	 * @param name
-	 * @return
+	 * @param name 测试计划名称
+	 * @return 返回用例List
 	 */
 	public static List<ProjectCase> getCasesbyplanname(String name) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseListByPlanName.do?planName=" + name);
-		List<ProjectCase> caseList = JSONObject.parseArray(result, ProjectCase.class);
-		return caseList;
+		return JSONObject.parseArray(result, ProjectCase.class);
 	}
 
 	/**
 	 * 通过用例ID获取下面的步骤对象
-	 * @param caseid
-	 * @return
+	 * @param caseid 用例ID
+	 * @return 返回用例步骤List
 	 */
 	public static List<ProjectCaseSteps> getStepsbycaseid(Integer caseid) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetStepListByCaseId.do?caseId=" + caseid);
-		List<ProjectCaseSteps> stepsList = JSONObject.parseArray(result, ProjectCaseSteps.class);
-		return stepsList;
+		return JSONObject.parseArray(result, ProjectCaseSteps.class);
 	}
 
 	/**
 	 * 通过taskid获取对象
-	 * @param taskid
-	 * @return
+	 * @param taskid 测试任务ID
+	 * @return 返回测试任务对象
 	 */
 	public static TaskExecute cgetTaskbyid(int taskid) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetTaskByTaskId.do?taskId=" + taskid);
-		TaskExecute task = JSONObject.parseObject(result, TaskExecute.class);
-		return task;
+		return JSONObject.parseObject(result, TaskExecute.class);
 	}
 	
 	/**
 	 * 通过taskid获取调度对象
-	 * @param taskid
-	 * @return
+	 * @param taskid 测试任务ID
+	 * @return 返回调度对象
 	 */
 	public static TaskScheduling cGetTaskSchedulingByTaskId(int taskid) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetTaskSchedulingByTaskId.do?taskId=" + taskid);
-		TaskScheduling taskScheduling = JSONObject.parseObject(result, TaskScheduling.class);
-		return taskScheduling;
+		return JSONObject.parseObject(result, TaskScheduling.class);
 	}
 
 	/**
 	 * 通过用例编号获取对象
-	 * @param sign
-	 * @return
+	 * @param sign 用例编号
+	 * @return 用例对象
 	 */
 	public static ProjectCase cgetCaseBysign(String sign) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseByCaseSign.do?caseSign=" + sign);
-		ProjectCase projectCase = JSONObject.parseObject(result, ProjectCase.class);
-		return projectCase;
+		return JSONObject.parseObject(result, ProjectCase.class);
 	}
 
 	/**
 	 * 通过用例ID获取对象
-	 * @param caseId
-	 * @return
+	 * @param caseId 用例ID
+	 * @return 用例对象
 	 */
 	public static ProjectCase cGetCaseByCaseId(Integer caseId) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseByCaseId.do?caseId=" + caseId);
-		ProjectCase projectCase = JSONObject.parseObject(result, ProjectCase.class);
-		return projectCase;
+		return JSONObject.parseObject(result, ProjectCase.class);
 	}
 	
 	/**
 	 * 获取项目下的所有公共参数
-	 * @param projectid
-	 * @return
+	 * @param projectid 项目ID
+	 * @return 公共参数集合
 	 */
 	public static List<ProjectCaseParams> cgetParamsByProjectid(String projectid) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetParamsByProjectId.do?projectId="+projectid);
@@ -125,43 +110,36 @@ public class GetServerApi {
 
 	/**
 	 * 通过计划ID获取测试用例对象集
-	 * @param taskId
-	 * @return
+	 * @param taskId 测试任务ID
+	 * @return 测试用例ID集合
 	 */
 	public static List<Integer> clientGetCaseListForUnSucByTaskId(Integer taskId) {
-		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseListForUnSucByTaskId.do?taskId=" + taskId);		
-        List<Integer> caseIdList = JSONObject.parseArray(result, Integer.class);
-		return caseIdList;
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetCaseListForUnSucByTaskId.do?taskId=" + taskId);
+		return JSONObject.parseArray(result, Integer.class);
 	}
 	
 	/**
 	 * 通过templateId获取实体
-	 * @param templateId
-	 * @return
+	 * @param templateId 模板ID
+	 * @return 协议模板对象
 	 * @author Seagull
 	 * @date 2019年4月24日
 	 */
 	public static ProjectProtocolTemplate clientGetProjectProtocolTemplateByTemplateId(Integer templateId) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetProjectProtocolTemplateByTemplateId.do?templateId=" + templateId);
-		ProjectProtocolTemplate projectProtocolTemplate = JSONObject.parseObject(result, ProjectProtocolTemplate.class);
-		return projectProtocolTemplate;
+		return JSONObject.parseObject(result, ProjectProtocolTemplate.class);
 	}
 	
 	/**
 	 * 通过模板ID获取参数列表
-	 * @param templateId
-	 * @return
+	 * @param templateId 模板ID
+	 * @return 参数集合
 	 * @author Seagull
 	 * @date 2019年4月24日
 	 */
 	public static List<ProjectTemplateParams> clientGetProjectTemplateParamsListByTemplateId(Integer templateId) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetProjectTemplateParamsListByTemplateId.do?templateId=" + templateId);
-		List<ProjectTemplateParams> projectTemplateParamsList = JSONObject.parseArray(result, ProjectTemplateParams.class);
-		return projectTemplateParamsList;
-	}
-	
-	public static void main(String[] args) throws UnsupportedEncodingException {
-
+		return JSONObject.parseArray(result, ProjectTemplateParams.class);
 	}
 
 }

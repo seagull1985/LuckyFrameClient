@@ -2,13 +2,7 @@ package luckyclient.execution.dispose;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -34,10 +28,10 @@ public class ChangString {
 	/**
 	 * 替换变量中的字符
 	 * 
-	 * @param str
-	 * @param variable
-	 * @param changname
-	 * @return
+	 * @param str 待处理字符串
+	 * @param variable 变量集（公共变量、全局变量、局部变量）
+	 * @param changname 变量key
+	 * @return 返回替换后的字符串
 	 */
 	public static String changparams(String str, Map<String, String> variable, String changname) {
 		try {
@@ -45,7 +39,7 @@ public class ChangString {
 				return null;
 			}
 			str = str.replace("&quot;", "\"");
-			str = str.replace("&#39;", "\'");
+			str = str.replace("&#39;", "'");
 			// @@用来注释@的引用作用
 			int varcount = counter(str, "@") - counter(str, "@@") * 2;
 
@@ -55,17 +49,14 @@ public class ChangString {
 				int changcount = 0;
 
 				// 准备将HASHMAP换成LINKMAP，对KEY进行排序，解决要先替换最长KEY的问题
-				List<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>(variable.entrySet());
+				List<Map.Entry<String, String>> list = new ArrayList<>(variable.entrySet());
 				// 然后通过比较器来实现排序
-				Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
-					// 按KEY长度降序排序
-					@Override
-					public int compare(Entry<String, String> o1, Entry<String, String> o2) {
-						return o2.getKey().length() - o1.getKey().length();
-					}
-				});
+				// 按KEY长度降序排序
+				// 然后通过比较器来实现排序
+				// 按KEY长度降序排序
+				list.sort((o1, o2) -> o2.getKey().length() - o1.getKey().length());
 
-				Map<String, String> aMap2 = new LinkedHashMap<String, String>();
+				Map<String, String> aMap2 = new LinkedHashMap<>();
 				for (Map.Entry<String, String> mapping : list) {
 					aMap2.put(mapping.getKey(), mapping.getValue());
 				}
@@ -105,10 +96,9 @@ public class ChangString {
 
 	/**
 	 * 统计字符
-	 * 
-	 * @param str1
-	 * @param str2
-	 * @return
+	 * @param str1 原始字符串
+	 * @param str2 待统计字符串
+	 * @return 返回个数
 	 */
 	public static int counter(String str1, String str2) {
 		int total = 0;
@@ -125,9 +115,8 @@ public class ChangString {
 
 	/**
 	 * 判断是否是数字
-	 * 
-	 * @param str
-	 * @return
+	 * @param str 数字字符
+	 * @return 返回布尔值
 	 */
 	public static boolean isNumeric(String str) {
 		for (int i = 0; i < str.length(); i++) {
@@ -140,22 +129,20 @@ public class ChangString {
 
 	/**
 	 * 判断是否是整数
-	 * 
-	 * @param str
-	 * @return
+	 * @param str 数字字符
+	 * @return 返回布尔值
 	 */
 	public static boolean isInteger(String str) {
-		String patternStr="^[-\\+]?[\\d]*$";
+		String patternStr="^[-+]?[\\d]*$";
 		Pattern pattern = Pattern.compile(patternStr);
 		return pattern.matcher(str).matches();
 	}
 
 	/**
 	 * 替换变量类型
-	 * 
-	 * @param object
-	 * @param str
-	 * @return
+	 * @param object 替换对象
+	 * @param str 替换字符串
+	 * @return 返回对象
 	 */
 	public static Object settype(Object object, String str) {
 		if (object instanceof Integer) {
@@ -185,11 +172,11 @@ public class ChangString {
 	private static Boolean BCHANG=false;
 	/**
 	 * 遍历JSON对象
-	 * @param json
-	 * @param key
-	 * @param value
-	 * @param keyindex
-	 * @return
+	 * @param json 原始json
+	 * @param key 替换key
+	 * @param value 替换值
+	 * @param keyindex 替换key索引
+	 * @return 返回json对象
 	 */
 	public static JSONObject parseJsonString(String json,String key,String value,int keyindex){
 		LinkedHashMap<String, Object> jsonMap = JSON.parseObject(json, new TypeReference<LinkedHashMap<String, Object>>(){});
@@ -201,14 +188,13 @@ public class ChangString {
 	
 	/**
 	 * 替换遍历后JSON对象中的KEY
-	 * @param entry
-	 * @param key
-	 * @param value
-	 * @param keyindex
-	 * @return
+	 * @param entry json对象转换成MAP
+	 * @param key 待替换key
+	 * @param value 替换值
+	 * @param keyindex 替换key索引
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map.Entry<String, Object> parseJsonMap(Map.Entry<String, Object> entry,String key,String value,int keyindex){
+	public static void parseJsonMap(Entry<String, Object> entry, String key, String value, int keyindex){
 		//如果是字符串型的null直接把对象设置为对象null
 		if("NULL".equals(value)){
 			value = null;
@@ -273,6 +259,7 @@ public class ChangString {
 			if(key.equals(entry.getKey())){
 				if(keyindex==COUNTER){
 					LogUtil.APP.info("对象原始Integer值:【{}】",entry.getValue());
+					assert value != null;
 					entry.setValue(Integer.valueOf(value));
 					LogUtil.APP.info("对象替换后Integer值:【{}】",entry.getValue());
 					BCHANG=true;
@@ -285,6 +272,7 @@ public class ChangString {
 			if(key.equals(entry.getKey())){
 				if(keyindex==COUNTER){
 					LogUtil.APP.info("对象原始Long值:【{}】",entry.getValue());
+					assert value != null;
 					entry.setValue(Long.valueOf(value));
 					LogUtil.APP.info("对象替换后Long值:【{}】",entry.getValue());
 					BCHANG=true;
@@ -297,6 +285,7 @@ public class ChangString {
 			if(key.equals(entry.getKey())){
 				if(keyindex==COUNTER){
 					LogUtil.APP.info("对象原始BigDecimal值:【{}】",entry.getValue());
+					assert value != null;
 					BigDecimal bd = new BigDecimal(value);
 					entry.setValue(bd);
 					LogUtil.APP.info("对象替换后BigDecimal值:【{}】",entry.getValue());
@@ -317,28 +306,27 @@ public class ChangString {
 				COUNTER++;
 			}
 		}
-		
-		return entry;
-		}
+
+	}
 
 	/**
 	 * 替换json对象中指定KEY入口方法
-	 * @param json
-	 * @param key
-	 * @param value
-	 * @param index
-	 * @return
+	 * @param json 待替换原始json
+	 * @param key 替换key
+	 * @param value 替换值
+	 * @param index 替换key索引
+	 * @return 返回替换后的MAP对象
 	 */
 	public static Map<String, String> changjson(String json, String key, String value,int index) {
 		json=json.trim();
 		LogUtil.APP.info("原始JSON:【{}】，待替换JSON KEY:【{}】，待替换JSON VALUE:【{}】，待替换JSON KEY序号:【{}】",json,key,value,index);
-		Map<String, String> map = new HashMap<String, String>(0);
+		Map<String, String> map = new HashMap<>(0);
 		map.put("json", json);
 		map.put("boolean", BCHANG.toString().toLowerCase());
 		
 		if (json.startsWith("{") && json.endsWith("}")) {
 			try {
-				JSONObject jsonStr = JSONObject.parseObject(json);				
+				JSONObject jsonStr;
 				jsonStr=parseJsonString(json,key,value,index);
 				if (BCHANG) {
 					LogUtil.APP.info("JSON字符串替换成功，新JSON:【{}】",jsonStr.toJSONString());

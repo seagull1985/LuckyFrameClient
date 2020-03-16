@@ -27,11 +27,12 @@ import io.appium.java_client.ios.IOSElement;
 public class AppiumInitialization {
 	/**
 	 * 初始化AndroidAppium
-	 * 
-	 * @throws IOException
+	 * @param properties 配置文件对象
+	 * @return 返回安卓appium对象
+	 * @throws IOException 抛异常
 	 */
 	public static AndroidDriver<AndroidElement> setAndroidAppium(Properties properties) throws IOException {
-		AndroidDriver<AndroidElement> appium = null;
+		AndroidDriver<AndroidElement> appium;
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		File directory = new File("");
 		File app = new File(directory.getCanonicalPath() + File.separator + properties.getProperty("appname"));
@@ -61,19 +62,20 @@ public class AppiumInitialization {
 		// 等待超时没接收到命令关闭appium
 		capabilities.setCapability("newCommandTimeout", properties.getProperty("newCommandTimeout"));
 		String url="http://" + properties.getProperty("appiumsever") + "/wd/hub";
-		appium = new AndroidDriver<AndroidElement>(new URL(url), capabilities);
-		int waittime = Integer.valueOf(properties.getProperty("implicitlyWait"));
+		appium = new AndroidDriver<>(new URL(url), capabilities);
+		int waittime = Integer.parseInt(properties.getProperty("implicitlyWait"));
 		appium.manage().timeouts().implicitlyWait(waittime, TimeUnit.SECONDS);
 		return appium;
 	}
 
 	/**
 	 * 初始化IOSAppium
-	 * 
-	 * @throws IOException
+	 * @param properties 配置文件对象
+	 * @return 返回IOS appium对象
+	 * @throws IOException 抛出IO异常
 	 */
 	public static IOSDriver<IOSElement> setIosAppium(Properties properties) throws IOException {
-		IOSDriver<IOSElement> appium = null;
+		IOSDriver<IOSElement> appium;
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		File directory = new File("");
 		File app = new File(directory.getCanonicalPath() + File.separator + properties.getProperty("appname"));
@@ -99,8 +101,8 @@ public class AppiumInitialization {
 		// 等待超时没接收到命令关闭appium
 		capabilities.setCapability("newCommandTimeout", properties.getProperty("newCommandTimeout"));
 		String url="http://" + properties.getProperty("appiumsever") + "/wd/hub";
-		appium = new IOSDriver<IOSElement>(new URL(url),capabilities);
-		int waittime = Integer.valueOf(properties.getProperty("implicitlyWait"));
+		appium = new IOSDriver<>(new URL(url), capabilities);
+		int waittime = Integer.parseInt(properties.getProperty("implicitlyWait"));
 		appium.manage().timeouts().implicitlyWait(waittime, TimeUnit.SECONDS);
 		return appium;
 	}

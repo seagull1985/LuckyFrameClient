@@ -34,17 +34,15 @@ public class ApiTestCaseDebug {
 
 	/**
 	 * 用于在本地做单条用例调试
-	 * 
-	 * @param projectname
-	 * @param testCaseExternalId
+	 * @param testCaseExternalId 用例编号
 	 */
-	public static void oneCaseDebug(String projectname, String testCaseExternalId) {
-		Map<String, String> variable = new HashMap<String, String>(0);
-		String packagename = null;
-		String functionname = null;
-		String expectedresults = null;
-		Integer setcaseresult = 0;
-		Object[] getParameterValues = null;
+	public static void oneCaseDebug(String testCaseExternalId) {
+		Map<String, String> variable = new HashMap<>(0);
+		String packagename;
+		String functionname;
+		String expectedresults;
+		int setcaseresult = 0;
+		Object[] getParameterValues;
 		String testnote = "初始化测试结果";
 		int k = 0;
 		ProjectCase testcase = GetServerApi.cgetCaseBysign(testCaseExternalId);
@@ -64,20 +62,18 @@ public class ApiTestCaseDebug {
 			Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), "888888",
 					null,variable);
 			try {
-				packagename = casescript.get("PackageName").toString();
-				functionname = casescript.get("FunctionName").toString();
+				packagename = casescript.get("PackageName");
+				functionname = casescript.get("FunctionName");
 			} catch (Exception e) {
-				k = 0;
 				LogUtil.APP.error("用例:{} 解析包名或是方法名失败，请检查！",testcase.getCaseSign(),e);
 				break; // 某一步骤失败后，此条用例置为失败退出
 			}
 			// 用例名称解析出现异常或是单个步骤参数解析异常
-			if (functionname.indexOf("解析异常") > -1 || k == 1) {
-				k = 0;
+			if (functionname.contains("解析异常") || k == 1) {
 				testnote = "用例第" + (i + 1) + "步解析出错啦！";
 				break;
 			}
-			expectedresults = casescript.get("ExpectedResults").toString();
+			expectedresults = casescript.get("ExpectedResults");
 			// 判断方法是否带参数
 			if (casescript.size() > 4) {
 				// 获取传入参数，放入对象中，初始化参数对象个数
@@ -179,7 +175,7 @@ public class ApiTestCaseDebug {
 		}
 		variable.clear(); // 清空传参MAP
 		// 如果调用方法过程中未出错，进入设置测试结果流程
-		if (testnote.indexOf("CallCase调用出错！") <= -1 && testnote.indexOf("解析出错啦！") <= -1) {
+		if (!testnote.contains("CallCase调用出错！") && !testnote.contains("解析出错啦！")) {
 			LogUtil.APP.info("用例{}解析成功，并成功调用用例中方法，请继续查看执行结果！",testCaseExternalId);
 		} else {
 			LogUtil.APP.warn("用例{}解析或是调用步骤中的方法出错！",testCaseExternalId);
@@ -193,9 +189,8 @@ public class ApiTestCaseDebug {
 
 	/**
 	 * 用于在本地做多条用例串行调试
-	 * 
-	 * @param projectname
-	 * @param addtestcase
+	 * @param projectname 项目名称
+	 * @param addtestcase 用例集
 	 */
 	public static void moreCaseDebug(String projectname, List<String> addtestcase) {
 		System.out.println("当前调试用例总共："+addtestcase.size());
@@ -203,10 +198,9 @@ public class ApiTestCaseDebug {
 			try {
 				LogUtil.APP
 						.info("开始调用方法，项目名:{}，用例编号:{}",projectname,testCaseExternalId);
-				oneCaseDebug(projectname, testCaseExternalId);
+				oneCaseDebug(testCaseExternalId);
 			} catch (Exception e) {
 				LogUtil.APP.error("批量Debug用例出现异常！",e);
-				continue;
 			}
 		}
 	}
@@ -215,8 +209,8 @@ public class ApiTestCaseDebug {
 	 * 更新系统中用例指定步骤的预期结果
 	 */
 	public static String setExpectedResults(String testCaseSign, int steps, String expectedResults) {
-		String results = "设置结果失败";
-		String params = "";
+		String results;
+		String params;
 		try {
 			expectedResults = expectedResults.replace("%", "BBFFHH");
 			expectedResults = expectedResults.replace("=", "DHDHDH");
@@ -233,7 +227,4 @@ public class ApiTestCaseDebug {
 
 	}
 
-	public static void main(String[] args) throws Exception {
-
-	}
 }

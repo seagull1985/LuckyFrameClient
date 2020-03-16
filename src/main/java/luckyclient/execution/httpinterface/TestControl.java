@@ -38,18 +38,17 @@ public class TestControl {
 
 	/**
 	 * 控制台模式调度计划执行用例
-	 * @param planname
-	 * @throws Exception
+	 * @param planname 计划名称
 	 */
 	public static void manualExecutionPlan(String planname) throws Exception {
 		serverOperation.exetype = 1;
 		int threadcount = 10;
 		// 创建线程池，多线程执行用例
 		ThreadPoolExecutor threadExecute = new ThreadPoolExecutor(threadcount, 20, 3, TimeUnit.SECONDS,
-				new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
+				new ArrayBlockingQueue<>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 
 		List<ProjectCase> testCases = GetServerApi.getCasesbyplanname(planname);
-		List<ProjectCaseParams> pcplist = new ArrayList<ProjectCaseParams>();
+		List<ProjectCaseParams> pcplist = new ArrayList<>();
 		if (testCases.size() != 0) {
 			pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
 		}
@@ -82,8 +81,7 @@ public class TestControl {
 
 	/**
 	 * 计划任务模式调度计划执行用例
-	 * @param task
-	 * @throws Exception
+	 * @param task 任务对象
 	 */
 	public static void taskExecutionPlan(TaskExecute task) throws Exception {
 		serverOperation.exetype = 0;
@@ -99,13 +97,13 @@ public class TestControl {
 		// 初始化写用例结果以及日志模块
 		serverOperation caselog = new serverOperation();
 		// 判断是否要自动重启TOMCAT
-		if (restartstatus.indexOf("Status:true") > -1) {
+		if (restartstatus.contains("Status:true")) {
 			// 判断是否构建是否成功
 			if (BuildResult.SUCCESS.equals(buildResult)) {
 				int threadcount = taskScheduling.getExThreadCount();
 				// 创建线程池，多线程执行用例
 				ThreadPoolExecutor threadExecute = new ThreadPoolExecutor(threadcount, 20, 3, TimeUnit.SECONDS,
-						new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
+						new ArrayBlockingQueue<>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 
 				List<ProjectCase> cases = GetServerApi.getCasesbyplanId(taskScheduling.getPlanId());
 				LogUtil.APP.info("当前测试任务 {} 中共有【{}】条待测试用例...",task.getTaskName(),cases.size());

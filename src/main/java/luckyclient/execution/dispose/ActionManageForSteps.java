@@ -17,9 +17,9 @@ public class ActionManageForSteps {
 
 	/**
 	 * 解析用例步骤
-	 * @param stepsaction
-	 * @param testresult
-	 * @return
+	 * @param stepsaction 步骤关键字
+	 * @param testresult 待处理测试结果
+	 * @return 返回处理后结果
 	 */
 	public static String actionManage(String stepsaction,String testresult){
 		LogUtil.APP.info("Action(动作)处理前，测试结果是：{}",testresult);
@@ -59,16 +59,16 @@ public class ActionManageForSteps {
 
 	/**
 	 * 动作关键字执行
-	 * @param actionKeyWord
-	 * @param testResult
-	 * @return
+	 * @param actionKeyWord 步骤关键字
+	 * @param testResult 待处理测试结果
+	 * @return 关键字处理后返回结果
 	 */
 	private static String actionExecute(String actionKeyWord,String testResult){
 		try{
 			String keyWord = "";
 			String actionParams = "";
 			if(actionKeyWord.contains("#")){
-				keyWord = actionKeyWord.substring(actionKeyWord.lastIndexOf("#")+1, actionKeyWord.length());
+				keyWord = actionKeyWord.substring(actionKeyWord.lastIndexOf("#")+1);
 				actionParams = actionKeyWord.substring(0, actionKeyWord.lastIndexOf("#"));
 			}
 

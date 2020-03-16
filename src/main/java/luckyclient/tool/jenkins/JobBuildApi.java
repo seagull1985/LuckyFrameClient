@@ -44,8 +44,8 @@ public class JobBuildApi {
 
 	/**
 	 * 通过job名称触发构建并获取构建结果
-	 * @param jobName
-	 * @return
+	 * @param jobName 任务名称
+	 * @return 返回构建结果
 	 * @author Seagull
 	 * @date 2019年11月29日
 	 */

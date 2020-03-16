@@ -44,10 +44,10 @@ public class IosCaseLocalDebug {
 	}
 
 	/**
-	 * @param 项目名
-	 * @param 用例编号
-	 * @param 用例版本号
-	 *            用于在testlink上配置好用例参数后，做多条用例串行调试
+	 * 用于做多条用例串行调试
+	 * @param iosdriver IOS驱动
+	 * @param projectname 项目名称
+	 * @param addtestcase 用例编号
 	 */
 	public static void moreCaseDebug(IOSDriver<IOSElement> iosdriver, String projectname,
 			List<String> addtestcase) {
@@ -59,15 +59,10 @@ public class IosCaseLocalDebug {
 				oneCasedebug(iosdriver, testCaseExternalId);
 			} catch (Exception e) {
 				LogUtil.APP.error("多用例调试过程中抛出异常！", e);
-				continue;
 			}
 		}
 		// 关闭APP以及appium会话
 		iosdriver.closeApp();
-	}
-
-	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub	
 	}
 
 }

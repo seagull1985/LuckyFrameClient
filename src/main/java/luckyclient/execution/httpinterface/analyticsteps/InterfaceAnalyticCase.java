@@ -25,14 +25,14 @@ import luckyclient.utils.LogUtil;
 public class InterfaceAnalyticCase{
 	/**
 	 * 解析用例步骤
-	 * @param projectcase
-	 * @param step
-	 * @param taskid
-	 * @param caselog
-	 * @return
+	 * @param projectcase 待解析用例对象
+	 * @param step 用例步骤对象
+	 * @param taskid 任务ID
+	 * @param caselog 日志对象
+	 * @return 返回解析的用例MAP
 	 */
 	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCaseSteps step,String taskid,serverOperation caselog, Map<String, String> variable){
-		Map<String,String> params = new HashMap<String,String>(0);
+		Map<String,String> params = new HashMap<>(0);
 
 		try {
 	    String resultstr = step.getExpectedResult();
@@ -80,17 +80,17 @@ public class InterfaceAnalyticCase{
 
 	}
 	
-	public static String subComment(String htmlStr) throws InterruptedException{
+	public static String subComment(String htmlStr) {
 		// 定义script的正则表达式
-    	String regExscript = "<script[^>]*?>[\\s\\S]*?<\\/script>"; 
+    	String regExscript = "<script[^>]*?>[\\s\\S]*?</script>";
     	// 定义style的正则表达式
-        String regExstyle = "<style[^>]*?>[\\s\\S]*?<\\/style>"; 
+        String regExstyle = "<style[^>]*?>[\\s\\S]*?</style>";
         // 定义HTML标签的正则表达式
         String regExhtml = "<[^>]+>";
         //定义空格回车换行符
-        String regExspace = "\t|\r|\n";
+        String regExspace = "[\t\r\n]";
         
-        String scriptstr = null;
+        String scriptstr;
         if (htmlStr!=null) {
             Pattern pScript = Pattern.compile(regExscript, Pattern.CASE_INSENSITIVE);
             Matcher mScript = pScript.matcher(htmlStr);
@@ -113,7 +113,8 @@ public class InterfaceAnalyticCase{
             htmlStr = mSpace.replaceAll(""); 
             
         }
-        if(htmlStr.indexOf("/*")>-1&&htmlStr.indexOf("*/")>-1){
+		assert htmlStr != null;
+		if(htmlStr.contains("/*") && htmlStr.contains("*/")){
     		String commentstr = htmlStr.substring(htmlStr.trim().indexOf("/*"),htmlStr.indexOf("*/")+2);
     		//去注释
     		scriptstr = htmlStr.replace(commentstr, "");     
@@ -127,7 +128,7 @@ public class InterfaceAnalyticCase{
       //转义双引号
         scriptstr = scriptstr.replaceAll("&quot;", "\""); 
       //转义单引号
-        scriptstr = scriptstr.replaceAll("&#39;", "\'"); 
+        scriptstr = scriptstr.replaceAll("&#39;", "'");
       //转义链接符
         scriptstr = scriptstr.replaceAll("&amp;", "&");  
         scriptstr = scriptstr.replaceAll("&lt;", "<");  
@@ -138,16 +139,16 @@ public class InterfaceAnalyticCase{
 
 	/***
      * 去掉字符串前后的空格，中间的空格保留
-     * @param str
-     * @return
+     * @param str 待处理字符串
+     * @return 返回去掉空格后的结果
      */
     public static String trimInnerSpaceStr(String str){
         str = str.trim();
         while(str.startsWith(" ")){
-        str = str.substring(1,str.length()).trim();
+        str = str.substring(1).trim();
         }
         while(str.startsWith("&nbsp;")){
-        str = str.substring(6,str.length()).trim();
+        str = str.substring(6).trim();
         }
         while(str.endsWith(" ")){
         str = str.substring(0,str.length()-1).trim();
@@ -160,9 +161,9 @@ public class InterfaceAnalyticCase{
     
     /**
      * 当遇到参数中带了|字符串时，在界面\\|进行转义
-     * @param str
-     * @param flag
-     * @return
+     * @param str 待处理字符串
+     * @param flag 处理标识
+     * @return 返回处理后结果
      */
     private static String replaceSpi(String str,int flag){
     	String replacestr="&brvbar_rep;";

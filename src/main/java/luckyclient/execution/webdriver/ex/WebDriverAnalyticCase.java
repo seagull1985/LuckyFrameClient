@@ -30,25 +30,25 @@ public class WebDriverAnalyticCase {
 	/**
 	 * Web UI类型的步骤解析
 	 * 
-	 * @param projectcase
-	 * @param step
-	 * @param taskid
-	 * @param caselog
-	 * @return
+	 * @param projectcase 用例对象
+	 * @param step 用例步骤对象
+	 * @param taskid 任务ID
+	 * @param caselog 日志对象
+	 * @return 返回解析结果MAP
 	 * @author Seagull
 	 * @date 2019年1月17日
 	 */
 	public static Map<String, String> analyticCaseStep(ProjectCase projectcase, ProjectCaseSteps step, String taskid,
 			serverOperation caselog, Map<String, String> variable) {
-		Map<String, String> params = new HashMap<String, String>(0);
+		Map<String, String> params = new HashMap<>(0);
 
-		String resultstr = null;
+		String resultstr;
 		try {
 			// 处理值传递
 			String path = ChangString.changparams(step.getStepPath(), variable, "包路径|定位路径");
 			if (null != path && path.contains("=")) {
 				String property = path.substring(0, path.indexOf("=")).trim();
-				String propertyValue = path.substring(path.indexOf("=") + 1, path.length()).trim();
+				String propertyValue = path.substring(path.indexOf("=") + 1).trim();
 				// set属性
 				params.put("property", property.toLowerCase());
 				// set属性值
@@ -70,7 +70,7 @@ public class WebDriverAnalyticCase {
 			// set预期结果
 			if (null == resultstr || "".equals(resultstr)) {
 				params.put("ExpectedResults", "");
-			} else if (null != resultstr) {
+			} else {
 				String expectedResults = subComment(resultstr);
 
 				// 处理check字段
@@ -107,17 +107,17 @@ public class WebDriverAnalyticCase {
 		return params;
 	}
 
-	private static String subComment(String htmlStr) throws InterruptedException {
+	private static String subComment(String htmlStr) {
 		// 定义script的正则表达式
-		String regExScript = "<script[^>]*?>[\\s\\S]*?<\\/script>";
+		String regExScript = "<script[^>]*?>[\\s\\S]*?</script>";
 		// 定义style的正则表达式
-		String regExStyle = "<style[^>]*?>[\\s\\S]*?<\\/style>";
+		String regExStyle = "<style[^>]*?>[\\s\\S]*?</style>";
 		// 定义HTML标签的正则表达式
 		String regExHtml = "<[^>]+>";
 		// 定义空格回车换行符
-		String regExSpace = "\t|\r|\n";
+		String regExSpace = "[\t\r\n]";
 
-		String scriptstr = null;
+		String scriptstr;
 		if (htmlStr != null) {
 			Pattern pScript = Pattern.compile(regExScript, Pattern.CASE_INSENSITIVE);
 			Matcher mScript = pScript.matcher(htmlStr);
@@ -140,7 +140,8 @@ public class WebDriverAnalyticCase {
 			htmlStr = mSpace.replaceAll("");
 
 		}
-		if (htmlStr.indexOf("/*") > -1 && htmlStr.indexOf("*/") > -1) {
+		assert htmlStr != null;
+		if (htmlStr.contains("/*") && htmlStr.contains("*/")) {
 			String commentstr = htmlStr.substring(htmlStr.trim().indexOf("/*"), htmlStr.indexOf("*/") + 2);
 			// 去注释
 			scriptstr = htmlStr.replace(commentstr, "");
@@ -154,7 +155,7 @@ public class WebDriverAnalyticCase {
 		// 转义双引号
 		scriptstr = scriptstr.replaceAll("&quot;", "\"");
 		// 转义单引号
-		scriptstr = scriptstr.replaceAll("&#39;", "\'");
+		scriptstr = scriptstr.replaceAll("&#39;", "'");
 		// 转义链接符
 		scriptstr = scriptstr.replaceAll("&amp;", "&");
 		scriptstr = scriptstr.replaceAll("&lt;", "<");
@@ -166,16 +167,16 @@ public class WebDriverAnalyticCase {
 	/***
 	 * 去掉字符串前后的空格，中间的空格保留
 	 * 
-	 * @param str
-	 * @return
+	 * @param str 原始字符串
+	 * @return 返回去除结果
 	 */
 	public static String trimInnerSpaceStr(String str) {
 		str = str.trim();
 		while (str.startsWith(" ")) {
-			str = str.substring(1, str.length()).trim();
+			str = str.substring(1).trim();
 		}
 		while (str.startsWith("&nbsp;")) {
-			str = str.substring(6, str.length()).trim();
+			str = str.substring(6).trim();
 		}
 		while (str.endsWith(" ")) {
 			str = str.substring(0, str.length() - 1).trim();

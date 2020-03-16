@@ -1,6 +1,5 @@
 package luckyclient.execution.appium.iosex;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,12 +33,10 @@ import luckyclient.utils.LogUtil;
  * @date 2018年1月21日 上午15:12:48
  */
 public class IosCaseExecution{
-	static Map<String, String> variable = new HashMap<String, String>();
+	static Map<String, String> variable = new HashMap<>();
     private static String casenote = "备注初始化";
-    private static String imagname = "";
 
-	public static void caseExcution(ProjectCase testcase, List<ProjectCaseSteps> steps,String taskid, IOSDriver<IOSElement> appium,serverOperation caselog,List<ProjectCaseParams> pcplist)
-			throws InterruptedException, IOException {
+	public static void caseExcution(ProjectCase testcase, List<ProjectCaseSteps> steps,String taskid, IOSDriver<IOSElement> appium,serverOperation caselog,List<ProjectCaseParams> pcplist) {
 		caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), 3);
 		// 把公共参数加入到MAP中
 		for (ProjectCaseParams pcp : pcplist) {
@@ -74,7 +71,7 @@ public class IosCaseExecution{
             	result = testCaseExecution.runStep(params, taskid, testcase.getCaseSign(), step, caselog);
             }
 
-			String expectedResults = params.get("ExpectedResults").toString();
+			String expectedResults = params.get("ExpectedResults");
 			expectedResults=ChangString.changparams(expectedResults, variable,"预期结果");
 
             // 判断结果
@@ -105,7 +102,7 @@ public class IosCaseExecution{
 	}
 
 	public static String iosRunStep(Map<String, String> params, Map<String, String> variable, IOSDriver<IOSElement> appium,String taskid,Integer caseId,int stepno,serverOperation caselog) {
-		String result = "";
+		String result;
 		String property;
 		String propertyValue;
 		String operation;
@@ -132,18 +129,18 @@ public class IosCaseExecution{
 
 		try {		
 			//调用接口用例
-			if(null != operation&&null != operationValue&&"runcase".equals(operation)){
+			if(null != operationValue && "runcase".equals(operation)){
 				String[] temp=operationValue.split(",",-1);
 				TestCaseExecution testCaseExecution=new TestCaseExecution();
 				String ex = testCaseExecution.oneCaseExecuteForUICase(temp[0], taskid, caselog, appium);
-				if(ex.indexOf("CallCase调用出错！")<=-1&&ex.indexOf("解析出错啦！")<=-1&&ex.indexOf("匹配失败")<=-1){
+				if(!ex.contains("CallCase调用出错！") && !ex.contains("解析出错啦！") && !ex.contains("匹配失败")){
 					return ex;
 				}else{
 					return "步骤执行失败：调用接口用例过程失败";
 				}
 			}
 			
-			IOSElement ae = null;
+			IOSElement ae;
 			// 页面元素层
 			if (null != property && null != propertyValue) { 
 				ae = isElementExist(appium, property, propertyValue);
@@ -153,9 +150,10 @@ public class IosCaseExecution{
 					return "步骤执行失败：isElementExist定位元素过程失败！";
 				}
 
-				if (operation.indexOf("select") > -1) {
+				assert operation != null;
+				if (operation.contains("select")) {
 					result = IosEncapsulateOperation.selectOperation(ae, operation, operationValue);
-				} else if (operation.indexOf("get") > -1){
+				} else if (operation.contains("get")){
 					result = IosEncapsulateOperation.getOperation(ae, operation,operationValue);
 				} else {
 					result = IosEncapsulateOperation.objectOperation(appium, ae, operation, operationValue, property, propertyValue);
@@ -163,7 +161,7 @@ public class IosCaseExecution{
 				// Driver层操作
 			} else if (null==property && null != operation) { 				
 				// 处理弹出框事件
-				if (operation.indexOf("alert") > -1){
+				if (operation.contains("alert")){
 					result = IosEncapsulateOperation.alertOperation(appium, operation);
 				}else{
 					result = IosEncapsulateOperation.driverOperation(appium, operation, operationValue);
@@ -178,7 +176,7 @@ public class IosCaseExecution{
 		}
 		caselog.insertTaskCaseLog(taskid, caseId, result,"info", String.valueOf(stepno),"");
 		
-		if(result.indexOf("获取到的值是【")>-1&&result.indexOf("】")>-1){
+		if(result.contains("获取到的值是【") && result.contains("】")){
 			result = result.substring(result.indexOf("获取到的值是【")+7, result.length()-1);
 		}
 		return result;
@@ -234,10 +232,10 @@ public class IosCaseExecution{
 		
 	}
 
-	public static int judgeResult(ProjectCase testcase, ProjectCaseSteps step, Map<String, String> params, IOSDriver<IOSElement> appium, String taskid, String expect, String result, serverOperation caselog) throws InterruptedException {
+	public static int judgeResult(ProjectCase testcase, ProjectCaseSteps step, Map<String, String> params, IOSDriver<IOSElement> appium, String taskid, String expect, String result, serverOperation caselog) {
         int setresult = 0;
         java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
-        imagname = timeformat.format(new Date());
+		String imagname = timeformat.format(new Date());
         
         result = ActionManageForSteps.actionManage(step.getAction(), result);
         if (null != result && !result.contains("步骤执行失败：")) {

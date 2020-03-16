@@ -25,19 +25,19 @@ public class BuildingInitialization {
 	protected static int THREAD_COUNT = 0;
 	protected static int THREAD_SUCCOUNT = 0;
 
-	public static BuildResult buildingRun(String tastid) throws InterruptedException {
+	public static BuildResult buildingRun(String tastid) {
 		try {
 			String[] jobName = serverOperation.getBuildName(tastid);
 
 			if (jobName != null) {
 				ThreadPoolExecutor	threadExecute	= new ThreadPoolExecutor(jobName.length, 10, 3, TimeUnit.SECONDS,
-			            new ArrayBlockingQueue<Runnable>(1000),
+						new ArrayBlockingQueue<>(1000),
 			            new ThreadPoolExecutor.CallerRunsPolicy());
 				
 				LogUtil.APP.info("准备将配置的测试项目进行构建！请稍等。。。。");
-				for (int i = 0; i < jobName.length; i++) {
-					   BuildingInitialization.THREAD_COUNT++;   //多线程计数++，用于检测线程是否全部执行完
-					   threadExecute.execute(new ThreadForBuildJob(jobName[i]));
+				for (String s : jobName) {
+					BuildingInitialization.THREAD_COUNT++;   //多线程计数++，用于检测线程是否全部执行完
+					threadExecute.execute(new ThreadForBuildJob(s));
 				}
 				
 				//多线程计数，用于检测线程是否全部执行完

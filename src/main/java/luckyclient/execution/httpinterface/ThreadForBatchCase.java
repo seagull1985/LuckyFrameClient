@@ -12,13 +12,11 @@ package luckyclient.execution.httpinterface;
  * 
  */
 public class ThreadForBatchCase extends Thread{
-	
-	private String projectname;
+
 	private Integer caseId;
 	private String taskid;
 	
-	public ThreadForBatchCase(String projectname,Integer caseId,String taskid){
-		this.projectname = projectname;
+	public ThreadForBatchCase(Integer caseId,String taskid){
 		this.caseId = caseId;
 		this.taskid = taskid;
 	}
@@ -26,7 +24,7 @@ public class ThreadForBatchCase extends Thread{
 	@Override
 	public void run(){
 		TestCaseExecution testCaseExecution=new TestCaseExecution();
-		testCaseExecution.oneCaseExecuteForTask(projectname, caseId, taskid);
+		testCaseExecution.oneCaseExecuteForTask(caseId, taskid);
 		TestControl.THREAD_COUNT--;        //多线程计数--，用于检测线程是否全部执行完
 	}
 

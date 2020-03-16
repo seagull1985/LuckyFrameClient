@@ -9,14 +9,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.rmi.RemoteException;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.Properties;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,14 +48,14 @@ public class HttpImpl {
 	private static final String OS=System.getProperty("os.name").toLowerCase();
 	/**
 	 * 运行自动化任务
-	 * @param req
-	 * @return
-	 * @throws RemoteException
+	 * @param req HTTP请求
+	 * @return 返回运行任务结果
 	 */
 	@PostMapping("/runTask")
-	private String runTask(HttpServletRequest req) throws RemoteException {
+	private String runTask(HttpServletRequest req) {
 		StringBuilder sb = new StringBuilder();
-		try (BufferedReader reader = req.getReader();) {
+		try {
+			BufferedReader reader = req.getReader();
 			char[] buff = new char[1024];
 			int len;
 			while ((len = reader.read(buff)) != -1) {
@@ -81,7 +78,7 @@ public class HttpImpl {
 			}
 			log.info("初始化Runtime...");
 			Runtime run = Runtime.getRuntime();
-			StringBuffer sbf=new StringBuffer();
+			StringBuilder sbf=new StringBuilder();
 			sbf.append(runTaskEntity.getTaskId()).append(" ");
 			sbf.append(runTaskEntity.getLoadPath());
 			log.info("启动任务模式测试程序...调度名称:【{}】  任务ID:【{}】",runTaskEntity.getSchedulingName(),runTaskEntity.getTaskId());
@@ -104,14 +101,14 @@ public class HttpImpl {
 	
 	/**
 	 * 批量运行用例
-	 * @param req
-	 * @return
-	 * @throws RemoteException
+	 * @param req HTTP请求
+	 * @return 返回批量运行用例结果
 	 */
 	@PostMapping("/runBatchCase")
-	private String runBatchCase(HttpServletRequest req) throws RemoteException {
+	private String runBatchCase(HttpServletRequest req) {
 		StringBuilder sbd = new StringBuilder();
-		try (BufferedReader reader = req.getReader();) {
+		try {
+			BufferedReader reader = req.getReader();
 			char[] buff = new char[1024];
 			int len;
 			while ((len = reader.read(buff)) != -1) {
@@ -139,7 +136,7 @@ public class HttpImpl {
 			}
 			log.info("初始化Runtime...");
 			Runtime run = Runtime.getRuntime();
-			StringBuffer sb=new StringBuffer();
+			StringBuilder sb=new StringBuilder();
 			sb.append(taskId).append(" ");
 			sb.append(batchCase).append(" ");
 			sb.append(loadPath);
@@ -164,14 +161,14 @@ public class HttpImpl {
 	
 	/**
 	 * web界面调度接口
-	 * @param req
-	 * @return
-	 * @throws RemoteException
+	 * @param req HTTP请求
+	 * @return 返回调试用例运行结果
 	 */
 	@PostMapping("/webDebugCase")
-	private String webDebugCase(HttpServletRequest req) throws RemoteException {
+	private String webDebugCase(HttpServletRequest req) {
 		StringBuilder sbd = new StringBuilder();
-		try (BufferedReader reader = req.getReader();) {
+		try {
+			BufferedReader reader = req.getReader();
 			char[] buff = new char[1024];
 			int len;
 			while ((len = reader.read(buff)) != -1) {
@@ -190,7 +187,7 @@ public class HttpImpl {
 				return "客户端测试驱动桩路径不存在，请检查【"+file.getPath()+"】";
 			}
 			Runtime run = Runtime.getRuntime();
-			StringBuffer sb=new StringBuffer();
+			StringBuilder sb=new StringBuilder();
 			sb.append(webDebugCaseEntity.getCaseId()).append(" ");
 			sb.append(webDebugCaseEntity.getUserId()).append(" ");
 			sb.append(webDebugCaseEntity.getLoadpath());
@@ -210,23 +207,19 @@ public class HttpImpl {
 	
 	/**
 	 * 获取客户端本地日志
-	 * @param req
-	 * @return
-	 * @throws RemoteException
+	 * @param req HTTP请求
+	 * @return 返回日志全部信息
 	 */
 	@GetMapping("/getLogdDetail")
-	private String getLogdDetail(HttpServletRequest req) throws RemoteException{
+	private String getLogdDetail(HttpServletRequest req) {
 		String fileName=req.getParameter("filename");
 		String ctxPath = System.getProperty("user.dir")+File.separator+"log";
 		String downLoadPath = ctxPath +File.separator+ fileName;
 
-		String str = "";
-		InputStreamReader isr=null;
+		String str;
+		InputStreamReader isr;
 		try {
-			isr = new InputStreamReader(new FileInputStream(downLoadPath), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			isr = new InputStreamReader(new FileInputStream(downLoadPath), StandardCharsets.UTF_8);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -234,7 +227,7 @@ public class HttpImpl {
 			return "读取日志路径错误，请检查客户端日志路径是否存在!downLoadPath: "+downLoadPath;
 		}
 		BufferedReader bos = new BufferedReader(isr);
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		try {
 			while ((str = bos.readLine()) != null)
 			{
@@ -253,12 +246,11 @@ public class HttpImpl {
 	
 	/**
 	 * 获取错误截图
-	 * @param req
-	 * @return
-	 * @throws RemoteException
+	 * @param req HTTP请求
+	 * @return 返回图片字节
 	 */
 	@GetMapping("/getLogImg")
-	private byte[] getLogImg(HttpServletRequest req,HttpServletResponse res) throws RemoteException{
+	private byte[] getLogImg(HttpServletRequest req) {
 		String imgName=req.getParameter("imgName");
 		String ctxPath = System.getProperty("user.dir")+File.separator+"log"+File.separator+"ScreenShot";
 		String downLoadPath = ctxPath+File.separator+imgName;
@@ -267,7 +259,7 @@ public class HttpImpl {
             File file = new File(downLoadPath);
             b = new byte[(int) file.length()];
             BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
-            is.read(b);
+            //is.read(b);
             is.close();
         	log.info("服务端获取本地图片:{}",downLoadPath);
         } catch (FileNotFoundException e) {
@@ -285,9 +277,9 @@ public class HttpImpl {
 	 * 上传驱动文件到客户端
 	 */
 	@PostMapping("/uploadJar")
-	private String uploadJar(HttpServletRequest req,HttpServletResponse res, HttpSession session,@RequestParam("jarfile") MultipartFile jarfile) throws IOException, ServletException{
+	private String uploadJar(HttpServletRequest req, @RequestParam("jarfile") MultipartFile jarfile) {
 		if (!jarfile.isEmpty()){
-            if (!jarfile.getOriginalFilename().endsWith(".jar")&&!jarfile.getOriginalFilename().endsWith(".py")) {
+            if (!Objects.requireNonNull(jarfile.getOriginalFilename()).endsWith(".jar")&&!jarfile.getOriginalFilename().endsWith(".py")) {
             	log.warn("文件格式后缀不是.jar或.py，上传失败");
                 return "文件格式后缀不是.jar或.py，上传失败";
             }
@@ -311,14 +303,19 @@ public class HttpImpl {
             if (file.exists()){
             	file.deleteOnExit();
             }
-            file.createNewFile();
-            BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-            byte[] jarfileByte = jarfile.getBytes();
-            os.write(jarfileByte);
-            os.flush();
-            os.close();
-            log.info("上传驱动包【{}】到客户端驱动目录【{}】成功!",name,file.getAbsolutePath());
-            return "上传驱动包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!";
+			boolean newFile = file.createNewFile();
+            if(newFile){
+				BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+				byte[] jarfileByte = jarfile.getBytes();
+				os.write(jarfileByte);
+				os.flush();
+				os.close();
+				log.info("上传驱动包【{}】到客户端驱动目录【{}】成功!",name,file.getAbsolutePath());
+				return "上传驱动包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】成功!";
+			}else{
+				log.error("上传驱动包【{}】到客户端驱动目录【{}】失败!",name,file.getAbsolutePath());
+				return "上传驱动包【"+name+"】到客户端驱动目录【"+file.getAbsolutePath()+"】失败!";
+			}
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             log.error("客户端未找到正确路径或文件，上传失败！文件路径名称:{}",pathName,e);
@@ -332,12 +329,10 @@ public class HttpImpl {
 	
 	/**
 	 * 检查客户端心跳
-	 * @param req
-	 * @return
-	 * @throws RemoteException
+	 * @return 返回心跳结果
 	 */
 	@GetMapping("/getClientStatus")
-	private String getClientStatus(HttpServletRequest req) throws RemoteException{
+	private String getClientStatus() {
 		Properties properties = SysConfig.getConfiguration();
 		String verison=properties.getProperty("client.verison");
 		return "{\"status\":\"success\",\"version\":\""+verison+"\"}";
@@ -345,14 +340,12 @@ public class HttpImpl {
 
 	/**
 	 * 获取客户端资源监控情况
-	 * @param req
-	 * @return
+	 * @return 返回客户端资源情况
 	 * @author Seagull
-	 * @throws Exception 
 	 * @date 2019年5月5日
 	 */
 	@GetMapping("/getClientMonitorData")
-	private String getClientMonitorData(HttpServletRequest req) throws Exception{
+	private String getClientMonitorData() {
         Server server = new Server();
         server.copyTo();
         return JSON.toJSONString(server);
@@ -360,11 +353,10 @@ public class HttpImpl {
 	
 	/**
 	 * 检查客户端中的配置
-	 * @return
 	 * @author Seagull
 	 * @date 2019年5月6日
 	 */
-	public static boolean checkHostNet() {
+	public static void checkHostNet() {
 		log.info("检查客户端配置中,请稍后......");
 		Properties properties = SysConfig.getConfiguration();
 		String version="Version "+properties.getProperty("client.verison");
@@ -384,9 +376,7 @@ public class HttpImpl {
 
         } catch (Exception e) {
         	log.error("客户端配置检测异常，请确认您项目根目录下的客户端配置文件(sys_config.properties)是否已经正确配置。",e);
-            return false;
-        }
-        return true;
-    }
+		}
+	}
 
 }

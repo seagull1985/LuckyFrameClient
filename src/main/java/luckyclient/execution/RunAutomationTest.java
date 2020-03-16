@@ -25,12 +25,11 @@ import luckyclient.utils.LogUtil;
  */
 public class RunAutomationTest extends TestControl {
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		try {
 			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
 			String taskid = args[0];
-			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.valueOf(taskid));
-			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid));
+			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskid));
+			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.parseInt(taskid));
 			if (taskScheduling.getTaskType() == 0) {
 				// ½Ó¿Ú²âÊÔ
 				TestControl.taskExecutionPlan(task);

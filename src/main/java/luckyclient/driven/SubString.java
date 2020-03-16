@@ -1,5 +1,6 @@
 package luckyclient.driven;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,10 +33,10 @@ public class SubString {
 	/**
 	 * 截取指定字符串的中间字段
 	 * 
-	 * @param str
-	 * @param startstr
-	 * @param endstr
-	 * @return
+	 * @param str 原始字符串
+	 * @param startstr 开始字符
+	 * @param endstr 结束字符
+	 * @return 返回字符串截取结果
 	 */
 	public static String subCentreStr(String str, String startstr, String endstr) {
 		try{
@@ -47,8 +48,7 @@ public class SubString {
 			if(!"".equals(endstr)){
 				endnum=str.indexOf(endstr, str.indexOf(startstr) + startstr.length());
 			}
-			String getstr = str.substring(startnum,endnum);
-			return getstr;
+			return str.substring(startnum,endnum);
 		}catch(Exception e){
 			LogUtil.APP.error("subCentreStr截取字符串出现异常，请检查参数！",e);
 			return "截取字符串出现异常，请检查参数！";
@@ -58,14 +58,13 @@ public class SubString {
 	/**
 	 * 截取字符串从指定字符开始
 	 * 
-	 * @param str
-	 * @param startstr
-	 * @return
+	 * @param str 原始字符
+	 * @param startstr 开始字符
+	 * @return 返回字符串截取结果
 	 */
 	public static String subStartStr(String str, String startstr) {
 		try{
-			String getstr = str.substring(str.indexOf(startstr) + startstr.length());
-			return getstr;
+			return str.substring(str.indexOf(startstr) + startstr.length());
 		}catch(Exception e){
 			LogUtil.APP.error("subStartStr截取字符串出现异常，请检查参数！",e);
 			return "截取字符串出现异常，请检查参数！";
@@ -75,14 +74,13 @@ public class SubString {
 	/**
 	 * 截取字符串到指定字符结束
 	 * 
-	 * @param str
-	 * @param endstr
-	 * @return
+	 * @param str 原始字符
+	 * @param endstr 结束字符
+	 * @return 返回字符串截取结果
 	 */
 	public static String subEndStr(String str, String endstr) {
 		try{
-			String getstr = str.substring(0, str.indexOf(endstr));
-			return getstr;
+			return str.substring(0, str.indexOf(endstr));
 		}catch(Exception e){
 			LogUtil.APP.error("subEndStr截取字符串出现异常，请检查参数！",e);
 			return "截取字符串出现异常，请检查参数！";
@@ -92,13 +90,13 @@ public class SubString {
 	/**
 	 * 通过字符串位置截取指定字符串的中间字段
 	 * 
-	 * @param str
-	 * @param startnum
-	 * @param endnum
-	 * @return
+	 * @param str 原始字符
+	 * @param startnum 开始字符位置
+	 * @param endnum 结果位置
+	 * @return 返回字符串截取结果
 	 */
 	public static String subCentreNum(String str, String startnum, String endnum) {
-		String getstr = "";
+		String getstr;
 		if("".equals(startnum)){
 			startnum="0";
 		}
@@ -107,11 +105,11 @@ public class SubString {
 		}
 		try{
 			if (isInteger(startnum) && isInteger(endnum)) {
-				int start = Integer.valueOf(startnum);
-				int end = Integer.valueOf(endnum);
+				int start = Integer.parseInt(startnum);
+				int end = Integer.parseInt(endnum);
 				if (start > end) {
 					getstr = "截取字符串开始位置数字不能大于结束位置数字";
-				} else if (start < 0 || end < 0) {
+				} else if (start < 0) {
 					getstr = "截取字符串位置的数字不能小于0";
 				} else if (start > str.length() || end > str.length()) {
 					getstr = "截取字符串位置的数字不能大于字符串本身的长度【" + str.length() + "】";
@@ -132,15 +130,15 @@ public class SubString {
 	/**
 	 * 通过字符串位置截取字符串从指定字符开始
 	 * 
-	 * @param str
-	 * @param startnum
-	 * @return
+	 * @param str 原始字符
+	 * @param startnum 字符开始位置
+	 * @return 返回字符串截取结果
 	 */
 	public static String subStartNum(String str, String startnum) {
-		String getstr = "";
+		String getstr;
 		try{
 			if (isInteger(startnum)) {
-				int start = Integer.valueOf(startnum);
+				int start = Integer.parseInt(startnum);
 				if (start < 0) {
 					getstr = "截取字符串位置的数字不能小于0";
 				} else if (start > str.length()) {
@@ -162,15 +160,15 @@ public class SubString {
 	/**
 	 * 截取字符串到指定字符结束
 	 * 
-	 * @param str
-	 * @param endnum
-	 * @return
+	 * @param str 原始字符
+	 * @param endnum 结束位置
+	 * @return 返回字符串截取结果
 	 */
 	public static String subEndNum(String str, String endnum) {
-		String getstr = "";
+		String getstr;
 		try{
 			if (isInteger(endnum)) {
-				int end = Integer.valueOf(endnum);
+				int end = Integer.parseInt(endnum);
 				if (end < 0) {
 					getstr = "截取字符串位置的数字不能小于0";
 				} else if (end > str.length()) {
@@ -189,8 +187,15 @@ public class SubString {
 		}
 	}
 
+	/**
+	 * 正则匹配字符串
+	 * @param str 原始字符串
+	 * @param rgex 正则表达式
+	 * @param num 字符索引
+	 * @return 匹配到的字符串
+	 */
 	public static String subStrRgex(String str, String rgex, String num) {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		try{
 			// 匹配的模式
 			Pattern pattern = Pattern.compile(rgex);
@@ -201,9 +206,9 @@ public class SubString {
 //				i++;
 			}
 
-			String getstr = "";
+			String getstr;
 			if (isInteger(num)) {
-				int index = Integer.valueOf(num);
+				int index = Integer.parseInt(num);
 				if (index < 0) {
 					getstr = "截取字符串索引数字不能小于0";
 				} else if (index > str.length()) {
@@ -223,8 +228,13 @@ public class SubString {
 		}
 	}
 
+	/**
+	 * 判断是否是整型数字
+	 * @param str 整形字符
+	 * @return 返回布尔型结果
+	 */
 	private static boolean isInteger(String str) {
-		String patternStr="^[-\\+]?[\\d]*$";
+		String patternStr="^[-+]?[\\d]*$";
 		Pattern pattern = Pattern.compile(patternStr);
 		return pattern.matcher(str).matches();
 	}
@@ -241,11 +251,10 @@ public class SubString {
 
 	/**
 	 * 遍历JSON对象
-	 * 
-	 * @param json
-	 * @param key
-	 * @param keyindex
-	 * @return
+	 * @param json 原始JSON
+	 * @param key 查询key值
+	 * @param keyindex key值索引
+	 * @return 返回json对象
 	 */
 	private static JSONObject parseJsonString(String json, String key, int keyindex) {
 		LinkedHashMap<String, Object> jsonMap = JSON.parseObject(json,
@@ -259,14 +268,12 @@ public class SubString {
 
 	/**
 	 * 遍历后JSON对象中的key以及value
-	 * 
-	 * @param entry
-	 * @param key
-	 * @param keyindex
-	 * @return
+	 * @param entry json中所有的的key以及value
+	 * @param key 需要提取的key
+	 * @param keyindex 提取key的索引
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Map.Entry<String, Object> parseJsonMap(Map.Entry<String, Object> entry, String key, int keyindex) {
+	private static void parseJsonMap(Map.Entry<String, Object> entry, String key, int keyindex) {
 		// 如果是单个map继续遍历
 		if (entry.getValue() instanceof Map) {
 			LinkedHashMap<String, Object> jsonMap = JSON.parseObject(entry.getValue().toString(),
@@ -304,23 +311,22 @@ public class SubString {
 			COUNTER++;
 		}
 
-		return entry;
 	}
 
 	/**
 	 * 获取JSON或是JSONArray对象指定序号Key中的Value
 	 * 
-	 * @param json
-	 * @param key
-	 * @param indexstr
-	 * @return
+	 * @param json 原始JSON
+	 * @param key 指定key
+	 * @param indexstr key的索引
+	 * @return 返回指定key的value字符
 	 */
 	public static String getJsonValue(String json, String key, String indexstr) {
 		json = json.trim();
-		int index = 1;
+		int index;
 		String result = JSONVALUE;
 		if (isInteger(indexstr) && !"0".equals(indexstr)) {
-			index = Integer.valueOf(indexstr);
+			index = Integer.parseInt(indexstr);
 		} else {
 			result = JSONVALUE + "指定的key值序号不是大于0的整数(序号从1开始)，请检查！";
 			return result;
@@ -339,7 +345,7 @@ public class SubString {
 			try {
 				// JSONArray jsonarr = JSONArray.parseArray(json);
 				// 直接使用fastjson的接口实现有序解析
-				JSONArray jsonarr = JSONArray.parseObject(json.getBytes("UTF-8"), JSONArray.class, Feature.OrderedField);
+				JSONArray jsonarr = JSONArray.parseObject(json.getBytes(StandardCharsets.UTF_8), JSONArray.class, Feature.OrderedField);
 				for (int i = 0; i < jsonarr.size(); i++) {
 					JSONObject jsonStr = jsonarr.getJSONObject(i);
 					parseJsonString(jsonStr.toJSONString(), key, index);
@@ -367,14 +373,14 @@ public class SubString {
 
     /**
      * 通过jsonPath表达式获取JSON字符串指定值
-     * @param expressionParams
-     * @param jsonString
-     * @return
+     * @param expressionParams jsonPath表达式
+     * @param jsonString json原始字符串
+     * @return 返回提取到手字符
      * @author Seagull
      * @date 2019年8月28日
      */
     public static String jsonPathGetParams(String expressionParams, String jsonString) {
-        String type="String";
+        String type;
         String expression="";
         if(expressionParams.endsWith("]")&&expressionParams.contains("[")){
         	try{
@@ -394,7 +400,7 @@ public class SubString {
             		List<Object> list = JsonPath.parse(jsonString).read(expression);
             		jsonString="";
             		for(Object result:list){
-            			result = (String)jsonString+result+",";
+            			result = jsonString +result+",";
             			jsonString = (String)result;
             		}    		
             	}else{                	
@@ -403,7 +409,7 @@ public class SubString {
         	}catch(PathNotFoundException pnfe){
         		LogUtil.APP.error("通过jsonPath获取JSON字符串指定值出现异常，没有找到对应参数路径，请确认JSON字符串【{}】表达式是否正确【{}】！",jsonString,expression);
         	}catch(Exception e){
-        		LogUtil.APP.error("通过jsonPath获取JSON字符串指定值出现异，请检查您的动作参数格式(String/List[表达式])或是被提取的json字符串是否正常！",expressionParams);
+        		LogUtil.APP.error("通过jsonPath获取JSON字符串指定值出现异常，请检查您的动作参数格式(String/List[表达式])或是被提取的json字符串是否正常！");
         	}
         }else{
         	LogUtil.APP.warn("获取JSON字符串指定jsonPath表达式【{}】异常，请检查您的动作参数格式(String/List[表达式])是否正常！",expressionParams);
@@ -411,5 +417,4 @@ public class SubString {
         LogUtil.APP.info("获取JSON字符串指定jsonPath表达式【{}】的值是:{}",expression,jsonString);
         return jsonString;
     }
-
 }

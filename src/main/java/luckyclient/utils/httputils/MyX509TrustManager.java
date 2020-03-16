@@ -17,14 +17,12 @@ import javax.net.ssl.X509TrustManager;
 public class MyX509TrustManager implements X509TrustManager  
 {  
     @Override  
-    public void checkClientTrusted(X509Certificate ax509certificate[], String s) throws CertificateException  
-    {  
+    public void checkClientTrusted(X509Certificate[] ax509certificate, String s) {
         //TODO nothing  
     }  
   
     @Override  
-    public void checkServerTrusted(X509Certificate ax509certificate[], String s) throws CertificateException  
-    {  
+    public void checkServerTrusted(X509Certificate[] ax509certificate, String s) {
         //TODO nothing  
     }  
   

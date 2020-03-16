@@ -19,7 +19,7 @@ public class SubStrRegxActionParser implements ActionKeyWordParser {
      */
     @Override
     public String parse(String actionParams, String testResult) {
-        String key="";
+        String key;
         String index="1";
         if(actionParams.endsWith("]")&&actionParams.contains("[")){
             key=actionParams.substring(0,actionParams.lastIndexOf("["));

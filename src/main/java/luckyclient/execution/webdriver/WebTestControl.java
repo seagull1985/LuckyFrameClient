@@ -39,7 +39,7 @@ public class WebTestControl {
 
 	/**
 	 * 控制台模式调度计划执行用例
-	 * @param planname
+	 * @param planname 计划名称
 	 */
 	public static void manualExecutionPlan(String planname) {
 		// 不记日志到数据库
@@ -54,7 +54,7 @@ public class WebTestControl {
 		}
 		serverOperation caselog = new serverOperation();
 		List<ProjectCase> testCases = GetServerApi.getCasesbyplanname(planname);
-		List<ProjectCaseParams> pcplist = new ArrayList<ProjectCaseParams>();
+		List<ProjectCaseParams> pcplist = new ArrayList<>();
 		if (testCases.size() != 0) {
 			pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testCases.get(0).getProjectId()));
 		}
@@ -69,14 +69,14 @@ public class WebTestControl {
 			LogUtil.APP.info("开始执行第{}条用例:【{}】......",i,testcase.getCaseSign());
 			try {
 				WebCaseExecution.caseExcution(testcase, steps, taskid, wd, caselog, pcplist);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				LogUtil.APP.error("用户执行过程中抛出异常！", e);
 			}
 			LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条",testcase.getCaseSign());
 		}
 		LogUtil.APP.info("当前项目测试计划中的用例已经全部执行完成...");
 		// 关闭浏览器
+		assert wd != null;
 		wd.quit();
 	}
 
@@ -90,12 +90,12 @@ public class WebTestControl {
 		List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(task.getProjectId().toString());
 		TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId());
 		String projectname = taskScheduling.getProject().getProjectName();
-		task = GetServerApi.cgetTaskbyid(Integer.valueOf(taskid));
+		task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskid));
 		String jobname = taskScheduling.getSchedulingName();
 		int drivertype = serverOperation.querydrivertype(taskid);
 		int[] tastcount = null;
 		// 判断是否要自动重启TOMCAT
-		if (restartstatus.indexOf("Status:true") > -1) {
+		if (restartstatus.contains("Status:true")) {
 			// 判断是否构建是否成功
 			if (BuildResult.SUCCESS.equals(buildResult)) {
 				WebDriver wd = null;
@@ -123,7 +123,7 @@ public class WebTestControl {
 						// 插入开始执行的用例
 						caselog.insertTaskCaseExecute(taskid, taskScheduling.getProjectId(),testcase.getCaseId(),testcase.getCaseSign(), testcase.getCaseName(), 4);
 						WebCaseExecution.caseExcution(testcase, steps, taskid, wd, caselog, pcplist);
-					} catch (InterruptedException e) {
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						LogUtil.APP.error("用户执行过程中抛出异常！", e);
 					}
@@ -137,6 +137,7 @@ public class WebTestControl {
 						HtmlMail.htmlContentFormat(tastcount, taskid, buildResult.toString(), restartstatus, testtime, jobname),
 						taskid, taskScheduling, tastcount);
 				// 关闭浏览器
+				assert wd != null;
 				wd.quit();
 			} else {
 				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");

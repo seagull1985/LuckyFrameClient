@@ -30,10 +30,16 @@ import luckyclient.utils.LogUtil;
  * 
  * @author Seagull
  * @date 2017年1月29日 上午9:31:42
- * 
  */
 public class AndroidEncapsulateOperation {
-	public static String selectOperation(AndroidElement ae, String operation, String operationValue) throws Exception {
+	/**
+	 * select控件关键字处理
+	 * @param ae UI对象
+	 * @param operation 操作关键字
+	 * @param operationValue 操作值
+	 * @return 返回操作结果
+	 */
+	public static String selectOperation(AndroidElement ae, String operation, String operationValue) {
 		String result = "";
 		// 下拉框对象处理
 		Select select = new Select(ae);
@@ -50,7 +56,7 @@ public class AndroidEncapsulateOperation {
 			LogUtil.APP.info("下拉框对象通过Value属性选择...【Value属性值:{}】",operationValue);
 			break;
 		case "selectbyindex":
-			select.selectByIndex(Integer.valueOf(operationValue));
+			select.selectByIndex(Integer.parseInt(operationValue));
 			LogUtil.APP.info("下拉框对象通过Index属性选择...【Index属性值:{}】",operationValue);
 			break;
 		case "isselect":
@@ -63,7 +69,7 @@ public class AndroidEncapsulateOperation {
 		return result;
 	}
 
-	public static String getOperation(AndroidElement ae, String operation, String value) throws Exception {
+	public static String getOperation(AndroidElement ae, String operation, String value) {
 		String result = "";
 		// 获取对象处理
 		switch (operation) {
@@ -92,7 +98,7 @@ public class AndroidEncapsulateOperation {
 	}
 
 	public static String objectOperation(AndroidDriver<AndroidElement> appium, AndroidElement ae, String operation,
-			String operationValue, String property, String propertyValue) throws Exception {
+			String operationValue, String property, String propertyValue) {
 		String result = "";
 		AndroidTouchAction action = new AndroidTouchAction(appium);
 
@@ -125,8 +131,7 @@ public class AndroidEncapsulateOperation {
 			LogUtil.APP.info("当前对象判断是否可见布尔值为【{}】",ae.isDisplayed());
 			break;
 		case "exjsob":
-			JavascriptExecutor jse = (JavascriptExecutor) appium;
-			jse.executeScript(operationValue, ae);
+			((JavascriptExecutor) appium).executeScript(operationValue, ae);
 			result = "执行JS...【" + operationValue + "】";
 			LogUtil.APP.info("执行JS...【{}】",operationValue);
 			break;
@@ -134,7 +139,7 @@ public class AndroidEncapsulateOperation {
 			LongPressOptions lpoptions = new LongPressOptions();
 			lpoptions.withElement(ElementOption.element(ae));
 			if (null != operationValue && ChangString.isNumeric(operationValue)) {
-				int nanos = Integer.valueOf(operationValue) * 1000;
+				int nanos = Integer.parseInt(operationValue) * 1000;
 				Duration duration = Duration.ofNanos(nanos);
 				lpoptions.withDuration(duration);
 			}
@@ -149,7 +154,7 @@ public class AndroidEncapsulateOperation {
 		return result;
 	}
 
-	public static String alertOperation(AndroidDriver<AndroidElement> appium, String operation) throws Exception {
+	public static String alertOperation(AndroidDriver<AndroidElement> appium, String operation) {
 		String result = "";
 		Alert alert = appium.switchTo().alert();
 		switch (operation) {
@@ -194,8 +199,7 @@ public class AndroidEncapsulateOperation {
 			LogUtil.APP.info("getContext获取窗口句柄...{}",result);
 			break;
 		case "exjs":
-			JavascriptExecutor jse = (JavascriptExecutor) appium;
-			jse.executeScript(operationValue);
+			((JavascriptExecutor) appium).executeScript(operationValue);
 			result = "执行JS...【" + operationValue + "】";
 			LogUtil.APP.info("执行JS...【{}】",operationValue);
 			break;
@@ -258,7 +262,7 @@ public class AndroidEncapsulateOperation {
 			if (null != tempup[0] && ChangString.isNumeric(tempup[0])) {
 				Double second = Double.valueOf(tempup[0]);
 				if (null != tempup[1] && ChangString.isNumeric(tempup[1])) {
-					int num = Integer.valueOf(tempup[1]);
+					int num = Integer.parseInt(tempup[1]);
 					AndroidBaseAppium.swipePageDown(appium, second, num);
 					result = "swipeup手指向上滑动参数...秒|次数【" + second + "|" + num + "】";
 					LogUtil.APP.info("swipeup手指向上滑动参数...秒|次数【{}|{}】",second,num);
@@ -276,7 +280,7 @@ public class AndroidEncapsulateOperation {
 			if (null != tempdown[0] && ChangString.isNumeric(tempdown[0])) {
 				Double second = Double.valueOf(tempdown[0]);
 				if (null != tempdown[1] && ChangString.isNumeric(tempdown[1])) {
-					int num = Integer.valueOf(tempdown[1]);
+					int num = Integer.parseInt(tempdown[1]);
 					AndroidBaseAppium.swipePageUp(appium, second, num);
 					result = "swipedown手指向下滑动参数...秒|次数【" + second + "|" + num + "】";
 					LogUtil.APP.info("swipedown手指向下滑动参数...秒|次数【{}|{}】",second,num);
@@ -294,7 +298,7 @@ public class AndroidEncapsulateOperation {
 			if (null != templeft[0] && ChangString.isNumeric(templeft[0])) {
 				Double second = Double.valueOf(templeft[0]);
 				if (null != templeft[1] && ChangString.isNumeric(templeft[1])) {
-					int num = Integer.valueOf(templeft[1]);
+					int num = Integer.parseInt(templeft[1]);
 					AndroidBaseAppium.swipePageRight(appium, second, num);
 					result = "swipleft手指向左滑动参数...秒|次数【" + second + "|" + num + "】";
 					LogUtil.APP.info("swipleft手指向左滑动参数...秒|次数【{}|{}】",second,num);
@@ -312,7 +316,7 @@ public class AndroidEncapsulateOperation {
 			if (null != tempright[0] && ChangString.isNumeric(tempright[0])) {
 				Double second = Double.valueOf(tempright[0]);
 				if (null != tempright[1] && ChangString.isNumeric(tempright[1])) {
-					int num = Integer.valueOf(tempright[1]);
+					int num = Integer.parseInt(tempright[1]);
 					AndroidBaseAppium.swipePageLeft(appium, second, num);
 					result = "swipright手指向右滑动参数...秒|次数【" + second + "|" + num + "】";
 					LogUtil.APP.info("swipright手指向右滑动参数...秒|次数【{}|{}】",second,num);
@@ -330,7 +334,7 @@ public class AndroidEncapsulateOperation {
 			if (null != tempPageUp[0] && ChangString.isNumeric(tempPageUp[0])) {
 				Double second = Double.valueOf(tempPageUp[0]);
 				if (null != tempPageUp[1] && ChangString.isNumeric(tempPageUp[1])) {
-					int num = Integer.valueOf(tempPageUp[1]);
+					int num = Integer.parseInt(tempPageUp[1]);
 					AndroidBaseAppium.swipePageUp(appium, second, num);
 					result = "swipeup页面向上滑动参数...秒|次数【" + second + "|" + num + "】";
 					LogUtil.APP.info("swipeup页面向上滑动参数...秒|次数【{}|{}】",second,num);
@@ -348,7 +352,7 @@ public class AndroidEncapsulateOperation {
 			if (null != tempPageDown[0] && ChangString.isNumeric(tempPageDown[0])) {
 				Double second = Double.valueOf(tempPageDown[0]);
 				if (null != tempPageDown[1] && ChangString.isNumeric(tempPageDown[1])) {
-					int num = Integer.valueOf(tempPageDown[1]);
+					int num = Integer.parseInt(tempPageDown[1]);
 					AndroidBaseAppium.swipePageDown(appium, second, num);
 					result = "swipedown页面向下滑动参数...秒|次数【" + second + "|" + num + "】";
 					LogUtil.APP.info("swipedown页面向下滑动参数...秒|次数【{}|{}】",second,num);
@@ -366,7 +370,7 @@ public class AndroidEncapsulateOperation {
 			if (null != tempPageLeft[0] && ChangString.isNumeric(tempPageLeft[0])) {
 				Double second = Double.valueOf(tempPageLeft[0]);
 				if (null != tempPageLeft[1] && ChangString.isNumeric(tempPageLeft[1])) {
-					int num = Integer.valueOf(tempPageLeft[1]);
+					int num = Integer.parseInt(tempPageLeft[1]);
 					AndroidBaseAppium.swipePageLeft(appium, second, num);
 					result = "swipleft页面向左滑动参数...秒|次数【" + second + "|" + num + "】";
 					LogUtil.APP.info("swipleft页面向左滑动参数...秒|次数【{}|{}】",second,num);
@@ -384,7 +388,7 @@ public class AndroidEncapsulateOperation {
 			if (null != tempPageRight[0] && ChangString.isNumeric(tempPageRight[0])) {
 				Double second = Double.valueOf(tempPageRight[0]);
 				if (null != tempPageRight[1] && ChangString.isNumeric(tempPageRight[1])) {
-					int num = Integer.valueOf(tempPageRight[1]);
+					int num = Integer.parseInt(tempPageRight[1]);
 					AndroidBaseAppium.swipePageRight(appium, second, num);
 					result = "swipright页面向右滑动参数...秒|次数【" + second + "|" + num + "】";
 					LogUtil.APP.info("swipright页面向右滑动参数...秒|次数【{}|{}】",second,num);
@@ -400,13 +404,13 @@ public class AndroidEncapsulateOperation {
 		case "longpressxy":
 			String[] longpressxy = operationValue.split("\\|", -1);
 			if (null != longpressxy[0] && ChangString.isNumeric(longpressxy[0])) {
-				int longpressx = Integer.valueOf(longpressxy[0]);
+				int longpressx = Integer.parseInt(longpressxy[0]);
 				if (null != longpressxy[1] && ChangString.isNumeric(longpressxy[1])) {
-					int longpressy = Integer.valueOf(longpressxy[1]);
+					int longpressy = Integer.parseInt(longpressxy[1]);
 					if (null != longpressxy[2] && ChangString.isNumeric(longpressxy[2])) {
 						LongPressOptions lpoptions = new LongPressOptions();
 						lpoptions.withPosition(PointOption.point(longpressx, longpressy));
-						int nanos = Integer.valueOf(longpressxy[2]) * 1000;
+						int nanos = Integer.parseInt(longpressxy[2]) * 1000;
 						Duration duration = Duration.ofNanos(nanos);
 						lpoptions.withDuration(duration);
 						action.longPress(lpoptions).release().perform();
@@ -430,9 +434,9 @@ public class AndroidEncapsulateOperation {
 		case "pressxy":
 			String[] pressxy = operationValue.split("\\|", -1);
 			if (null != pressxy[0] && ChangString.isNumeric(pressxy[0])) {
-				int pressx = Integer.valueOf(pressxy[0]);
+				int pressx = Integer.parseInt(pressxy[0]);
 				if (null != pressxy[1] && ChangString.isNumeric(pressxy[1])) {
-					int pressy = Integer.valueOf(pressxy[1]);
+					int pressy = Integer.parseInt(pressxy[1]);
 					action.press(PointOption.point(pressx, pressy)).release().perform();
 					result = "pressxy在屏幕指定XY坐标上点击...X|Y【" + pressx + "|" + pressy + "】";
 					LogUtil.APP.info("pressxy在屏幕指定XY坐标上点击...X|Y【{}|{}】",pressx,pressy);
@@ -448,9 +452,9 @@ public class AndroidEncapsulateOperation {
 		case "tapxy":
 			String[] tapxy = operationValue.split("\\|", -1);
 			if (null != tapxy[0] && ChangString.isNumeric(tapxy[0])) {
-				int tapx = Integer.valueOf(tapxy[0]);
+				int tapx = Integer.parseInt(tapxy[0]);
 				if (null != tapxy[1] && ChangString.isNumeric(tapxy[1])) {
-					int tapy = Integer.valueOf(tapxy[1]);
+					int tapy = Integer.parseInt(tapxy[1]);
 					action.tap(PointOption.point(tapx, tapy)).release().perform();
 					result = "tapxy在屏幕指定XY坐标上轻击...X|Y【" + tapx + "|" + tapy + "】";
 					LogUtil.APP.info("tapxy在屏幕指定XY坐标上轻击...X|Y【{}|{}】",tapx,tapy);
@@ -466,11 +470,11 @@ public class AndroidEncapsulateOperation {
 		case "jspressxy":
 			String[] jspressxy = operationValue.split("\\|", -1);
 			if (null != jspressxy[0] && ChangString.isNumeric(jspressxy[0])) {
-				int jspressx = Integer.valueOf(jspressxy[0]);
+				int jspressx = Integer.parseInt(jspressxy[0]);
 				if (null != jspressxy[1] && ChangString.isNumeric(jspressxy[1])) {
-					int jspressy = Integer.valueOf(jspressxy[1]);
+					int jspressy = Integer.parseInt(jspressxy[1]);
 					if (null != jspressxy[2] && ChangString.isNumeric(jspressxy[2])) {
-						AndroidBaseAppium.clickScreenForJs(appium, jspressx, jspressy, Integer.valueOf(jspressxy[2]));
+						AndroidBaseAppium.clickScreenForJs(appium, jspressx, jspressy, Integer.parseInt(jspressxy[2]));
 						result = "jspressxy在屏幕指定XY坐标上按" + jspressxy[2] + "秒...X|Y【" + jspressx + "|" + jspressy + "】";
 						LogUtil.APP.info("jspressxy在屏幕指定XY坐标上按{}秒...X|Y【{}|{}】",jspressxy[2],jspressx,jspressy);
 					} else {
@@ -491,13 +495,13 @@ public class AndroidEncapsulateOperation {
 			String[] movexy = operationValue.split("\\|", -1);
 			if (null != movexy[0] && !"".equals(movexy[0])) {
 				String[] startxy = movexy[0].split(",", -1);
-				int startx = Integer.valueOf(startxy[0]);
-				int starty = Integer.valueOf(startxy[1]);
+				int startx = Integer.parseInt(startxy[0]);
+				int starty = Integer.parseInt(startxy[1]);
 				for (int movexyi = 1; movexyi < movexy.length; movexyi++) {
 					if (null != movexy[movexyi] && !"".equals(movexy[movexyi])) {
 						String[] endxy = movexy[movexyi].split(",", -1);
-						int endx = Integer.valueOf(endxy[0]);
-						int endy = Integer.valueOf(endxy[1]);
+						int endx = Integer.parseInt(endxy[0]);
+						int endy = Integer.parseInt(endxy[1]);
 						// 不确定是否是API的bug,只有一次MOVE时，是XY坐标，当大于一次MOVE时，坐标是偏移坐标
 						if (movexy.length < 3) {
 							action.press(PointOption.point(startx, starty))
@@ -534,9 +538,9 @@ public class AndroidEncapsulateOperation {
 		case "timeout":
 			if (null != operationValue && ChangString.isNumeric(operationValue)) {
 				// 设置页面加载最大时长30秒
-				appium.manage().timeouts().pageLoadTimeout(Integer.valueOf(operationValue), TimeUnit.SECONDS);
+				appium.manage().timeouts().pageLoadTimeout(Integer.parseInt(operationValue), TimeUnit.SECONDS);
 				// 设置元素出现最大时长30秒
-				appium.manage().timeouts().implicitlyWait(Integer.valueOf(operationValue), TimeUnit.SECONDS);
+				appium.manage().timeouts().implicitlyWait(Integer.parseInt(operationValue), TimeUnit.SECONDS);
 				result = "设置全局页面加载&元素出现最大等待时间【" + operationValue + "】秒...";
 				LogUtil.APP.info("设置全局页面加载&元素出现最大等待时间【{}】秒...",operationValue);
 			} else {
@@ -555,11 +559,6 @@ public class AndroidEncapsulateOperation {
 			break;
 		}
 		return result;
-	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

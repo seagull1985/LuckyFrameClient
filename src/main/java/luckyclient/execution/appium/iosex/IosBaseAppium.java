@@ -30,9 +30,9 @@ import luckyclient.utils.LogUtil;
 public class IosBaseAppium {
 
 	/**
-	 * @param args
-	 * @throws IOException
 	 * IOS手机报错截图
+	 * @param appium appium对象
+	 * @param imagname 截图名称
 	 */
 	public static void screenShot(IOSDriver<IOSElement> appium, String imagname){
 		imagname = imagname + ".png";
@@ -56,30 +56,34 @@ public class IosBaseAppium {
 			LogUtil.APP.error("IOS手机报错截图出现异常", e);
 		}
 	}
-	
+
 	/**
-	 * @param args
-	 * @throws IOException
 	 * appium不支持中文输入 参考了robotium的以js方式为元素直接设置value的做法
 	 * 利用Selenium中Webdriver执行js方法实现中文输入
+	 * @param appium appium对象
+	 * @param preferences 操作对象名称
+	 * @param value 操作值
 	 */
 	public static void sendChinese(IOSDriver<IOSElement> appium, String preferences, String value) {
-		org.openqa.selenium.JavascriptExecutor jse = (org.openqa.selenium.JavascriptExecutor) appium;
-		jse.executeScript("document.getElementByName('" + preferences + "').value='" + value + "'");
+		((JavascriptExecutor) appium).executeScript("document.getElementByName('" + preferences + "').value='" + value + "'");
 	}
 
 	/**
-	 * @param args
-	 *            js webview 支持4.1～4.4
+	 * js webview 支持4.1～4.4 页面滑动
+	 * @param appium appium初始化对象
+	 * @param sX 开始X坐标
+	 * @param sY 开始Y坐标
+	 * @param eX 结束X坐标
+	 * @param eY 结束Y坐标
+	 * @param duration 持续时间
 	 */
-	public static void webViewSwipe(IOSDriver<IOSElement> appium, Double sX, Double sY, Double eX, Double eY, Double duration)
-			throws Exception {
+	public static void webViewSwipe(IOSDriver<IOSElement> appium, Double sX, Double sY, Double eX, Double eY, Double duration) {
 		JavascriptExecutor js;
 		HashMap<String, Double> swipeObject;
 		try {
 			// 滑动
-			js = (JavascriptExecutor) appium;
-			swipeObject = new HashMap<String, Double>(5);
+			js = appium;
+			swipeObject = new HashMap<>(5);
 			swipeObject.put("startX", sX);
 			swipeObject.put("startY", sY);
 			swipeObject.put("endX", eX);
@@ -89,17 +93,18 @@ public class IosBaseAppium {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			LogUtil.APP.error("IOS手机滑动出现异常", e);
-		} finally {
-			// 释放变量
 		}
-
 	}
 
 	/**
-	 * @param args
-	 *            调用 ADB直接滑动 支持4.1～4.4
+	 * 调用 ADB直接滑动 支持4.1～4.4
+	 * @param appium appium初始化对象
+	 * @param sX 开始X坐标
+	 * @param sY 开始Y坐标
+	 * @param eX 结束X坐标
+	 * @param eY 结束Y坐标
 	 */
-	public static void adbSwipe(IOSDriver<IOSElement> appium, Double sX, Double sY, Double eX, Double eY) throws Exception {
+	public static void adbSwipe(IOSDriver<IOSElement> appium, Double sX, Double sY, Double eX, Double eY) {
 		int xLine;
 		int yLine;
 		int sX2;
@@ -121,28 +126,27 @@ public class IosBaseAppium {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			LogUtil.APP.error("IOS手机调用 ADB直接滑动出现异常", e);
-		} finally {
-			// 释放变量
 		}
-
 	}
 
 	/**
-	 * @param args
 	 * 屏幕点击事件
+	 * @param drivers appium初始化对象
+	 * @param x 点击X坐标
+	 * @param y 点击Y坐标
+	 * @param duration 持续时间
 	 */
 	public static void clickScreenForJs(IOSDriver<IOSElement> drivers, int x, int y, int duration) {
-		JavascriptExecutor js = (JavascriptExecutor) drivers;
-		HashMap<String, Integer> tapObject = new HashMap<String, Integer>(3);
+		HashMap<String, Integer> tapObject = new HashMap<>(3);
 		tapObject.put("x", x);
 		tapObject.put("y", y);
 		tapObject.put("duration", duration);
-		js.executeScript("mobile: tap", tapObject);
+		((JavascriptExecutor) drivers).executeScript("mobile: tap", tapObject);
 	}
-	
+
 	/**
 	 * 拖住页面按屏幕比例向上滑动(手指向下，页面向上)
-	 * @param driver
+	 * @param driver appium初始化对象
 	 * @param second 持续时间
 	 * @param num 滚动次数
 	 */
@@ -161,9 +165,9 @@ public class IosBaseAppium {
 
 	/**
 	 * 拖住页面按屏幕比例向下滑动(手指向上，页面向下)
-	 * @param driver
-	 * @param second
-	 * @param num
+	 * @param driver appium初始化对象
+	 * @param second 持续时间
+	 * @param num 滑动次数
 	 */
 	public static void swipePageDown(IOSDriver<IOSElement> driver,Double second,int num){
 		int nanos = (int) (second * 1000);
@@ -179,9 +183,9 @@ public class IosBaseAppium {
 
 	/**
 	 * 拖住页面按屏幕比例向左滑动(手指向左，页面向左滚动)
-	 * @param driver
-	 * @param second
-	 * @param num
+	 * @param driver appium初始化对象
+	 * @param second 持续时间
+	 * @param num 滑动次数
 	 */
 	public static void swipePageLeft(IOSDriver<IOSElement> driver, Double second, int num) {
 		int nanos = (int) (second * 1000);
@@ -197,9 +201,9 @@ public class IosBaseAppium {
 
 	/**
 	 * 拖住页面按屏幕比例向右滑动(手指向右，页面向右)
-	 * @param driver
-	 * @param second
-	 * @param num
+	 * @param driver appium初始化对象
+	 * @param second 持续时间
+	 * @param num 滑动次数
 	 */
 	public static void swipePageRight(IOSDriver<IOSElement> driver, Double second, int num) {
 		int nanos = (int) (second * 1000);

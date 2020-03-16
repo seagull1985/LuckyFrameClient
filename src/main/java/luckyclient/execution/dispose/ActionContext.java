@@ -25,9 +25,9 @@ public class ActionContext {
         Reflections reflections = new Reflections("luckyclient.execution.dispose.actionkeyword");
         Set<Class<?>> annotatedClasses =
                 reflections.getTypesAnnotatedWith(Action.class);
-        allActions = new ConcurrentHashMap<String, Class>();
+        allActions = new ConcurrentHashMap<>();
         for (Class<?> classObject : annotatedClasses) {
-            Action action = (Action) classObject
+            Action action = classObject
                     .getAnnotation(Action.class);
             allActions.put(action.name(), classObject);
         }

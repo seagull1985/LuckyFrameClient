@@ -32,7 +32,7 @@ import luckyclient.utils.config.AppiumConfig;
  */
 public class AndroidBatchExecute {
 
-	public static void batchCaseExecuteForTast(String projectname, String taskid, String batchcase) throws IOException, InterruptedException {
+	public static void batchCaseExecuteForTast(String taskid, String batchcase) throws IOException, InterruptedException {
 		// 记录日志到数据库
 		serverOperation.exetype = 0;
 		TestControl.TASKID = taskid;
@@ -41,7 +41,7 @@ public class AndroidBatchExecute {
 		try {
 			Properties properties = AppiumConfig.getConfiguration();
 			//根据配置自动启动Appiume服务
-			if(Boolean.valueOf(properties.getProperty("autoRunAppiumService"))){
+			if(Boolean.parseBoolean(properties.getProperty("autoRunAppiumService"))){
 				as =new AppiumService();
 				as.start();
 				Thread.sleep(10000);
@@ -49,44 +49,42 @@ public class AndroidBatchExecute {
 			
 			ad = AppiumInitialization.setAndroidAppium(properties);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			LogUtil.APP.error("安卓手机根据配置自动启动Appiume服务出现异常",e);
 		}
 		serverOperation caselog = new serverOperation();
-		TaskExecute task = GetServerApi.cgetTaskbyid(Integer.valueOf(taskid));
+		TaskExecute task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskid));
 		List<ProjectCaseParams> pcplist = GetServerApi
 				.cgetParamsByProjectid(task.getProjectId().toString());
 		// 执行全部非成功状态用例
-		if (batchcase.indexOf("ALLFAIL") > -1) {
+		if (batchcase.contains("ALLFAIL")) {
 			List<Integer> caseIdList = caselog.getCaseListForUnSucByTaskId(taskid);
-			for (int i = 0; i < caseIdList.size(); i++) {
-				ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseIdList.get(i));
+			for (Integer integer : caseIdList) {
+				ProjectCase testcase = GetServerApi.cGetCaseByCaseId(integer);
 				List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
 				// 删除旧的日志
 				serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
 					AndroidCaseExecution.caseExcution(testcase, steps, taskid, ad, caselog, pcplist);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+				} catch (Exception e) {
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				}
 			}
 		} else { // 批量执行用例
-			String[] temp = batchcase.split("\\#");
-			for (int i = 0; i < temp.length; i++) {
-				ProjectCase testcase = GetServerApi.cGetCaseByCaseId(Integer.valueOf(temp[i]));
+			String[] temp = batchcase.split("#");
+			for (String s : temp) {
+				ProjectCase testcase = GetServerApi.cGetCaseByCaseId(Integer.valueOf(s));
 				List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
 				// 删除旧的日志
 				serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
 					AndroidCaseExecution.caseExcution(testcase, steps, taskid, ad, caselog, pcplist);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+				} catch (Exception e) {
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				}
 			}
 		}
 		serverOperation.updateTaskExecuteData(taskid, 0,2);
+		assert ad != null;
 		ad.closeApp();
 		//关闭Appium服务的线程
 		if(as!=null){

@@ -117,21 +117,21 @@ public class serverOperation {
 	 */
 
 	public static String[] getEmailAddress(String taskIdStr) {
-		Integer taskId = Integer.parseInt(taskIdStr);
+		int taskId = Integer.parseInt(taskIdStr);
 		String[] address = null;
 		try {
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
 			if (!taskScheduling.getEmailSendCondition().equals(-1)) {
 				String temp = taskScheduling.getEmailAddress();
 				// 清除最后一个;
-				if (temp.indexOf(";") > -1 && temp.substring(temp.length() - 1, temp.length()).indexOf(";") > -1) {
+				if (temp.contains(";") && temp.substring(temp.length() - 1).contains(";")) {
 					temp = temp.substring(0, temp.length() - 1);
 				}
 				// 多个地址
-				if (temp.indexOf("null") <= -1 && temp.indexOf(";") > -1) {
+				if (!temp.contains("null") && temp.contains(";")) {
 					address = temp.split(";", -1);
 					// 一个地址
-				} else if (temp.indexOf("null") <= -1 && temp.indexOf(";") <= -1) {
+				} else if (!temp.contains("null") && !temp.contains(";")) {
 					address = new String[1];
 					address[0] = temp;
 				}
@@ -148,7 +148,7 @@ public class serverOperation {
 	 * 取出指定任务ID中所属的调度是否要自动构建以及构建的项目名称 为空时不构建
 	 */
 	public static String[] getBuildName(String taskIdStr) {
-		Integer taskId = Integer.parseInt(taskIdStr);
+		int taskId = Integer.parseInt(taskIdStr);
 		String[] buildname = null;
 		try {
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
@@ -157,14 +157,14 @@ public class serverOperation {
 			}else{
 				String jobName = taskScheduling.getBuildingLink();
 				// 清除最后一个;
-				if (jobName.indexOf(";") > -1 && jobName.substring(jobName.length() - 1, jobName.length()).indexOf(";") > -1) {
+				if (jobName.contains(";") && jobName.substring(jobName.length() - 1).contains(";")) {
 					jobName = jobName.substring(0, jobName.length() - 1);
 				}
 				// 多个名称
-				if (jobName.indexOf("null") <= -1 && jobName.indexOf(";") > -1) {
+				if (!jobName.contains("null") && jobName.contains(";")) {
 					buildname = jobName.split(";", -1);
 					// 一个名称
-				} else if (jobName.indexOf("null") <= -1 && jobName.indexOf(";") <= -1) {
+				} else if (!jobName.contains("null") && !jobName.contains(";")) {
 					buildname = new String[1];
 					buildname[0] = jobName;
 				}
@@ -185,7 +185,7 @@ public class serverOperation {
 	 */
 
 	public static String[] getRestartComm(String taskIdStr) {
-		Integer taskId = Integer.parseInt(taskIdStr);
+		int taskId = Integer.parseInt(taskIdStr);
 		String[] command = null;
 		try {
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
@@ -194,14 +194,14 @@ public class serverOperation {
 			}else{
 				String temp = taskScheduling.getRemoteShell();
 				// 清除最后一个;
-				if (temp.indexOf(";") > -1 && temp.substring(temp.length() - 1, temp.length()).indexOf(";") > -1) {
+				if (temp.contains(";") && temp.substring(temp.length() - 1).contains(";")) {
 					temp = temp.substring(0, temp.length() - 1);
 				}
 				// 多个名称
-				if (temp.indexOf("null") <= -1 && temp.indexOf(";") > -1) {
+				if (!temp.contains("null") && temp.contains(";")) {
 					command = temp.split(";", -1);
 					// 一个名称
-				} else if (temp.indexOf("null") <= -1 && temp.indexOf(";") <= -1) {
+				} else if (!temp.contains("null") && !temp.contains(";")) {
 					command = new String[1];
 					command[0] = temp;
 				}
@@ -219,7 +219,7 @@ public class serverOperation {
 	 * 获取任务测试时长
 	 */
 	public static String getTestTime(String taskIdStr) {
-		Integer taskId = Integer.parseInt(taskIdStr);
+		int taskId = Integer.parseInt(taskIdStr);
 		String desTime = "计算测试时长出错！";
 		try {
 			TaskExecute taskExecute = GetServerApi.cgetTaskbyid(taskId);
@@ -246,7 +246,7 @@ public class serverOperation {
 	 * 查询web执行，浏览器类型  UI自动化浏览器类型 0 IE 1 火狐 2 谷歌 3 Edge
 	 */
 	public static int querydrivertype(String taskIdStr) {
-		Integer taskId = Integer.parseInt(taskIdStr);
+		int taskId = Integer.parseInt(taskIdStr);
 		int driverType = 0;
 		try {
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);

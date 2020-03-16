@@ -30,8 +30,8 @@ import luckyclient.utils.config.AppiumConfig;
  */
 public class AndroidOneCaseExecute {
 
-	public static void oneCaseExecuteForTast(String projectname, Integer caseId, int version, String taskid)
-			throws IOException, InterruptedException {
+	public static void oneCaseExecuteForTast(Integer caseId, String taskid)
+			throws InterruptedException {
 		// 记录日志到数据库
 		serverOperation.exetype = 0;
 		TestControl.TASKID = taskid;
@@ -40,7 +40,7 @@ public class AndroidOneCaseExecute {
 		try {
 			Properties properties = AppiumConfig.getConfiguration();
 			//根据配置自动启动Appiume服务
-			if(Boolean.valueOf(properties.getProperty("autoRunAppiumService"))){
+			if(Boolean.parseBoolean(properties.getProperty("autoRunAppiumService"))){
 				as =new AppiumService();
 				as.start();
 				Thread.sleep(10000);
@@ -60,10 +60,11 @@ public class AndroidOneCaseExecute {
 			List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
 			AndroidCaseExecution.caseExcution(testcase, steps, taskid, ad, caselog, pcplist);
 			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			LogUtil.APP.error("用户执行过程中抛出异常！", e);
 		}
 		serverOperation.updateTaskExecuteData(taskid, 0,2);
+		assert ad != null;
 		ad.closeApp();
 		//关闭Appium服务的线程
 		if(as!=null){

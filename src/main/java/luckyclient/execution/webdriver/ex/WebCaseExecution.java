@@ -37,9 +37,8 @@ import luckyclient.utils.LogUtil;
 public class WebCaseExecution{
     private static Map<String, String> variable = new HashMap<>();
     private static String casenote = "备注初始化";
-    private static String imagname = "";
 
-    public static void caseExcution(ProjectCase testcase, List<ProjectCaseSteps> steps, String taskid, WebDriver wd, serverOperation caselog, List<ProjectCaseParams> pcplist) throws InterruptedException {
+    public static void caseExcution(ProjectCase testcase, List<ProjectCaseSteps> steps, String taskid, WebDriver wd, serverOperation caselog, List<ProjectCaseParams> pcplist) {
     	caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), 3);
     	// 把公共参数加入到MAP中
         for (ProjectCaseParams pcp : pcplist) {
@@ -102,7 +101,7 @@ public class WebCaseExecution{
     }
 
     public static String runWebStep(Map<String, String> params, WebDriver wd, String taskid, Integer caseId, int stepno, serverOperation caselog) {
-        String result = "";
+        String result;
         String property;
         String propertyValue;
         String operation;
@@ -123,7 +122,7 @@ public class WebCaseExecution{
 
         try {
             //调用另一条用例，支持接口，web类型用例
-            if (null != operation && null != operationValue && "runcase".equals(operation)) {
+            if (null != operationValue && "runcase".equals(operation)) {
                 String[] temp = operationValue.split(",", -1);
                 TestCaseExecution testCaseExecution=new TestCaseExecution();
                 String ex = testCaseExecution.oneCaseExecuteForUICase(temp[0], taskid, caselog, wd);
@@ -237,10 +236,10 @@ public class WebCaseExecution{
 
     }
 
-    public static int judgeResult(ProjectCase testcase, ProjectCaseSteps step, Map<String, String> params, WebDriver driver, String taskid, String expect, String result, serverOperation caselog) throws InterruptedException {
+    public static int judgeResult(ProjectCase testcase, ProjectCaseSteps step, Map<String, String> params, WebDriver driver, String taskid, String expect, String result, serverOperation caselog) {
         int setresult = 0;
         java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
-        imagname = timeformat.format(new Date());
+        String imagname = timeformat.format(new Date());
         
         result = ActionManageForSteps.actionManage(step.getAction(), result);
         if (null != result && !result.contains("步骤执行失败：")) {
@@ -282,7 +281,7 @@ public class WebCaseExecution{
                     // 模糊匹配预期结果模式
                     if (expect.length() > Constants.FUZZY_MATCHING_SIGN.length() && expect.startsWith(Constants.FUZZY_MATCHING_SIGN)) {
                         if (result.contains(expect.substring(Constants.FUZZY_MATCHING_SIGN.length()))) {
-                            LogUtil.APP.info("用例:{} 第{}步，模糊匹配预期结果成功！执行结果：",testcase.getCaseSign(),step.getStepSerialNumber(),result);
+                            LogUtil.APP.info("用例:{} 第{}步，模糊匹配预期结果成功！执行结果：{}",testcase.getCaseSign(),step.getStepSerialNumber(),result);
                             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "模糊匹配预期结果成功！执行结果：" + result, "info", String.valueOf(step.getStepSerialNumber()), "");
                         } else {
                             casenote = "第" + step.getStepSerialNumber() + "步，模糊匹配预期结果失败！";

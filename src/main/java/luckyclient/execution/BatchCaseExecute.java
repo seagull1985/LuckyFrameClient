@@ -35,25 +35,25 @@ public class BatchCaseExecute extends TestControl {
 			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
 			String taskid = args[0];
 			String batchcase = args[1];
-			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.valueOf(taskid));
-			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.valueOf(taskid));
+			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskid));
+			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.parseInt(taskid));
 			if (taskScheduling.getTaskType() == 0) {
-					BatchTestCaseExecution.batchCaseExecuteForTast(taskScheduling.getProject().getProjectName(),
-							String.valueOf(task.getTaskId()), batchcase);
+					BatchTestCaseExecution.batchCaseExecuteForTast(
+                            String.valueOf(task.getTaskId()), batchcase);
 			} else if (taskScheduling.getTaskType() == 1) {
 					// UI≤‚ ‘
-					WebBatchExecute.batchCaseExecuteForTast(taskScheduling.getProject().getProjectName(),
+					WebBatchExecute.batchCaseExecuteForTast(
 							String.valueOf(task.getTaskId()), batchcase);
 
 			} else if (taskScheduling.getTaskType() == 2) {
 				Properties properties = AppiumConfig.getConfiguration();
 
 				if ("Android".equals(properties.getProperty("platformName"))) {
-					AndroidBatchExecute.batchCaseExecuteForTast(taskScheduling.getProject().getProjectName(),
-							String.valueOf(task.getTaskId()), batchcase);
+					AndroidBatchExecute.batchCaseExecuteForTast(
+                            String.valueOf(task.getTaskId()), batchcase);
 				} else if ("IOS".equals(properties.getProperty("platformName"))) {
-					IosBatchExecute.batchCaseExecuteForTast(taskScheduling.getProject().getProjectName(),
-							String.valueOf(task.getTaskId()), batchcase);
+					IosBatchExecute.batchCaseExecuteForTast(
+                            String.valueOf(task.getTaskId()), batchcase);
 				}
 
 			}

@@ -23,8 +23,8 @@ public class ParamsManageForSteps {
 	public static Map<String, String> GLOBAL_VARIABLE = new HashMap<>(0);
 	/**
 	 * 进内置参数管理
-	 * @param params
-	 * @return
+	 * @param params 内置参数关键字
+	 * @return 返回参数处理结果
 	 * @author Seagull
 	 * @date 2019年1月15日
 	 */
@@ -37,22 +37,22 @@ public class ParamsManageForSteps {
 
 	/**
 	 * 内置参数生成替换(生成随机整数)
-	 * @param params
-	 * @return
+	 * @param params 参数关键字
+	 * @return 返回随机数
 	 * @author Seagull
 	 * @date 2019年1月15日
 	 */
 	private String replaceRandomInt(String params) {
 		try {
-			String str="(?i)@\\{random\\[(\\d+)\\]\\[(\\d+)\\]\\}";
+			String str="(?i)@\\{random\\[(\\d+)]\\[(\\d+)]}";
 			Pattern pattern = Pattern.compile(str);
 			Matcher m = pattern.matcher(params);
 			while (m.find()) {
 				String matcherstr = m.group(0);
 				int startnum = Integer
-						.valueOf(matcherstr.substring(matcherstr.indexOf("[") + 1, matcherstr.indexOf("]")).trim());
+						.parseInt(matcherstr.substring(matcherstr.indexOf("[") + 1, matcherstr.indexOf("]")).trim());
 				int endnum = Integer
-						.valueOf(matcherstr.substring(matcherstr.lastIndexOf("[") + 1, matcherstr.lastIndexOf("]")).trim());
+						.parseInt(matcherstr.substring(matcherstr.lastIndexOf("[") + 1, matcherstr.lastIndexOf("]")).trim());
 				Random random = new Random();
 				String replacement = String.valueOf(random.nextInt(endnum - startnum + 1) + startnum);
 				params = m.replaceFirst(replacement);
@@ -71,20 +71,20 @@ public class ParamsManageForSteps {
 
 	/**
 	 * 内置参数生成替换(生成当时时间指定格式)
-	 * @param params
-	 * @return
+	 * @param params 参数关键字
+	 * @return 返回生成的参数
 	 * @author Seagull
 	 * @date 2019年1月15日
 	 */
 	private String replaceTimeNow(String params) {
 		try {
-			String str="(?i)@\\{timenow\\[(.*?)\\]\\}";
+			String str="(?i)@\\{timenow\\[(.*?)]}";
 			Pattern pattern = Pattern.compile(str);
 			Matcher m = pattern.matcher(params);
 			while (m.find()) {
 				String matcherstr = m.group(0);
 				String formart = matcherstr.substring(matcherstr.indexOf("[") + 1, matcherstr.indexOf("]")).trim();
-				SimpleDateFormat df = null;
+				SimpleDateFormat df;
 				try {
 					if("".equals(formart)||"timestamp".equals(formart.toLowerCase())){
 						long time = System.currentTimeMillis();

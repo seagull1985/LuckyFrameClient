@@ -41,18 +41,14 @@ public class Ocr {
 	/**
 	 * 批处理文件路径
 	 */
-	private static String cmdpath = System.getProperty("user.dir");  
-	/**
-	 * 默认把截图放在C盘根目录
-	 */
-	private static String cmdname = "handlingCAPTCHA.bat";
+	private static String cmdpath = System.getProperty("user.dir");
 
 	/**
 	 * 读取生成的TXT文件中的验证码
-	 * @return
+	 * @return 返回结果
 	 */
 	private static String readTextFile() {
-		String lineTxt = "";
+		String lineTxt;
 		try {
 			String encoding = "GBK";
 			File file = new File(readtextpath); 
@@ -77,8 +73,8 @@ public class Ocr {
 
 	/**
 	 * 截取验证码位置的图片
-	 * 
-	 * @param 
+	 * @param driver webDriver驱动
+	 * @param element 对象定位
 	 */
 	private static void screenShotForElement(WebDriver driver, WebElement element){
 		driver = new Augmenter().augment(driver);
@@ -106,10 +102,12 @@ public class Ocr {
 	
 	
 	public static String getCAPTCHA(WebDriver driver, WebElement element) {
-		String code = "";
+		String code;
 		screenShotForElement(driver, element);
 		Runtime run = Runtime.getRuntime();
 		try {
+			//默认把截图放在C盘根目录
+			String cmdname = "handlingCAPTCHA.bat";
 			run.exec("cmd.exe /k start " + cmdname, null, new File(cmdpath));
 			Thread.sleep(1000);
 		} catch (IOException | InterruptedException e) {
@@ -125,9 +123,5 @@ public class Ocr {
 		}*/
 		return code;
 	}
-	
-	
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-	}
 }

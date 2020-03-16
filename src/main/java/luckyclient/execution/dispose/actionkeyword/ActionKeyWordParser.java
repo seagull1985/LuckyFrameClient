@@ -9,9 +9,9 @@ public interface ActionKeyWordParser {
 
 	/**
 	 * 针对关键字的抽象方法
-	 * @param actionParams
-	 * @param testResult
-	 * @return
+	 * @param actionParams 关键字
+	 * @param testResult 待处理的测试结果
+	 * @return 返回处理结果
 	 * @author Seagull
 	 * @date 2019年8月8日
 	 */

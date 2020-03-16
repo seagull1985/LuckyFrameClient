@@ -41,24 +41,21 @@ import luckyclient.utils.LogUtil;
  * @date 2018年3月1日
  */
 public class TestCaseExecution {
-    private Map<String, String> VARIABLE = new HashMap<String, String>(0);
+    private Map<String, String> VARIABLE = new HashMap<>(0);
 
     /**
-     * @param projectname        项目名
-     * @param testCaseExternalId 用例编号
-     * @param version            用例版本号
-     *                           用于单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
+     * 用于单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
      */
-    public void oneCaseExecuteForTask(String projectname, Integer caseId, String taskid) {
+    public void oneCaseExecuteForTask(Integer caseId, String taskid) {
         TestControl.TASKID = taskid;
         serverOperation.exetype = 0;
         // 初始化写用例结果以及日志模块
         serverOperation caselog = new serverOperation();
-        String packagename = null;
-        String functionname = null;
-        String expectedresults = null;
-        Integer setcaseresult = 0;
-        Object[] getParameterValues = null;
+        String packagename;
+        String functionname;
+        String expectedresults;
+        int setcaseresult = 0;
+        Object[] getParameterValues;
         String testnote = "初始化测试结果";
         int k = 0;
         ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseId);
@@ -88,14 +85,12 @@ public class TestCaseExecution {
                 packagename = casescript.get("PackageName");
                 functionname = casescript.get("FunctionName");
             } catch (Exception e) {
-                k = 0;
                 LogUtil.APP.error("用例:{} 解析包名或是方法名失败，请检查！",testcase.getCaseSign(),e);
                 caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "解析包名或是方法名失败，请检查！", "error", String.valueOf(i + 1), "");
                 break; // 某一步骤失败后，此条用例置为失败退出
             }
             // 用例名称解析出现异常或是单个步骤参数解析异常
             if ((null != functionname && functionname.contains("解析异常")) || k == 1) {
-                k = 0;
                 testnote = "用例第" + (i + 1) + "步解析出错啦！";
                 break;
             }
@@ -175,19 +170,17 @@ public class TestCaseExecution {
     }
 
     /**
-     *
-     * @param testCaseExternalId
-     * @param taskid
-     * @param caselog
-     * @param driver
-     * @return
-     * @throws InterruptedException
      * 提供给Web用例中，runcase的时候使用
+     * @param testCaseExternalId 用例编号
+     * @param taskid 任务ID
+     * @param caselog 用例日志对象
+     * @param driver UI驱动
+     * @return 返回执行结果
      */
     @SuppressWarnings("unchecked")
 	public String oneCaseExecuteForUICase(String testCaseExternalId, String taskid, serverOperation caselog, Object driver) throws InterruptedException {
-        String expectedresults = null;
-        Integer setresult = 1;
+        String expectedresults;
+        int setresult = 1;
         String testnote = "初始化测试结果";
         ProjectCase testcase = GetServerApi.cgetCaseBysign(testCaseExternalId);
         List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
@@ -268,19 +261,18 @@ public class TestCaseExecution {
 
     /**
      * 其他类型测试用例中调用接口测试步骤
-     * @param params
-     * @param variable
-     * @param taskid
-     * @param casenum
-     * @param step
-     * @param caselog
-     * @return
+     * @param params 参数
+     * @param taskid 任务ID
+     * @param casenum 用例编号
+     * @param step 步骤对象
+     * @param caselog 日志对象
+     * @return 返回执行结果
      */
     public String runStep(Map<String, String> params, String taskid, String casenum, ProjectCaseSteps step, serverOperation caselog) {
-        String result = "";
-        String packagename = "";
+        String result;
+        String packagename;
         String functionname = "";
-        Object[] getParameterValues = null;
+        Object[] getParameterValues;
         ProjectCase projectCase = GetServerApi.cgetCaseBysign(casenum);
         try {
             packagename = params.get("PackageName");
@@ -352,7 +344,6 @@ public class TestCaseExecution {
                     	setresult = 1;
                         LogUtil.APP.warn("用例:{} 第{}步，模糊匹配预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),expectedresults.substring(Constants.FUZZY_MATCHING_SIGN.length()),testnote);
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "模糊匹配预期结果失败！预期结果：" + expectedresults.substring(Constants.FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote, "error", String.valueOf(step.getStepSerialNumber()), "");
-                        testnote = "用例第" + step.getStepSerialNumber() + "步，模糊匹配预期结果失败！";
                     }
                 }
                 // 正则匹配
@@ -366,7 +357,6 @@ public class TestCaseExecution {
                         setresult = 1;
                         LogUtil.APP.warn("用例:{} 第{}步，正则匹配预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),expectedresults.substring(Constants.REGULAR_MATCHING_SIGN.length()),testnote);
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "正则匹配预期结果失败！预期结果：" + expectedresults.substring(Constants.REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote, "error", String.valueOf(step.getStepSerialNumber()), "");
-                        testnote = "用例第" + step.getStepSerialNumber() + "步，正则匹配预期结果失败！";
                     }
                 }
                 //jsonpath断言
@@ -382,8 +372,7 @@ public class TestCaseExecution {
                         LogUtil.APP.info("用例:{} 第{}步，jsonpath断言预期结果成功！预期结果:{} 测试结果: {} 执行结果:true",testcase.getCaseSign(),step.getStepSerialNumber(),exceptResult,result);
                     } else {
                         setresult = 1;
-                        LogUtil.APP.warn("用例:{} 第{}步，jsonpath断言预期结果失败！预期结果:{}，测试结果:{}" + expectedresults + "，测试结果：" + result.toString(), "error", String.valueOf(step.getStepSerialNumber()), "");
-                        testnote = "用例第" + step.getStepSerialNumber() + "步，jsonpath断言预期结果失败！";
+                        LogUtil.APP.warn("用例:{} 第{}步，jsonpath断言预期结果失败！预期结果:{}，测试结果:{}" + expectedresults + "，测试结果：" + result, "error", step.getStepSerialNumber(), "");
                         // 某一步骤失败后，此条用例置为失败退出
                     }
 
@@ -397,7 +386,6 @@ public class TestCaseExecution {
                         setresult = 1;
                         LogUtil.APP.warn("用例:{} 第{}步，精确匹配预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),expectedresults,testnote);
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "精确匹配预期结果失败！预期结果：" + expectedresults + "，测试结果：" + testnote, "error", String.valueOf(step.getStepSerialNumber()), "");
-                        testnote = "用例第" + step.getStepSerialNumber() + "步，精确匹配预期结果失败！";
                     }
                 }
             }

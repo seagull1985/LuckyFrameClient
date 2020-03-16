@@ -41,7 +41,7 @@ import luckyclient.utils.LogUtil;
  */
 public class EncapsulateOperation {
 
-    public static String selectOperation(WebElement we, String operation, String operationValue) throws Exception {
+    public static String selectOperation(WebElement we, String operation, String operationValue) {
         String result = "";
         // 下拉框对象处理
         Select select = new Select(we);
@@ -59,7 +59,7 @@ public class EncapsulateOperation {
                 LogUtil.APP.info("下拉框对象通过Value属性选择...【Value属性值:{}】",operationValue);
                 break;
             case "selectbyindex":
-                select.selectByIndex(Integer.valueOf(operationValue));
+                select.selectByIndex(Integer.parseInt(operationValue));
                 result = "下拉框对象通过Index属性选择...【Index属性值:" + operationValue + "】";
                 LogUtil.APP.info("下拉框对象通过Index属性选择...【Index属性值:{}】",operationValue);
                 break;
@@ -73,7 +73,7 @@ public class EncapsulateOperation {
         return result;
     }
 
-    public static String getOperation(WebDriver wd, WebElement we, String operation, String value) throws Exception {
+    public static String getOperation(WebDriver wd, WebElement we, String operation, String value) {
         String result = "";
         // 获取对象处理
         switch (operation) {
@@ -103,7 +103,7 @@ public class EncapsulateOperation {
         return result;
     }
 
-    public static String actionWeOperation(WebDriver wd, WebElement we, String operation, String operationValue, String property, String propertyValue) throws Exception {
+    public static String actionWeOperation(WebDriver wd, WebElement we, String operation, String operationValue, String property, String propertyValue) {
         String result = "";
         Actions action = new Actions(wd);
         // action处理
@@ -130,14 +130,14 @@ public class EncapsulateOperation {
                 LogUtil.APP.info("mouseclickhold鼠标点击对象后不释放...【对象定位属性:{}; 定位属性值:{}】",property,propertyValue);
                 break;
             case "mousedrag":
-                int[] location = getLocationFromParam(operationValue, ",");
+                int[] location = getLocationFromParam(operationValue);
 //                String[] temp = operationValue.split(",", -1);
                 action.dragAndDropBy(we, location[0], location[1]).perform();
                 result = "mousedrag鼠标移动至对象相对坐标...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 相对坐标(x,y):" + location[0] + "," + location[1] + "】";
                 LogUtil.APP.info("mousedrag鼠标移动至对象相对坐标...【对象定位属性:{}; 定位属性值:{}; 相对坐标(x,y):{},{}】",property,propertyValue,location[0],location[1]);
                 break;
             case "mouseto":
-                int[] location1 = getLocationFromParam(operationValue, ",");
+                int[] location1 = getLocationFromParam(operationValue);
 //                String[] temp1 = operationValue.split(",", -1);
                 action.moveToElement(we, location1[0], location1[1]).perform();
                 result = "mouseto鼠标移动至对象相对坐标...【对象定位属性:" + property + "; 定位属性值:" + propertyValue + "; 相对坐标(x,y):" + location1[0] + "," + location1[1] + "】";
@@ -154,7 +154,7 @@ public class EncapsulateOperation {
         return result;
     }
 
-    public static String actionOperation(WebDriver wd, String operation, String operationValue) throws Exception {
+    public static String actionOperation(WebDriver wd, String operation, String operationValue) {
         String result = "";
         Actions action = new Actions(wd);
         // action处理
@@ -181,7 +181,7 @@ public class EncapsulateOperation {
                 LogUtil.APP.info(result);
                 break;
             case "mouseto":
-                int[] location = getLocationFromParam(operationValue, ",");
+                int[] location = getLocationFromParam(operationValue);
 //                String[] temp1 = operationValue.split(",", -1);
                 action.moveByOffset(location[0], location[1]).perform();
                 result = "mouseto鼠标移动至对象相对坐标...坐标x：" + location[0] + " 坐标y：" + location[1];
@@ -229,7 +229,7 @@ public class EncapsulateOperation {
         return result;
     }
 
-    public static String objectOperation(WebDriver wd, WebElement we, String operation, String operationValue, String property, String propertyValue) throws Exception {
+    public static String objectOperation(WebDriver wd, WebElement we, String operation, String operationValue, String property, String propertyValue) {
         String result = "";
         // 处理WebElement对象操作
         switch (operation) {
@@ -258,8 +258,8 @@ public class EncapsulateOperation {
                 LogUtil.APP.info("获取到的值是【{}】",we.isEnabled());
                 break;
             case "isdisplayed":
-                result = "获取到的值是【" + String.valueOf(we.isDisplayed()) + "】";
-                LogUtil.APP.info("获取到的值是【{}】",String.valueOf(we.isDisplayed()));
+                result = "获取到的值是【" + we.isDisplayed() + "】";
+                LogUtil.APP.info("获取到的值是【{}】", we.isDisplayed());
                 break;
             case "exjsob":
                 JavascriptExecutor jse = (JavascriptExecutor) wd;
@@ -292,7 +292,7 @@ public class EncapsulateOperation {
         return result;
     }
 
-    public static String alertOperation(WebDriver wd, String operation) throws Exception {
+    public static String alertOperation(WebDriver wd, String operation) {
         String result = "";
         Alert alert = wd.switchTo().alert();
         switch (operation) {
@@ -316,7 +316,7 @@ public class EncapsulateOperation {
         return result;
     }
 
-    public static String driverOperation(WebDriver wd, String operation, String operationValue) throws Exception {
+    public static String driverOperation(WebDriver wd, String operation, String operationValue) {
         String result = "";
         // 处理页面对象操作
         switch (operation) {
@@ -387,9 +387,9 @@ public class EncapsulateOperation {
             case "timeout":
                 try {
                     // 设置页面加载最大时长30秒
-                    wd.manage().timeouts().pageLoadTimeout(Integer.valueOf(operationValue), TimeUnit.SECONDS);
+                    wd.manage().timeouts().pageLoadTimeout(Integer.parseInt(operationValue), TimeUnit.SECONDS);
                     // 设置元素出现最大时长30秒
-                    wd.manage().timeouts().implicitlyWait(Integer.valueOf(operationValue), TimeUnit.SECONDS);
+                    wd.manage().timeouts().implicitlyWait(Integer.parseInt(operationValue), TimeUnit.SECONDS);
                     result = "当前任务操作等待【" + operationValue + "】秒...";
                     LogUtil.APP.info("当前任务操作等待【{}】秒...",operationValue);
                     break;
@@ -442,19 +442,19 @@ public class EncapsulateOperation {
         }
     }
 
-    private static int[] getLocationFromParam(String param, String split) {
+    private static int[] getLocationFromParam(String param) {
         int[] location = {0, 0};
         if (null == param || param.trim().isEmpty()) {
             return location;
         } else {
             // 不包含分隔符
-            if (! param.contains(split)) {
-                location[0] = Integer.valueOf(param.trim());
+            if (! param.contains(",")) {
+                location[0] = Integer.parseInt(param.trim());
             } else {
-                String[] tmp = param.split(split, 2);
+                String[] tmp = param.split(",", 2);
                 for (int i = 0; i < 2; i++) {
                     if (! tmp[i].trim().isEmpty()){
-                    	location[i] = Integer.valueOf(tmp[i].trim());
+                    	location[i] = Integer.parseInt(tmp[i].trim());
                     } 
                 }
             }
@@ -465,9 +465,9 @@ public class EncapsulateOperation {
     /**
      * operationValue为目标窗口句柄的下标, 1开始; 小于等于0即获取当前窗口的句柄值
      * 窗口句柄值都已CDwindow-开头, 可以作为预期结果的断言
-     * @param driver
-     * @param target
-     * @return
+     * @param driver 驱动
+     * @param target 句柄字符串
+     * @return 返回获取结果
      * @author Seagull
      * @date 2019年8月9日
      */
@@ -477,7 +477,7 @@ public class EncapsulateOperation {
             if (!ChangString.isInteger(target)) {
                 result = windowHandleByTitle(driver, target);
             } else {
-                int index = Integer.valueOf(target);
+                int index = Integer.parseInt(target);
                 result = windowHandleByIndex(driver, index);
             }
         } else {
@@ -552,7 +552,7 @@ public class EncapsulateOperation {
                     return windowByTitle(driver, nameOrHandleOrTitle);
                 } catch (NoSuchWindowException windowWithTitleNotFound) {
                     if (ChangString.isInteger(nameOrHandleOrTitle)){
-                    	return windowByIndex(driver, Integer.valueOf(nameOrHandleOrTitle));
+                    	return windowByIndex(driver, Integer.parseInt(nameOrHandleOrTitle));
                     } else{
                     	return null;
                     }                       

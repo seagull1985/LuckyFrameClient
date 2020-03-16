@@ -1,16 +1,7 @@
 package luckyclient.utils.httputils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Properties;
-
+import luckyclient.utils.LogUtil;
+import luckyclient.utils.config.SysConfig;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,8 +11,11 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-import luckyclient.utils.LogUtil;
-import luckyclient.utils.config.SysConfig;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 /**
  * =================================================================
@@ -41,12 +35,12 @@ public class HttpRequest {
 
 	/**
 	 * 字符串参数
-	 * @param repath
-	 * @return
+	 * @param repath 请求路径
+	 * @return 返回请求结果
 	 */
 	public static String loadJSON(String repath) {
 		String charset="GBK";
-		StringBuffer resultBuffer = null;
+		StringBuffer resultBuffer;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		BufferedReader br = null;
 		// 构建请求参数
@@ -69,8 +63,6 @@ public class HttpRequest {
 					br.close();
 				} catch (IOException e) {
 					LogUtil.APP.error("loadJSON发送请求后关闭br流出现异常，请检查！", e);
-					br = null;
-					throw new RuntimeException(e);
 				}
 			}
 		}
@@ -86,7 +78,7 @@ public class HttpRequest {
     public static String sendPost(String repath, String param) {
         PrintWriter out = null;
         BufferedReader in = null;
-        String result = "";
+        StringBuilder result = new StringBuilder();
         try {
             URL realUrl = new URL(WEB_URL+repath);
             // 打开和URL之间的连接
@@ -109,7 +101,7 @@ public class HttpRequest {
             in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "GBK"));
             String line;
             while ((line = in.readLine()) != null) {
-                result += line;
+                result.append(line);
             }
         } catch (Exception e) {
         	LogUtil.APP.error("向指定URL发送POST方法的请求出现异常，请检查！", e);
@@ -128,17 +120,17 @@ public class HttpRequest {
             	LogUtil.APP.error("向指定URL发送POST方法的请求后关闭流出现异常，请检查！", ex);
             }
         }
-        return result;
+        return result.toString();
     }
 
 	/**
 	 * 使用HttpClient以JSON格式发送post请求
-	 * @param urlParam
-	 * @param params
-	 * @return
+	 * @param urlParam 请求路径
+	 * @param params 请求参数
+	 * @return 返回请求结果
 	 */
 	public static String httpClientPostJson(String urlParam, String params){		
-		StringBuffer resultBuffer = null;
+		StringBuffer resultBuffer;
 		CloseableHttpClient httpclient=HttpClients.createDefault();
 		HttpPost httpPost = new HttpPost(WEB_URL+urlParam);
 	    httpPost.setHeader("Content-Type", "application/json");
@@ -159,7 +151,7 @@ public class HttpRequest {
 		// 读取服务器响应数据
 		resultBuffer = new StringBuffer();
 		if(null!=response.getEntity()){
-			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "utf-8"));
+			br = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), StandardCharsets.UTF_8));
 			String temp;
 			while ((temp = br.readLine()) != null) {
 				resultBuffer.append(temp);
@@ -173,9 +165,7 @@ public class HttpRequest {
 				try {
 					br.close();
 				} catch (IOException e) {
-					br = null;
 					LogUtil.APP.error("使用HttpClient以JSON格式发送post请求后关闭br流出现异常，请检查！", e);
-					throw new RuntimeException(e);
 				}
 			}
 		}		

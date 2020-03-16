@@ -36,26 +36,27 @@ public class JarClassFind {
 		}
 		
 		String[] filelist = file.list();
-		for (int i = 0; i < filelist.length; i++) {
-			File temp = new File(path + filelist[i]);
-			if ((temp.isDirectory() && !temp.isHidden() && temp.exists())&&filelist[i].equals(classname)) {
+		assert filelist != null;
+		for (String s : filelist) {
+			File temp = new File(path + s);
+			if ((temp.isDirectory() && !temp.isHidden() && temp.exists()) && s.equals(classname)) {
 				count++;
-				System.out.println("【"+path + filelist[i]+"】查找到第"+count+"个JAR包存在指定类！");
+				System.out.println("【" + path + s + "】查找到第" + count + "个JAR包存在指定类！");
 			} else {
-				if (filelist[i].endsWith("jar")) {
+				if (s.endsWith("jar")) {
 					try {
-						JarFile jarfile = new java.util.jar.JarFile(path + filelist[i]);						
-						for (Enumeration<JarEntry> e = jarfile.entries(); e.hasMoreElements();) {
+						JarFile jarfile = new JarFile(path + s);
+						for (Enumeration<JarEntry> e = jarfile.entries(); e.hasMoreElements(); ) {
 							String name = e.nextElement().toString();
-							if (name.equals(classname) || name.indexOf(classname) > -1) {
+							if (name.equals(classname) || name.contains(classname)) {
 								count++;
 								//JavaBaseTest.LogUtil.APP.info("【"+path + filelist[i]+"】查找到第"+count+"个JAR包存在指定类！");
-								System.out.println("【"+path + filelist[i]+"】查找到第"+count+"个JAR包存在指定类！");
+								System.out.println("【" + path + s + "】查找到第" + count + "个JAR包存在指定类！");
 							}
 						}
 						jarfile.close();
-					} catch (Exception e) {
-						
+					} catch (Exception ignored) {
+
 					}
 				}
 			}

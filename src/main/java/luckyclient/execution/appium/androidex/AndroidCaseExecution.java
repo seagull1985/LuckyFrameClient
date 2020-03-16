@@ -1,6 +1,5 @@
 package luckyclient.execution.appium.androidex;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,17 +28,14 @@ import luckyclient.utils.LogUtil;
  * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
  * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
- * 
  * @author seagull
  * @date 2018年1月21日 上午15:12:48
  */
 public class AndroidCaseExecution{
-	static Map<String, String> variable = new HashMap<String, String>();
+	static Map<String, String> variable = new HashMap<>();
     private static String casenote = "备注初始化";
-    private static String imagname = "";
 
-	public static void caseExcution(ProjectCase testcase, List<ProjectCaseSteps> steps,String taskid, AndroidDriver<AndroidElement> appium,serverOperation caselog,List<ProjectCaseParams> pcplist)
-			throws InterruptedException, IOException {
+	public static void caseExcution(ProjectCase testcase, List<ProjectCaseSteps> steps,String taskid, AndroidDriver<AndroidElement> appium,serverOperation caselog,List<ProjectCaseParams> pcplist) {
 		caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), 3);
 		// 把公共参数加入到MAP中
 		for (ProjectCaseParams pcp : pcplist) {
@@ -73,7 +69,7 @@ public class AndroidCaseExecution{
             	result = testCaseExecution.runStep(params, taskid, testcase.getCaseSign(), step, caselog);
             }
 
-			String expectedResults = params.get("ExpectedResults").toString();
+			String expectedResults = params.get("ExpectedResults");
 			expectedResults=ChangString.changparams(expectedResults, variable,"预期结果");
 			
             // 判断结果
@@ -103,7 +99,7 @@ public class AndroidCaseExecution{
 	}
 
 	public static String androidRunStep(Map<String, String> params, AndroidDriver<AndroidElement> appium,String taskid,Integer caseId,int stepno,serverOperation caselog) {
-		String result = "";
+		String result;
 		String property;
 		String propertyValue;
 		String operation;
@@ -124,7 +120,7 @@ public class AndroidCaseExecution{
 
 		try {		
 			//调用接口用例
-			if(null != operation&&null != operationValue&&"runcase".equals(operation)){
+			if(null != operationValue && "runcase".equals(operation)){
 				String[] temp=operationValue.split(",",-1);
 				TestCaseExecution testCaseExecution=new TestCaseExecution();
 				String ex = testCaseExecution.oneCaseExecuteForUICase(temp[0], taskid, caselog, appium);
@@ -135,7 +131,7 @@ public class AndroidCaseExecution{
 				}
 			}
 			
-			AndroidElement ae = null;
+			AndroidElement ae;
 			// 页面元素层
 			if (null != property && null != propertyValue) { 
 				ae = isElementExist(appium, property, propertyValue);
@@ -145,9 +141,9 @@ public class AndroidCaseExecution{
 					return "步骤执行失败：isElementExist定位元素过程失败！";
 				}
 
-				if (operation.indexOf("select") > -1) {
+				if (operation.contains("select")) {
 					result = AndroidEncapsulateOperation.selectOperation(ae, operation, operationValue);
-				} else if (operation.indexOf("get") > -1){
+				} else if (operation.contains("get")){
 					result = AndroidEncapsulateOperation.getOperation(ae, operation,operationValue);
 				} else {
 					result = AndroidEncapsulateOperation.objectOperation(appium, ae, operation, operationValue, property, propertyValue);
@@ -155,7 +151,7 @@ public class AndroidCaseExecution{
 				// Driver层操作
 			} else if (null==property && null != operation) { 				
 				// 处理弹出框事件
-				if (operation.indexOf("alert") > -1){
+				if (operation.contains("alert")){
 					result = AndroidEncapsulateOperation.alertOperation(appium, operation);
 				}else{
 					result = AndroidEncapsulateOperation.driverOperation(appium, operation, operationValue);
@@ -170,7 +166,7 @@ public class AndroidCaseExecution{
 		}
 		caselog.insertTaskCaseLog(taskid, caseId, result,"info", String.valueOf(stepno),"");
 		
-		if(result.indexOf("获取到的值是【")>-1&&result.indexOf("】")>-1){
+		if(result.contains("获取到的值是【") && result.contains("】")){
 			result = result.substring(result.indexOf("获取到的值是【")+7, result.length()-1);
 		}
 		return result;
@@ -223,10 +219,10 @@ public class AndroidCaseExecution{
 		
 	}
 
-    public static int judgeResult(ProjectCase testcase, ProjectCaseSteps step, Map<String, String> params, AndroidDriver<AndroidElement> appium, String taskid, String expect, String result, serverOperation caselog) throws InterruptedException {
+    public static int judgeResult(ProjectCase testcase, ProjectCaseSteps step, Map<String, String> params, AndroidDriver<AndroidElement> appium, String taskid, String expect, String result, serverOperation caselog) {
         int setresult = 0;
         java.text.DateFormat timeformat = new java.text.SimpleDateFormat("MMdd-hhmmss");
-        imagname = timeformat.format(new Date());
+		String imagname = timeformat.format(new Date());
         
         result = ActionManageForSteps.actionManage(step.getAction(), result);
         if (null != result && !result.contains("步骤执行失败：")) {

@@ -34,16 +34,16 @@ import luckyclient.utils.LogUtil;
 public class WebTestCaseDebug {
     /**
      * 用于在WEB页面上调试用例时提供的接口
-     * @param caseIdStr
-     * @param userIdStr
+     * @param caseIdStr 用例ID
+     * @param userIdStr  用户ID
      */
     public static void oneCaseDebug(String caseIdStr, String userIdStr) {
         Map<String, String> variable = new HashMap<>(0);
-        String packagename = null;
-        String functionname = null;
-        String expectedresults = null;
-        Integer setcaseresult = 0;
-        Object[] getParameterValues = null;
+        String packagename;
+        String functionname;
+        String expectedresults;
+        int setcaseresult = 0;
+        Object[] getParameterValues;
         String testnote = "初始化测试结果";
         int k = 0;
         Integer caseId = Integer.valueOf(caseIdStr);
@@ -64,14 +64,12 @@ public class WebTestCaseDebug {
                 packagename = casescript.get("PackageName");
                 functionname = casescript.get("FunctionName");
             } catch (Exception e) {
-                k = 0;
                 LogUtil.APP.error("解析包名或是方法名出现异常！",e);
                 PostServerApi.cPostDebugLog(userId, caseId, "ERROR", "解析包名或是方法名失败，请检查！",2);
                 break;        //某一步骤失败后，此条用例置为失败退出
             }
             //用例名称解析出现异常或是单个步骤参数解析异常
             if ((null != functionname && functionname.contains("解析异常")) || k == 1) {
-                k = 0;
                 testnote = "用例第" + (i + 1) + "步解析出错啦！";
                 break;
             }
@@ -156,10 +154,10 @@ public class WebTestCaseDebug {
                         
                         if (exceptResult.equals(result)) {
                             setcaseresult = 0;
-                            PostServerApi.cPostDebugLog(userId, caseId, "INFO", "jsonpath断言预期结果成功！预期结果：" + exceptResult + " 测试结果: " + result.toString() + "校验结果: true", 0);
+                            PostServerApi.cPostDebugLog(userId, caseId, "INFO", "jsonpath断言预期结果成功！预期结果：" + exceptResult + " 测试结果: " + result + "校验结果: true", 0);
                         } else {
                             setcaseresult = 1;
-                            PostServerApi.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，jsonpath断言预期结果失败！预期结果：" + exceptResult + "，测试结果：" + result.toString(),0);
+                            PostServerApi.cPostDebugLog(userId, caseId, "ERROR", "第" + (i + 1) + "步，jsonpath断言预期结果失败！预期结果：" + exceptResult + "，测试结果：" + result,0);
                             testnote = "用例第" + (i + 1) + "步，jsonpath断言预期结果失败！";
                             if (testcase.getFailcontinue() == 0) {
                                 LogUtil.APP.warn("用例【{}】第【{}】步骤执行失败，中断本条用例后续步骤执行，进入到下一条用例执行中......",testcase.getCaseSign(),(i+1));
@@ -211,7 +209,4 @@ public class WebTestCaseDebug {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-
-    }
 }

@@ -27,7 +27,7 @@ import luckyclient.utils.LogUtil;
  */
 public class WebOneCaseExecute{
 	
-	public static void oneCaseExecuteForTast(String projectname,Integer caseId,int version,String taskid){
+	public static void oneCaseExecuteForTast(Integer caseId, String taskid){
 		//记录日志到数据库
 		serverOperation.exetype = 0;   
 		TestControl.TASKID = taskid;
@@ -49,12 +49,13 @@ public class WebOneCaseExecute{
 			List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
 			WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
 			LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条",testcase.getCaseSign());
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			LogUtil.APP.error("用户执行过程中抛出异常！", e);
 		}
 		serverOperation.updateTaskExecuteData(taskid, 0,2);
         //关闭浏览器
-        wd.quit();
+		assert wd != null;
+		wd.quit();
 	}
 
 }

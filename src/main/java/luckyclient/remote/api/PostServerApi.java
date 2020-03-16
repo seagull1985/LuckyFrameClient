@@ -24,11 +24,11 @@ public class PostServerApi {
 
 	/**
 	 * put web界面的数据到服务端
-	 * @param userId
-	 * @param caseId
-	 * @param logLevel
-	 * @param logDetail
-	 * @param debugIsend
+	 * @param userId 用户ID
+	 * @param caseId 用例ID
+	 * @param logLevel 日志级别
+	 * @param logDetail 日志明细
+	 * @param debugIsend 结束标志
 	 */
 	public static void cPostDebugLog(Integer userId, Integer caseId, String logLevel, String logDetail,Integer debugIsend){
 		ProjectCaseDebug projectCaseDebug = new ProjectCaseDebug();
@@ -43,12 +43,12 @@ public class PostServerApi {
 
 	/**
 	 * 插入用例执行明细到数据库
-	 * @param taskId
-	 * @param projectId
-	 * @param caseId
-	 * @param caseSign
-	 * @param caseName
-	 * @param caseStatus
+	 * @param taskId 任务ID
+	 * @param projectId 项目ID
+	 * @param caseId 用例ID
+	 * @param caseSign 用例编号
+	 * @param caseName 用例名称
+	 * @param caseStatus 用例状态
 	 * @author Seagull
 	 * @date 2019年4月22日
 	 */
@@ -66,9 +66,9 @@ public class PostServerApi {
 	
 	/**
 	 * 修改用例执行状态
-	 * @param taskId
-	 * @param caseId
-	 * @param caseStatus
+	 * @param taskId 任务ID
+	 * @param caseId 用例ID
+	 * @param caseStatus 用例状态
 	 * @author Seagull
 	 * @date 2019年4月22日
 	 */
@@ -83,12 +83,12 @@ public class PostServerApi {
 	
 	/**
 	 * 插入用例执行明细到数据库
-	 * @param taskId
-	 * @param caseId
-	 * @param logDetail
-	 * @param logGrade
-	 * @param logStep
-	 * @param imgname
+	 * @param taskId 任务ID
+	 * @param caseId 用例ID
+	 * @param logDetail 日志明细
+	 * @param logGrade 日志等级
+	 * @param logStep 日志对应步骤
+	 * @param imgname 截图名称
 	 * @author Seagull
 	 * @date 2019年4月22日
 	 */
@@ -107,10 +107,10 @@ public class PostServerApi {
 
 	/**
 	 * 更新任务执行数据
-	 * @param taskId
-	 * @param caseCount
-	 * @param taskStatus
-	 * @return
+	 * @param taskId 任务ID
+	 * @param caseCount 用例总数
+	 * @param taskStatus 任务状态
+	 * @return 更新结果
 	 */
 	public static String clientUpdateTaskExecuteData(Integer taskId, Integer caseCount, Integer taskStatus){
 		String str = "{\"taskId\":"+taskId+",\"caseCount\":"+caseCount+",\"taskStatus\":"+taskStatus+"}";
@@ -119,22 +119,21 @@ public class PostServerApi {
 	}
 
 	/**
-	 * 更新任务执行数据
-	 * @param taskId
-	 * @param caseId
-	 * @return
+	 * 删除用例执行日志
+	 * @param taskId 任务ID
+	 * @param caseId 用例ID
 	 */
-	public static String clientDeleteTaskCaseLog(Integer taskId, Integer caseId){
+	public static void clientDeleteTaskCaseLog(Integer taskId, Integer caseId){
 		String str = "{\"taskId\":"+taskId+",\"caseId\":"+caseId+"}";
 		JSONObject jsonObject = JSON.parseObject(str);
-		return HttpRequest.httpClientPostJson(PREFIX+"/clientDeleteTaskCaseLog", jsonObject.toJSONString());
+		HttpRequest.httpClientPostJson(PREFIX + "/clientDeleteTaskCaseLog", jsonObject.toJSONString());
 	}
 
 	/**
 	 * 提取测试用例的详细日志以及结果
-	 * @param taskName
-	 * @param caseSign
-	 * @return
+	 * @param taskName 任务名称
+	 * @param caseSign 用例编号
+	 * @return 提取结果
 	 */
 	public static String getLogDetailResult(String taskName, String caseSign){
 		String str = "{\"taskName\":\""+taskName+"\",\"caseSign\":\""+caseSign+"\"}";
