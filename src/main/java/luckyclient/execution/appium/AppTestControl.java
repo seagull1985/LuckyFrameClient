@@ -122,7 +122,7 @@ public class AppTestControl {
 				.cgetParamsByProjectid(task.getProjectId().toString());
 		String projectname = task.getProject().getProjectName();
 		String jobname = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId()).getSchedulingName();
-        int[] tastcount = null;
+        int[] tastcount;
 		// 判断是否要自动重启TOMCAT
 		if (restartstatus.contains("Status:true")) {
 			// 判断是否构建是否成功
@@ -179,20 +179,16 @@ public class AppTestControl {
 				}
 			} else {
 				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
-				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskId, taskScheduling, tastcount);
+				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskId, taskScheduling, null);
 			}
 		} else {
 			LogUtil.APP.warn("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
-			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskId, taskScheduling, tastcount);
+			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskId, taskScheduling, null);
 		}
 		//关闭Appium服务的线程
 		if(as!=null){
 			as.interrupt();
 		}
-	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 	}
 
 }

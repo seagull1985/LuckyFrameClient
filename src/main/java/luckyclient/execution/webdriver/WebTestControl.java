@@ -80,7 +80,7 @@ public class WebTestControl {
 		wd.quit();
 	}
 
-	public static void taskExecutionPlan(TaskExecute task) throws InterruptedException {
+	public static void taskExecutionPlan(TaskExecute task) {
 		// 记录日志到数据库
 		serverOperation.exetype = 0;
 		String taskid = task.getTaskId().toString();
@@ -93,7 +93,7 @@ public class WebTestControl {
 		task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskid));
 		String jobname = taskScheduling.getSchedulingName();
 		int drivertype = serverOperation.querydrivertype(taskid);
-		int[] tastcount = null;
+		int[] tastcount;
 		// 判断是否要自动重启TOMCAT
 		if (restartstatus.contains("Status:true")) {
 			// 判断是否构建是否成功
@@ -142,12 +142,12 @@ public class WebTestControl {
 			} else {
 				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
 				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskid,
-						taskScheduling, tastcount);
+						taskScheduling, null);
 			}
 		} else {
 			LogUtil.APP.warn("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
 			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid,
-					taskScheduling, tastcount);
+					taskScheduling, null);
 		}
 	}
 

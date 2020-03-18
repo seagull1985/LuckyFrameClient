@@ -139,7 +139,7 @@ public class serverOperation {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			LogUtil.APP.error("获取邮件收件人地址出现异常，请检查！",e);
-			return address;
+			return null;
 		}
 		return address;
 	}
@@ -153,7 +153,7 @@ public class serverOperation {
 		try {
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
 			if (StrUtil.isEmpty(taskScheduling.getBuildingLink())) {
-				return buildname;
+				return null;
 			}else{
 				String jobName = taskScheduling.getBuildingLink();
 				// 清除最后一个;
@@ -172,7 +172,7 @@ public class serverOperation {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			LogUtil.APP.error("获取构建地址出现异常，请检查！",e);
-			return buildname;
+			return null;
 		}
 		return buildname;
 	}
@@ -190,7 +190,7 @@ public class serverOperation {
 		try {
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
 			if (null == taskScheduling.getRemoteShell() || "".equals(taskScheduling.getRemoteShell())) {
-				return command;
+				return null;
 			}else{
 				String temp = taskScheduling.getRemoteShell();
 				// 清除最后一个;
@@ -209,7 +209,7 @@ public class serverOperation {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			LogUtil.APP.error("获取远程shell地址出现异常，请检查！",e);
-			return command;
+			return null;
 		}
 		return command;
 

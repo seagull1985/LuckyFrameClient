@@ -24,11 +24,10 @@ public class SubStrRegxActionParser implements ActionKeyWordParser {
         if(actionParams.endsWith("]")&&actionParams.contains("[")){
             key=actionParams.substring(0,actionParams.lastIndexOf("["));
             index=actionParams.substring(actionParams.lastIndexOf("[")+1, actionParams.lastIndexOf("]"));
-            testResult= SubString.subStrRgex(testResult, key, index);
         }else{
             key=actionParams;
-            testResult= SubString.subStrRgex(testResult, key, index);
         }
+        testResult= SubString.subStrRgex(testResult, key, index);
         LogUtil.APP.info("Action(subStrRgex):获取JSON字符串指定Key的值是:{}",testResult);
         return testResult;
     }

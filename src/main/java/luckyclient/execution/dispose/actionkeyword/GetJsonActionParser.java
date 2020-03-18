@@ -24,11 +24,10 @@ public class GetJsonActionParser implements ActionKeyWordParser {
         if(actionParams.endsWith("]")&&actionParams.contains("[")){
             key=actionParams.substring(0,actionParams.indexOf("["));
             index=actionParams.substring(actionParams.indexOf("[")+1, actionParams.lastIndexOf("]"));
-            testResult= SubString.getJsonValue(testResult, key, index);
         }else{
             key=actionParams;
-            testResult=SubString.getJsonValue(testResult, key, index);
         }
+        testResult= SubString.getJsonValue(testResult, key, index);
         LogUtil.APP.info("Action(getJV):获取JSON字符串指定Key的值是:{}",testResult);
         return testResult;
     }

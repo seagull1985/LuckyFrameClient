@@ -20,9 +20,8 @@ public class DbDriven {
 	 * 执行SQL语句
 	 * @param sql 执行SQL语句
 	 * @return 返回执行结果条数才及提示
-	 * @throws Exception 抛异常
 	 */
-	public String executeSql(String sql) throws Exception{
+	public String executeSql(String sql) {
 		Properties properties = DrivenConfig.getConfiguration();
 		String url = properties.getProperty("db.url");
 		String username = properties.getProperty("db.username");

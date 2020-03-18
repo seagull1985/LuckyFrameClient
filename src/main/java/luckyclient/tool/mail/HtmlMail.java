@@ -55,7 +55,8 @@ public class HtmlMail {
                 ProjectProtocolTemplate ppt=new ProjectProtocolTemplate();
                 ppt.setEncoding("utf-8");
                 ppt.setTimeout(60);
-                HttpClientTools.httpClientPostJson(pushurl, pushparameters, headmsg,ppt);
+                HttpClientTools hct = new HttpClientTools();
+                hct.httpClientPostJson(pushurl, pushparameters, headmsg,ppt);
             }
         } catch (Exception e) {
             LogUtil.APP.error("向第三方平台推送任务执行情况出现异常，请检查！", e);

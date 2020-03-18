@@ -34,12 +34,12 @@ public class InvokeMethod {
 
     /**
      * 动态调用JAVA
-     * @param packagename
-     * @param functionname
-     * @param getParameterValues
-     * @param steptype
-     * @param extend
-     * @return
+     * @param packagename 包路径
+     * @param functionname 方法名
+     * @param getParameterValues 参数
+     * @param steptype 步骤类型
+     * @param extend 模板对象
+     * @return 返回测试执行结果
      */
     public static String callCase(String packagename, String functionname, Object[] getParameterValues, int steptype, String extend) {
         String result = "调用异常，请查看错误日志！";
@@ -94,15 +94,15 @@ public class InvokeMethod {
                 List<ProjectTemplateParams> paramslist = GetServerApi.clientGetProjectTemplateParamsListByTemplateId(Integer.valueOf(templateidstr));
 
                 //处理头域
-                Map<String, String> headmsg = new HashMap<String, String>(0);
+                Map<String, String> headmsg = new HashMap<>(0);
                 if (null != ppt.getHeadMsg() && !ppt.getHeadMsg().equals("") && ppt.getHeadMsg().indexOf("=") > 0) {
                     String headmsgtemp = ppt.getHeadMsg().replace("\\;", "!!!fhzh");
                     String[] temp = headmsgtemp.split(";", -1);
-                    for (int i = 0; i < temp.length; i++) {
-                        if (null != temp[i] && !temp[i].equals("") && temp[i].indexOf("=") > 0) {
-                            String key = temp[i].substring(0, temp[i].indexOf("="));
-                            String value = temp[i].substring(temp[i].indexOf("=") + 1);
-                            value = value.replace("!!!fhzh",";");
+                    for (String s : temp) {
+                        if (null != s && !s.equals("") && s.indexOf("=") > 0) {
+                            String key = s.substring(0, s.indexOf("="));
+                            String value = s.substring(s.indexOf("=") + 1);
+                            value = value.replace("!!!fhzh", ";");
                             value = ParamsManageForSteps.paramsManage(value);
                             headmsg.put(key, value);
                         }
@@ -132,7 +132,7 @@ public class InvokeMethod {
                             		//分析参数替换序号
                             		int index = 1;
                             		if (key.contains("[") && key.endsWith("]")) {
-                            			index = Integer.valueOf(key.substring(key.lastIndexOf("[") + 1, key.lastIndexOf("]")));
+                            			index = Integer.parseInt(key.substring(key.lastIndexOf("[") + 1, key.lastIndexOf("]")));
                             			key = key.substring(0, key.lastIndexOf("["));
                             			LogUtil.APP.info("准备替换JSON对象中的参数值，替换指定第{}个参数...",index);
                             		} else {
@@ -179,9 +179,9 @@ public class InvokeMethod {
                     }
                 }
                 //处理参数
-                Map<String, Object> params = new HashMap<String, Object>(0);
+                Map<String, Object> params = new HashMap<>(0);
                 for (ProjectTemplateParams ptp : paramslist) {
-                	String tempparam = "";
+                	String tempparam;
                 	if(null!=ptp.getParamValue()){
                 		tempparam =  ptp.getParamValue().replace("&quot;", "\"");
                 	}else{
@@ -214,40 +214,58 @@ public class InvokeMethod {
                     }
                 }
 
-                if (functionname.toLowerCase().equals("httpurlpost")) {
-                    result = HttpClientTools.sendHttpURLPost(packagename, params,headmsg,ppt);
-                } else if (functionname.toLowerCase().equals("urlpost")) {
-                    result = HttpClientTools.sendURLPost(packagename, params, headmsg,ppt);
-                } else if (functionname.toLowerCase().equals("getandsavefile")) {
-                    String fileSavePath = System.getProperty("user.dir") + "\\HTTPSaveFile\\";
-                    result = HttpClientTools.sendGetAndSaveFile(packagename, params, fileSavePath, headmsg,ppt);
-                } else if (functionname.toLowerCase().equals("httpurlget")) {
-                    result = HttpClientTools.sendHttpURLGet(packagename, params, headmsg,ppt);
-                } else if (functionname.toLowerCase().equals("urlget")) {
-                    result = HttpClientTools.sendURLGet(packagename, params, headmsg,ppt);
-                } else if (functionname.toLowerCase().equals("httpclientpost")) {
-                    result = HttpClientTools.httpClientPost(packagename, params, headmsg , ppt);
-                } else if (functionname.toLowerCase().equals("httpclientuploadfile")) {
-                    result = HttpClientTools.httpClientUploadFile(packagename, params, headmsg , ppt);
-                } else if (functionname.toLowerCase().equals("httpclientpostjson")) {
-                    result = HttpClientTools.httpClientPostJson(packagename, params, headmsg , ppt);
-                } else if (functionname.toLowerCase().equals("httpurldelete")) {
-                    result = HttpClientTools.sendHttpURLDel(packagename, params, headmsg,ppt);
-                } else if (functionname.toLowerCase().equals("httpclientdeletejson")) {
-                    result = HttpClientTools.httpClientDeleteJson(packagename, params, headmsg,ppt);
-                } else if (functionname.toLowerCase().equals("httpclientpatchjson")) {
-                    result = HttpClientTools.httpClientPatchJson(packagename, params, headmsg, ppt);
-                } else if (functionname.toLowerCase().equals("httpclientputjson")) {
-                    result = HttpClientTools.httpClientPutJson(packagename, params, headmsg , ppt);
-                } else if (functionname.toLowerCase().equals("httpclientput")) {
-                    result = HttpClientTools.httpClientPut(packagename, params, headmsg , ppt);
-                } else if (functionname.toLowerCase().equals("httpclientget")) {
-                    result = HttpClientTools.httpClientGet(packagename, params, headmsg, ppt);
-                } else if (functionname.toLowerCase().equals("httpclientpostxml")) {
-                    result = HttpClientTools.httpClientPostXml(packagename, params, headmsg, ppt);
-                } else {
-                    LogUtil.APP.warn("您的HTTP操作方法异常，检测到的操作方法是:{}",functionname);
-                    result = "调用异常，请查看错误日志！";
+                HttpClientTools hct = new HttpClientTools();
+                switch (functionname.toLowerCase()) {
+                    case "httpurlpost":
+                        result = hct.sendHttpURLPost(packagename, params, headmsg, ppt);
+                        break;
+                    case "urlpost":
+                        result = hct.sendURLPost(packagename, params, headmsg, ppt);
+                        break;
+                    case "getandsavefile":
+                        String fileSavePath = System.getProperty("user.dir") + "\\HTTPSaveFile\\";
+                        result = hct.sendGetAndSaveFile(packagename, params, fileSavePath, headmsg, ppt);
+                        break;
+                    case "httpurlget":
+                        result = hct.sendHttpURLGet(packagename, params, headmsg, ppt);
+                        break;
+                    case "urlget":
+                        result = hct.sendURLGet(packagename, params, headmsg, ppt);
+                        break;
+                    case "httpclientpost":
+                        result = hct.httpClientPost(packagename, params, headmsg, ppt);
+                        break;
+                    case "httpclientuploadfile":
+                        result = hct.httpClientUploadFile(packagename, params, headmsg, ppt);
+                        break;
+                    case "httpclientpostjson":
+                        result = hct.httpClientPostJson(packagename, params, headmsg, ppt);
+                        break;
+                    case "httpurldelete":
+                        result = hct.sendHttpURLDel(packagename, params, headmsg, ppt);
+                        break;
+                    case "httpclientdeletejson":
+                        result = hct.httpClientDeleteJson(packagename, params, headmsg, ppt);
+                        break;
+                    case "httpclientpatchjson":
+                        result = hct.httpClientPatchJson(packagename, params, headmsg, ppt);
+                        break;
+                    case "httpclientputjson":
+                        result = hct.httpClientPutJson(packagename, params, headmsg, ppt);
+                        break;
+                    case "httpclientput":
+                        result = hct.httpClientPut(packagename, params, headmsg, ppt);
+                        break;
+                    case "httpclientget":
+                        result = hct.httpClientGet(packagename, params, headmsg, ppt);
+                        break;
+                    case "httpclientpostxml":
+                        result = hct.httpClientPostXml(packagename, params, headmsg, ppt);
+                        break;
+                    default:
+                        LogUtil.APP.warn("您的HTTP操作方法异常，检测到的操作方法是:{}", functionname);
+                        result = "调用异常，请查看错误日志！";
+                        break;
                 }
             } else if (steptype == 4) {
                 String templateidstr = extend.substring(1, extend.indexOf("】"));
@@ -263,15 +281,15 @@ public class InvokeMethod {
                 List<ProjectTemplateParams> paramslist = GetServerApi.clientGetProjectTemplateParamsListByTemplateId(Integer.valueOf(templateidstr));
                 
                 //处理头域
-                Map<String, String> headmsg = new HashMap<String, String>(0);
+                Map<String, String> headmsg = new HashMap<>(0);
                 if (null != ppt.getHeadMsg() && !ppt.getHeadMsg().equals("") && ppt.getHeadMsg().indexOf("=") > 0) {
                     String headmsgtemp = ppt.getHeadMsg().replace("\\;", "!!!fhzh");
                     String[] temp = headmsgtemp.split(";", -1);
-                    for (int i = 0; i < temp.length; i++) {
-                        if (null != temp[i] && !temp[i].equals("") && temp[i].indexOf("=") > 0) {
-                            String key = temp[i].substring(0, temp[i].indexOf("="));
-                            String value = temp[i].substring(temp[i].indexOf("=") + 1);
-                            value = value.replace("!!!fhzh",";");
+                    for (String s : temp) {
+                        if (null != s && !s.equals("") && s.indexOf("=") > 0) {
+                            String key = s.substring(0, s.indexOf("="));
+                            String value = s.substring(s.indexOf("=") + 1);
+                            value = value.replace("!!!fhzh", ";");
                             headmsg.put(key, value);
                         }
                     }
@@ -295,11 +313,11 @@ public class InvokeMethod {
                             for (int i = 0; i < paramslist.size(); i++) {
                                 ProjectTemplateParams ptp = paramslist.get(i);
                                 if("_forTextJson".equals(ptp.getParamName())){
-                                	if(ptp.getParamValue().indexOf("\""+key+"\":")>=0){
+                                	if(ptp.getParamValue().contains("\"" + key + "\":")){
                                  		//分析参数替换序号
                                 		int index = 1;
-                                		if (key.indexOf("[") >= 0 && key.endsWith("]")) {
-                                			index = Integer.valueOf(key.substring(key.lastIndexOf("[") + 1, key.lastIndexOf("]")));
+                                		if (key.contains("[") && key.endsWith("]")) {
+                                			index = Integer.parseInt(key.substring(key.lastIndexOf("[") + 1, key.lastIndexOf("]")));
                                 			key = key.substring(0, key.lastIndexOf("["));
                                 			LogUtil.APP.info("准备替换JSON对象中的参数值，未检测到指定参数名序号，默认替换第1个参数...");
                                 		} else {
@@ -314,7 +332,7 @@ public class InvokeMethod {
                                             LogUtil.APP.info("替换参数【{}】完成...",key);
                                             break;
                                 		}
-                                	}else if(ptp.getParamValue().indexOf(key)>=0){
+                                	}else if(ptp.getParamValue().contains(key)){
                                 		ptp.setParamValue(ptp.getParamValue().replace(key, value));
                                 		paramslist.set(i, ptp);
                                         replaceflag=1;
@@ -345,7 +363,7 @@ public class InvokeMethod {
                     }
                 }
                 //处理参数
-                Map<String, Object> params = new HashMap<String, Object>(0);
+                Map<String, Object> params = new HashMap<>(0);
                 for (ProjectTemplateParams ptp : paramslist) {
                 	String tempparam = "";
                 	if(null!=ptp.getParamValue()){
@@ -378,11 +396,11 @@ public class InvokeMethod {
                     }
                 }
 
-
+                HttpClientTools hct = new HttpClientTools();
                 if (functionname.toLowerCase().equals("socketpost")) {
-                    result = HttpClientTools.sendSocketPost(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
+                    result = hct.sendSocketPost(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
                 } else if (functionname.toLowerCase().equals("socketget")) {
-                    result = HttpClientTools.sendSocketGet(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
+                    result = hct.sendSocketGet(packagename, params, ppt.getEncoding().toLowerCase(), headmsg);
                 } else {
                     LogUtil.APP.warn("您的SOCKET操作方法异常，检测到的操作方法是:{}",functionname);
                     result = "调用异常，请查看错误日志！";
@@ -396,12 +414,12 @@ public class InvokeMethod {
     }
 
     public static Method getMethod(Method[] methods, String methodName, @SuppressWarnings("rawtypes") Class[] parameterTypes) {
-        for (int i = 0; i < methods.length; i++) {
-            if (!methods[i].getName().equals(methodName)) {
+        for (Method method : methods) {
+            if (!method.getName().equals(methodName)) {
                 continue;
             }
-            if (compareParameterTypes(parameterTypes, methods[i].getParameterTypes())) {
-                return methods[i];
+            if (compareParameterTypes(parameterTypes, method.getParameterTypes())) {
+                return method;
             }
 
         }
@@ -414,34 +432,22 @@ public class InvokeMethod {
         if (parameterTypes == null && orgParameterTypes == null) {
             return true;
         }
-        if (parameterTypes == null && orgParameterTypes != null) {
-            if (orgParameterTypes.length == 0) {
-                return true;
-            } else {
-                return false;
-            }
+        if (parameterTypes == null) {
+            return orgParameterTypes.length == 0;
         }
-        if (parameterTypes != null && orgParameterTypes == null) {
-            if (parameterTypes.length == 0) {
-                return true;
-            } else {
-                return false;
-            }
+        if (orgParameterTypes == null) {
+            return parameterTypes.length == 0;
 
         }
-        if (parameterTypes.length != orgParameterTypes.length) {
-            return false;
-        }
-
-        return true;
+        return parameterTypes.length == orgParameterTypes.length;
     }
     
     /**
      * 调用Python脚本
-     * @param packagename
-     * @param functionname
-     * @param getParameterValues
-     * @return
+     * @param packagename 脚本路径
+     * @param functionname 方法名
+     * @param getParameterValues 参数值
+     * @return 返回Python执行结果 字符串类型
      */
     private static String callPy(String packagename, String functionname, Object[] getParameterValues){
     	String result = "调用Python脚本过程异常，返回结果是null";
@@ -473,7 +479,7 @@ public class InvokeMethod {
             InputStream stream = proc.getInputStream();
             
             // 流读取与写入
-            int len = -1;  
+            int len;
             while ((len = errStream.read(buffer)) != -1) {  
                 outerrStream.write(buffer, 0, len);  
             }  
@@ -488,10 +494,10 @@ public class InvokeMethod {
             	LogUtil.APP.info("成功调用Python脚本，返回结果:{}",result);
             }else{
             	result = outerrStream.toString().trim();
-            	if(result.indexOf("ModuleNotFoundError")>-1){
+            	if(result.contains("ModuleNotFoundError")){
             		LogUtil.APP.warn("调用Python脚本出现异常，有相关Python模块未引用到，请在Python脚本中注意设置系统环境路径(例: sys.path.append(\"E:\\PycharmProjects\\untitled\\venv\\Lib\\site-packages\"))，"
             				+ "详细错误信息:{}",result);
-            	}else if(result.indexOf("No such file or directory")>-1){
+            	}else if(result.contains("No such file or directory")){
             		LogUtil.APP.warn("调用Python脚本出现异常，在指定路径下未找到Python脚本，原因有可能是Python脚本路径错误或是传入Python指定参数个数不一致，详细错误信息:{}",result);
             	}else{
             		LogUtil.APP.warn("调用Python脚本出现异常，错误信息:{}",result);

@@ -17,7 +17,7 @@ import luckyclient.utils.config.SysConfig;
  * @author Administrator
  */
 public class FreemarkerEmailTemplate {
-    Properties properties = SysConfig.getConfiguration();
+    final Properties properties = SysConfig.getConfiguration();
     /**
      * 邮件模板的存放位置
      */

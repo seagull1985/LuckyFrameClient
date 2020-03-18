@@ -227,15 +227,13 @@ public class ThreadForExecuteCase extends Thread {
         // 如果调用方法过程中未出错，进入设置测试结果流程
         try {
             // 成功跟失败的用例走此流程
-            if (!testnote.contains("CallCase调用出错！") && !testnote.contains("解析出错啦！")) {
-                caselog.updateTaskCaseExecuteStatus(taskid, caseId, setcaseresult);
-            } else {
+            if (testnote.contains("CallCase调用出错！") || testnote.contains("解析出错啦！")) {
                 // 解析用例或是调用方法出错，全部把用例置为锁定
-                LogUtil.APP.warn("用例:{} 设置执行结果为锁定，请参考错误日志查找锁定用例的原因.....",testcase.getCaseSign());
-                caselog.insertTaskCaseLog(taskid, caseId, "设置执行结果为锁定，请参考错误日志查找锁定用例的原因.....","error", "SETCASERESULT...", "");
+                LogUtil.APP.warn("用例:{} 设置执行结果为锁定，请参考错误日志查找锁定用例的原因.....", testcase.getCaseSign());
+                caselog.insertTaskCaseLog(taskid, caseId, "设置执行结果为锁定，请参考错误日志查找锁定用例的原因.....", "error", "SETCASERESULT...", "");
                 setcaseresult = 2;
-                caselog.updateTaskCaseExecuteStatus(taskid, caseId, setcaseresult);
             }
+            caselog.updateTaskCaseExecuteStatus(taskid, caseId, setcaseresult);
             if (0 == setcaseresult) {
                 LogUtil.APP.info("用例:{}执行结果成功......",testcase.getCaseSign());
                 caselog.insertTaskCaseLog(taskid, caseId, "用例步骤执行全部成功......", "info", "ending", "");

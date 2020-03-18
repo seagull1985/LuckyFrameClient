@@ -1,8 +1,5 @@
 package luckyclient.execution.appium.iosex;
 
-import java.io.IOException;
-import java.util.List;
-
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import luckyclient.remote.api.GetServerApi;
@@ -11,6 +8,8 @@ import luckyclient.remote.entity.ProjectCase;
 import luckyclient.remote.entity.ProjectCaseParams;
 import luckyclient.remote.entity.ProjectCaseSteps;
 import luckyclient.utils.LogUtil;
+
+import java.util.List;
 
 /**
  * =================================================================

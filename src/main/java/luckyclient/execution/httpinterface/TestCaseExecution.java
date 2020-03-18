@@ -178,7 +178,7 @@ public class TestCaseExecution {
      * @return 返回执行结果
      */
     @SuppressWarnings("unchecked")
-	public String oneCaseExecuteForUICase(String testCaseExternalId, String taskid, serverOperation caselog, Object driver) throws InterruptedException {
+	public String oneCaseExecuteForUICase(String testCaseExternalId, String taskid, serverOperation caselog, Object driver) {
         String expectedresults;
         int setresult = 1;
         String testnote = "初始化测试结果";

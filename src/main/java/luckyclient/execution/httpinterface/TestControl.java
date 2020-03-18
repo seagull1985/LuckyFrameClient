@@ -92,7 +92,7 @@ public class TestControl {
 		TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(task.getTaskId());
 		String jobname = taskScheduling.getSchedulingName();
 		int timeout = taskScheduling.getTaskTimeout();
-		int[] tastcount = null;
+		int[] tastcount;
 		List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(taskScheduling.getProjectId().toString());
 		// 初始化写用例结果以及日志模块
 		serverOperation caselog = new serverOperation();
@@ -159,12 +159,12 @@ public class TestControl {
 			} else {
 				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请查看构建日志检查项目构建情况...");
 				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请查看构建日志检查项目构建情况...", taskid,
-						taskScheduling, tastcount);
+						taskScheduling, null);
 			}
 		} else {
 			LogUtil.APP.warn("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
 			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid,
-					taskScheduling, tastcount);
+					taskScheduling, null);
 		}
 	}
 

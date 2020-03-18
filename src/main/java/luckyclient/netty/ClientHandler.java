@@ -26,7 +26,7 @@ import springboot.RunService;
 public class ClientHandler extends ChannelHandlerAdapter {
 
     //从application.properties文件中获取用到的参数;
-    private static Resource resource = new ClassPathResource("application.properties");
+    private static final Resource resource = new ClassPathResource("application.properties");
     private static Properties props;
 
     static {
@@ -37,7 +37,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
         }
     }
 
-    private static String port = props.getProperty("server.port");
+    private static final String port = props.getProperty("server.port");
 
     private static final Logger log = LoggerFactory.getLogger(ClientHandler.class);
 
