@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import cn.hutool.core.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -41,7 +42,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(ClientHandler.class);
 
-    private static final String NETTY_HOST = SysConfig.getConfiguration().getProperty("netty.host");
+    private static String NETTY_HOST = SysConfig.getConfiguration().getProperty("netty.host");
 
     private static final String CLIENT_NAME = SysConfig.getConfiguration().getProperty("client.name");
 
@@ -60,6 +61,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
     private static ChannelHandlerContext ctx;
 
     public ClientHandler() {
+
     }
 
     @Override
@@ -207,6 +209,9 @@ public class ClientHandler extends ChannelHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) {
         //发送客户端登录消息
         JSONObject json = new JSONObject();
+        if(StrUtil.isEmpty(NETTY_HOST)){
+            this.NETTY_HOST=RunService.CLIENT_IP;
+        }
         json.put("hostName", NETTY_HOST);
         json.put("clientName", CLIENT_NAME);
         json.put("version", CLIENT_VERSION);
