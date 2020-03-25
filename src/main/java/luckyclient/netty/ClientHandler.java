@@ -42,7 +42,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(ClientHandler.class);
 
-    private static String NETTY_HOST = SysConfig.getConfiguration().getProperty("netty.host");
+    private String NETTY_HOST = SysConfig.getConfiguration().getProperty("netty.host");
 
     private static final String CLIENT_NAME = SysConfig.getConfiguration().getProperty("client.name");
 
