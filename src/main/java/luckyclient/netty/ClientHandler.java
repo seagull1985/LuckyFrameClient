@@ -67,14 +67,14 @@ public class ClientHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws UnsupportedEncodingException {
         //统一转编码
-        String jsonStr = URLDecoder.decode(msg.toString(), "GBK");
         //服务端消息处理,如果接收到测试任务方法，则直接产生一个http请求并发送请求到本地
+        String jsonStr = msg.toString();
         JSONObject json;
         try {
-            json = JSON.parseObject(jsonStr);
+            json = JSON.parseObject(msg.toString());
 
         } catch (Exception e) {
-            log.error("收到服务端非Json消息,但是异常：" + jsonStr);
+            log.error("收到服务端非Json消息,但是异常：" + msg);
             return;
         }
         log.info("收到服务端消息：" + json.toString());
