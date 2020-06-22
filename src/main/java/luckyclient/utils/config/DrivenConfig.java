@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import luckyclient.utils.LogUtil;
+import luckyclient.utils.proxy.PropertiesProxy;
 
 /**
  * 初始化数据库驱动配置
@@ -21,16 +22,18 @@ import luckyclient.utils.LogUtil;
 public class DrivenConfig {
 	private static final Properties SYS_CONFIG = new Properties();
 	private static final String SYS_CONFIG_FILE = "/TestDriven/driven_config.properties";
+	private static PropertiesProxy proxy=new PropertiesProxy();
 	static{
 		try {
 		    InputStream in = new BufferedInputStream(DrivenConfig.class.getResourceAsStream(SYS_CONFIG_FILE));
 			SYS_CONFIG.load(new InputStreamReader(in, StandardCharsets.UTF_8));
+			proxy.setWapper(SYS_CONFIG);
 		} catch (IOException e) {
 			LogUtil.APP.error("读取测试驱动driven_config.properties配置文件出现异常，请检查！", e);
 		}
 	}
 	private DrivenConfig(){}
 	public static Properties getConfiguration(){
-		return SYS_CONFIG;
+		return proxy;
 	}
 }
