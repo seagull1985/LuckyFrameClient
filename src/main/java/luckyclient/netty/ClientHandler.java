@@ -52,6 +52,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
 
     private static final String SERVER_PORT = SysConfig.getConfiguration().getProperty("server.web.port");
 
+    public static Integer clientId=-1;
 
     private volatile int lastLength = 0;
 
@@ -200,7 +201,11 @@ public class ClientHandler extends ChannelHandlerAdapter {
                 re.put("data", result);
                 sendMessage(re.toString());
             }
-
+        }
+        else if("loginReturn".equals(json.get("method")))
+        {
+            //…Ë÷√client±Íº«
+            clientId=Integer.valueOf(json.get("clientId").toString());
         }
 
     }
