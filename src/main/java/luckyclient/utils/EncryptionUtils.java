@@ -17,32 +17,32 @@ import java.security.spec.X509EncodedKeySpec;
 public class EncryptionUtils {
 
     /**
-     * RSAæœ€å¤§åŠ å¯†æ˜æ–‡å¤§å°
+     * RSA×î´ó¼ÓÃÜÃ÷ÎÄ´óĞ¡
      */
     private static final int MAX_ENCRYPT_BLOCK = 117;
 
     /**
-     * RSAæœ€å¤§è§£å¯†å¯†æ–‡å¤§å°
+     * RSA×î´ó½âÃÜÃÜÎÄ´óĞ¡
      */
     private static final int MAX_DECRYPT_BLOCK = 128;
 
     /**
-     * é»˜è®¤å…¬é’¥
+     * Ä¬ÈÏ¹«Ô¿
      */
     private static final String DEFAULT_PUBLIC_KEY="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCadmkcep05BmZ3aWH72ab8iw8xD4XYrXmeySwBgKQY4mhHo2MrT8fKiNaG0PC/Jy09inPczBPqf/IPILlE79ujgpc84bHnR27u9IH7kJlyoLiPRGoN+oQbWJakmYTwGkdG4z1Re9xoKi4Ww1WShkvJspMwOWtkwfwub5zkvQtSWQIDAQAB";
 
     /**
-     * é»˜è®¤ç§é’¥
+     * Ä¬ÈÏË½Ô¿
      */
     private static final String DEFAULT_PRIVATE_KEY="MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAJp2aRx6nTkGZndpYfvZpvyLDzEPhditeZ7JLAGApBjiaEejYytPx8qI1obQ8L8nLT2Kc9zME+p/8g8guUTv26OClzzhsedHbu70gfuQmXKguI9Eag36hBtYlqSZhPAaR0bjPVF73GgqLhbDVZKGS8mykzA5a2TB/C5vnOS9C1JZAgMBAAECgYBNTjYNKtDFWY6u9O81PRl2C6LuyvYSG8Bi2AxONDPswGOwdvWLF8LGevXjQ286PEFIK6MRPpI5Kw/awmX3OpSR10nAzLHo7KU03+1+71EpGcGt0OAudDG+Qzzz10rjyoBwV21d8utoJmy4m5MLbp7yxxZ0caGNfkJMj7QJyxsQAQJBAOtTwyqdGbhLle0rD/9WhK5huFBAaXCw21mJK/wkByVFk9ynHN1P0e3fgS4S2KOyWGEwMgfaxRxvn+Tmj8sQLkkCQQCoCBhihIZj0epYvdQdf63sgrzVlUr3d3IIlKio4JLfvo4gFGpQjV/mOlyS7AGNWf5iDFzJvpXoXET5GYkmpEORAkA784LtAEjlIpx3Z1kT+76hjlOeXkp+Yw/+p2uFOMh5PliFBi3cU9FvgFkwm6yFR5IscFLOnXVJ4UYi0nofiWfBAkBMZvnneci9hIog9ZeIHjEP9FY2a16d7RLNsgKKXyqJT9TB42Z/3/h1751+NI90HTJclLBwDxeMgr/d3+2Lw27xAkBdQqmrWTAmHPGS48CZ/VYu9repRhDmV+8nsWtX1fdU410kcfYgib7WX9Y22v4vGQrVt72waBvvEvbjWjXH+Ael";
 
     /**
-     * ç”¨æˆ·é…ç½®çš„ç§é’¥
+     * ÓÃ»§ÅäÖÃµÄË½Ô¿
      */
     private static String USER_PRIVATE_KEY= SysConfig.getConfiguration().getProperty("client.config.privateKey");
 
     /**
-     * ç”¨æˆ·é…ç½®çš„å…¬é’¥
+     * ÓÃ»§ÅäÖÃµÄ¹«Ô¿
      */
     private static String USER_PUBLIC_KEY= SysConfig.getConfiguration().getProperty("client.config.publicKey");
 
@@ -57,9 +57,9 @@ public class EncryptionUtils {
     }
 
     /**
-     * è·å–å¯†é’¥å¯¹
+     * »ñÈ¡ÃÜÔ¿¶Ô
      *
-     * @return å¯†é’¥å¯¹
+     * @return ÃÜÔ¿¶Ô
      */
     public static KeyPair getKeyPair() throws Exception {
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
@@ -68,9 +68,9 @@ public class EncryptionUtils {
     }
 
     /**
-     * è·å–ç§é’¥
+     * »ñÈ¡Ë½Ô¿
      *
-     * @param privateKey ç§é’¥å­—ç¬¦ä¸²
+     * @param privateKey Ë½Ô¿×Ö·û´®
      * @return
      */
     public static PrivateKey getPrivateKey(String privateKey) throws Exception {
@@ -81,9 +81,9 @@ public class EncryptionUtils {
     }
 
     /**
-     * è·å–å…¬é’¥
+     * »ñÈ¡¹«Ô¿
      *
-     * @param publicKey å…¬é’¥å­—ç¬¦ä¸²
+     * @param publicKey ¹«Ô¿×Ö·û´®
      * @return
      */
     public static PublicKey getPublicKey(String publicKey) throws Exception {
@@ -94,10 +94,10 @@ public class EncryptionUtils {
     }
 
     /**
-     * RSAåŠ å¯†
+     * RSA¼ÓÃÜ
      *
-     * @param data å¾…åŠ å¯†æ•°æ®
-     * @param publicKey å…¬é’¥
+     * @param data ´ı¼ÓÃÜÊı¾İ
+     * @param publicKey ¹«Ô¿
      * @return
      */
     public static String encrypt(String data, PublicKey publicKey) throws Exception {
@@ -108,7 +108,7 @@ public class EncryptionUtils {
         int offset = 0;
         byte[] cache;
         int i = 0;
-        // å¯¹æ•°æ®åˆ†æ®µåŠ å¯†
+        // ¶ÔÊı¾İ·Ö¶Î¼ÓÃÜ
         while (inputLen - offset > 0) {
             if (inputLen - offset > MAX_ENCRYPT_BLOCK) {
                 cache = cipher.doFinal(data.getBytes(), offset, MAX_ENCRYPT_BLOCK);
@@ -121,16 +121,16 @@ public class EncryptionUtils {
         }
         byte[] encryptedData = out.toByteArray();
         out.close();
-        // è·å–åŠ å¯†å†…å®¹ä½¿ç”¨base64è¿›è¡Œç¼–ç ,å¹¶ä»¥UTF-8ä¸ºæ ‡å‡†è½¬åŒ–æˆå­—ç¬¦ä¸²
-        // åŠ å¯†åçš„å­—ç¬¦ä¸²
+        // »ñÈ¡¼ÓÃÜÄÚÈİÊ¹ÓÃbase64½øĞĞ±àÂë,²¢ÒÔUTF-8Îª±ê×¼×ª»¯³É×Ö·û´®
+        // ¼ÓÃÜºóµÄ×Ö·û´®
         return new String(Base64.encodeBase64String(encryptedData));
     }
 
     /**
-     * RSAè§£å¯†
+     * RSA½âÃÜ
      *
-     * @param data å¾…è§£å¯†æ•°æ®
-     * @param privateKey ç§é’¥
+     * @param data ´ı½âÃÜÊı¾İ
+     * @param privateKey Ë½Ô¿
      * @return
      */
     public static String decrypt(String data, PrivateKey privateKey) throws Exception {
@@ -142,7 +142,7 @@ public class EncryptionUtils {
         int offset = 0;
         byte[] cache;
         int i = 0;
-        // å¯¹æ•°æ®åˆ†æ®µè§£å¯†
+        // ¶ÔÊı¾İ·Ö¶Î½âÃÜ
         while (inputLen - offset > 0) {
             if (inputLen - offset > MAX_DECRYPT_BLOCK) {
                 cache = cipher.doFinal(dataBytes, offset, MAX_DECRYPT_BLOCK);
@@ -155,16 +155,16 @@ public class EncryptionUtils {
         }
         byte[] decryptedData = out.toByteArray();
         out.close();
-        // è§£å¯†åçš„å†…å®¹
+        // ½âÃÜºóµÄÄÚÈİ
         return new String(decryptedData, "UTF-8");
     }
 
     /**
-     * ç­¾å
+     * Ç©Ãû
      *
-     * @param data å¾…ç­¾åæ•°æ®
-     * @param privateKey ç§é’¥
-     * @return ç­¾å
+     * @param data ´ıÇ©ÃûÊı¾İ
+     * @param privateKey Ë½Ô¿
+     * @return Ç©Ãû
      */
     public static String sign(String data, PrivateKey privateKey) throws Exception {
         byte[] keyBytes = privateKey.getEncoded();
@@ -178,12 +178,12 @@ public class EncryptionUtils {
     }
 
     /**
-     * éªŒç­¾
+     * ÑéÇ©
      *
-     * @param srcData åŸå§‹å­—ç¬¦ä¸²
-     * @param publicKey å…¬é’¥
-     * @param sign ç­¾å
-     * @return æ˜¯å¦éªŒç­¾é€šè¿‡
+     * @param srcData Ô­Ê¼×Ö·û´®
+     * @param publicKey ¹«Ô¿
+     * @param sign Ç©Ãû
+     * @return ÊÇ·ñÑéÇ©Í¨¹ı
      */
     public static boolean verify(String srcData, PublicKey publicKey, String sign) throws Exception {
         byte[] keyBytes = publicKey.getEncoded();
@@ -197,7 +197,7 @@ public class EncryptionUtils {
     }
 
     /**
-     * åŠ å¯†
+     * ¼ÓÃÜ
      * @param data
      * @return
      */
@@ -216,7 +216,7 @@ public class EncryptionUtils {
     }
 
     /**
-     * è§£å¯†
+     * ½âÃÜ
      * @param encryptData
      * @return
      */
@@ -236,22 +236,22 @@ public class EncryptionUtils {
 
     public static void main(String[] args) {
         try {
-            // ç”Ÿæˆå¯†é’¥å¯¹
+            // Éú³ÉÃÜÔ¿¶Ô
             KeyPair keyPair = getKeyPair();
             String privateKey = new String(Base64.encodeBase64(keyPair.getPrivate().getEncoded()));
             String publicKey = new String(Base64.encodeBase64(keyPair.getPublic().getEncoded()));
-            System.out.println("ç§é’¥:" + privateKey);
-            System.out.println("å…¬é’¥:" + publicKey);
-            // RSAåŠ å¯†
-            String data = "å¾…åŠ å¯†çš„æ–‡å­—å†…å®¹";
+            System.out.println("Ë½Ô¿:"  + privateKey);
+            System.out.println("¹«Ô¿:" + publicKey);
+            // RSA¼ÓÃÜ
+            String data = "´ı¼ÓÃÜµÄÎÄ×ÖÄÚÈİ";
             String encryptData = encrypt(data, getPublicKey(publicKey));
-            System.out.println("åŠ å¯†åå†…å®¹:" + encryptData);
-            // RSAè§£å¯†
+            System.out.println("¼ÓÃÜºóÄÚÈİ:" + encryptData);
+            // RSA½âÃÜ
             String decryptData = decrypt(encryptData, getPrivateKey(privateKey));
-            System.out.println("è§£å¯†åå†…å®¹:" + decryptData);
+            System.out.println("½âÃÜºóÄÚÈİ:" + decryptData);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.print("åŠ è§£å¯†å¼‚å¸¸");
+            System.out.print("¼Ó½âÃÜÒì³£");
         }
     }
 }
