@@ -17,6 +17,7 @@ import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.entity.ProjectProtocolTemplate;
 import luckyclient.remote.entity.ProjectTemplateParams;
 import luckyclient.utils.httputils.HttpClientTools;
+import springboot.RunService;
 
 /**
  * =================================================================
@@ -223,7 +224,7 @@ public class InvokeMethod {
                         result = hct.sendURLPost(packagename, params, headmsg, ppt);
                         break;
                     case "getandsavefile":
-                        String fileSavePath = System.getProperty("user.dir") + "\\HTTPSaveFile\\";
+                        String fileSavePath = RunService.APPLICATION_HOME + "\\HTTPSaveFile\\";
                         result = hct.sendGetAndSaveFile(packagename, params, fileSavePath, headmsg, ppt);
                         break;
                     case "httpurlget":

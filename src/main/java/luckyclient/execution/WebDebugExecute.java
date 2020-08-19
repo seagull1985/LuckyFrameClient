@@ -7,6 +7,7 @@ import org.apache.log4j.PropertyConfigurator;
 import luckyclient.execution.httpinterface.TestControl;
 import luckyclient.execution.httpinterface.WebTestCaseDebug;
 import luckyclient.utils.LogUtil;
+import springboot.RunService;
 
 /**
  * =================================================================
@@ -23,7 +24,7 @@ public class WebDebugExecute extends TestControl{
 
 	public static void main(String[] args) {
 		try {
-			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
+			PropertyConfigurator.configure(RunService.APPLICATION_HOME + File.separator + "log4j.conf");
 	 		String caseIdStr = args[0];
 	 		String userIdStr = args[1];
 	 		WebTestCaseDebug.oneCaseDebug(caseIdStr, userIdStr);

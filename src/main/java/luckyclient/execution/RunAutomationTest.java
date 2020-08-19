@@ -11,6 +11,7 @@ import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.entity.TaskExecute;
 import luckyclient.remote.entity.TaskScheduling;
 import luckyclient.utils.LogUtil;
+import springboot.RunService;
 
 /**
  * =================================================================
@@ -26,7 +27,7 @@ import luckyclient.utils.LogUtil;
 public class RunAutomationTest extends TestControl {
 	public static void main(String[] args) {
 		try {
-			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
+			PropertyConfigurator.configure(RunService.APPLICATION_HOME + File.separator + "log4j.conf");
 			String taskid = args[0];
 			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskid));
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.parseInt(taskid));

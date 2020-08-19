@@ -17,6 +17,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.Augmenter;
+import springboot.RunService;
 
 /**
  * =================================================================
@@ -33,15 +34,15 @@ public class Ocr {
 	/**
 	 * 默认读取工程根目录下的文件
 	 */
-	private static final String readtextpath = System.getProperty("user.dir")+"\\CAPTCHA.txt";
+	private static final String readtextpath = RunService.APPLICATION_HOME+"\\CAPTCHA.txt";
 	/**
 	 * 默认把截图放在工程根目录
 	 */
-	private static final String screenshotpath = System.getProperty("user.dir")+"\\CAPTCHA.png";
+	private static final String screenshotpath = RunService.APPLICATION_HOME+"\\CAPTCHA.png";
 	/**
 	 * 批处理文件路径
 	 */
-	private static final String cmdpath = System.getProperty("user.dir");
+	private static final String cmdpath = RunService.APPLICATION_HOME;
 
 	/**
 	 * 读取生成的TXT文件中的验证码

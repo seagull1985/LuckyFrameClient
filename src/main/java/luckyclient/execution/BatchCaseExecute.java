@@ -15,6 +15,7 @@ import luckyclient.remote.entity.TaskExecute;
 import luckyclient.remote.entity.TaskScheduling;
 import luckyclient.utils.LogUtil;
 import luckyclient.utils.config.AppiumConfig;
+import springboot.RunService;
 
 /**
  * =================================================================
@@ -32,7 +33,7 @@ public class BatchCaseExecute extends TestControl {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
-			PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator + "log4j.conf");
+			PropertyConfigurator.configure(RunService.APPLICATION_HOME + File.separator + "log4j.conf");
 			String taskid = args[0];
 			String batchcase = args[1];
 			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskid));

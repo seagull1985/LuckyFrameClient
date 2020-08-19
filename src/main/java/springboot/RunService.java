@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import cn.hutool.core.util.BooleanUtil;
 import luckyclient.netty.NettyClient;
 import luckyclient.utils.config.SysConfig;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
@@ -30,12 +31,13 @@ public class RunService {
 	 * 如果IDEA工具上运行时出现乱码，请设置VM options,添加-Dfile.encoding=GBK即可
 	 * */
 
+	public  static final String APPLICATION_HOME = new ApplicationHome(RunService.class).getSource().getAbsolutePath();
 	private static final Logger log = LoggerFactory.getLogger(RunService.class);
 	private static final Boolean NETTY_MODEL= BooleanUtil.toBoolean(SysConfig.getConfiguration().getProperty("netty.model"));
 	public static String CLIENT_IP = "";
 	public static void main(String[] args) throws InterruptedException {
 		// TODO Auto-generated method stub
-		PropertyConfigurator.configure(System.getProperty("user.dir") + File.separator +"bootlog4j.conf");
+		PropertyConfigurator.configure(APPLICATION_HOME + File.separator +"bootlog4j.conf");
 		SpringApplication.run(RunService.class, args);
 		try {
 			CLIENT_IP = InetAddress.getLocalHost().getHostAddress();
