@@ -15,6 +15,7 @@ import luckyclient.remote.entity.TaskExecute;
 import luckyclient.remote.entity.TaskScheduling;
 import luckyclient.utils.LogUtil;
 import luckyclient.utils.config.AppiumConfig;
+import springboot.RunService;
 
 /**
  * =================================================================
@@ -31,7 +32,7 @@ public class OneCaseExecute extends TestControl {
 
 	public static void main(String[] args) {
 		try{
-			PropertyConfigurator.configure(System.getProperty("user.dir")+ File.separator +"log4j.conf");
+			PropertyConfigurator.configure(RunService.APPLICATION_HOME+ File.separator +"log4j.conf");
 			String taskId = args[0];
 			String caseId = args[1];
 			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskId));

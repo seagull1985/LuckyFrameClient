@@ -69,7 +69,7 @@ public class HttpImpl {
 		log.info("TaskId:{},SchedulingName:{},LoadPath:{}",runTaskEntity.getTaskId(),runTaskEntity.getSchedulingName(),runTaskEntity.getLoadPath());
 		try{
 			log.info("开始获取客户端驱动路径...");
-			File file =new File(System.getProperty("user.dir")+runTaskEntity.getLoadPath()); 
+			File file =new File(RunService.APPLICATION_HOME+runTaskEntity.getLoadPath());
 			log.info("客户端驱动路径:{}",file.getAbsolutePath());
 			if  (!file .isDirectory())      
 			{       
@@ -84,11 +84,11 @@ public class HttpImpl {
 			log.info("启动任务模式测试程序...调度名称:【{}】  任务ID:【{}】",runTaskEntity.getSchedulingName(),runTaskEntity.getTaskId());
 			if(OS.startsWith("win")){
 				log.info("开始调起windows命令行窗口...");
-				run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(System.getProperty("user.dir")+File.separator));
+				run.exec("cmd.exe /k start " + "task.cmd" +" "+ sbf.toString(), null,new File(RunService.APPLICATION_HOME+File.separator));
 				log.info("调起windows命令行窗口完成...");
 			}else{
 				log.info("开始调起Linux命令脚本...");
-				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task.sh"+ " " +sbf.toString());
+				Process ps = Runtime.getRuntime().exec(RunService.APPLICATION_HOME+File.separator+"task.sh"+ " " +sbf.toString());
 		        ps.waitFor();
 				log.info("调起Linux命令脚本完成...");
 			}			
@@ -127,7 +127,7 @@ public class HttpImpl {
 		log.info("批量测试用例:{}",batchCase);
 		try{
 			log.info("开始获取客户端驱动路径...");
-			File file =new File(System.getProperty("user.dir")+loadPath);
+			File file =new File(RunService.APPLICATION_HOME+loadPath);
 			log.info("客户端驱动路径:{}",file.getAbsolutePath());
 			if  (!file .isDirectory())      
 			{    
@@ -143,11 +143,11 @@ public class HttpImpl {
 			log.info("启动批量用例模式测试程序...测试项目:{}  任务ID:{}",projectName,taskId);
 			if(OS.startsWith("win")){
 				log.info("开始调起windows命令行窗口...");
-				run.exec("cmd.exe /k start " + "task_batch.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));				
+				run.exec("cmd.exe /k start " + "task_batch.cmd" + " " +sb.toString(), null,new File(RunService.APPLICATION_HOME+File.separator));
 				log.info("调起windows命令行窗口完成...");
 			}else{
 				log.info("开始调起Linux命令脚本...");
-				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"task_batch.sh"+ " " +sb.toString());
+				Process ps = Runtime.getRuntime().exec(RunService.APPLICATION_HOME+File.separator+"task_batch.sh"+ " " +sb.toString());
 		        ps.waitFor();
 		        log.info("调起Linux命令脚本完成...");
 			}		
@@ -180,7 +180,7 @@ public class HttpImpl {
 		WebDebugCaseEntity webDebugCaseEntity = JSONObject.parseObject(sbd.toString(), WebDebugCaseEntity.class);
 		log.info("Web端调试用例ID:{} 发起人ID:{}",webDebugCaseEntity.getCaseId(),webDebugCaseEntity.getUserId());
 		try{
-			File file =new File(System.getProperty("user.dir")+webDebugCaseEntity.getLoadpath()); 	   
+			File file =new File(RunService.APPLICATION_HOME+webDebugCaseEntity.getLoadpath());
 			if  (!file .isDirectory())      
 			{    
 				log.warn("客户端测试驱动桩路径不存在，请检查【{}】",file.getPath());
@@ -192,9 +192,9 @@ public class HttpImpl {
 			sb.append(webDebugCaseEntity.getUserId()).append(" ");
 			sb.append(webDebugCaseEntity.getLoadpath());
 			if(OS.startsWith("win")){
-				run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(System.getProperty("user.dir")+File.separator));			
+				run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(RunService.APPLICATION_HOME+File.separator));
 			}else{
-				Process ps = Runtime.getRuntime().exec(System.getProperty("user.dir")+File.separator+"web_debugcase.sh"+ " " +sb.toString());
+				Process ps = Runtime.getRuntime().exec(RunService.APPLICATION_HOME+File.separator+"web_debugcase.sh"+ " " +sb.toString());
 	            ps.waitFor();  
 			}	
 		} catch (Exception e) {		
@@ -213,7 +213,7 @@ public class HttpImpl {
 	@GetMapping("/getLogdDetail")
 	private String getLogdDetail(HttpServletRequest req) {
 		String fileName=req.getParameter("filename");
-		String ctxPath = System.getProperty("user.dir")+File.separator+"log";
+		String ctxPath = RunService.APPLICATION_HOME+File.separator+"log";
 		String downLoadPath = ctxPath +File.separator+ fileName;
 
 		String str;
@@ -252,7 +252,7 @@ public class HttpImpl {
 	@GetMapping("/getLogImg")
 	private byte[] getLogImg(HttpServletRequest req) {
 		String imgName=req.getParameter("imgName");
-		String ctxPath = System.getProperty("user.dir")+File.separator+"log"+File.separator+"ScreenShot";
+		String ctxPath = RunService.APPLICATION_HOME+File.separator+"log"+File.separator+"ScreenShot";
 		String downLoadPath = ctxPath+File.separator+imgName;
         byte[] b = null;
         try {
@@ -290,7 +290,7 @@ public class HttpImpl {
 
 		String name = jarfile.getOriginalFilename();
 		String loadpath = req.getParameter("loadpath");
-		String path = System.getProperty("user.dir")+loadpath;
+		String path = RunService.APPLICATION_HOME+loadpath;
 		if  (!new File(path) .isDirectory())      
 		{    
 			log.warn("客户端测试驱动桩路径不存在，请检查【{}】",path);

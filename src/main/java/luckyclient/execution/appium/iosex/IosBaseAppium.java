@@ -17,6 +17,7 @@ import io.appium.java_client.ios.IOSTouchAction;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import luckyclient.utils.LogUtil;
+import springboot.RunService;
 
 /**
  * =================================================================
@@ -36,7 +37,7 @@ public class IosBaseAppium {
 	 */
 	public static void screenShot(IOSDriver<IOSElement> appium, String imagname){
 		imagname = imagname + ".png";
-		String relativelyPath = System.getProperty("user.dir");
+		String relativelyPath = RunService.APPLICATION_HOME;
 		String pngpath=relativelyPath +File.separator+ "log"+File.separator+"ScreenShot" +File.separator+ imagname;
 		
 		try {

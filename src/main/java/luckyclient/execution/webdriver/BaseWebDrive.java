@@ -15,6 +15,7 @@ import org.openqa.selenium.remote.Augmenter;
 import cn.hutool.core.util.BooleanUtil;
 import luckyclient.utils.LogUtil;
 import luckyclient.utils.config.SysConfig;
+import springboot.RunService;
 
 /**
  * =================================================================
@@ -35,7 +36,7 @@ public class BaseWebDrive {
 	 * @param imgname 图片名称
 	 */
 	public static void webScreenShot(WebDriver driver, String imgname) {
-		String relativelyPath = System.getProperty("user.dir");
+		String relativelyPath = RunService.APPLICATION_HOME;
 		String pngpath=relativelyPath +File.separator+ "log"+File.separator+"ScreenShot" +File.separator+ imgname + ".png";
 
 		// 对远程系统进行截图
