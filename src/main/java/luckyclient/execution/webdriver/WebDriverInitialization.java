@@ -14,6 +14,8 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import luckyclient.utils.LogUtil;
+import springboot.RunService;
+
 
 /**
  * =================================================================
@@ -37,8 +39,7 @@ public class WebDriverInitialization{
 	 */
 	public static WebDriver setWebDriverForTask(int drivertype) throws WebDriverException,IOException{
 		// 参数为空
-		File directory = new File("");
-		String drivenpath=directory.getCanonicalPath()+File.separator+"BrowserDriven"+File.separator;
+		String drivenpath= RunService.APPLICATION_HOME + File.separator+"BrowserDriven"+File.separator;
 		WebDriver webDriver = null;
 		LogUtil.APP.info("准备初始化WebDriver对象...检查到当前操作系统是:{}",OS);
 		if(drivertype==0){
