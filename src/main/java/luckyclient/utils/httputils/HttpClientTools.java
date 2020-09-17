@@ -1,5 +1,6 @@
 package luckyclient.utils.httputils;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import luckyclient.remote.entity.ProjectProtocolTemplate;
@@ -1745,7 +1746,7 @@ public class HttpClientTools {
         } else if (urlParam.startsWith("https://")) {
             //采用绕过验证的方式处理https请求
             SSLContext sslContext;
-            if (null == cerpath || "".equals(cerpath.trim())) {
+            if (StrUtil.isBlank(cerpath)) {
                 LogUtil.APP.info("开始构建HTTPS单向认证请求...");
                 TrustManager[] trustManagers = {new MyX509TrustManager()};
                 sslContext = SSLContext.getInstance("TLS");

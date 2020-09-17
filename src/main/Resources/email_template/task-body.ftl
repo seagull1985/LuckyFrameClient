@@ -46,7 +46,7 @@
                                 <p><b>自动构建状态： </b> 【<font color='#5CACEE'>${buildstatus}</font>】</p>
                                 <p><b>自动重启TOMCAT状态： </b> 【<font color='#5CACEE'>${restartstatus}</font>】</p>
                                 <br>
-                                <p><b>本次任务预期执行用例共【<font color='#2828FF'>${casecount}</font>】条,耗時【${time}】</b></p>
+                                <p><b>本次任务预期执行用例共【<font color='#2828FF'>${casecount}</font>】条,耗時【<font color='#2828FF'>${time}</font>】</b></p>
                                 <p><b>用例执行成功： </b> 【<font color='#28FF28'>${casesuc}</font>】</p>
                                 <p><b>用例执行失败： </b> 【<font color='#FF0000'>${casefail}</font>】</p>
                                 <p><b>用例有可能由于脚本原因未成功解析被锁定：</b> 【<font color='#AE57A4'>${caselock}</font>】</p>

@@ -116,24 +116,26 @@ public class serverOperation {
 	 * 发送 eMailer varchar(100) ; --收件人
 	 */
 
-	public static String[] getEmailAddress(String taskIdStr) {
-		int taskId = Integer.parseInt(taskIdStr);
+	public static String[] getEmailAddress(TaskScheduling taskScheduling,String taskIdStr) {
 		String[] address = null;
 		try {
-			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(taskId);
 			if (!taskScheduling.getEmailSendCondition().equals(-1)) {
 				String temp = taskScheduling.getEmailAddress();
-				// 清除最后一个;
-				if (temp.contains(";") && temp.substring(temp.length() - 1).contains(";")) {
-					temp = temp.substring(0, temp.length() - 1);
-				}
-				// 多个地址
-				if (!temp.contains("null") && temp.contains(";")) {
-					address = temp.split(";", -1);
-					// 一个地址
-				} else if (!temp.contains("null") && !temp.contains(";")) {
-					address = new String[1];
-					address[0] = temp;
+				if(StrUtil.isNotBlank(temp)){
+					// 清除最后一个;
+					if (temp.contains(";") && temp.substring(temp.length() - 1).contains(";")) {
+						temp = temp.substring(0, temp.length() - 1);
+					}
+					// 多个地址
+					if (!temp.contains("null") && temp.contains(";")) {
+						address = temp.split(";", -1);
+						// 一个地址
+					} else if (!temp.contains("null") && !temp.contains(";")) {
+						address = new String[1];
+						address[0] = temp;
+					}
+				}else{
+					LogUtil.APP.warn("邮件地址配置为空，取消邮件发送...");
 				}
 			}
 		} catch (Exception e) {
@@ -231,8 +233,7 @@ public class serverOperation {
                 long hour = (l / (60 * 60 * 1000) - day * 24);
                 long min = ((l / (60 * 1000)) - day * 24 * 60 - hour * 60);
                 long s = (l / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
-                desTime = "<font color='#2828FF'>" + hour + "</font>小时<font color='#2828FF'>" + min
-                        + "</font>分<font color='#2828FF'>" + s + "</font>秒";
+                desTime = hour + "小时" + min + "分" + s + "秒";
             }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

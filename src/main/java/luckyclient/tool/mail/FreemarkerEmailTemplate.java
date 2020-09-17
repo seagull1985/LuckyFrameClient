@@ -39,7 +39,7 @@ public class FreemarkerEmailTemplate {
     /**
      * ƒ£∞Â“˝«Ê≈‰÷√
      */
-    public String getText(String templateId, Map<Object, Object> parameters) {
+    public String getText(String templateId, Map<String, Object> parameters) {
         @SuppressWarnings("deprecation")
         Configuration configuration = new Configuration();
         configuration.setTemplateLoader(new ClassTemplateLoader(FreemarkerEmailTemplate.class, TEMPLATE_PATH));

@@ -30,6 +30,8 @@ public class TaskScheduling extends BaseEntity
 	private Integer clientId;
 	/** 邮件通知地址 */
 	private String emailAddress;
+	/** 第三方推送地址 */
+	private String pushUrl;
 	/** 发送邮件通知时的具体逻辑, 0-全部，1-成功，-1-失败 */
 	private Integer emailSendCondition;
 	/** jenkins构建链接 */
@@ -159,6 +161,16 @@ public class TaskScheduling extends BaseEntity
 	{
 		return emailAddress;
 	}
+
+	public void setPushUrl(String pushUrl)
+	{
+		this.pushUrl = pushUrl;
+	}
+	public String getPushUrl()
+	{
+		return pushUrl;
+	}
+
 	public void setEmailSendCondition(Integer emailSendCondition) 
 	{
 		this.emailSendCondition = emailSendCondition;
@@ -241,6 +253,7 @@ public class TaskScheduling extends BaseEntity
             .append("planId", getPlanId())
             .append("clientId", getClientId())
             .append("emailAddress", getEmailAddress())
+			.append("pushUrl", getPushUrl())
             .append("emailSendCondition", getEmailSendCondition())
             .append("buildingLink", getBuildingLink())
             .append("remoteShell", getRemoteShell())

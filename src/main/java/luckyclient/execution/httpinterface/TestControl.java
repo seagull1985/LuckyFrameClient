@@ -153,18 +153,18 @@ public class TestControl {
 				String testtime = serverOperation.getTestTime(taskid);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
 						HtmlMail.htmlContentFormat(tastcount, taskid, buildResult.toString(), restartstatus, testtime, jobname),
-						taskid, taskScheduling, tastcount);
+						taskid, taskScheduling, tastcount,testtime,buildResult.toString(),restartstatus);
 				threadExecute.shutdown();
 				LogUtil.APP.info("亲，没有下一条啦！我发现你的用例已经全部执行完毕，快去看看有没有失败的用例吧！");
 			} else {
 				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请查看构建日志检查项目构建情况...");
 				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请查看构建日志检查项目构建情况...", taskid,
-						taskScheduling, null);
+						taskScheduling, null,"0小时0分0秒",buildResult.toString(),restartstatus);
 			}
 		} else {
 			LogUtil.APP.warn("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
 			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid,
-					taskScheduling, null);
+					taskScheduling, null,"0小时0分0秒",buildResult.toString(),restartstatus);
 		}
 	}
 

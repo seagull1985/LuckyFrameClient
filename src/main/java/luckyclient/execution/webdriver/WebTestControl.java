@@ -135,19 +135,19 @@ public class WebTestControl {
 				LogUtil.APP.info("当前项目【{}】测试计划中的用例已经全部执行完成...",projectname);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
 						HtmlMail.htmlContentFormat(tastcount, taskid, buildResult.toString(), restartstatus, testtime, jobname),
-						taskid, taskScheduling, tastcount);
+						taskid, taskScheduling, tastcount,testtime,buildResult.toString(),restartstatus);
 				// 关闭浏览器
 				assert wd != null;
 				wd.quit();
 			} else {
 				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
 				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskid,
-						taskScheduling, null);
+						taskScheduling, null,"0小时0分0秒",buildResult.toString(),restartstatus);
 			}
 		} else {
 			LogUtil.APP.warn("项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况。");
 			MailSendInitialization.sendMailInitialization(jobname, "项目TOMCAT重启失败，自动化测试自动退出！请检查项目TOMCAT运行情况！", taskid,
-					taskScheduling, null);
+					taskScheduling, null,"0小时0分0秒",buildResult.toString(),restartstatus);
 		}
 	}
 
