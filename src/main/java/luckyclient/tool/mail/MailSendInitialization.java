@@ -108,6 +108,7 @@ public class MailSendInitialization {
             if(StrUtil.isNotBlank(pushUrl)){
                 String ip = properties.getProperty("server.web.ip");
                 String port = properties.getProperty("server.web.port");
+                String path = properties.getProperty("server.web.path");
 
                 ProjectProtocolTemplate ppt = new ProjectProtocolTemplate();
                 ppt.setEncoding("utf-8");
@@ -126,7 +127,7 @@ public class MailSendInitialization {
                             "用例执行失败：【" + taskCount[2] + "】\n" +
                             "用例有可能由于脚本原因未成功解析被锁定：【" + taskCount[3] + "】\n" +
                             "用例由于长时间未收到接口Response未执行完成：【" + taskCount[4] + "】\n" +
-                            "详情请前往自动化测试平台查看！http://" + ip + ":" + port;
+                            "详情请前往自动化测试平台查看！http://" + ip + ":" + port + path;
                 }
                 JSONObject contentJson = JSON.parseObject("{\"content\": \"" + content + "\"}");
 

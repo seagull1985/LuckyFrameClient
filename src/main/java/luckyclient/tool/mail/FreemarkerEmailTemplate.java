@@ -27,6 +27,7 @@ public class FreemarkerEmailTemplate {
      */
     private final String WEB_IP = properties.getProperty("server.web.ip");
     private final String WEB_PORT = properties.getProperty("server.web.port");
+    private final String WEB_PATH = properties.getProperty("server.web.path");
     /**
      * Æô¶¯Ä£°å»º´æ
      */
@@ -56,6 +57,7 @@ public class FreemarkerEmailTemplate {
             StringWriter stringWriter = new StringWriter();
             parameters.put("webip", WEB_IP);
             parameters.put("webport", WEB_PORT);
+            parameters.put("webpath", WEB_PATH);
             template.process(parameters, stringWriter);
             return stringWriter.toString();
         } catch (Exception e) {

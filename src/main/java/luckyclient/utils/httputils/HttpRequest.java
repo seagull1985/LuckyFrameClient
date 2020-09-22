@@ -31,7 +31,7 @@ import java.util.Properties;
 public class HttpRequest {
 	final static Properties PROPERTIES = SysConfig.getConfiguration();
 	private final static String WEB_URL = "http://" + PROPERTIES.getProperty("server.web.ip") + ":"
-			+ PROPERTIES.getProperty("server.web.port");
+			+ PROPERTIES.getProperty("server.web.port")+ PROPERTIES.getProperty("server.web.path");
 
 	/**
 	 * ×Ö·û´®²ÎÊý

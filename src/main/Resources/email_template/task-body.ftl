@@ -53,7 +53,7 @@
                                 <p><b>用例由于长时间未收到接口Response未执行完成：</b> 【<font color='#FFAD86'>${caseunex}</font>】</p>
                                 <p>&nbsp;</p>
                                 <p> 此为自动化平台LuckyFrame的系统邮件，请勿回复</p>
-                                <p> 请及时前往<a href='http://${webip}:${webport}'>LuckyFrame平台</a>查看您的任务执行的更多细节</p>
+                                <p> 请及时前往<a href='http://${webip}:${webport}${webpath}'>LuckyFrame平台</a>查看您的任务执行的更多细节</p>
                                 <p>
                             </div>
                         </div>

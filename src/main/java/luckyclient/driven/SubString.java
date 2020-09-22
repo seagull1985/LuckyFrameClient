@@ -417,11 +417,4 @@ public class SubString {
         LogUtil.APP.info("获取JSON字符串指定jsonPath表达式【{}】的值是:{}",expression,jsonString);
         return jsonString;
     }
-
-	public static void main(String[] args) {
-		String jsonString="{\"Success\":false,\"Text\":\"操作失败\"}";
-		String expression = "$.Success";
-		jsonString=JsonPath.parse(jsonString).read(expression).toString();
-		System.out.println(jsonString);
-	}
 }
