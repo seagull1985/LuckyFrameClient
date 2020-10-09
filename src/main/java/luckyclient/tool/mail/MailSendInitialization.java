@@ -137,8 +137,14 @@ public class MailSendInitialization {
                 parameters.put("text", contentJson);
                 parameters.put("at", atJson);
                 LogUtil.APP.info("开始向第三方平台推送任务执行情况...");
-                hct.httpClientPostJson(pushUrl, parameters, headmsg, ppt);
-                LogUtil.APP.info("向第三方平台推送任务执行数据成功...");
+                String result=hct.httpClientPostJson(pushUrl, parameters, headmsg, ppt);
+                if(result.startsWith("使用HttpClient以JSON格式发送post请求出现异常")){
+                    LogUtil.APP.error("向第三方平台推送任务执行数据失败...请检查原因");
+                    LogUtil.APP.error("如出现：javax.net.ssl.SSLKeyException: RSA premaster secret error  异常，" +
+                            "请找到你的jre环境的lib/ext/sunjce_provider.jar，把此包放到客户端编译的lib目录下。");
+                } else {
+                    LogUtil.APP.info("向第三方平台推送任务执行数据成功...");
+                }
             }else{
                 LogUtil.APP.warn("推送地址配置为空，取消第三方推送...");
             }
