@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -225,7 +227,12 @@ public class InvokeMethod {
                         break;
                     case "getandsavefile":
                         String fileSavePath = RunService.APPLICATION_HOME + "\\HTTPSaveFile\\";
-                        result = hct.sendGetAndSaveFile(packagename, params, fileSavePath, headmsg, ppt);
+                        File file = new File(fileSavePath);
+                        if (!file.exists()) {
+                            file.mkdirs();
+                        }
+                        String time = DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_PATTERN);
+                        result = hct.sendGetAndSaveFile(packagename, params, fileSavePath+time, headmsg, ppt);
                         break;
                     case "httpurlget":
                         result = hct.sendHttpURLGet(packagename, params, headmsg, ppt);
