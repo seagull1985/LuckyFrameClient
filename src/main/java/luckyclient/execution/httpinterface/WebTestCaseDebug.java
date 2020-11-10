@@ -18,6 +18,7 @@ import luckyclient.remote.entity.ProjectCaseSteps;
 import luckyclient.utils.Constants;
 import luckyclient.utils.InvokeMethod;
 import luckyclient.utils.LogUtil;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * =================================================================
@@ -170,6 +171,9 @@ public class WebTestCaseDebug {
                     // 完全相等
                     else {
                         if (expectedresults.equals(testnote)) {
+                            PostServerApi.cPostDebugLog(userId, caseId, "INFO", "精确匹配预期结果成功！执行结果：" + testnote,0);
+                        } else if(expectedresults.trim().equals("NULL")&& StringUtils.isBlank(testnote)){
+                            testnote = "返回结果为空，匹配NULL成功";
                             PostServerApi.cPostDebugLog(userId, caseId, "INFO", "精确匹配预期结果成功！执行结果：" + testnote,0);
                         } else {
                             setcaseresult = 1;

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.WebDriver;
 
 import io.appium.java_client.android.AndroidDriver;
@@ -380,6 +381,10 @@ public class TestCaseExecution {
                 // 完全相等
                 else {
                     if (expectedresults.equals(testnote)) {
+                        LogUtil.APP.info("用例:{} 第{}步，精确匹配预期结果成功！执行结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),testnote);
+                        caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "精确匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(step.getStepSerialNumber()), "");
+                    }  else if(expectedresults.trim().equals("NULL")&& StringUtils.isBlank(testnote)){
+                        testnote = "返回结果为空，匹配NULL成功";
                         LogUtil.APP.info("用例:{} 第{}步，精确匹配预期结果成功！执行结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),testnote);
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "精确匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(step.getStepSerialNumber()), "");
                     } else {

@@ -21,6 +21,7 @@ import luckyclient.remote.entity.ProjectCaseParams;
 import luckyclient.remote.entity.ProjectCaseSteps;
 import luckyclient.utils.Constants;
 import luckyclient.utils.LogUtil;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * =================================================================
@@ -308,7 +309,11 @@ public class IosCaseExecution{
                         if (expect.equals(result)) {
                         	LogUtil.APP.info("用例：{} 第{}步，精确匹配预期结果成功！执行结果：{}",testcase.getCaseSign(),step.getStepSerialNumber(),result);
                             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "精确匹配预期结果成功！", "info", String.valueOf(step.getStepSerialNumber()), "");
-                        } else {
+                        } else if(expect.trim().equals("NULL")&& StringUtils.isBlank(result)){
+							result = "返回结果为空，匹配NULL成功";
+							LogUtil.APP.info("用例:{} 第{}步，精确匹配预期结果成功！执行结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),result);
+							caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "精确匹配预期结果成功！", "info", String.valueOf(step.getStepSerialNumber()), "");
+						} else {
                             casenote = "第" + step.getStepSerialNumber() + "步，精确匹配预期结果失败！";
                             setresult = 1;
                             IosBaseAppium.screenShot(appium, imagname);

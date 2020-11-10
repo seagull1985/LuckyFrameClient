@@ -9,12 +9,14 @@ import java.util.regex.Pattern;
 import luckyclient.execution.dispose.ActionManageForSteps;
 import luckyclient.execution.httpinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.remote.api.GetServerApi;
+import luckyclient.remote.api.PostServerApi;
 import luckyclient.remote.entity.ProjectCase;
 import luckyclient.remote.entity.ProjectCaseParams;
 import luckyclient.remote.entity.ProjectCaseSteps;
 import luckyclient.utils.InvokeMethod;
 import luckyclient.utils.LogUtil;
 import luckyclient.utils.httputils.HttpRequest;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * =================================================================
@@ -146,6 +148,10 @@ public class ApiTestCaseDebug {
 					// 完全相等
 					else {
 						if (expectedresults.equals(testnote)) {
+							LogUtil.APP.info(
+									"用例:{} 第{}步，精确匹配预期结果成功！执行结果:{}",testcase.getCaseSign(),(i+1),testnote);
+						} else if(expectedresults.trim().equals("NULL")&& StringUtils.isBlank(testnote)){
+							testnote = "返回结果为空，匹配NULL成功";
 							LogUtil.APP.info(
 									"用例:{} 第{}步，精确匹配预期结果成功！执行结果:{}",testcase.getCaseSign(),(i+1),testnote);
 						} else {
