@@ -42,7 +42,7 @@ import luckyclient.utils.LogUtil;
  * @date 2018年3月1日
  */
 public class TestCaseExecution {
-    private Map<String, String> VARIABLE = new HashMap<>(0);
+    public Map<String, String> RUNCASE_VARIABLE = new HashMap<>(0);
 
     /**
      * 用于单条用例调试，并通过日志框架写日志到UTP上，用做UTP上单条用例运行
@@ -68,10 +68,10 @@ public class TestCaseExecution {
         List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
         // 把公共参数加入到MAP中
         for (ProjectCaseParams pcp : pcplist) {
-        	VARIABLE.put(pcp.getParamsName(), pcp.getParamsValue());
+            RUNCASE_VARIABLE.put(pcp.getParamsName(), pcp.getParamsValue());
         }
         // 加入全局变量
-        VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
+        RUNCASE_VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
         List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
         if (steps.size() == 0) {
             setcaseresult = 2;
@@ -81,7 +81,7 @@ public class TestCaseExecution {
         }
         // 进入循环，解析用例所有步骤
         for (int i = 0; i < steps.size(); i++) {
-            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog,VARIABLE);
+            Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog,RUNCASE_VARIABLE);
             try {
                 packagename = casescript.get("PackageName");
                 functionname = casescript.get("FunctionName");
@@ -148,7 +148,7 @@ public class TestCaseExecution {
             }
         }
 
-        VARIABLE.clear(); // 清空传参MAP
+        RUNCASE_VARIABLE.clear(); // 清空传参MAP
         // 如果调用方法过程中未出错，进入设置测试结果流程
         if (!testnote.contains("CallCase调用出错！") && !testnote.contains("解析出错啦！")) {
             LogUtil.APP.info("用例{}解析成功，并成功调用用例中方法，请继续查看执行结果！",testcase.getCaseSign());
@@ -171,7 +171,7 @@ public class TestCaseExecution {
     }
 
     /**
-     * 提供给Web用例中，runcase的时候使用
+     * runcase用例调用的时候使用
      * @param testCaseExternalId 用例编号
      * @param taskid 任务ID
      * @param caselog 用例日志对象
@@ -179,7 +179,7 @@ public class TestCaseExecution {
      * @return 返回执行结果
      */
     @SuppressWarnings("unchecked")
-	public String oneCaseExecuteForUICase(String testCaseExternalId, String taskid, serverOperation caselog, Object driver) {
+	public String oneCaseExecuteForCase(String testCaseExternalId, String taskid, serverOperation caselog, Object driver) {
         String expectedresults;
         int setresult = 1;
         String testnote = "初始化测试结果";
@@ -187,10 +187,10 @@ public class TestCaseExecution {
         List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
         // 把公共参数加入到MAP中
         for (ProjectCaseParams pcp : pcplist) {
-        	VARIABLE.put(pcp.getParamsName(), pcp.getParamsValue());
+            RUNCASE_VARIABLE.put(pcp.getParamsName(), pcp.getParamsValue());
         }
         // 加入全局变量
-        VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
+        RUNCASE_VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
         List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
         if (steps.size() == 0) {
             setresult = 2;
@@ -205,11 +205,11 @@ public class TestCaseExecution {
 
             // 根据步骤类型来分析步骤参数
             if (1 == step.getStepType()){
-            	params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog,VARIABLE);
+            	params = WebDriverAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog,RUNCASE_VARIABLE);
             }else if (3 == step.getStepType()){
-            	params = AppDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog,VARIABLE);
+            	params = AppDriverAnalyticCase.analyticCaseStep(testcase, step, taskid,caselog,RUNCASE_VARIABLE);
             } else{
-            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog,VARIABLE);
+            	params = InterfaceAnalyticCase.analyticCaseStep(testcase, step, taskid, caselog,RUNCASE_VARIABLE);
             }
 
             // 判断分析步骤参数是否有异常
@@ -234,7 +234,7 @@ public class TestCaseExecution {
                     setresult = AndroidCaseExecution.judgeResult(testcase, step, params, ad, taskid, expectedresults, testnote, caselog);
             	}else{
             		IOSDriver<IOSElement> ios=(IOSDriver<IOSElement>)driver;
-            		testnote = IosCaseExecution.iosRunStep(params, VARIABLE, ios, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
+            		testnote = IosCaseExecution.iosRunStep(params, RUNCASE_VARIABLE, ios, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
             		// 判断结果
                     setresult = IosCaseExecution.judgeResult(testcase, step, params, ios, taskid, expectedresults, testnote, caselog);
             	}
@@ -252,7 +252,8 @@ public class TestCaseExecution {
             }
         }
 
-        VARIABLE.clear(); // 清空传参MAP
+        //屏蔽参数清空，放到步骤执行的方法中去清空
+        // RUNCASE_VARIABLE.clear();
         if (0 == setresult) {
             LogUtil.APP.info("调用用例:{}步骤全部执行成功！",testcase.getCaseSign());
         }
@@ -325,13 +326,13 @@ public class TestCaseExecution {
                 LogUtil.APP.info("expectedResults=【{}】",expectedresults);
                 // 赋值传参
                 if (expectedresults.length() > Constants.ASSIGNMENT_SIGN.length() && expectedresults.startsWith(Constants.ASSIGNMENT_SIGN)) {
-                	VARIABLE.put(expectedresults.substring(Constants.ASSIGNMENT_SIGN.length()), testnote);
+                    RUNCASE_VARIABLE.put(expectedresults.substring(Constants.ASSIGNMENT_SIGN.length()), testnote);
                     LogUtil.APP.info("用例:{} 第{}步，将测试结果【{}】赋值给变量【{}】",testcase.getCaseSign(),step.getStepSerialNumber(),testnote,expectedresults.substring(Constants.ASSIGNMENT_SIGN.length()));
                     caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "将测试结果【" + testnote + "】赋值给变量【" + expectedresults.substring(Constants.ASSIGNMENT_SIGN.length()) + "】", "info", String.valueOf(step.getStepSerialNumber()), "");
                 }
                 // 赋值全局变量
                 else if (expectedresults.length() > Constants.ASSIGNMENT_GLOBALSIGN.length() && expectedresults.startsWith(Constants.ASSIGNMENT_GLOBALSIGN)) {
-                	VARIABLE.put(expectedresults.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()), testnote);
+                    RUNCASE_VARIABLE.put(expectedresults.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()), testnote);
                     ParamsManageForSteps.GLOBAL_VARIABLE.put(expectedresults.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()), testnote);
                     LogUtil.APP.info("用例:{} 第{}步，将测试结果【{}】赋值给全局变量【{}】",testcase.getCaseSign(),step.getStepSerialNumber(),testnote,expectedresults.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()));
                     caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "将测试结果【" + testnote + "】赋值给全局变量【" + expectedresults.substring(Constants.ASSIGNMENT_GLOBALSIGN.length()) + "】", "info", String.valueOf(step.getStepSerialNumber()), "");
