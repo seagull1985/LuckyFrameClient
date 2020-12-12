@@ -21,8 +21,9 @@ import java.util.concurrent.TimeUnit;
 
 public class NettyClient {
     private static final String NETTY_SERVER_IP= SysConfig.getConfiguration().getProperty("server.web.ip");
-
     private static final int  NETTY_SERVER_PORT=Integer.parseInt(SysConfig.getConfiguration().getProperty("netty.server.port"));
+    private static final String NETTY_ENCODER= SysConfig.getConfiguration().getProperty("netty.encoder");
+    private static final String NETTY_DECODER= SysConfig.getConfiguration().getProperty("netty.decoder");
 
     protected static Channel channel;
 
@@ -42,8 +43,8 @@ public class NettyClient {
                         ByteBuf delimiter = Unpooled.copiedBuffer("$_".getBytes());
                         ChannelPipeline p = ch.pipeline();
                         p.addLast(new DelimiterBasedFrameDecoder(1024, delimiter));
-                        p.addLast("decoder", new StringDecoder(StandardCharsets.UTF_8));
-                        p.addLast("encoder", new StringEncoder(Charset.forName("GBK")));
+                        p.addLast("decoder", new StringDecoder(charConvert(NETTY_DECODER)));
+                        p.addLast("encoder", new StringEncoder(charConvert(NETTY_ENCODER)));
                         p.addLast(new IdleStateHandler(1,0,0,TimeUnit.SECONDS));
                         p.addLast(clientHandler);
                     }
@@ -67,5 +68,25 @@ public class NettyClient {
                 log.info("服务端链接成功...");
             }
         });
+    }
+
+    private static Charset charConvert(String strChar){
+        if("utf-8".equals(strChar.toLowerCase())){
+            return StandardCharsets.UTF_8;
+        }else if("iso_8859_1".equals(strChar.toLowerCase())){
+            return StandardCharsets.ISO_8859_1;
+        }else if("us_ascii".equals(strChar.toLowerCase())){
+            return StandardCharsets.US_ASCII;
+        }else if("utf_16".equals(strChar.toLowerCase())){
+            return StandardCharsets.UTF_16;
+        }else if("utf_16be".equals(strChar.toLowerCase())){
+            return StandardCharsets.UTF_16BE;
+        }else if("utf_16le".equals(strChar.toLowerCase())){
+            return StandardCharsets.UTF_16LE;
+        }else if("gbk".equals(strChar.toLowerCase())){
+            return Charset.forName("GBK");
+        }else{
+            return StandardCharsets.UTF_8;
+        }
     }
 }
