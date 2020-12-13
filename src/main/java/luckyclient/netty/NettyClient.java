@@ -30,6 +30,7 @@ public class NettyClient {
     private static final Logger log = LoggerFactory.getLogger(NettyClient.class);
 
     private static ClientHandler clientHandler;
+
     public static void start() {
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
