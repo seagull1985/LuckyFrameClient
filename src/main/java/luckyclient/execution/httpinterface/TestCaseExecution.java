@@ -224,23 +224,27 @@ public class TestCaseExecution {
             if (1 == step.getStepType()){
             	WebDriver wd=(WebDriver)driver;
             	testnote = WebCaseExecution.runWebStep(params, wd, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
-                // 判断结果
+                testnote = ActionManageForSteps.actionManage(params.get("Action"), testnote);
+            	// 判断结果
                 setresult = WebCaseExecution.judgeResult(testcase, step, params, wd, taskid, expectedresults, testnote, caselog);
             }else if (3 == step.getStepType()){
             	if (driver instanceof AndroidDriver){
             		AndroidDriver<AndroidElement> ad=(AndroidDriver<AndroidElement>)driver;
             		testnote = AndroidCaseExecution.androidRunStep(params, ad, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
+                    testnote = ActionManageForSteps.actionManage(params.get("Action"), testnote);
             		// 判断结果
                     setresult = AndroidCaseExecution.judgeResult(testcase, step, params, ad, taskid, expectedresults, testnote, caselog);
             	}else{
             		IOSDriver<IOSElement> ios=(IOSDriver<IOSElement>)driver;
             		testnote = IosCaseExecution.iosRunStep(params, RUNCASE_VARIABLE, ios, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
+                    testnote = ActionManageForSteps.actionManage(params.get("Action"), testnote);
             		// 判断结果
                     setresult = IosCaseExecution.judgeResult(testcase, step, params, ios, taskid, expectedresults, testnote, caselog);
             	}
 
             } else{
             	testnote = runStep(params, taskid, testcase.getCaseSign(), step, caselog);
+                testnote = ActionManageForSteps.actionManage(params.get("Action"), testnote);
             	// 判断结果
             	setresult = interfaceJudgeResult(testcase, step, taskid, expectedresults, testnote, caselog);
             }
