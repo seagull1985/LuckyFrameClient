@@ -110,8 +110,15 @@ public class ThreadForExecuteCase extends Thread {
                 LogUtil.APP.info("用例:{}开始调用方法:{} .....",testcase.getCaseSign(),functionname);
                 caselog.insertTaskCaseLog(taskid, caseId, "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1), "");
 
-                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getStepType(), steps.get(i).getExtend());
-                testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
+                // 接口用例支持使用runcase关键字
+                if ((null != functionname && "runcase".equals(functionname))) {
+                    TestCaseExecution testCaseExecution=new TestCaseExecution();
+                    testnote = testCaseExecution.oneCaseExecuteForCase(getParameterValues[0].toString(), taskid, variable, caselog, null);
+                }else{
+                    testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getStepType(), steps.get(i).getExtend());
+                    testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
+                }
+
                 if (null != expectedresults && !expectedresults.isEmpty()) {
                     LogUtil.APP.info("expectedResults=【{}】",expectedresults);
                     // 赋值传参

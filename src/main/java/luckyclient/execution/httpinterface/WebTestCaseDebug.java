@@ -12,6 +12,7 @@ import luckyclient.execution.dispose.ParamsManageForSteps;
 import luckyclient.execution.httpinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.api.PostServerApi;
+import luckyclient.remote.api.serverOperation;
 import luckyclient.remote.entity.ProjectCase;
 import luckyclient.remote.entity.ProjectCaseParams;
 import luckyclient.remote.entity.ProjectCaseSteps;
@@ -40,6 +41,7 @@ public class WebTestCaseDebug {
      */
     public static void oneCaseDebug(String caseIdStr, String userIdStr) {
         Map<String, String> variable = new HashMap<>(0);
+        serverOperation.exetype=1;
         String packagename;
         String functionname;
         String expectedresults;
@@ -50,6 +52,8 @@ public class WebTestCaseDebug {
         Integer caseId = Integer.valueOf(caseIdStr);
         Integer userId = Integer.valueOf(userIdStr);
         ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseId);
+        // 初始化写用例结果以及日志模块
+        serverOperation caselog = new serverOperation();
 
         String sign = testcase.getCaseSign();
         List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
@@ -96,8 +100,15 @@ public class WebTestCaseDebug {
             try {
                 PostServerApi.cPostDebugLog(userId, caseId, "INFO", "开始调用方法：" + functionname + " .....",0);
 
-                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getStepType(), steps.get(i).getExtend());
-                testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
+                // 接口用例支持使用runcase关键字
+                if ((null != functionname && "runcase".equals(functionname))) {
+                    TestCaseExecution testCaseExecution=new TestCaseExecution();
+                    testnote = testCaseExecution.oneCaseExecuteForCase(getParameterValues[0].toString(), "888888", variable, caselog, null);
+                }else{
+                    testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getStepType(), steps.get(i).getExtend());
+                    testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
+                }
+
                 if (null != expectedresults && !expectedresults.isEmpty()) {
                     // 赋值传参
                     if (expectedresults.length() > Constants.ASSIGNMENT_SIGN.length() && expectedresults.startsWith(Constants.ASSIGNMENT_SIGN)) {

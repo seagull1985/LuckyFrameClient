@@ -10,6 +10,7 @@ import luckyclient.execution.dispose.ActionManageForSteps;
 import luckyclient.execution.httpinterface.analyticsteps.InterfaceAnalyticCase;
 import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.api.PostServerApi;
+import luckyclient.remote.api.serverOperation;
 import luckyclient.remote.entity.ProjectCase;
 import luckyclient.remote.entity.ProjectCaseParams;
 import luckyclient.remote.entity.ProjectCaseSteps;
@@ -40,6 +41,7 @@ public class ApiTestCaseDebug {
 	 */
 	public static void oneCaseDebug(String testCaseExternalId) {
 		Map<String, String> variable = new HashMap<>(0);
+		serverOperation.exetype=1;
 		String packagename;
 		String functionname;
 		String expectedresults;
