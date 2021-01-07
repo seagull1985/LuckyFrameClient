@@ -124,7 +124,7 @@ public class AndroidCaseExecution{
 			if(null != operationValue && "runcase".equals(operation)){
 				String[] temp=operationValue.split(",",-1);
 				TestCaseExecution testCaseExecution=new TestCaseExecution();
-				String ex = testCaseExecution.oneCaseExecuteForCase(temp[0], taskid, caselog, appium);
+				String ex = testCaseExecution.oneCaseExecuteForCase(temp[0], taskid, variable, caselog, appium);
 				if(!ex.contains("CallCase调用出错！") && !ex.contains("解析出错啦！") && !ex.contains("失败")){
 					// 加入runcase中的变量
 					variable.putAll(testCaseExecution.RUNCASE_VARIABLE);

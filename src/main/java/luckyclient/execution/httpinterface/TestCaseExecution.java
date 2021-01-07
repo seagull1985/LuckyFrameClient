@@ -179,7 +179,7 @@ public class TestCaseExecution {
      * @return 返回执行结果
      */
     @SuppressWarnings("unchecked")
-	public String oneCaseExecuteForCase(String testCaseExternalId, String taskid, serverOperation caselog, Object driver) {
+	public String oneCaseExecuteForCase(String testCaseExternalId, String taskid, Map<String, String> outVariable, serverOperation caselog, Object driver) {
         String expectedresults;
         int setresult = 1;
         String testnote = "初始化测试结果";
@@ -191,6 +191,9 @@ public class TestCaseExecution {
         }
         // 加入全局变量
         RUNCASE_VARIABLE.putAll(ParamsManageForSteps.GLOBAL_VARIABLE);
+        // 加入调用用例中的变量
+        RUNCASE_VARIABLE.putAll(outVariable);
+
         List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
         if (steps.size() == 0) {
             setresult = 2;
