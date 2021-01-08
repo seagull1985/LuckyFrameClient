@@ -29,6 +29,7 @@ import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLKeyException;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.xml.bind.DatatypeConverter;
@@ -644,6 +645,10 @@ public class HttpClientTools {
                 }
             }
 			return resultBuffer.toString();
+        } catch (SSLKeyException ske) {
+            LogUtil.APP.error("发送post请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！", ske);
+            LogUtil.APP.warn("此异常是因为环境中缺少jar包，找到你的jre环境的lib/ext/sunjce_provider.jar，把这个放到程序的classpath下或是客户端的lib目录下，或是客户端的驱动目录下都可以。");
+            return "发送post请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！";
         } catch (Exception e) {
             LogUtil.APP.error("使用HttpClient以JSON格式发送post请求出现异常，请检查！", e);
             return "使用HttpClient以JSON格式发送post请求出现异常，请检查！";
@@ -736,6 +741,10 @@ public class HttpClientTools {
                 resultBuffer.append("读取服务器响应数据异常，响应码：").append(response.getStatusLine().getStatusCode());
             }
             return resultBuffer.toString();
+        } catch (SSLKeyException ske) {
+            LogUtil.APP.error("发送post请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！", ske);
+            LogUtil.APP.warn("此异常是因为环境中缺少jar包，找到你的jre环境的lib/ext/sunjce_provider.jar，把这个放到程序的classpath下或是客户端的lib目录下，或是客户端的驱动目录下都可以。");
+            return "发送post请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！";
         } catch (Exception e) {
             LogUtil.APP.error("使用HttpClient发送post请求出现异常，请检查！", e);
 			return "使用HttpClient发送post请求出现异常，请检查！";
@@ -837,6 +846,10 @@ public class HttpClientTools {
                 resultBuffer.append("读取服务器响应数据异常，响应码：").append(response.getStatusLine().getStatusCode());
             }
 			return resultBuffer.toString();
+        } catch (SSLKeyException ske) {
+            LogUtil.APP.error("上传文件请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！", ske);
+            LogUtil.APP.warn("此异常是因为环境中缺少jar包，找到你的jre环境的lib/ext/sunjce_provider.jar，把这个放到程序的classpath下或是客户端的lib目录下，或是客户端的驱动目录下都可以。");
+            return "上传文件请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！";
         } catch (Exception e) {
             LogUtil.APP.error("使用HttpClient上传文件出现异常，请检查！", e);
             return "使用HttpClient上传文件出现异常，请检查！";
@@ -936,6 +949,10 @@ public class HttpClientTools {
                 resultBuffer.append(temp);
             }
             return resultBuffer.toString();
+        } catch (SSLKeyException ske) {
+            LogUtil.APP.error("发送get请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！", ske);
+            LogUtil.APP.warn("此异常是因为环境中缺少jar包，找到你的jre环境的lib/ext/sunjce_provider.jar，把这个放到程序的classpath下或是客户端的lib目录下，或是客户端的驱动目录下都可以。");
+            return "发送get请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！";
         } catch (Exception e) {
             LogUtil.APP.error("使用HttpClient发送get请求出现异常，请检查！", e);
             return "使用HttpClient发送get请求出现异常，请检查！";
@@ -1400,6 +1417,10 @@ public class HttpClientTools {
                 }
             }
 			return resultBuffer.toString();
+        } catch (SSLKeyException ske) {
+            LogUtil.APP.error("发送Delete请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！", ske);
+            LogUtil.APP.warn("此异常是因为环境中缺少jar包，找到你的jre环境的lib/ext/sunjce_provider.jar，把这个放到程序的classpath下或是客户端的lib目录下，或是客户端的驱动目录下都可以。");
+            return "发送Delete请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！";
         } catch (Exception e) {
             LogUtil.APP.error("使用HttpClient发送Delete请求(参数JSON格式)出现异常，请检查！", e);
             return "使用HttpClient发送Delete请求(参数JSON格式)出现异常，请检查！";
@@ -1492,6 +1513,10 @@ public class HttpClientTools {
                 }
             }
 			return resultBuffer.toString();
+        } catch (SSLKeyException ske) {
+            LogUtil.APP.error("发送Patch请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！", ske);
+            LogUtil.APP.warn("此异常是因为环境中缺少jar包，找到你的jre环境的lib/ext/sunjce_provider.jar，把这个放到程序的classpath下或是客户端的lib目录下，或是客户端的驱动目录下都可以。");
+            return "发送Patch请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！";
         } catch (Exception e) {
             LogUtil.APP.error("使用HttpClient发送Patch请求(参数JSON格式)出现异常，请检查！", e);
 			return "使用HttpClient发送Patch请求(参数JSON格式)出现异常，请检查！";
@@ -1584,6 +1609,10 @@ public class HttpClientTools {
                 }
             }
 			return resultBuffer.toString();
+        } catch (SSLKeyException ske) {
+            LogUtil.APP.error("发送put请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！", ske);
+            LogUtil.APP.warn("此异常是因为环境中缺少jar包，找到你的jre环境的lib/ext/sunjce_provider.jar，把这个放到程序的classpath下或是客户端的lib目录下，或是客户端的驱动目录下都可以。");
+            return "发送put请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！";
         } catch (Exception e) {
             LogUtil.APP.error("使用HttpClient发送put请求(参数JSON格式)出现异常，请检查！", e);
             return "使用HttpClient发送put请求(参数JSON格式)出现异常，请检查！";
@@ -1677,6 +1706,10 @@ public class HttpClientTools {
                 }
             }
 			return resultBuffer.toString();
+        } catch (SSLKeyException ske) {
+            LogUtil.APP.error("发送put请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！", ske);
+            LogUtil.APP.warn("此异常是因为环境中缺少jar包，找到你的jre环境的lib/ext/sunjce_provider.jar，把这个放到程序的classpath下或是客户端的lib目录下，或是客户端的驱动目录下都可以。");
+            return "发送put请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！";
         } catch (Exception e) {
             LogUtil.APP.error("使用HttpClient发送put请求出现异常，请检查！", e);
             return "使用HttpClient发送put请求出现异常，请检查！";
@@ -1851,6 +1884,10 @@ public class HttpClientTools {
                 resultBuffer.append(EntityUtils.toString(entity));
             }
             return resultBuffer.toString();
+        } catch (SSLKeyException ske) {
+            LogUtil.APP.error("发送XML请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！", ske);
+            LogUtil.APP.warn("此异常是因为环境中缺少jar包，找到你的jre环境的lib/ext/sunjce_provider.jar，把这个放到程序的classpath下或是客户端的lib目录下，或是客户端的驱动目录下都可以。");
+            return "发送XML请求出现SSLKeyException异常，请检查classpath下或是客户端的lib目录中是否缺少sunjce_provider.jar包！";
         } catch (Exception e) {
             LogUtil.APP.error("使用HttpClient以XML发送post请求出现异常，请检查！", e);
 			return "使用HttpClient以XML发送post请求出现异常，请检查！";
