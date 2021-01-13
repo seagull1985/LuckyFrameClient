@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import cn.hutool.core.util.StrUtil;
+import luckyclient.utils.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -39,8 +40,6 @@ public class ClientHandler extends ChannelHandlerAdapter {
     }
 
     private static final String port = props.getProperty("server.port");
-
-    private static final Logger log = LoggerFactory.getLogger(ClientHandler.class);
 
     private String NETTY_HOST = SysConfig.getConfiguration().getProperty("netty.host");
 
@@ -75,10 +74,10 @@ public class ClientHandler extends ChannelHandlerAdapter {
             json = JSON.parseObject(msg.toString());
 
         } catch (Exception e) {
-            log.error("收到服务端非Json消息,但是异常：" + msg);
+            LogUtil.APP.error("收到服务端非Json消息,但是异常：" + msg);
             return;
         }
-        log.info("收到服务端消息：" + json.toString());
+        LogUtil.APP.info("收到服务端消息：" + json.toString());
         //解析消息
         if ("run".equals(json.get("method"))) {
             //返回请求
@@ -98,7 +97,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                 try {
                     tmpResult = HttpRequest.httpClientGet(urlParam, jsonparams, socketTimeout);
                 } catch (Exception e) {
-                    log.error("转发服务端GET请求出错");
+                    LogUtil.APP.error("转发服务端GET请求出错");
                 }
             } else {
                 String jsonparams = json.get("data").toString();
@@ -106,7 +105,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                 try {
                     tmpResult = HttpRequest.httpClientPost(urlParam, jsonparams, socketTimeout);
                 } catch (Exception e) {
-                    log.error("转发服务端POST请求出错");
+                    LogUtil.APP.error("转发服务端POST请求出错");
                 }
             }
             result.setMessage(tmpResult);
@@ -125,7 +124,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                 re.put("method", "return");
                 re.put("data", result);
                 sendMessage(re.toString());
-                log.info("下载驱动包成功,路径为：" + path + ";文件名为：" + fileName);
+                LogUtil.APP.info("下载驱动包成功,路径为：" + path + ";文件名为：" + fileName);
             } catch (Exception e) {
                 e.printStackTrace();
                 //返回请求
@@ -134,7 +133,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                 re.put("method", "return");
                 re.put("data", result);
                 sendMessage(re.toString());
-                log.error("下载驱动包失败,路径为：" + path + ";文件名为：" + fileName);
+                LogUtil.APP.error("下载驱动包失败,路径为：" + path + ";文件名为：" + fileName);
             }
         } else if ("upload".equals(json.get("method"))) {
             try {
@@ -152,18 +151,18 @@ public class ClientHandler extends ChannelHandlerAdapter {
                         lastLength = 1024 * 10;
                     randomAccessFile = new RandomAccessFile(fileUploadFile.getFile(), "r");
                     randomAccessFile.seek(start); //将文件定位到start
-                    log.info("长度：" + (randomAccessFile.length() - start));
+                    LogUtil.APP.info("长度：" + (randomAccessFile.length() - start));
                     int a = (int) (randomAccessFile.length() - start);
                     int b = (int) (randomAccessFile.length() / 1024 * 2);
                     if (a < lastLength) {
                         lastLength = a;
                     }
-                    log.info("文件长度：" + (randomAccessFile.length()) + ",start:" + start + ",a:" + a + ",b:" + b + ",lastLength:" + lastLength);
+                    LogUtil.APP.info("文件长度：" + (randomAccessFile.length()) + ",start:" + start + ",a:" + a + ",b:" + b + ",lastLength:" + lastLength);
                     byte[] bytes = new byte[lastLength];
-                    log.info("bytes的长度是=" + bytes.length);
+                    LogUtil.APP.info("bytes的长度是=" + bytes.length);
                     int byteRead;
                     if ((byteRead = randomAccessFile.read(bytes)) != -1 && (randomAccessFile.length() - start) > 0) {
-                        log.info("byteRead = " + byteRead);
+                        LogUtil.APP.info("byteRead = " + byteRead);
                         fileUploadFile.setEndPos(byteRead);
                         fileUploadFile.setBytes(bytes);
                         //返回请求
@@ -182,7 +181,7 @@ public class ClientHandler extends ChannelHandlerAdapter {
                         }
                     } else {
                         randomAccessFile.close();
-                        log.info("文件已经读完channelRead()--------" + byteRead);
+                        LogUtil.APP.info("文件已经读完channelRead()--------" + byteRead);
                         //返回请求
                         JSONObject re = new JSONObject();
                         Result result = new Result(1, "上传成功", json.get("uuid").toString(), null);
@@ -204,8 +203,12 @@ public class ClientHandler extends ChannelHandlerAdapter {
         }
         else if("loginReturn".equals(json.get("method")))
         {
-            //设置client标记
-            clientId=Integer.valueOf(json.get("clientId").toString());
+            try {
+                //设置client标记
+                clientId=Integer.valueOf(json.get("clientId").toString());
+            } catch (Exception e){
+                LogUtil.APP.error("设置ClientID失败，请检查异常",e);
+            }
         }
 
     }
@@ -228,14 +231,14 @@ public class ClientHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        log.info("连接已断开，正在尝试重连...");
+        LogUtil.APP.info("连接已断开，正在尝试重连...");
         //使用过程中断线重连
         final EventLoop eventLoop = ctx.channel().eventLoop();
         eventLoop.schedule(() -> {
             try {
                 NettyClient.start();
             } catch (Exception e) {
-                log.error("链接出现异常，正在尝试重连...",e);
+                LogUtil.APP.error("链接出现异常，正在尝试重连...",e);
             }
         }, 1, TimeUnit.SECONDS);
 
