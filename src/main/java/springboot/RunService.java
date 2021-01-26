@@ -56,8 +56,6 @@ public class RunService {
 		}else{
 			HttpImpl.checkHostNet();
 		}
-		Thread.sleep(5000);
-		SysConfig.getConfiguration().getProperty("appid");
 	}
 
 }

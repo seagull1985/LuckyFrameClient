@@ -30,15 +30,13 @@ public class PropertiesProxy extends Properties {
         //获取参数
         //通过接口获取服务端配置
         try{
-            if(key.startsWith("server.web")){
-                LogUtil.APP.info("key is "+key+"，skip config from service");
+            if(key.startsWith("server.web")||key.startsWith("client.")||key.startsWith("netty.")){
+                //LogUtil.APP.info("key is "+key+"，skip config from service");
                 return wapper.getProperty(key);
             }
             if(!ClientHandler.clientId.equals(-1)){
-                LogUtil.APP.info("get config from service");
                 //String result = HttpRequest.loadJSON("/system/clientConfig/config/"+ ClientHandler.clientId+"/"+key);
                 String url = "/system/clientConfig/config/"+ ClientHandler.clientId+ "/"+key;
-                LogUtil.APP.info("getProperty---url-{}", url);
                 String result = HttpRequest.loadJSON(url);
                 if(StringUtils.isNotEmpty(result))
                 {
@@ -46,7 +44,8 @@ public class PropertiesProxy extends Properties {
                     if(res.get("code")!=null&&res.getInteger("code")==200)
                     {
                         String value= EncryptionUtils.decrypt(res.get("value").toString());
-                        LogUtil.APP.info("get config from server:"+res.toJSONString()+";value="+value);
+                        LogUtil.APP.info("get config from server succeed:"+res.toJSONString()+";");
+                        //LogUtil.APP.info("get config from server:"+res.toJSONString()+";value="+value);
                         return value;
                     }
 
@@ -64,7 +63,7 @@ public class PropertiesProxy extends Properties {
         //获取参数
         //通过接口获取服务端配置
         try{
-            if(key.startsWith("server.web")){
+            if(key.startsWith("server.web")||key.startsWith("client.")||key.startsWith("netty.")){
                 LogUtil.APP.info("key is "+key+"，skip config from service");
                 return wapper.getProperty(key);
             }
@@ -85,4 +84,5 @@ public class PropertiesProxy extends Properties {
         }
         return wapper.getProperty(key, defaultValue);
     }
+
 }

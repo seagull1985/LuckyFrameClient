@@ -3,6 +3,7 @@ package luckyclient.execution;
 import java.io.File;
 import java.util.Properties;
 
+import luckyclient.netty.ClientHandler;
 import org.apache.log4j.PropertyConfigurator;
 
 import luckyclient.execution.appium.androidex.AndroidOneCaseExecute;
@@ -37,6 +38,7 @@ public class OneCaseExecute extends TestControl {
 			String caseId = args[1];
 			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskId));
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.parseInt(taskId));
+			ClientHandler.clientId = taskScheduling.getClientId();
 			if (taskScheduling.getTaskType() == 0) {
 					// ½Ó¿Ú²âÊÔ
 				    TestCaseExecution testCaseExecution=new TestCaseExecution();

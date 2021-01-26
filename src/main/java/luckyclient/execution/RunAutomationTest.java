@@ -2,6 +2,7 @@ package luckyclient.execution;
 
 import java.io.File;
 
+import luckyclient.netty.ClientHandler;
 import org.apache.log4j.PropertyConfigurator;
 
 import luckyclient.execution.appium.AppTestControl;
@@ -31,6 +32,7 @@ public class RunAutomationTest extends TestControl {
 			String taskid = args[0];
 			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskid));
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.parseInt(taskid));
+			ClientHandler.clientId = taskScheduling.getClientId();
 			if (taskScheduling.getTaskType() == 0) {
 				// ½Ó¿Ú²âÊÔ
 				TestControl.taskExecutionPlan(task);
