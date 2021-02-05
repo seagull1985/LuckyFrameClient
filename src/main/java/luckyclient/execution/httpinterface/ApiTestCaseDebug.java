@@ -41,6 +41,8 @@ public class ApiTestCaseDebug {
 	 */
 	public static void oneCaseDebug(String testCaseExternalId) {
 		Map<String, String> variable = new HashMap<>(0);
+		// 初始化写用例结果以及日志模块
+		serverOperation caselog = new serverOperation();
 		serverOperation.exetype=1;
 		String packagename;
 		String functionname;
@@ -64,7 +66,7 @@ public class ApiTestCaseDebug {
 		// 进入循环，解析用例所有步骤
 		for (int i = 0; i < steps.size(); i++) {
 			Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), "888888",
-					null,variable);
+					caselog,variable);
 			try {
 				packagename = casescript.get("PackageName");
 				functionname = casescript.get("FunctionName");
@@ -97,8 +99,14 @@ public class ApiTestCaseDebug {
 			// 调用动态方法，执行测试用例
 			try {
 				LogUtil.APP.info("开始调用方法:{} .....",functionname);
-				testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,
-						steps.get(i).getStepType(), steps.get(i).getExtend());
+				// 接口用例支持使用runcase关键字
+				if ((null != functionname && "runcase".equals(functionname))) {
+					TestCaseExecution testCaseExecution=new TestCaseExecution();
+					testnote = testCaseExecution.oneCaseExecuteForCase(getParameterValues[0].toString(), "888888", variable, caselog, null);
+				}else{
+					testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues,
+							steps.get(i).getStepType(), steps.get(i).getExtend());
+				}
 				testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
 				if (null != expectedresults && !expectedresults.isEmpty()) {
 					LogUtil.APP.info("expectedResults=【{}】",expectedresults);

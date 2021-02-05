@@ -116,8 +116,8 @@ public class ThreadForExecuteCase extends Thread {
                     testnote = testCaseExecution.oneCaseExecuteForCase(getParameterValues[0].toString(), taskid, variable, caselog, null);
                 }else{
                     testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getStepType(), steps.get(i).getExtend());
-                    testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 }
+                testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
 
                 if (null != expectedresults && !expectedresults.isEmpty()) {
                     LogUtil.APP.info("expectedResults=¡¾{}¡¿",expectedresults);

@@ -106,8 +106,8 @@ public class WebTestCaseDebug {
                     testnote = testCaseExecution.oneCaseExecuteForCase(getParameterValues[0].toString(), "888888", variable, caselog, null);
                 }else{
                     testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getStepType(), steps.get(i).getExtend());
-                    testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 }
+                testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
 
                 if (null != expectedresults && !expectedresults.isEmpty()) {
                     // ¸³Öµ´«²Î

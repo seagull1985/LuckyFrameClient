@@ -118,7 +118,13 @@ public class TestCaseExecution {
             try {
                 LogUtil.APP.info("开始调用方法:{} .....",functionname);
                 caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "开始调用方法：" + functionname + " .....", "info", String.valueOf(i + 1), "");
-                testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getStepType(), steps.get(i).getExtend());
+                // 接口用例支持使用runcase关键字
+                if ((null != functionname && "runcase".equals(functionname))) {
+                    TestCaseExecution testCaseExecution=new TestCaseExecution();
+                    testnote = testCaseExecution.oneCaseExecuteForCase(getParameterValues[0].toString(), taskid, RUNCASE_VARIABLE, caselog, null);
+                }else{
+                    testnote = InvokeMethod.callCase(packagename, functionname, getParameterValues, steps.get(i).getStepType(), steps.get(i).getExtend());
+                }
                 testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 // 判断结果
                 int stepresult = interfaceJudgeResult(testcase, steps.get(i), taskid, expectedresults, testnote, caselog);
@@ -185,6 +191,10 @@ public class TestCaseExecution {
         String testnote = "初始化测试结果";
         ProjectCase testcase = GetServerApi.cgetCaseBysign(testCaseExternalId);
         List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+        if(null==caselog){
+            // 初始化写用例结果以及日志模块
+            caselog = new serverOperation();
+        }
         // 把公共参数加入到MAP中
         for (ProjectCaseParams pcp : pcplist) {
             RUNCASE_VARIABLE.put(pcp.getParamsName(), pcp.getParamsValue());
@@ -312,7 +322,13 @@ public class TestCaseExecution {
                 LogUtil.APP.info("二次解析用例过程完成，等待进行接口操作......");
                 caselog.insertTaskCaseLog(taskid, projectCase.getCaseId(), "包路径: " + packagename + "; 方法名: " + functionname, "info", String.valueOf(step.getStepSerialNumber()), "");
 
-                result = InvokeMethod.callCase(packagename, functionname, getParameterValues, step.getStepType(), step.getExtend());
+                // 接口用例支持使用runcase关键字
+                if ((null != functionname && "runcase".equals(functionname))) {
+                    TestCaseExecution testCaseExecution=new TestCaseExecution();
+                    result = testCaseExecution.oneCaseExecuteForCase(getParameterValues[0].toString(), taskid, RUNCASE_VARIABLE, caselog, null);
+                }else{
+                    result = InvokeMethod.callCase(packagename, functionname, getParameterValues, step.getStepType(), step.getExtend());
+                }
             }
         } catch (Exception e) {
             LogUtil.APP.error("调用方法过程出错，方法名:{}，请重新检查脚本方法名称以及参数！",functionname,e);
