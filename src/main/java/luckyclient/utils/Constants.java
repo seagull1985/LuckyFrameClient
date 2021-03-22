@@ -30,7 +30,14 @@ public class Constants {
 	 * 预期结果匹配符---json匹配
 	 */	
     public static final String JSONPATH_SIGN = "$JP#";
-
+	/**
+	 * 语法链接符
+	 */
+	public static final String  SYMLINK = ">>";
+	/**
+	 * 匹配预期结果失败跳转处理
+	 */
+	public static final String IFFAIL_JUMP = "fail"+SYMLINK;
     
 	/************************HTTP 返回结果头域 响应码分隔符定义***************************
 	 * HTTP测试返回结果 是否接收头域

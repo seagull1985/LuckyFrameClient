@@ -59,6 +59,7 @@ public class TestCaseExecution {
         Object[] getParameterValues;
         String testnote = "初始化测试结果";
         int k = 0;
+        int stepJumpNo=0;
         ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseId);
         //更新用例状态
         caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), 3);
@@ -81,6 +82,18 @@ public class TestCaseExecution {
         }
         // 进入循环，解析用例所有步骤
         for (int i = 0; i < steps.size(); i++) {
+            //处理步骤跳转语法
+            if(stepJumpNo!=0){
+                if(stepJumpNo==i+1){
+                    LogUtil.APP.info("跳转至当前用例第{}步",i+1);
+                }else if(stepJumpNo>i+1){
+                    LogUtil.APP.info("当前用例第{}步,跳过执行...",i+1);
+                    continue;
+                }else{
+                    LogUtil.APP.info("跳转步骤【{}】小于当前步骤【{}】，直接向下继续执行...",stepJumpNo,i+1);
+                }
+            }
+
             Map<String, String> casescript = InterfaceAnalyticCase.analyticCaseStep(testcase, steps.get(i), taskid, caselog,RUNCASE_VARIABLE);
             try {
                 packagename = casescript.get("PackageName");
@@ -127,7 +140,9 @@ public class TestCaseExecution {
                 }
                 testnote = ActionManageForSteps.actionManage(casescript.get("Action"), testnote);
                 // 判断结果
-                int stepresult = interfaceJudgeResult(testcase, steps.get(i), taskid, expectedresults, testnote, caselog);
+                Map<String,Integer> judgeResult = interfaceJudgeResult(testcase, steps.get(i), taskid, expectedresults, testnote, caselog);
+                Integer stepresult = judgeResult.get("setResult");
+                stepJumpNo = judgeResult.get("stepJumpNo");
     			// 失败，并且不在继续,直接终止
                 if (0 != stepresult) {
                 	setcaseresult = stepresult;
@@ -188,6 +203,7 @@ public class TestCaseExecution {
 	public String oneCaseExecuteForCase(String testCaseExternalId, String taskid, Map<String, String> outVariable, serverOperation caselog, Object driver) {
         String expectedresults;
         int setresult = 1;
+        int stepJumpNo=0;
         String testnote = "初始化测试结果";
         ProjectCase testcase = GetServerApi.cgetCaseBysign(testCaseExternalId);
         List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
@@ -213,8 +229,20 @@ public class TestCaseExecution {
         }
 
         // 进入循环，解析用例所有步骤
-        for (ProjectCaseSteps step : steps) {
+        for (int i = 0; i < steps.size(); i++) {
             Map<String, String> params;
+            ProjectCaseSteps step = steps.get(i);
+            //处理步骤跳转语法
+            if(stepJumpNo!=0){
+                if(stepJumpNo==i+1){
+                    LogUtil.APP.info("跳转至当前用例第{}步",i+1);
+                }else if(stepJumpNo>i+1){
+                    LogUtil.APP.info("当前用例第{}步,跳过执行...",i+1);
+                    continue;
+                }else{
+                    LogUtil.APP.info("跳转步骤【{}】小于当前步骤【{}】，直接向下继续执行...",stepJumpNo,i+1);
+                }
+            }
 
             // 根据步骤类型来分析步骤参数
             if (1 == step.getStepType()){
@@ -232,34 +260,42 @@ public class TestCaseExecution {
             }
 
             expectedresults = params.get("ExpectedResults");
-
+            Map<String,Integer> judgeResult=new HashMap<>();
             // 根据步骤类型来执行步骤
             if (1 == step.getStepType()){
             	WebDriver wd=(WebDriver)driver;
             	testnote = WebCaseExecution.runWebStep(params, wd, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
                 testnote = ActionManageForSteps.actionManage(params.get("Action"), testnote);
             	// 判断结果
-                setresult = WebCaseExecution.judgeResult(testcase, step, params, wd, taskid, expectedresults, testnote, caselog);
+                judgeResult = WebCaseExecution.judgeResult(testcase, step, params, wd, taskid, expectedresults, testnote, caselog);
+                setresult = judgeResult.get("setResult");
+                stepJumpNo = judgeResult.get("stepJumpNo");
             }else if (3 == step.getStepType()){
             	if (driver instanceof AndroidDriver){
             		AndroidDriver<AndroidElement> ad=(AndroidDriver<AndroidElement>)driver;
             		testnote = AndroidCaseExecution.androidRunStep(params, ad, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
                     testnote = ActionManageForSteps.actionManage(params.get("Action"), testnote);
             		// 判断结果
-                    setresult = AndroidCaseExecution.judgeResult(testcase, step, params, ad, taskid, expectedresults, testnote, caselog);
+                    judgeResult = AndroidCaseExecution.judgeResult(testcase, step, params, ad, taskid, expectedresults, testnote, caselog);
+                    setresult = judgeResult.get("setResult");
+                    stepJumpNo = judgeResult.get("stepJumpNo");
             	}else{
             		IOSDriver<IOSElement> ios=(IOSDriver<IOSElement>)driver;
             		testnote = IosCaseExecution.iosRunStep(params, RUNCASE_VARIABLE, ios, taskid, testcase.getCaseId(), step.getStepSerialNumber(), caselog);
                     testnote = ActionManageForSteps.actionManage(params.get("Action"), testnote);
             		// 判断结果
-                    setresult = IosCaseExecution.judgeResult(testcase, step, params, ios, taskid, expectedresults, testnote, caselog);
+                    judgeResult = IosCaseExecution.judgeResult(testcase, step, params, ios, taskid, expectedresults, testnote, caselog);
+                    setresult = judgeResult.get("setResult");
+                    stepJumpNo = judgeResult.get("stepJumpNo");
             	}
 
             } else{
             	testnote = runStep(params, taskid, testcase.getCaseSign(), step, caselog);
                 testnote = ActionManageForSteps.actionManage(params.get("Action"), testnote);
-            	// 判断结果
-            	setresult = interfaceJudgeResult(testcase, step, taskid, expectedresults, testnote, caselog);
+                // 判断结果
+                judgeResult = interfaceJudgeResult(testcase, step, taskid, expectedresults, testnote, caselog);
+                setresult = judgeResult.get("setResult");
+                stepJumpNo = judgeResult.get("stepJumpNo");
             }
 
             if (0 != setresult){
@@ -342,10 +378,29 @@ public class TestCaseExecution {
         return result;
     }
 
-    private int interfaceJudgeResult(ProjectCase testcase, ProjectCaseSteps step, String taskid, String expectedresults, String testnote, serverOperation caselog){
-        int setresult = 0;
+    private Map<String,Integer> interfaceJudgeResult(ProjectCase testcase, ProjectCaseSteps step, String taskid, String expectedresults, String testnote, serverOperation caselog){
+        Map<String,Integer> judgeResult=new HashMap<>();
+        judgeResult.put("setResult",0);
+        judgeResult.put("stepJumpNo",0);
         try{
         	if (null != expectedresults && !expectedresults.isEmpty()) {
+                //处理步骤跳转
+                if (expectedresults.length() > Constants.IFFAIL_JUMP.length() && expectedresults.startsWith(Constants.IFFAIL_JUMP)) {
+                    LogUtil.APP.info("预期结果中存在判断条件跳转步骤，处理前原始字符串：{}",expectedresults);
+                    String expectedTemp = expectedresults.substring(Constants.IFFAIL_JUMP.length());
+                    if(expectedTemp.contains(Constants.SYMLINK)){
+                        expectedresults = expectedTemp.substring(expectedTemp.indexOf(Constants.SYMLINK)+1);
+                        try{
+                            Integer stepJumpNo =  Integer.getInteger(expectedTemp.substring(0,expectedTemp.indexOf(Constants.SYMLINK)));
+                            judgeResult.put("stepJumpNo",stepJumpNo);
+                        }catch (NumberFormatException nfe){
+                            LogUtil.APP.error("步骤跳转语法解析失败，步骤编号不是数字，请确认:{}",expectedTemp.substring(0,expectedTemp.indexOf(Constants.SYMLINK)));
+                        }
+                    }else{
+                        LogUtil.APP.warn("处理预期结果条件判断失败，请确认预期结果语法结构：【"+Constants.IFFAIL_JUMP+">>预期结果】，原始预期结果值：{}",expectedresults);
+                    }
+                }
+
                 LogUtil.APP.info("expectedResults=【{}】",expectedresults);
                 // 赋值传参
                 if (expectedresults.length() > Constants.ASSIGNMENT_SIGN.length() && expectedresults.startsWith(Constants.ASSIGNMENT_SIGN)) {
@@ -366,7 +421,7 @@ public class TestCaseExecution {
                         LogUtil.APP.info("用例:{} 第{}步，模糊匹配预期结果成功！执行结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),testnote);
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "模糊匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(step.getStepSerialNumber()), "");
                     } else {
-                    	setresult = 1;
+                        judgeResult.put("setResult",1);
                         LogUtil.APP.warn("用例:{} 第{}步，模糊匹配预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),expectedresults.substring(Constants.FUZZY_MATCHING_SIGN.length()),testnote);
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "模糊匹配预期结果失败！预期结果：" + expectedresults.substring(Constants.FUZZY_MATCHING_SIGN.length()) + "，测试结果：" + testnote, "error", String.valueOf(step.getStepSerialNumber()), "");
                     }
@@ -379,7 +434,7 @@ public class TestCaseExecution {
                         LogUtil.APP.info("用例:{} 第{}步，正则匹配预期结果成功！执行结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),testnote);
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "正则匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(step.getStepSerialNumber()), "");
                     } else {
-                        setresult = 1;
+                        judgeResult.put("setResult",1);
                         LogUtil.APP.warn("用例:{} 第{}步，正则匹配预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),expectedresults.substring(Constants.REGULAR_MATCHING_SIGN.length()),testnote);
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "正则匹配预期结果失败！预期结果：" + expectedresults.substring(Constants.REGULAR_MATCHING_SIGN.length()) + "，测试结果：" + testnote, "error", String.valueOf(step.getStepSerialNumber()), "");
                     }
@@ -393,10 +448,10 @@ public class TestCaseExecution {
                     String result = SubString.jsonPathGetParams(expression, testnote);
                     
                     if (exceptResult.equals(result)) {
-                        setresult = 0;
+                        judgeResult.put("setResult",0);
                         LogUtil.APP.info("用例:{} 第{}步，jsonpath断言预期结果成功！预期结果:{} 测试结果: {} 执行结果:true",testcase.getCaseSign(),step.getStepSerialNumber(),exceptResult,result);
                     } else {
-                        setresult = 1;
+                        judgeResult.put("setResult",1);
                         LogUtil.APP.warn("用例:{} 第{}步，jsonpath断言预期结果失败！预期结果:{}，测试结果:{}" + expectedresults + "，测试结果：" + result, "error", step.getStepSerialNumber(), "");
                         // 某一步骤失败后，此条用例置为失败退出
                     }
@@ -412,7 +467,7 @@ public class TestCaseExecution {
                         LogUtil.APP.info("用例:{} 第{}步，精确匹配预期结果成功！执行结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),testnote);
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "精确匹配预期结果成功！执行结果：" + testnote, "info", String.valueOf(step.getStepSerialNumber()), "");
                     } else {
-                        setresult = 1;
+                        judgeResult.put("setResult",1);
                         LogUtil.APP.warn("用例:{} 第{}步，精确匹配预期结果失败！预期结果:{}，测试结果:{}",testcase.getCaseSign(),step.getStepSerialNumber(),expectedresults,testnote);
                         caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "精确匹配预期结果失败！预期结果：" + expectedresults + "，测试结果：" + testnote, "error", String.valueOf(step.getStepSerialNumber()), "");
                     }
@@ -420,10 +475,10 @@ public class TestCaseExecution {
             }
         }catch(Exception e){
         	LogUtil.APP.error("匹配接口预期结果出现异常！",e);
-        	setresult = 2;
-        	return setresult;
+            judgeResult.put("setResult",2);
+        	return judgeResult;
         }
-        return setresult;
+        return judgeResult;
     }
 
 
