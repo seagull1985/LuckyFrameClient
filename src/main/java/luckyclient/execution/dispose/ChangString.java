@@ -38,6 +38,7 @@ public class ChangString {
 			if (null == str) {
 				return null;
 			}
+			str = str.trim();
 			str = str.replace("&quot;", "\"");
 			str = str.replace("&#39;", "'");
 			// @@用来注释@的引用作用

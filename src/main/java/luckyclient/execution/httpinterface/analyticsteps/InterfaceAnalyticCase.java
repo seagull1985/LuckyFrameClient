@@ -38,10 +38,10 @@ public class InterfaceAnalyticCase{
 	    String resultstr = step.getExpectedResult();
 		params.put("Action", step.getAction());
 		// 处理值传递
-		String packageName = ChangString.changparams(step.getStepPath().trim(), variable, "包路径");
+		String packageName = ChangString.changparams(step.getStepPath(), variable, "包路径");
 	    params.put("PackageName", packageName);
 	 // 处理值传递
-	    String functionName = ChangString.changparams(step.getStepOperation().trim(), variable, "方法名");
+	    String functionName = ChangString.changparams(step.getStepOperation(), variable, "方法名");
 		params.put("FunctionName", functionName);
 		String stepParams = replaceSpi(step.getStepParameters(),0);
 		String[] temp=stepParams.split("\\|",-1);

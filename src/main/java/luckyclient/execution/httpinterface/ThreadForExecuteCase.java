@@ -74,8 +74,9 @@ public class ThreadForExecuteCase extends Thread {
         caselog.insertTaskCaseExecute(taskid, projectId, caseId, caseSign, testcase.getCaseName(), 3);
         for (int i = 0; i < steps.size(); i++) {
             //处理步骤跳转语法
-            if(stepJumpNo!=0){
+            if(stepJumpNo!=0&&setcaseresult!=0){
                 if(stepJumpNo==i+1){
+                    setcaseresult = 0;
                     LogUtil.APP.info("跳转至当前用例第{}步",i+1);
                 }else if(stepJumpNo>i+1){
                     LogUtil.APP.info("当前用例第{}步,跳过执行...",i+1);
@@ -138,9 +139,9 @@ public class ThreadForExecuteCase extends Thread {
                         LogUtil.APP.info("预期结果中存在判断条件跳转步骤，处理前原始字符串：{}",expectedresults);
                         String expectedTemp = expectedresults.substring(Constants.IFFAIL_JUMP.length());
                         if(expectedTemp.contains(Constants.SYMLINK)){
-                            expectedresults = expectedTemp.substring(expectedTemp.indexOf(Constants.SYMLINK)+1);
+                            expectedresults = expectedTemp.substring(expectedTemp.indexOf(Constants.SYMLINK)+2);
                             try{
-                                stepJumpNo =  Integer.getInteger(expectedTemp.substring(0,expectedTemp.indexOf(Constants.SYMLINK)));
+                                stepJumpNo =  Integer.parseInt(expectedTemp.substring(0,expectedTemp.indexOf(Constants.SYMLINK)));
                             }catch (NumberFormatException nfe){
                                 LogUtil.APP.error("步骤跳转语法解析失败，步骤编号不是数字，请确认:{}",expectedTemp.substring(0,expectedTemp.indexOf(Constants.SYMLINK)));
                             }
