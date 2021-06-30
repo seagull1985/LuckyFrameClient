@@ -85,6 +85,10 @@ public class EncapsulateOperation {
                 result = "获取到的值是【" + we.getTagName() + "】";
                 LogUtil.APP.info("getTagName获取对象tagname属性...【tagname属性值:{}】",result);
                 break;
+            case "getvalue":
+                result = "获取到的值是【" + we.getAttribute("value") + "】";
+                LogUtil.APP.info("getAttribute获取对象【value】属性...【value属性值:{}】",result);
+                break;
             case "getattribute":
                 result = "获取到的值是【" + we.getAttribute(value) + "】";
                 LogUtil.APP.info("getAttribute获取对象【{}】属性...【{}属性值:{}】",value,value,result);
