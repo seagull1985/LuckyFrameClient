@@ -58,4 +58,33 @@ public class WebOneCaseExecute{
 		wd.quit();
 	}
 
+	public static void debugoneCaseExecute(int caseId, int drivertype){
+//		//记录日志到数据库
+//		serverOperation.exetype = 1;
+		WebDriver wd = null;
+		try {
+			wd = WebDriverInitialization.setWebDriverForTask(drivertype);
+		} catch (IOException e1) {
+			LogUtil.APP.error("初始化WebDriver出错！", e1);
+		}
+//		serverOperation caselog = new serverOperation();
+		ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseId);
+		//删除旧的日志
+//		serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
+
+		List<ProjectCaseParams> pcplist=GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+		LogUtil.APP.info("开始执行用例:【{}】......",testcase.getCaseSign());
+		try {
+			List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
+			WebCaseExecution.caseExcution(testcase, steps, wd,pcplist);
+			LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条",testcase.getCaseSign());
+		} catch (Exception e) {
+			LogUtil.APP.error("用户执行过程中抛出异常！", e);
+		}
+//		serverOperation.updateTaskExecuteData(taskid, 0,2);
+		//关闭浏览器
+		assert wd != null;
+		wd.quit();
+	}
+
 }

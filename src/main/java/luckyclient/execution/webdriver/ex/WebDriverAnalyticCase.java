@@ -107,6 +107,74 @@ public class WebDriverAnalyticCase {
 		return params;
 	}
 
+	public static Map<String, String> analyticCaseStep(ProjectCase projectcase, ProjectCaseSteps step, Map<String, String> variable) {
+		Map<String, String> params = new HashMap<>(0);
+
+		String resultstr;
+		try {
+			// 处理值传递
+			String path = ChangString.changparams(step.getStepPath(), variable, "包路径|定位路径");
+			if (null != path && path.contains("=")) {
+				String property = path.substring(0, path.indexOf("=")).trim();
+				String propertyValue = path.substring(path.indexOf("=") + 1).trim();
+				// set属性
+				params.put("property", property.toLowerCase());
+				// set属性值
+				params.put("property_value", propertyValue);
+				LogUtil.APP.info("对象属性解析结果：property:{};  property_value:{}", property, propertyValue);
+			}
+			// set操作方法,处理值传递
+			String operation = ChangString.changparams(step.getStepOperation().toLowerCase(), variable, "操作");
+			params.put("operation", operation);
+			// set属性值,处理值传递
+			String operationValue = ChangString.changparams(step.getStepParameters(), variable, "操作参数");
+			if (StringUtils.isNotEmpty(operationValue)) {
+				params.put("operation_value", operationValue);
+			}
+			LogUtil.APP.info("对象操作解析结果：operation:{};  operation_value:{}", operation,operationValue);
+			// 获取预期结果字符串
+			resultstr = step.getExpectedResult();
+
+			// set预期结果
+			if (null == resultstr || "".equals(resultstr)) {
+				params.put("ExpectedResults", "");
+			} else {
+				String expectedResults = subComment(resultstr);
+
+				// 处理check字段
+				if (expectedResults.toLowerCase().startsWith("check(")) {
+					expectedResults = expectedResults.replace("Check(", "check(");
+					params.put("checkproperty", expectedResults.substring(expectedResults.indexOf("check(") + 6,
+							expectedResults.indexOf("=")));
+					params.put("checkproperty_value", expectedResults.substring(expectedResults.indexOf("=") + 1,
+							expectedResults.lastIndexOf(")")));
+				}
+				//处理值传递
+				expectedResults = ChangString.changparams(expectedResults, variable, "预期结果");
+				params.put("ExpectedResults", expectedResults);
+				LogUtil.APP.info("预期结果解析：ExpectedResults:{}", expectedResults);
+			}
+
+			LogUtil.APP.info("用例编号:{} 第{}步，解析自动化用例步骤脚本完成！", projectcase.getCaseSign(), step.getStepSerialNumber());
+//			if (null != caselog) {
+//				caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),
+//						"步骤编号：" + step.getStepSerialNumber() + " 解析自动化用例步骤脚本完成！", "info",
+//						String.valueOf(step.getStepSerialNumber()), "");
+//			}
+		} catch (Exception e) {
+			LogUtil.APP.error("用例编号:{} 第{}步，解析自动化用例步骤脚本出现异常！", projectcase.getCaseSign(), step.getStepSerialNumber(),
+					e);
+//			if (null != caselog) {
+//				caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),
+//						"步骤编号：" + step.getStepSerialNumber() + " 解析自动化用例步骤脚本出错！", "error",
+//						String.valueOf(step.getStepSerialNumber()), "");
+//			}
+			params.put("exception", "用例编号：" + projectcase.getCaseSign() + "|解析异常,用例步骤为空或是用例脚本错误！");
+			return params;
+		}
+		return params;
+	}
+
 	private static String subComment(String htmlStr) {
 		// 定义script的正则表达式
 		String regExScript = "<script[^>]*?>[\\s\\S]*?</script>";

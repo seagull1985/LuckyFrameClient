@@ -178,7 +178,7 @@ public class HttpImpl {
 			e.printStackTrace();
 		}
 		WebDebugCaseEntity webDebugCaseEntity = JSONObject.parseObject(sbd.toString(), WebDebugCaseEntity.class);
-		log.info("Web端调试用例ID:{} 发起人ID:{}",webDebugCaseEntity.getCaseId(),webDebugCaseEntity.getUserId());
+		log.info("Web端调试用例ID:{} 发起人ID:{} 调试用例类型:{}",webDebugCaseEntity.getCaseId(),webDebugCaseEntity.getUserId(),webDebugCaseEntity.getCaseType());
 		try{
 			File file =new File(RunService.APPLICATION_HOME+webDebugCaseEntity.getLoadpath());
 			if  (!file .isDirectory())      
@@ -190,13 +190,23 @@ public class HttpImpl {
 			StringBuilder sb=new StringBuilder();
 			sb.append(webDebugCaseEntity.getCaseId()).append(" ");
 			sb.append(webDebugCaseEntity.getUserId()).append(" ");
+			sb.append(webDebugCaseEntity.getCaseType()).append(" ");//修改点
 			sb.append(webDebugCaseEntity.getLoadpath());
-			if(OS.startsWith("win")){
-				run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(RunService.APPLICATION_HOME+File.separator));
-			}else{
-				Process ps = Runtime.getRuntime().exec(RunService.APPLICATION_HOME+File.separator+"web_debugcase.sh"+ " " +sb.toString());
-	            ps.waitFor();  
-			}	
+			if(webDebugCaseEntity.getCaseType().intValue()==0||webDebugCaseEntity.getCaseType().intValue()==2){
+				if(OS.startsWith("win")){
+					run.exec("cmd.exe /k start " + "web_debugcase.cmd" + " " +sb.toString(), null,new File(RunService.APPLICATION_HOME+File.separator));
+				}else{
+					Process ps = Runtime.getRuntime().exec(RunService.APPLICATION_HOME+File.separator+"web_debugcase.sh"+ " " +sb.toString());
+					ps.waitFor();
+				}
+			}else if (webDebugCaseEntity.getCaseType().intValue()==1){
+				if(OS.startsWith("win")){
+					sb.append(" ").append(webDebugCaseEntity.getBrowserType());
+					run.exec("cmd.exe /k start " + "web_debugcase_web.cmd" + " " +sb.toString(), null,new File(RunService.APPLICATION_HOME+File.separator));
+				}else{
+					//待补充
+				}
+			}
 		} catch (Exception e) {		
 			e.printStackTrace();
 			log.error("启动Web调试模式测试程序异常！！！",e);

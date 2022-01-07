@@ -19,7 +19,10 @@ public class WebDebugCaseEntity implements Serializable {
 	private Integer caseId;
     private Integer userId;
     private String loadpath;
-    
+    //修改点
+	private Integer caseType;
+	private Integer browserType;
+
 	public Integer getCaseId() {
 		return caseId;
 	}
@@ -39,4 +42,15 @@ public class WebDebugCaseEntity implements Serializable {
 		this.loadpath = loadpath;
 	}
 
+	//修改点
+	public Integer getCaseType(){return caseType; }
+	public void setCaseType(Integer caseType) {
+		this.caseType = caseType;
+	}
+	public Integer getBrowserType() {
+		return browserType;
+	}
+	public void setBrowserType(Integer browserType) {
+		this.browserType = browserType;
+	}
 }
