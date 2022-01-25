@@ -16,11 +16,7 @@ import luckyclient.execution.appium.iosex.IosCaseExecution;
 import luckyclient.execution.httpinterface.TestControl;
 import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.api.serverOperation;
-import luckyclient.remote.entity.ProjectCase;
-import luckyclient.remote.entity.ProjectCaseParams;
-import luckyclient.remote.entity.ProjectCaseSteps;
-import luckyclient.remote.entity.TaskExecute;
-import luckyclient.remote.entity.TaskScheduling;
+import luckyclient.remote.entity.*;
 import luckyclient.tool.jenkins.BuildingInitialization;
 import luckyclient.tool.mail.HtmlMail;
 import luckyclient.tool.mail.MailSendInitialization;
@@ -80,9 +76,9 @@ public class AppTestControl {
 			LogUtil.APP.info("开始执行计划中的第{}条用例：【{}】......",i,testcase.getCaseSign());
 			try {
 				if ("Android".equals(properties.getProperty("platformName"))) {
-					AndroidCaseExecution.caseExcution(testcase, steps, taskid, androiddriver, caselog, pcplist);
+					AndroidCaseExecution.caseExcution(testcase, steps, taskid,null, androiddriver, caselog, pcplist);
 				} else if ("IOS".equals(properties.getProperty("platformName"))) {
-					IosCaseExecution.caseExcution(testcase, steps, taskid, iosdriver, caselog, pcplist);
+					IosCaseExecution.caseExcution(testcase, steps, taskid, null,iosdriver, caselog, pcplist);
 				}
 			} catch (Exception e) {
 				LogUtil.APP.error("用户执行过程中抛出Exception异常！", e);
@@ -127,56 +123,82 @@ public class AppTestControl {
 		if (restartstatus.contains("Status:true")) {
 			// 判断是否构建是否成功
 			if (BuildResult.SUCCESS.equals(buildResult)) {
-				try {
-					if ("Android".equals(properties.getProperty("platformName"))) {
-						androiddriver = AppiumInitialization.setAndroidAppium(properties);
-						LogUtil.APP.info("完成AndroidDriver初始化动作...APPIUM Server【http://{}/wd/hub】",properties.getProperty("appiumsever"));
-					} else if ("IOS".equals(properties.getProperty("platformName"))) {
-						iosdriver = AppiumInitialization.setIosAppium(properties);
-						LogUtil.APP.info("完成IOSDriver初始化动作...APPIUM Server【http://{}/wd/hub】",properties.getProperty("appiumsever"));
-					}
-				} catch (Exception e) {
-					LogUtil.APP.error("初始化AppiumDriver出错 ！APPIUM Server【http://{}/wd/hub】",properties.getProperty("appiumsever"), e);
+
+				List<ProjectPlan> plans=new ArrayList<>();
+				// 单计划执行
+				if(taskScheduling.getPlanType()==1){
+					ProjectPlan projectPlan=new ProjectPlan();
+					projectPlan.setPlanId(taskScheduling.getPlanId());
+					plans.add(projectPlan);
 				}
-				serverOperation caselog = new serverOperation();
-				List<ProjectCase> cases = GetServerApi.getCasesbyplanId(taskScheduling.getPlanId());
-				LogUtil.APP.info("当前计划【{}】中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
-				serverOperation.updateTaskExecuteStatusIng(taskId, cases.size());
-				int i = 0;
-				for (ProjectCase testcase : cases) {
-					i++;
-					LogUtil.APP.info("开始执行当前测试任务 {} 的第【{}】条测试用例:【{}】......",task.getTaskName(),i,testcase.getCaseSign());
-					List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
-					if (steps.size() == 0) {
-						continue;
-					}
+				// 聚合多计划执行
+				else if(taskScheduling.getPlanType()==2){
+					plans.addAll(GetServerApi.getPlansbysuiteId(taskScheduling.getSuiteId()));
+				}
+				LogUtil.APP.info("当前测试任务 {} 中共有【{}】条测试计划...",task.getTaskName(),plans.size());
+
+				int caseCount=0;
+				for(ProjectPlan pp:plans){
+					List<ProjectCase> cases = GetServerApi.getCasesbyplanId(pp.getPlanId());
+					caseCount+=cases.size();
+				}
+
+				for(ProjectPlan pp:plans){
+
 					try {
-						//插入开始执行的用例
-						caselog.insertTaskCaseExecute(taskId, taskScheduling.getProjectId(),testcase.getCaseId(),testcase.getCaseSign(), testcase.getCaseName(), 4);
 						if ("Android".equals(properties.getProperty("platformName"))) {
-							AndroidCaseExecution.caseExcution(testcase, steps, taskId, androiddriver, caselog, pcplist);
+							androiddriver = AppiumInitialization.setAndroidAppium(properties);
+							LogUtil.APP.info("完成AndroidDriver初始化动作...APPIUM Server【http://{}/wd/hub】",properties.getProperty("appiumsever"));
 						} else if ("IOS".equals(properties.getProperty("platformName"))) {
-							IosCaseExecution.caseExcution(testcase, steps, taskId, iosdriver, caselog, pcplist);
+							iosdriver = AppiumInitialization.setIosAppium(properties);
+							LogUtil.APP.info("完成IOSDriver初始化动作...APPIUM Server【http://{}/wd/hub】",properties.getProperty("appiumsever"));
 						}
 					} catch (Exception e) {
-						LogUtil.APP.error("用户执行过程中抛出异常！", e);
+						LogUtil.APP.error("初始化AppiumDriver出错 ！APPIUM Server【http://{}/wd/hub】",properties.getProperty("appiumsever"), e);
 					}
-					LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
+					serverOperation caselog = new serverOperation();
+					List<ProjectCase> cases = GetServerApi.getCasesbyplanId(pp.getPlanId());
+					LogUtil.APP.info("当前计划【{}】中共有【{}】条待测试用例...",pp.getPlanName(),cases.size());
+					serverOperation.updateTaskExecuteStatusIng(taskId, caseCount);
+					int i = 0;
+					for (ProjectCase testcase : cases) {
+						i++;
+						LogUtil.APP.info("开始执行当前测试任务 {} 的第【{}】条测试用例:【{}】......",task.getTaskName(),i,testcase.getCaseSign());
+						List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
+						if (steps.size() == 0) {
+							continue;
+						}
+						try {
+							//插入开始执行的用例
+							caselog.insertTaskCaseExecute(taskId, taskScheduling.getProjectId(),pp.getPlanId(),testcase.getCaseId(),testcase.getCaseSign(), testcase.getCaseName(), 4);
+							if ("Android".equals(properties.getProperty("platformName"))) {
+								AndroidCaseExecution.caseExcution(testcase, steps, taskId, pp.getPlanId(),androiddriver, caselog, pcplist);
+							} else if ("IOS".equals(properties.getProperty("platformName"))) {
+								IosCaseExecution.caseExcution(testcase, steps, taskId, pp.getPlanId(),iosdriver, caselog, pcplist);
+							}
+						} catch (Exception e) {
+							LogUtil.APP.error("用户执行过程中抛出异常！", e);
+						}
+						LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
+					}
+					LogUtil.APP.info("当前【{}】测试计划中的用例已经全部执行完成...",pp.getPlanName());
+					// 关闭APP以及appium会话
+					if ("Android".equals(properties.getProperty("platformName"))) {
+						assert androiddriver != null;
+						androiddriver.closeApp();
+					} else if ("IOS".equals(properties.getProperty("platformName"))) {
+						assert iosdriver != null;
+						iosdriver.closeApp();
+					}
 				}
-				tastcount = serverOperation.updateTaskExecuteData(taskId, cases.size(),2);
+				tastcount = serverOperation.updateTaskExecuteData(taskId, caseCount,2);
+				tastcount[0]=caseCount;
 				String testtime = serverOperation.getTestTime(taskId);
 				LogUtil.APP.info("当前项目【{}】测试计划中的用例已经全部执行完成...",projectname);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),
 						HtmlMail.htmlContentFormat(tastcount, taskId, buildResult.toString(), restartstatus, testtime, jobname),
 						taskId, taskScheduling, tastcount,testtime,buildResult.toString(),restartstatus);
-				// 关闭APP以及appium会话
-				if ("Android".equals(properties.getProperty("platformName"))) {
-					assert androiddriver != null;
-					androiddriver.closeApp();
-				} else if ("IOS".equals(properties.getProperty("platformName"))) {
-					assert iosdriver != null;
-					iosdriver.closeApp();
-				}
+
 			} else {
 				LogUtil.APP.warn("项目构建失败，自动化测试自动退出！请前往JENKINS中检查项目构建情况。");
 				MailSendInitialization.sendMailInitialization(jobname, "构建项目过程中失败，自动化测试自动退出！请前去JENKINS查看构建情况！", taskId, taskScheduling, null,"0小时0分0秒",buildResult.toString(),restartstatus);

@@ -34,7 +34,7 @@ public class IosCaseLocalDebug {
 					.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
 			LogUtil.APP.info("开始执行用例：【{}】......",testCaseExternalId);
 			List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
-			IosCaseExecution.caseExcution(testcase, steps, "888888", iosdriver, caselog, pcplist);
+			IosCaseExecution.caseExcution(testcase, steps, "888888",null, iosdriver, caselog, pcplist);
 
 			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (Exception e) {

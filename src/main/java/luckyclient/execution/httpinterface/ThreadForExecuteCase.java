@@ -36,17 +36,19 @@ public class ThreadForExecuteCase extends Thread {
     private String caseSign;
     private ProjectCase testcase;
     private String taskid;
+    private Integer planId;
     private Integer projectId;
     private List<ProjectCaseSteps> steps;
     private List<ProjectCaseParams> pcplist;
     private serverOperation caselog;
 
-    public ThreadForExecuteCase(ProjectCase projectcase, List<ProjectCaseSteps> steps, String taskid, List<ProjectCaseParams> pcplist, serverOperation caselog) {
+    public ThreadForExecuteCase(ProjectCase projectcase, List<ProjectCaseSteps> steps, String taskid,Integer planId, List<ProjectCaseParams> pcplist, serverOperation caselog) {
         this.caseId = projectcase.getCaseId();
         this.testcase = projectcase;
         this.projectId = projectcase.getProjectId();
         this.caseSign = projectcase.getCaseSign();
         this.taskid = taskid;
+        this.planId=planId;
         this.steps = steps;
         this.pcplist = pcplist;
         this.caselog = caselog;
@@ -71,7 +73,7 @@ public class ThreadForExecuteCase extends Thread {
         int stepJumpNo=0;
         // 进入循环，解析单个用例所有步骤
         // 插入开始执行的用例
-        caselog.insertTaskCaseExecute(taskid, projectId, caseId, caseSign, testcase.getCaseName(), 3);
+        caselog.insertTaskCaseExecute(taskid, projectId, planId,caseId, caseSign, testcase.getCaseName(), 3);
         for (int i = 0; i < steps.size(); i++) {
             //处理步骤跳转语法
             if(stepJumpNo!=0&&setcaseresult!=0){
@@ -274,7 +276,7 @@ public class ThreadForExecuteCase extends Thread {
                 caselog.insertTaskCaseLog(taskid, caseId, "设置执行结果为锁定，请参考错误日志查找锁定用例的原因.....", "error", "SETCASERESULT...", "");
                 setcaseresult = 2;
             }
-            caselog.updateTaskCaseExecuteStatus(taskid, caseId, setcaseresult);
+            caselog.updateTaskCaseExecuteStatus(taskid, planId,caseId, setcaseresult);
             if (0 == setcaseresult) {
                 LogUtil.APP.info("用例:{}执行结果成功......",testcase.getCaseSign());
                 caselog.insertTaskCaseLog(taskid, caseId, "用例步骤执行全部成功......", "info", "ending", "");

@@ -10,11 +10,7 @@ import com.offbytwo.jenkins.model.BuildResult;
 
 import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.api.serverOperation;
-import luckyclient.remote.entity.ProjectCase;
-import luckyclient.remote.entity.ProjectCaseParams;
-import luckyclient.remote.entity.ProjectCaseSteps;
-import luckyclient.remote.entity.TaskExecute;
-import luckyclient.remote.entity.TaskScheduling;
+import luckyclient.remote.entity.*;
 import luckyclient.tool.jenkins.BuildingInitialization;
 import luckyclient.tool.mail.HtmlMail;
 import luckyclient.tool.mail.MailSendInitialization;
@@ -64,7 +60,7 @@ public class TestControl {
 				continue;
 			}
 			THREAD_COUNT++; // 多线程计数++，用于检测线程是否全部执行完
-			threadExecute.execute(new ThreadForExecuteCase(testcase, steps, taskid, pcplist, caselog));
+			threadExecute.execute(new ThreadForExecuteCase(testcase, steps, taskid,null, pcplist, caselog));
 		}
 		// 多线程计数，用于检测线程是否全部执行完
 		int i = 0;
@@ -105,50 +101,72 @@ public class TestControl {
 				ThreadPoolExecutor threadExecute = new ThreadPoolExecutor(threadcount, 20, 3, TimeUnit.SECONDS,
 						new ArrayBlockingQueue<>(1000), new ThreadPoolExecutor.CallerRunsPolicy());
 
-				List<ProjectCase> cases = GetServerApi.getCasesbyplanId(taskScheduling.getPlanId());
-				LogUtil.APP.info("当前测试任务 {} 中共有【{}】条待测试用例...",task.getTaskName(),cases.size());
-				serverOperation.updateTaskExecuteStatusIng(taskid, cases.size());
-				int casepriority = 0;
-				for (int j = 0; j < cases.size(); j++) {
-					ProjectCase projectcase = cases.get(j);
-					List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(projectcase.getCaseId());
-					if (steps.size() == 0) {
-						caselog.insertTaskCaseExecute(taskid, taskScheduling.getProjectId(),projectcase.getCaseId(),projectcase.getCaseSign(), projectcase.getCaseName(), 2);
-						LogUtil.APP.warn("用例【{}】没有找到步骤，直接跳过，请检查！",projectcase.getCaseSign());
-						caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(), "在用例中没有找到步骤，请检查", "error", "1", "");
-						continue;
-					}
-					// 多线程计数,如果用例设置了优先级，必须等优先级高的用例执行完成，才继续后面的用例
-					if (casepriority < projectcase.getPriority()) {
-						LogUtil.APP.info("用例编号:{} 上条用例优先级:{} 当前用例优先级:{}",projectcase.getCaseSign(),casepriority,projectcase.getPriority());
-						int i = 0;
-						while (THREAD_COUNT != 0) {
-							i++;
-							if (i > timeout * 60 * 5 / cases.size()) {
-								LogUtil.APP.warn("用例编号:{} 上条用例优先级:{} 当前用例优先级:{} 等待时间已经超过设置的用例平均超时间{}秒(计算公式：任务超时时间*5/用例总数)，现在继续往下执行...",projectcase.getCaseSign(),casepriority,projectcase.getPriority(),i);
-								break;
-							}
-							Thread.sleep(1000);
+				List<ProjectPlan> plans=new ArrayList<>();
+
+				// 单计划执行
+				if(taskScheduling.getPlanType()==1){
+					ProjectPlan projectPlan=new ProjectPlan();
+					projectPlan.setPlanId(taskScheduling.getPlanId());
+					plans.add(projectPlan);
+				}
+				// 聚合多计划执行
+				else if(taskScheduling.getPlanType()==2){
+					plans.addAll(GetServerApi.getPlansbysuiteId(taskScheduling.getSuiteId()));
+				}
+				LogUtil.APP.info("当前测试任务 {} 中共有【{}】条测试计划...",task.getTaskName(),plans.size());
+
+				int caseCount=0;
+				int taskStatus = 2;
+				for(ProjectPlan pp:plans){
+					List<ProjectCase> cases = GetServerApi.getCasesbyplanId(pp.getPlanId());
+					caseCount+=cases.size();
+				}
+
+				for(ProjectPlan pp:plans) {
+					List<ProjectCase> cases = GetServerApi.getCasesbyplanId(pp.getPlanId());
+					LogUtil.APP.info("当前测试计划 {} 中共有【{}】条待测试用例...", pp.getPlanName(), cases.size());
+					serverOperation.updateTaskExecuteStatusIng(taskid, caseCount);
+					int casepriority = 0;
+					for (int j = 0; j < cases.size(); j++) {
+						ProjectCase projectcase = cases.get(j);
+						List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(projectcase.getCaseId());
+						if (steps.size() == 0) {
+							caselog.insertTaskCaseExecute(taskid, taskScheduling.getProjectId(),pp.getPlanId(), projectcase.getCaseId(), projectcase.getCaseSign(), projectcase.getCaseName(), 2);
+							LogUtil.APP.warn("用例【{}】没有找到步骤，直接跳过，请检查！", projectcase.getCaseSign());
+							caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(), "在用例中没有找到步骤，请检查", "error", "1", "");
+							continue;
 						}
+						// 多线程计数,如果用例设置了优先级，必须等优先级高的用例执行完成，才继续后面的用例
+						if (casepriority < projectcase.getPriority()) {
+							LogUtil.APP.info("用例编号:{} 上条用例优先级:{} 当前用例优先级:{}", projectcase.getCaseSign(), casepriority, projectcase.getPriority());
+							int i = 0;
+							while (THREAD_COUNT != 0) {
+								i++;
+								if (i > timeout * 60 * 5 / cases.size()) {
+									LogUtil.APP.warn("用例编号:{} 上条用例优先级:{} 当前用例优先级:{} 等待时间已经超过设置的用例平均超时间{}秒(计算公式：任务超时时间*5/用例总数)，现在继续往下执行...", projectcase.getCaseSign(), casepriority, projectcase.getPriority(), i);
+									break;
+								}
+								Thread.sleep(1000);
+							}
+						}
+						casepriority = projectcase.getPriority();
+						THREAD_COUNT++; // 多线程计数++，用于检测线程是否全部执行完
+						LogUtil.APP.info("开始执行当前测试任务 {} 的第【{}】条测试用例...", task.getTaskName(), j + 1);
+						threadExecute.execute(new ThreadForExecuteCase(projectcase, steps, taskid,pp.getPlanId(), pcplist, caselog));
 					}
-					casepriority = projectcase.getPriority();
-					THREAD_COUNT++; // 多线程计数++，用于检测线程是否全部执行完
-					LogUtil.APP.info("开始执行当前测试任务 {} 的第【{}】条测试用例...",task.getTaskName(),j+1);
-					threadExecute.execute(new ThreadForExecuteCase(projectcase, steps, taskid, pcplist, caselog));
-				}
-				// 多线程计数，用于检测线程是否全部执行完
-				int i = 0;
-				int taskStatus=2;
-				while (THREAD_COUNT != 0) {
-					i++;
-					if (i > timeout * 10) {
-						taskStatus=3;
-						LogUtil.APP.warn("当前测试任务 {} 执行已经超过设置的最大任务超时时间【{}】分钟，现在即将停止任务执行...",task.getTaskName(),timeout);
-						break;
+					// 多线程计数，用于检测线程是否全部执行完
+					int i = 0;
+					while (THREAD_COUNT != 0) {
+						i++;
+						if (i > timeout * 10) {
+							taskStatus = 3;
+							LogUtil.APP.warn("当前测试任务 {} 执行已经超过设置的最大任务超时时间【{}】分钟，现在即将停止任务执行...", task.getTaskName(), timeout);
+							break;
+						}
+						Thread.sleep(6000);
 					}
-					Thread.sleep(6000);
 				}
-				tastcount = serverOperation.updateTaskExecuteData(taskid, cases.size(),taskStatus);
+				tastcount = serverOperation.updateTaskExecuteData(taskid, caseCount,taskStatus);
 
 				String testtime = serverOperation.getTestTime(taskid);
 				MailSendInitialization.sendMailInitialization(HtmlMail.htmlSubjectFormat(jobname),

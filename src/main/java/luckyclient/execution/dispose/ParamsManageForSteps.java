@@ -29,6 +29,9 @@ public class ParamsManageForSteps {
 	 * @date 2019Äê1ÔÂ15ÈÕ
 	 */
 	public static String paramsManage(String params) {
+		if(null==params){
+			return params;
+		}
 		ParamsManageForSteps pmfs = new ParamsManageForSteps();
 		params = pmfs.replaceRandomInt(params);
 		params = pmfs.replaceTimeNow(params);
