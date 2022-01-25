@@ -63,6 +63,19 @@ public class PostServerApi {
 		
 		HttpRequest.httpClientPostJson(PREFIX+"/clientPostTaskCaseExecute", JSONObject.toJSONString(taskCaseExecute));
 	}
+
+	public static void clientPostInsertTaskCaseExecute(Integer taskId, Integer projectId,Integer planId, Integer caseId, String caseSign, String caseName, Integer caseStatus){
+		TaskCaseExecute taskCaseExecute = new TaskCaseExecute();
+		taskCaseExecute.setTaskId(taskId);
+		taskCaseExecute.setPlanId(planId);
+		taskCaseExecute.setProjectId(projectId);
+		taskCaseExecute.setCaseId(caseId);
+		taskCaseExecute.setCaseSign(caseSign);
+		taskCaseExecute.setCaseName(caseName);
+		taskCaseExecute.setCaseStatus(caseStatus);
+
+		HttpRequest.httpClientPostJson(PREFIX+"/clientPostTaskCaseExecute", JSONObject.toJSONString(taskCaseExecute));
+	}
 	
 	/**
 	 * ÐÞ¸ÄÓÃÀýÖ´ÐÐ×´Ì¬
@@ -78,6 +91,16 @@ public class PostServerApi {
 		taskCaseExecute.setCaseId(caseId);
 		taskCaseExecute.setCaseStatus(caseStatus);
 		
+		HttpRequest.httpClientPostJson(PREFIX+"/clientUpdateTaskCaseExecuteStatus", JSONObject.toJSONString(taskCaseExecute));
+	}
+
+	public static void clientUpdateTaskCaseExecuteStatus(Integer taskId,Integer planId, Integer caseId, Integer caseStatus){
+		TaskCaseExecute taskCaseExecute = new TaskCaseExecute();
+		taskCaseExecute.setTaskId(taskId);
+		taskCaseExecute.setPlanId(planId);
+		taskCaseExecute.setCaseId(caseId);
+		taskCaseExecute.setCaseStatus(caseStatus);
+
 		HttpRequest.httpClientPostJson(PREFIX+"/clientUpdateTaskCaseExecuteStatus", JSONObject.toJSONString(taskCaseExecute));
 	}
 	

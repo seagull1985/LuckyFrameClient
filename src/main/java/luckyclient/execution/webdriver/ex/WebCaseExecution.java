@@ -39,8 +39,8 @@ public class WebCaseExecution{
     private static Map<String, String> variable = new HashMap<>();
     private static String casenote = "备注初始化";
 
-    public static void caseExcution(ProjectCase testcase, List<ProjectCaseSteps> steps, String taskid, WebDriver wd, serverOperation caselog, List<ProjectCaseParams> pcplist) {
-    	caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), 3);
+    public static void caseExcution(ProjectCase testcase, List<ProjectCaseSteps> steps, String taskid,Integer planId, WebDriver wd, serverOperation caselog, List<ProjectCaseParams> pcplist) {
+    	caselog.updateTaskCaseExecuteStatus(taskid,planId, testcase.getCaseId(), 3);
     	// 把公共参数加入到MAP中
         for (ProjectCaseParams pcp : pcplist) {
             variable.put(pcp.getParamsName(), pcp.getParamsValue());
@@ -109,7 +109,7 @@ public class WebCaseExecution{
         }
 
         variable.clear();
-        caselog.updateTaskCaseExecuteStatus(taskid, testcase.getCaseId(), setcaseresult);
+        caselog.updateTaskCaseExecuteStatus(taskid,planId, testcase.getCaseId(), setcaseresult);
         if (setcaseresult == 0) {
             LogUtil.APP.info("用例【{}】全部步骤执行结果成功...",testcase.getCaseSign());
             caselog.insertTaskCaseLog(taskid, testcase.getCaseId(), "用例全部步骤执行结果成功", "info", "ending", "");

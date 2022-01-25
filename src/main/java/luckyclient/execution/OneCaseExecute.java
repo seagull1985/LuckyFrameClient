@@ -39,6 +39,7 @@ public class OneCaseExecute extends TestControl {
 			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskId));
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.parseInt(taskId));
 			ClientHandler.clientId = taskScheduling.getClientId();
+			SchedulingConstants.envName=taskScheduling.getEnvName();
 			if (taskScheduling.getTaskType() == 0) {
 					// ½Ó¿Ú²âÊÔ
 				    TestCaseExecution testCaseExecution=new TestCaseExecution();

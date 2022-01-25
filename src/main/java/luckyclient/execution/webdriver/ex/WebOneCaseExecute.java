@@ -47,7 +47,7 @@ public class WebOneCaseExecute{
 		LogUtil.APP.info("开始执行用例:【{}】......",testcase.getCaseSign());
 		try {
 			List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
-			WebCaseExecution.caseExcution(testcase, steps, taskid,wd,caselog,pcplist);
+			WebCaseExecution.caseExcution(testcase, steps, taskid,null,wd,caselog,pcplist);
 			LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (Exception e) {
 			LogUtil.APP.error("用户执行过程中抛出异常！", e);

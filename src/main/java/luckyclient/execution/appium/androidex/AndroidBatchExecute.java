@@ -64,7 +64,7 @@ public class AndroidBatchExecute {
 				// 删除旧的日志
 				serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
-					AndroidCaseExecution.caseExcution(testcase, steps, taskid, ad, caselog, pcplist);
+					AndroidCaseExecution.caseExcution(testcase, steps, taskid,null, ad, caselog, pcplist);
 				} catch (Exception e) {
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				}
@@ -77,7 +77,7 @@ public class AndroidBatchExecute {
 				// 删除旧的日志
 				serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
-					AndroidCaseExecution.caseExcution(testcase, steps, taskid, ad, caselog, pcplist);
+					AndroidCaseExecution.caseExcution(testcase, steps, taskid,null, ad, caselog, pcplist);
 				} catch (Exception e) {
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				}

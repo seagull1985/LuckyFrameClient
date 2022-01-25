@@ -58,7 +58,7 @@ public class AndroidOneCaseExecute {
 		LogUtil.APP.info("开始执行用例：【{}】......",testcase.getCaseSign());
 		try {
 			List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
-			AndroidCaseExecution.caseExcution(testcase, steps, taskid, ad, caselog, pcplist);
+			AndroidCaseExecution.caseExcution(testcase, steps, taskid,null, ad, caselog, pcplist);
 			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (Exception e) {
 			LogUtil.APP.error("用户执行过程中抛出异常！", e);

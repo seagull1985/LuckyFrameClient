@@ -40,6 +40,8 @@ public class BatchCaseExecute extends TestControl {
 			TaskExecute task = GetServerApi.cgetTaskbyid(Integer.parseInt(taskid));
 			TaskScheduling taskScheduling = GetServerApi.cGetTaskSchedulingByTaskId(Integer.parseInt(taskid));
 			ClientHandler.clientId = taskScheduling.getClientId();
+			//获取到调度任务的环境信息
+			SchedulingConstants.envName=taskScheduling.getEnvName();
 			if (taskScheduling.getTaskType() == 0) {
 					BatchTestCaseExecution.batchCaseExecuteForTast(
                             String.valueOf(task.getTaskId()), batchcase);

@@ -52,7 +52,7 @@ public class WebBatchExecute{
 				//删除旧的日志
 				serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
-					WebCaseExecution.caseExcution(testcase, steps, taskid, wd, caselog, pcplist);
+					WebCaseExecution.caseExcution(testcase, steps, taskid,null, wd, caselog, pcplist);
 				} catch (Exception e) {
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				}
@@ -65,7 +65,7 @@ public class WebBatchExecute{
 				//删除旧的日志
 				serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
-					WebCaseExecution.caseExcution(testcase, steps, taskid, wd, caselog, pcplist);
+					WebCaseExecution.caseExcution(testcase, steps, taskid,null, wd, caselog, pcplist);
 				} catch (Exception e) {
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				}

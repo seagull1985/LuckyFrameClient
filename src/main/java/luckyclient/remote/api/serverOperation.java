@@ -36,6 +36,16 @@ public class serverOperation {
 	}
 
 	/**
+	 * 插入用例执行状态 0通过 1失败 2锁定 3执行中 4未执行
+	 */
+	public void insertTaskCaseExecute(String taskIdStr, Integer projectId,Integer planId,Integer caseId,  String caseSign,String caseName, Integer caseStatus) {
+		if (0 == exetype) {
+			Integer taskId=Integer.valueOf(taskIdStr);
+			PostServerApi.clientPostInsertTaskCaseExecute(taskId, projectId,planId, caseId, caseSign, caseName, caseStatus);
+		}
+	}
+
+	/**
 	 * 更新用例执行状态 0通过 1失败 2锁定 3执行中 4未执行
 	 */
 	public void updateTaskCaseExecuteStatus(String taskIdStr, Integer caseId, Integer caseStatus) {
@@ -44,6 +54,15 @@ public class serverOperation {
 			PostServerApi.clientUpdateTaskCaseExecuteStatus(taskId, caseId, caseStatus);
 		}
 	}
+
+	public void updateTaskCaseExecuteStatus(String taskIdStr,Integer planId, Integer caseId, Integer caseStatus) {
+		if (0 == exetype) {
+			Integer taskId=Integer.valueOf(taskIdStr);
+			PostServerApi.clientUpdateTaskCaseExecuteStatus(taskId,planId, caseId, caseStatus);
+		}
+	}
+
+
 
 	/**
 	 * 插入用例执行日志
