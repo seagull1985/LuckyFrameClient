@@ -38,7 +38,7 @@ public class AndroidCaseLocalDebug {
 					.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
 			LogUtil.APP.info("开始执行用例：【{}】......",testCaseExternalId);
 			List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
-			AndroidCaseExecution.caseExcution(testcase, steps, "888888", androiddriver, caselog, pcplist);
+			AndroidCaseExecution.caseExcution(testcase, steps, "888888",null, androiddriver, caselog, pcplist);
 
 			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (Exception e) {

@@ -57,7 +57,7 @@ public class IosOneCaseExecute {
 		LogUtil.APP.info("开始执行用例：【{}】......",testcase.getCaseSign());
 		try {
 			List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
-			IosCaseExecution.caseExcution(testcase, steps, taskid, iosd, caselog, pcplist);
+			IosCaseExecution.caseExcution(testcase, steps, taskid,null, iosd, caselog, pcplist);
 			LogUtil.APP.info("当前用例：【{}】执行完成......进入下一条",testcase.getCaseSign());
 		} catch (Exception e) {
 			LogUtil.APP.error("用户执行过程中抛出异常！", e);

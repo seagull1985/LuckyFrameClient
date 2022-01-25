@@ -63,7 +63,7 @@ public class IosBatchExecute {
 				// 删除旧的日志
 				serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
-					IosCaseExecution.caseExcution(testcase, steps, taskid, iosd, caselog, pcplist);
+					IosCaseExecution.caseExcution(testcase, steps, taskid,null, iosd, caselog, pcplist);
 				} catch (Exception e) {
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
 				}
@@ -76,7 +76,7 @@ public class IosBatchExecute {
 				// 删除旧的日志
 				serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
 				try {
-					IosCaseExecution.caseExcution(testcase, steps, taskid, iosd, caselog, pcplist);
+					IosCaseExecution.caseExcution(testcase, steps, taskid,null, iosd, caselog, pcplist);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					LogUtil.APP.error("用户执行过程中抛出异常！", e);
