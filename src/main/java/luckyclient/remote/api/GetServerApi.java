@@ -1,6 +1,7 @@
 package luckyclient.remote.api;
 
 import com.alibaba.fastjson.JSONObject;
+import luckyclient.execution.SchedulingConstants;
 import luckyclient.execution.dispose.ParamsManageForSteps;
 import luckyclient.remote.entity.*;
 import luckyclient.utils.httputils.HttpRequest;
@@ -99,7 +100,7 @@ public class GetServerApi {
 	 * @return 公共参数集合
 	 */
 	public static List<ProjectCaseParams> cgetParamsByProjectid(String projectid) {
-		String result = HttpRequest.loadJSON(PREFIX+"/clientGetParamsByProjectId.do?projectId="+projectid);
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetParamsByProjectIdAndEnvName.do?projectId="+projectid+"&envName="+ SchedulingConstants.envName);
 		List<ProjectCaseParams> paramsList = JSONObject.parseArray(result, ProjectCaseParams.class);
 		//当公共参数存在内置函数时，先进行数据转换
 		for(ProjectCaseParams pcp:paramsList){
