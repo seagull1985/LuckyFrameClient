@@ -13,6 +13,7 @@ import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import com.alibaba.fastjson.parser.Feature;
 import luckyclient.execution.dispose.ChangString;
 import luckyclient.execution.dispose.ParamsManageForSteps;
 import luckyclient.remote.api.GetServerApi;
@@ -192,7 +193,7 @@ public class InvokeMethod {
                 	}
                     //处理参数对象
                     if (ptp.getParamType() == 1) {
-                        JSONObject json = JSONObject.parseObject(tempparam);
+                        JSONObject json = JSONObject.parseObject(tempparam, Feature.OrderedField);
                         params.put(ptp.getParamName().replace("&quot;", "\""), json);
                         LogUtil.APP.info("模板参数【{}】  JSONObject类型参数值:【{}】",ptp.getParamName(),json.toString());
                     } else if (ptp.getParamType() == 2) {

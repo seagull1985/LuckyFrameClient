@@ -7,15 +7,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -372,6 +364,12 @@ public class EncapsulateOperation {
             case "gotowindow":
                 result = switchToTargetWindow(wd, operationValue);
                 break;
+            case "switchtowindow":
+                switchToWindow(wd);
+                break;
+            case "windowsetsize":
+                manageWindowSetSize(wd,operationValue);
+                break;
             case "closewindow":
                 wd.close();
                 result = "关闭当前浏览器窗口...";
@@ -606,6 +604,34 @@ public class EncapsulateOperation {
             return result;
         }
     }
-    
+
+    //新增修改点 切换句柄
+    private static void switchToWindow(WebDriver driver) {
+        String current_window_handle=driver.getWindowHandle();
+        LogUtil.APP.info("当前句柄："+current_window_handle);
+        driver.close();
+        LogUtil.APP.info("关闭当前句柄："+current_window_handle);
+        for (String s : driver.getWindowHandles()) {
+            if (!s.equals(current_window_handle)) {
+                driver.switchTo().window(s);
+            }
+        }
+    }
+
+    //新增修改点 设置浏览器窗口大小
+    private static void manageWindowSetSize(WebDriver driver,String operationValue) {
+        if(operationValue.contains(",")){
+            String[] index=operationValue.split(",");
+
+            if (index.length==2){
+                driver.manage().window().setSize(new Dimension(Integer.parseInt(index[0].trim()), Integer.parseInt(index[1].trim())));
+            }else {
+                LogUtil.APP.info("参数格式不正确，参数格式为：xxx,xxx");
+            }
+        }else {
+            LogUtil.APP.info("参数格式不正确，参数格式为：xxx,xxx");
+        }
+    }
+
 }
 

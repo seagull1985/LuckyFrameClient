@@ -19,6 +19,7 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -41,6 +42,7 @@ import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -577,7 +579,7 @@ public class HttpClientTools {
      * @param ppt      协议模板对象
      * @return 返回请求结果
      */
-    public String httpClientPostJson(String urlParam, Map<String, Object> params, Map<String, String> headmsg, ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException {
+    public String httpClientPostJson(String urlParam, Map<String, Object> params, Map<String, String> headmsg, ProjectProtocolTemplate ppt) throws NoSuchAlgorithmException, KeyManagementException, UnsupportedEncodingException {
         String cerpath = ppt.getCerificatePath();
         String charset = ppt.getEncoding().toLowerCase();
         int timeout = ppt.getTimeout() * 1000;
@@ -611,7 +613,7 @@ public class HttpClientTools {
         try {
             if (params.size() > 0) {
                 if (1 == params.size() && params.containsKey("_forTextJson")) {
-                    LogUtil.APP.info("参数类型：TEXT,设置HTTPPostJson参数信息...【{}】", params.get("_forTextJson").toString());
+                    LogUtil.APP.info("参数类型：RAW,设置HTTPPostJson参数信息...【{}】", params.get("_forTextJson").toString());
                     StringEntity entity = new StringEntity(params.get("_forTextJson").toString(), charset);
                     httpPost.setEntity(entity);
                 } else {

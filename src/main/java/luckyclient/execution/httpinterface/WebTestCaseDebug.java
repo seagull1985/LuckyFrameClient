@@ -10,6 +10,7 @@ import luckyclient.driven.SubString;
 import luckyclient.execution.dispose.ActionManageForSteps;
 import luckyclient.execution.dispose.ParamsManageForSteps;
 import luckyclient.execution.httpinterface.analyticsteps.InterfaceAnalyticCase;
+import luckyclient.execution.webdriver.ex.WebOneCaseExecute;
 import luckyclient.remote.api.GetServerApi;
 import luckyclient.remote.api.PostServerApi;
 import luckyclient.remote.api.serverOperation;
@@ -38,8 +39,11 @@ public class WebTestCaseDebug {
      * 用于在WEB页面上调试用例时提供的接口
      * @param caseIdStr 用例ID
      * @param userIdStr  用户ID
+     * @param caseTypeStr 用例类型：针对0或者2
      */
-    public static void oneCaseDebug(String caseIdStr, String userIdStr) {
+    public static void oneCaseDebug(String caseIdStr, String userIdStr,String caseTypeStr) {
+        //修改点
+        if (Integer.parseInt(caseTypeStr)==0||Integer.parseInt(caseTypeStr)==2){
         Map<String, String> variable = new HashMap<>(0);
         serverOperation.exetype=1;
         String packagename;
@@ -257,5 +261,19 @@ public class WebTestCaseDebug {
             PostServerApi.cPostDebugLog(userId, caseId, "ERRORover", "用例 " + sign + "在执行过程中失败，请检查！",1);
         }
     }
+    }
 
+    //修改点
+    /**
+     * 用于在WEB页面上调试用例时提供的接口
+     * @param caseIdStr 用例ID
+     * @param userIdStr  用户ID
+     * @param caseTypeStr 用例类型：针对1
+     * @param browserTypeStr web驱动：0 IE 1 火狐 2 谷歌 3 Edge
+     */
+    public static void oneCaseDebug(String caseIdStr, String userIdStr,String caseTypeStr,String browserTypeStr) {
+        int caseId=Integer.parseInt(caseIdStr);
+        int browserType=Integer.parseInt(browserTypeStr);
+        WebOneCaseExecute.debugoneCaseExecute(caseId, browserType);
+    }
 }

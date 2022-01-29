@@ -34,9 +34,9 @@ public class AppiumInitialization {
 	public static AndroidDriver<AndroidElement> setAndroidAppium(Properties properties) throws IOException {
 		AndroidDriver<AndroidElement> appium;
 		DesiredCapabilities capabilities = new DesiredCapabilities();
-		File directory = new File("");
-		File app = new File(directory.getCanonicalPath() + File.separator + properties.getProperty("appname"));
-		capabilities.setCapability("app", app.getAbsolutePath());
+//		File directory = new File("");
+//		File app = new File(directory.getCanonicalPath() + File.separator + properties.getProperty("appname"));
+//		capabilities.setCapability("app", app.getAbsolutePath());
 		// 自动化测试服务
 		capabilities.setCapability("automationName", properties.getProperty("automationName"));
 		// 设备名称
