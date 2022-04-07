@@ -39,11 +39,11 @@ public class WebTestCaseDebug {
      * 用于在WEB页面上调试用例时提供的接口
      * @param caseIdStr 用例ID
      * @param userIdStr  用户ID
-     * @param caseTypeStr 用例类型：针对0或者2
+     * @param caseTypeStr 用例类型：HTTP接口 0,  Web UI, 1,   API驱动, 2,   移动端, 3
      */
     public static void oneCaseDebug(String caseIdStr, String userIdStr,String caseTypeStr) {
         //修改点
-        if (Integer.parseInt(caseTypeStr)==0||Integer.parseInt(caseTypeStr)==2){
+        if (3!=Integer.parseInt(caseTypeStr)){
         Map<String, String> variable = new HashMap<>(0);
         serverOperation.exetype=1;
         String packagename;
