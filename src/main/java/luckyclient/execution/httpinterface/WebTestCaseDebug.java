@@ -43,7 +43,7 @@ public class WebTestCaseDebug {
      */
     public static void oneCaseDebug(String caseIdStr, String userIdStr,String caseTypeStr) {
         //ÐÞ¸Äµã
-        if (3!=Integer.parseInt(caseTypeStr)){
+        if (Integer.parseInt(caseTypeStr)==0||Integer.parseInt(caseTypeStr)==2){
         Map<String, String> variable = new HashMap<>(0);
         serverOperation.exetype=1;
         String packagename;
