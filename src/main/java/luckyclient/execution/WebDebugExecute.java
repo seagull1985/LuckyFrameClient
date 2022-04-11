@@ -27,7 +27,9 @@ public class WebDebugExecute extends TestControl{
 			PropertyConfigurator.configure(RunService.APPLICATION_HOME + File.separator + "log4j.conf");
 	 		String caseIdStr = args[0];
 	 		String userIdStr = args[1];
-	 		WebTestCaseDebug.oneCaseDebug(caseIdStr, userIdStr);
+	 		//修改点
+	 		String caseTypeStr =args[2];
+	 		WebTestCaseDebug.oneCaseDebug(caseIdStr, userIdStr,caseTypeStr);
 		} catch (Exception e) {
 			LogUtil.APP.error("启动用例调试主函数出现异常，请检查！",e);
 		} finally{
