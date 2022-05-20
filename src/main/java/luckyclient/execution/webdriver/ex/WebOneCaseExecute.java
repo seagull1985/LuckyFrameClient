@@ -3,6 +3,7 @@ package luckyclient.execution.webdriver.ex;
 import java.io.IOException;
 import java.util.List;
 
+import luckyclient.remote.api.PostServerApi;
 import org.openqa.selenium.WebDriver;
 
 import luckyclient.execution.httpinterface.TestControl;
@@ -20,71 +21,71 @@ import luckyclient.utils.LogUtil;
  * 为了尊重作者的劳动成果，LuckyFrame关键版权信息严禁篡改
  * 有任何疑问欢迎联系作者讨论。 QQ:1573584944  seagull1985
  * =================================================================
- * 
+ *
  * @author： seagull
  * @date 2017年12月1日 上午9:29:40
- * 
  */
-public class WebOneCaseExecute{
-	
-	public static void oneCaseExecuteForTast(Integer caseId, String taskid){
-		//记录日志到数据库
-		serverOperation.exetype = 0;   
-		TestControl.TASKID = taskid;
-		int drivertype = serverOperation.querydrivertype(taskid);
-		WebDriver wd = null;
-		try {
-			wd = WebDriverInitialization.setWebDriverForTask(drivertype);
-		} catch (IOException e1) {
-			LogUtil.APP.error("初始化WebDriver出错！", e1);
-		}
-		serverOperation caselog = new serverOperation();
-		ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseId);
-		//删除旧的日志
-		serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);    
+public class WebOneCaseExecute {
 
-		List<ProjectCaseParams> pcplist=GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
-		LogUtil.APP.info("开始执行用例:【{}】......",testcase.getCaseSign());
-		try {
-			List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
-			WebCaseExecution.caseExcution(testcase, steps, taskid,null,wd,caselog,pcplist);
-			LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条",testcase.getCaseSign());
-		} catch (Exception e) {
-			LogUtil.APP.error("用户执行过程中抛出异常！", e);
-		}
-		serverOperation.updateTaskExecuteData(taskid, 0,2);
+    public static void oneCaseExecuteForTast(Integer caseId, String taskid) {
+        //记录日志到数据库
+        serverOperation.exetype = 0;
+        TestControl.TASKID = taskid;
+        int drivertype = serverOperation.querydrivertype(taskid);
+        WebDriver wd = null;
+        try {
+            wd = WebDriverInitialization.setWebDriverForTask(drivertype);
+        } catch (IOException e1) {
+            LogUtil.APP.error("初始化WebDriver出错！", e1);
+        }
+        serverOperation caselog = new serverOperation();
+        ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseId);
+        //删除旧的日志
+        serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
+
+        List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+        LogUtil.APP.info("开始执行用例:【{}】......", testcase.getCaseSign());
+        try {
+            List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
+            WebCaseExecution.caseExcution(testcase, steps, taskid, null, wd, caselog, pcplist);
+            LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条", testcase.getCaseSign());
+        } catch (Exception e) {
+            LogUtil.APP.error("用户执行过程中抛出异常！", e);
+        }
+        serverOperation.updateTaskExecuteData(taskid, 0, 2);
         //关闭浏览器
-		assert wd != null;
-		wd.quit();
-	}
+        assert wd != null;
+        wd.quit();
+    }
 
-	public static void debugoneCaseExecute(int caseId, int drivertype){
-//		//记录日志到数据库
-//		serverOperation.exetype = 1;
-		WebDriver wd = null;
-		try {
-			wd = WebDriverInitialization.setWebDriverForTask(drivertype);
-		} catch (IOException e1) {
-			LogUtil.APP.error("初始化WebDriver出错！", e1);
-		}
-//		serverOperation caselog = new serverOperation();
-		ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseId);
-		//删除旧的日志
-//		serverOperation.deleteTaskCaseLog(testcase.getCaseId(), taskid);
+    public static void debugoneCaseExecute(int caseId, int userId, int drivertype) {
+        //不记录日志到数据库
+        serverOperation.exetype = 1;
+        WebDriver wd = null;
+        try {
+            PostServerApi.cPostDebugLog(userId, caseId, "INFO", "准备初始化WebDriver对象...", 0);
+            wd = WebDriverInitialization.setWebDriverForTask(drivertype);
 
-		List<ProjectCaseParams> pcplist=GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
-		LogUtil.APP.info("开始执行用例:【{}】......",testcase.getCaseSign());
-		try {
-			List<ProjectCaseSteps> steps=GetServerApi.getStepsbycaseid(testcase.getCaseId());
-			WebCaseExecution.caseExcution(testcase, steps, wd,pcplist);
-			LogUtil.APP.info("当前用例:【{}】执行完成......进入下一条",testcase.getCaseSign());
-		} catch (Exception e) {
-			LogUtil.APP.error("用户执行过程中抛出异常！", e);
-		}
-//		serverOperation.updateTaskExecuteData(taskid, 0,2);
-		//关闭浏览器
-		assert wd != null;
-		wd.quit();
-	}
+            serverOperation caselog = new serverOperation();
+            ProjectCase testcase = GetServerApi.cGetCaseByCaseId(caseId);
+
+            List<ProjectCaseParams> pcplist = GetServerApi.cgetParamsByProjectid(String.valueOf(testcase.getProjectId()));
+			PostServerApi.cPostDebugLog(userId, caseId, "INFO", "开始执行用例...", 0);
+            LogUtil.APP.info("开始执行用例:【{}】......", testcase.getCaseSign());
+
+            List<ProjectCaseSteps> steps = GetServerApi.getStepsbycaseid(testcase.getCaseId());
+            WebCaseExecution.caseExcution(testcase, steps, "888888", null, wd, caselog, pcplist);
+			PostServerApi.cPostDebugLog(userId, caseId, "INFOover", "当前用例步骤全部执行完成...", 1);
+            LogUtil.APP.info("当前用例:【{}】执行完成......", testcase.getCaseSign());
+        } catch (IOException e1) {
+            PostServerApi.cPostDebugLog(userId, caseId, "ERRORover", "初始化WebDriver出错，异常信息请查看客户端日志...", 1);
+            LogUtil.APP.error("初始化WebDriver出错！", e1);
+        } catch (Exception e) {
+            LogUtil.APP.error("用户执行过程中抛出异常！", e);
+        }
+        //关闭浏览器
+        assert wd != null;
+        wd.quit();
+    }
 
 }
