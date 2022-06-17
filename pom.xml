@@ -269,7 +269,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>1.2.70</version>
+			<version>1.2.83</version>
 		</dependency>
 		<!-- 获取系统信息 -->
 		<dependency>
