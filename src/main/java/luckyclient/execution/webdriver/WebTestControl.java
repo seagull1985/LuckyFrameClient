@@ -96,8 +96,7 @@ public class WebTestControl {
 				List<ProjectPlan> plans=new ArrayList<>();
 				// 单计划执行
 				if(taskScheduling.getPlanType()==1){
-					ProjectPlan projectPlan=new ProjectPlan();
-					projectPlan.setPlanId(taskScheduling.getPlanId());
+					ProjectPlan projectPlan=GetServerApi.getProjectPlanByPlanId(taskScheduling.getPlanId());
 					plans.add(projectPlan);
 				}
 				// 聚合多计划执行
