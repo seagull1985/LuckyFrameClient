@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.hutool.core.util.NumberUtil;
 import luckyclient.driven.SubString;
 import luckyclient.execution.dispose.ActionManageForSteps;
 import luckyclient.execution.dispose.ParamsManageForSteps;
@@ -268,12 +269,17 @@ public class WebTestCaseDebug {
      * 用于在WEB页面上调试用例时提供的接口
      * @param caseIdStr 用例ID
      * @param userIdStr  用户ID
-     * @param caseTypeStr 用例类型：针对1
      * @param browserTypeStr web驱动：0 IE 1 火狐 2 谷歌 3 Edge
      */
-    public static void oneCaseDebug(String caseIdStr, String userIdStr,String caseTypeStr,String browserTypeStr) {
-        int caseId=Integer.parseInt(caseIdStr);
-        int browserType=Integer.parseInt(browserTypeStr);
-        WebOneCaseExecute.debugoneCaseExecute(caseId, browserType);
+    public static void oneWebCaseDebug(String caseIdStr,String userIdStr,String browserTypeStr) {
+        if(NumberUtil.isInteger(caseIdStr)&&NumberUtil.isInteger(browserTypeStr)){
+            int caseId=Integer.parseInt(caseIdStr);
+            int browserType=Integer.parseInt(browserTypeStr);
+            int userId=Integer.parseInt(userIdStr);
+            WebOneCaseExecute.debugoneCaseExecute(caseId,userId,browserType);
+        }else{
+            LogUtil.APP.error("用例调试出现异常！用例ID以及浏览器类型不符，请检查原因。caseId：【{}】  browserType：【{}】",caseIdStr,browserTypeStr);
+        }
+
     }
 }

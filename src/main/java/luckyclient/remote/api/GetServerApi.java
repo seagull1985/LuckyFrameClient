@@ -35,13 +35,23 @@ public class GetServerApi {
 	}
 
 	/**
-	 * 通过计划ID获取测试用例对象集
+	 * 通过聚合计划ID获取测试计划对象集
 	 * @param suiteId 测试计划ID
 	 * @return 返回用例List
 	 */
 	public static List<ProjectPlan> getPlansbysuiteId(int suiteId) {
 		String result = HttpRequest.loadJSON(PREFIX+"/clientGetPlanListBySuiteId.do?suiteId=" + suiteId);
 		return JSONObject.parseArray(result, ProjectPlan.class);
+	}
+
+	/**
+	 * 通过测试计划ID获取测试计划对象
+	 * @param planId 测试计划ID
+	 * @return 返回计划对象
+	 */
+	public static ProjectPlan getProjectPlanByPlanId(int planId) {
+		String result = HttpRequest.loadJSON(PREFIX+"/clientGetProjectPlanByPlanId.do?planId=" + planId);
+		return JSONObject.parseObject(result, ProjectPlan.class);
 	}
 
 	/**

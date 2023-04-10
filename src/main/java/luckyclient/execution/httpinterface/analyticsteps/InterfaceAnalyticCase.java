@@ -80,55 +80,6 @@ public class InterfaceAnalyticCase{
 
 	}
 
-	public static Map<String,String> analyticCaseStep(ProjectCase projectcase,ProjectCaseSteps step, Map<String, String> variable){
-		Map<String,String> params = new HashMap<>(0);
-
-		try {
-			String resultstr = step.getExpectedResult();
-			params.put("Action", step.getAction());
-			// 处理值传递
-			String packageName = ChangString.changparams(step.getStepPath(), variable, "包路径");
-			params.put("PackageName", packageName);
-			// 处理值传递
-			String functionName = ChangString.changparams(step.getStepOperation(), variable, "方法名");
-			params.put("FunctionName", functionName);
-			String stepParams = replaceSpi(step.getStepParameters(),0);
-			String[] temp=stepParams.split("\\|",-1);
-			for(int i=0;i<temp.length;i++){
-				if("".equals(temp[i])){
-					continue;
-				}if(" ".equals(temp[i])){
-					//带一个空格的时候，传入空字符串
-					params.put("FunctionParams"+(i+1), "");
-				}else{
-					//set第N个传入参数
-					String parameterValues = ChangString.changparams(replaceSpi(temp[i],1), variable, "用例参数");
-					params.put("FunctionParams"+(i+1), parameterValues);
-				}
-			}
-			//set预期结果
-			if(null==resultstr||"".equals(resultstr)){
-				params.put("ExpectedResults", "");
-			}else{
-				String expectedResults = ChangString.changparams(subComment(resultstr), variable, "预期结果");
-				params.put("ExpectedResults", expectedResults);
-			}
-			LogUtil.APP.info("用例编号:{} 步骤编号:{} 解析自动化用例步骤脚本完成！",projectcase.getCaseSign(),step.getStepSerialNumber());
-//			if(null!=caselog){
-//				caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本完成！","info",String.valueOf(step.getStepSerialNumber()),"");
-//			}
-		}catch(Exception e) {
-//			if(null!=caselog){
-//				caselog.insertTaskCaseLog(taskid, projectcase.getCaseId(),"步骤编号："+step.getStepSerialNumber()+" 解析自动化用例步骤脚本出错！","error",String.valueOf(step.getStepSerialNumber()),"");
-//			}
-			LogUtil.APP.error("用例编号：{} 步骤编号：{} 解析自动化用例步骤脚本出错！",projectcase.getCaseSign(),step.getStepSerialNumber(),e);
-			params.put("exception","用例编号："+projectcase.getCaseSign()+"|解析异常,用例步骤为空或是用例脚本错误！");
-			return params;
-		}
-		return params;
-
-	}
-
 	public static String subComment(String htmlStr) {
 		// 定义script的正则表达式
     	String regExscript = "<script[^>]*?>[\\s\\S]*?</script>";

@@ -204,7 +204,7 @@ public class HttpImpl {
 					sb.append(" ").append(webDebugCaseEntity.getBrowserType());
 					run.exec("cmd.exe /k start " + "web_debugcase_web.cmd" + " " +sb.toString(), null,new File(RunService.APPLICATION_HOME+File.separator));
 				}else{
-					//´ý²¹³ä
+					log.error("µ±Ç°");
 				}
 			}
 		} catch (Exception e) {		
