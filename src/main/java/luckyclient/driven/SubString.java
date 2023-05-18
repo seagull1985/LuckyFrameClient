@@ -212,6 +212,8 @@ public class SubString {
 					getstr = "截取字符串索引的数字不能大于字符串本身的长度【" + str.length() + "】";
 				} else if (index > list.size()) {
 					getstr = "未能在指定字符串中根据正则式找到匹配的字符串或是指定的索引数字大于能找到的匹配字符串索引量";
+				} else if (index == 0) {
+					getstr = list.get(0);
 				} else {
 					getstr = list.get(index - 1);
 				}
