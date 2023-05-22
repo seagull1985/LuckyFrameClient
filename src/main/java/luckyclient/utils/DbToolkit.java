@@ -1,10 +1,7 @@
 package luckyclient.utils;
 
 import java.beans.PropertyVetoException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -69,11 +66,10 @@ public class DbToolkit {
      */ 
     public static ResultSet executeQuery(Connection conn, String staticSql) throws SQLException { 
     	//创建执行SQL的对象 
-            Statement stmt = conn.createStatement(); 
-            
-          //执行SQL，并获取返回结果 
+        PreparedStatement stmt = conn.prepareStatement(staticSql);
+        //执行SQL，并获取返回结果
         // stmt.close();
-            return stmt.executeQuery(staticSql);
+        return stmt.executeQuery();
     } 
 
     /** 
@@ -84,10 +80,10 @@ public class DbToolkit {
      */ 
     public static int executeSQL(Connection conn, String staticSql) throws SQLException { 
     	//创建执行SQL的对象 
-                    Statement stmt = conn.createStatement(); 
-                  //执行SQL，并获取返回结果  
-                     stmt.execute(staticSql); 
-                     return stmt.getUpdateCount();
+        PreparedStatement stmt = conn.prepareStatement(staticSql);
+        //执行SQL，并获取返回结果
+        stmt.execute();
+        return stmt.getUpdateCount();
            
     } 
 
@@ -100,14 +96,14 @@ public class DbToolkit {
     public static void executeBatchSQL(Connection conn, List<String> sqlList) { 
             try { 
             	 //创建执行SQL的对象 
-                    Statement stmt = conn.createStatement(); 
-                    for (String sql : sqlList) { 
-                            stmt.addBatch(sql); 
-                    } 
-                  //执行SQL，并获取返回结果 
-                    stmt.executeBatch(); 
-            } catch (SQLException e) { 
-                    e.printStackTrace();
+                Statement stmt = conn.createStatement();
+                for (String sql : sqlList) {
+                    stmt.addBatch(sql);
+                }
+                //执行SQL，并获取返回结果
+                stmt.executeBatch();
+            } catch (SQLException e) {
+                e.printStackTrace();
             } 
     } 
 
